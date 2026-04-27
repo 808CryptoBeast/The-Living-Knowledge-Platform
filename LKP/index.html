@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>The Living Knowledge Platform | Ikeverse</title>
+  <meta name="description" content="Navigate the stars of ancestral knowledge. A living portal into Kānaka Maoli and Kemetic wisdom traditions — honoured, studied, and woven into living understanding." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="css/lkp.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Three.js importmap -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three":           "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/":   "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <!-- Three.js scene — loads first so canvas renders behind content -->
+  <script type="module" src="js/lkp-three.js"></script>
+</head>
+<body>
+
+  <!-- ── THREE.JS CANVAS — fixed, full-screen star navigation map ── -->
+  <canvas id="lkp-canvas" aria-hidden="true"></canvas>
+
+  <!-- ── TOOLTIP — driven by Three.js hover ── -->
+  <div id="lkp-tooltip" class="hidden" aria-hidden="true"></div>
+
+  <!-- ── PAGE CONTENT — overlays the canvas ── -->
+  <div class="lkp-page">
+
+    <!-- ── NAV ── -->
+    <nav class="lkp-nav" id="lkpNav">
+      <a class="lkp-nav__brand" href="index.html">
+        <div class="lkp-nav__brand-glyph">◈</div>
+        <div class="lkp-nav__brand-text">
+          <span class="lkp-nav__brand-title">Living Knowledge Platform</span>
+          <span class="lkp-nav__brand-sub">Ikeverse · Ancestral Wisdom</span>
+        </div>
+      </a>
+
+      <ul class="lkp-nav__links" id="lkpNavLinks">
+        <li><a class="lkp-nav__link" href="#cultures">Cultures</a></li>
+        <li><a class="lkp-nav__link" href="#navigate">Navigate</a></li>
+        <li><a class="lkp-nav__link" href="lessons.html">Deep Lessons</a></li>
+        <li><a class="lkp-nav__link" href="#ecosystem">Ecosystem</a></li>
+      </ul>
+
+      <div class="lkp-nav__right">
+        <a class="lkp-nav__cta" href="lessons.html">Begin Learning →</a>
+        <button class="lkp-nav__mobile-btn" id="lkpMobileToggle" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- ── HERO — transparent, star map shows through ── -->
+    <section class="lkp-hero" id="home">
+
+      <div class="lkp-hero__content">
+        <div class="lkp-hero__eyebrow">
+          Ikeverse &nbsp;·&nbsp; The Living Knowledge Platform
+        </div>
+
+        <h1 class="lkp-hero__title">
+          Navigate the<br>
+          <em>Stars of Knowledge</em>
+        </h1>
+
+        <p class="lkp-hero__sub">
+          A sacred space where Hawaiian and Kemetic wisdom traditions are honoured, studied,
+          and woven into living understanding. Each concept is a star. Each connection, a constellation.
+          Hover to discover. Click to explore.
+        </p>
+
+        <div class="lkp-hero__cultures">
+          <span class="lkp-culture-pill lkp-culture-pill--kanaka">
+            <span class="lkp-culture-pill__dot"></span>
+            Kānaka Maoli
+          </span>
+          <span class="lkp-culture-pill lkp-culture-pill--kemet">
+            <span class="lkp-culture-pill__dot"></span>
+            Kemet
+          </span>
+          <span class="lkp-culture-pill lkp-culture-pill--bridge">
+            <span class="lkp-culture-pill__dot"></span>
+            The Bridge
+          </span>
+        </div>
+
+        <div class="lkp-hero__actions">
+          <a href="lessons.html" class="lkp-btn lkp-btn--primary">
+            <i class="fas fa-book-open"></i>
+            Begin Learning
+          </a>
+          <a href="#cultures" class="lkp-btn lkp-btn--secondary">
+            <i class="fas fa-globe"></i>
+            Explore the Cultures
+          </a>
+        </div>
+      </div>
+
+      <div class="lkp-hero__compass-hint" aria-hidden="true">
+        <span class="lkp-compass-hint__text">Drag · Scroll to zoom · Double-click to focus</span>
+        <span class="lkp-compass-hint__glyph">⟡</span>
+      </div>
+
+    </section>
+
+    <!-- ── CULTURES ── -->
+    <section class="lkp-section" id="cultures">
+      <div class="lkp-container">
+
+        <div class="lkp-section-header lkp-reveal">
+          <div class="lkp-eyebrow">✦ The Cultures ✦</div>
+          <h2 class="lkp-section-title">Two Traditions.<br><em>One Cosmic Understanding.</em></h2>
+          <p class="lkp-section-desc">
+            Two civilizations on opposite sides of the Earth, both beginning in primordial darkness
+            and water, both arriving at the same sacred truth about how a human being is meant to
+            walk in the world.
+          </p>
+        </div>
+
+        <div class="lkp-culture-grid">
+
+          <!-- KĀNAKA MAOLI -->
+          <div class="lkp-culture-card lkp-culture-card--kanaka lkp-reveal" id="kanaka">
+            <div class="lkp-culture-card__accent"></div>
+
+            <div class="lkp-culture-card__glyph">
+              <img src="assets/images/kanaka.png" alt="Kānaka Maoli" class="lkp-module-icon" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+              <span style="display:none">🌺</span>
+            </div>
+            <div class="lkp-culture-card__badge">◈ Module One · Live Now</div>
+
+            <h2 class="lkp-culture-card__title">Kānaka Maoli</h2>
+            <p class="lkp-culture-card__tagline">People of the Land · Children of the Star Navigators</p>
+
+            <p class="lkp-culture-card__intro">
+              The Native Hawaiian people developed one of the most sophisticated civilizations
+              in the Pacific — from the 2,102-line Kumulipo to the engineering precision of 400+
+              fishponds. A complete and deeply integrated understanding of cosmos, land, and the
+              human place within both. This is not ancient history. It is a living tradition.
+            </p>
+
+            <div class="lkp-culture-card__concepts">
+              <span class="lkp-concept-tag">The Kumulipo</span>
+              <span class="lkp-concept-tag">Star Navigation</span>
+              <span class="lkp-concept-tag">Ahupuaʻa</span>
+              <span class="lkp-concept-tag">Loʻi Kalo</span>
+              <span class="lkp-concept-tag">ʻŌlelo Hawaiʻi</span>
+              <span class="lkp-concept-tag">Hula</span>
+              <span class="lkp-concept-tag">Laʻau Lapaʻau</span>
+              <span class="lkp-concept-tag">Mana</span>
+              <span class="lkp-concept-tag">Aloha</span>
+            </div>
+
+            <div class="lkp-culture-card__actions">
+              <a href="lessons.html#kanaka" class="lkp-btn lkp-btn--emerald">
+                <i class="fas fa-leaf"></i> Enter Kānaka Maoli Lessons
+              </a>
+            </div>
+          </div>
+
+          <!-- KEMET -->
+          <div class="lkp-culture-card lkp-culture-card--kemet lkp-reveal" id="kemet">
+            <div class="lkp-culture-card__accent"></div>
+
+            <div class="lkp-culture-card__glyph">
+              <img src="assets/images/kemet.png" alt="Kemet" class="lkp-module-icon" onerror="this.style.display='none';this.nextElementSibling.style.display='inline'">
+              <span style="display:none">☥</span>
+            </div>
+            <div class="lkp-culture-card__badge">◈ Module Two · Live Now</div>
+
+            <h2 class="lkp-culture-card__title">Kemet</h2>
+            <p class="lkp-culture-card__tagline">The Black Land · Three Thousand Years of Recorded Wisdom</p>
+
+            <p class="lkp-culture-card__intro">
+              The ancient Egyptians called their land Kemet — they were African. Their civilization
+              endured for over 3,000 years, producing knowledge in cosmology, medicine, ethics,
+              and philosophy that shaped every major civilization that followed. Not the ancestors
+              of Western civilization — African civilization at its height.
+            </p>
+
+            <div class="lkp-culture-card__concepts">
+              <span class="lkp-concept-tag">Maʻat</span>
+              <span class="lkp-concept-tag">The Ennead</span>
+              <span class="lkp-concept-tag">Ptah's Theology</span>
+              <span class="lkp-concept-tag">Medu Netjer</span>
+              <span class="lkp-concept-tag">Imhotep</span>
+              <span class="lkp-concept-tag">The Duat</span>
+              <span class="lkp-concept-tag">Ka · Ba · Akh</span>
+              <span class="lkp-concept-tag">Sacred Medicine</span>
+            </div>
+
+            <div class="lkp-culture-card__actions">
+              <a href="lessons.html#kemet" class="lkp-btn lkp-btn--primary">
+                <i class="fas fa-ankh"></i> Enter Kemet Lessons
+              </a>
+            </div>
+          </div>
+
+          <!-- THE BRIDGE -->
+          <div class="lkp-culture-card lkp-culture-card--bridge lkp-reveal" id="bridge"
+               style="grid-column: 1 / -1">
+            <div class="lkp-culture-card__accent"></div>
+            <div class="lkp-culture-card__badge">◈ Module Three · The Bridge</div>
+
+            <h2 class="lkp-culture-card__title" style="color: var(--violet)">The Bridge</h2>
+            <p class="lkp-culture-card__tagline">
+              Aloha and Maʻat. Two names for the same sacred alignment.
+            </p>
+
+            <p class="lkp-culture-card__intro">
+              Two civilizations on opposite ends of the Earth, separated by tens of thousands of miles
+              and thousands of years. When you place their creation traditions and ethical frameworks
+              side by side, the parallels are not superficial — they are structural. The same deep
+              architecture of understanding, expressed through different languages, pointing to the
+              same cosmic realities. Both begin in primordial darkness. Both unfold through paired
+              complementary forces. Both arrive at the same understanding of cosmic order, personal
+              ethics, and ecological responsibility as one indivisible truth.
+            </p>
+
+            <div class="lkp-culture-card__actions">
+              <a href="lessons.html#bridge" class="lkp-btn lkp-btn--secondary">
+                <i class="fas fa-arrows-left-right"></i> Explore the Bridge Lessons
+              </a>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Coming soon -->
+        <div class="lkp-section-header" style="margin-top:56px;margin-bottom:24px">
+          <div class="lkp-eyebrow">✦ Always Expanding ✦</div>
+          <h3 class="lkp-section-title" style="font-size:clamp(22px,3vw,32px)">More Traditions Being Woven In</h3>
+        </div>
+
+        <div class="lkp-soon-grid">
+          <div class="lkp-soon-card"><span class="lkp-soon-card__emoji">🌏</span><div class="lkp-soon-card__name">Dreamtime</div><div class="lkp-soon-card__sub">Aboriginal Australia</div></div>
+          <div class="lkp-soon-card"><span class="lkp-soon-card__emoji">🪘</span><div class="lkp-soon-card__name">Dogon</div><div class="lkp-soon-card__sub">West Africa · Mali</div></div>
+          <div class="lkp-soon-card"><span class="lkp-soon-card__emoji">🕉️</span><div class="lkp-soon-card__name">Vedic</div><div class="lkp-soon-card__sub">Ancient India</div></div>
+          <div class="lkp-soon-card"><span class="lkp-soon-card__emoji">🌽</span><div class="lkp-soon-card__name">Olmec / Maya</div><div class="lkp-soon-card__sub">Mesoamerica</div></div>
+          <div class="lkp-soon-card"><span class="lkp-soon-card__emoji">🗿</span><div class="lkp-soon-card__name">Rapa Nui</div><div class="lkp-soon-card__sub">Easter Island</div></div>
+          <div class="lkp-soon-card" style="opacity:0.35;border-style:dashed"><span class="lkp-soon-card__emoji">✦</span><div class="lkp-soon-card__name">And More</div><div class="lkp-soon-card__sub">The weaving continues</div></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── ALOHA & MAʻAT COMPARISON ── -->
+    <section class="lkp-section lkp-section--bridge" id="bridge-compare">
+      <div class="lkp-container">
+
+        <div class="lkp-section-header lkp-reveal">
+          <div class="lkp-eyebrow">✦ The Living Connection ✦</div>
+          <h2 class="lkp-section-title">Aloha &amp; Maʻat —<br><em>Two Languages for One Truth</em></h2>
+          <p class="lkp-section-desc">
+            Developed independently, on opposite ends of the Earth, thousands of years apart —
+            yet structurally identical philosophical frameworks for what it means to be human.
+          </p>
+        </div>
+
+        <div class="lkp-bridge-grid lkp-reveal">
+
+          <div class="lkp-bridge-side lkp-bridge-side--kanaka">
+            <div class="lkp-bridge-side__header">
+              <img src="assets/images/kanaka.png" alt="Kānaka Maoli" class="lkp-bridge-icon" onerror="this.style.display='none'">
+              <div>
+                <div class="lkp-bridge-side__name">Aloha</div>
+                <div class="lkp-bridge-side__sub">The Hawaiian Way of Being</div>
+              </div>
+            </div>
+            <p class="lkp-bridge-side__desc">
+              <em>Alo</em> (presence) + <em>Hā</em> (breath of life) = the presence of the divine breath, shared.
+              Aloha is not a greeting — it is a complete ethical, relational, and spiritual operating system
+              for how a human being walks in the world.
+            </p>
+          </div>
+
+          <div class="lkp-bridge-connector">
+            <div class="lkp-bridge-connector__line"></div>
+            <div class="lkp-bridge-connector__glyph">↔</div>
+            <div class="lkp-bridge-connector__line"></div>
+          </div>
+
+          <div class="lkp-bridge-side lkp-bridge-side--kemet">
+            <div class="lkp-bridge-side__header">
+              <img src="assets/images/kemet.png" alt="Kemet" class="lkp-bridge-icon" onerror="this.style.display='none'">
+              <div>
+                <div class="lkp-bridge-side__name">Maʻat</div>
+                <div class="lkp-bridge-side__sub">The Kemetic Cosmic Order</div>
+              </div>
+            </div>
+            <p class="lkp-bridge-side__desc">
+              Truth, justice, balance, harmony — the organizing principle of the universe itself.
+              The stars move in Maʻat. The Nile floods in Maʻat. Every act of justice or cruelty
+              either sustains or threatens the cosmic order.
+            </p>
+          </div>
+
+        </div><!-- /lkp-bridge-grid -->
+
+        <!-- Comparison pairs -->
+        <div class="lkp-compare-pairs lkp-reveal">
+
+          <div class="lkp-compare-pair">
+            <div class="lkp-compare-col lkp-compare-col--kanaka">
+              <span class="lkp-compare-glyph" style="color:var(--emerald)">🌺</span>
+              <strong>Akahai</strong>
+              <em>Kindness — Tenderness in action</em>
+              <p>Strength expressed through gentleness. True power never needs to be cruel.</p>
+            </div>
+            <div class="lkp-compare-divider">✦</div>
+            <div class="lkp-compare-col lkp-compare-col--kemet">
+              <span class="lkp-compare-glyph" style="color:var(--gold)">☥</span>
+              <strong>Maʻat — Compassion</strong>
+              <em>Care for the suffering as divine duty</em>
+              <p>Feeding the hungry, clothing the naked — among the 42 Declarations. Kindness as cosmic law.</p>
+            </div>
+          </div>
+
+          <div class="lkp-compare-pair">
+            <div class="lkp-compare-col lkp-compare-col--kanaka">
+              <span class="lkp-compare-glyph" style="color:var(--emerald)">🌺</span>
+              <strong>Lōkahi</strong>
+              <em>Unity — Harmony through connectedness</em>
+              <p>Working in alignment with ʻohana and ʻāina. No one stands apart from the web of life.</p>
+            </div>
+            <div class="lkp-compare-divider">✦</div>
+            <div class="lkp-compare-col lkp-compare-col--kemet">
+              <span class="lkp-compare-glyph" style="color:var(--gold)">☥</span>
+              <strong>Maʻat — Cosmic Harmony</strong>
+              <em>The order that holds all things together</em>
+              <p>The Pharaoh's primary duty: uphold Maʻat. When the ruler fails, the cosmos tilts into Isfet.</p>
+            </div>
+          </div>
+
+          <div class="lkp-compare-pair">
+            <div class="lkp-compare-col lkp-compare-col--kanaka">
+              <span class="lkp-compare-glyph" style="color:var(--emerald)">🌺</span>
+              <strong>ʻOiaʻiʻo</strong>
+              <em>Truth &amp; Honesty — To live in truth</em>
+              <p>Unwavering integrity rooted in spirit. Truth is not situational — it is the ground you stand on.</p>
+            </div>
+            <div class="lkp-compare-divider">✦</div>
+            <div class="lkp-compare-col lkp-compare-col--kemet">
+              <span class="lkp-compare-glyph" style="color:var(--gold)">☥</span>
+              <strong>Maʻat — The Feather of Truth</strong>
+              <em>The measure of every human life</em>
+              <p>The heart is weighed against the Feather of Maʻat. A heart heavy with falsehood cannot pass.</p>
+            </div>
+          </div>
+
+          <div class="lkp-compare-pair">
+            <div class="lkp-compare-col lkp-compare-col--kanaka">
+              <span class="lkp-compare-glyph" style="color:var(--emerald)">🌺</span>
+              <strong>Mālama ʻĀina</strong>
+              <em>Stewardship — Care for the land</em>
+              <p>Not an environmental position. A spiritual obligation. The land is your ancestor.</p>
+            </div>
+            <div class="lkp-compare-divider">✦</div>
+            <div class="lkp-compare-col lkp-compare-col--kemet">
+              <span class="lkp-compare-glyph" style="color:var(--gold)">☥</span>
+              <strong>Maʻat — Stewardship of Creation</strong>
+              <em>"I have not stopped the flow of water"</em>
+              <p>Among the Declarations: interfering with natural systems is a moral violation. Earth is sacred trust.</p>
+            </div>
+          </div>
+
+        </div><!-- /lkp-compare-pairs -->
+
+        <div class="lkp-bridge-quote lkp-reveal">
+          <div class="lkp-bridge-quote__side">
+            <p>"Aloha is the intelligence with which we meet life."</p>
+            <cite>— Attributed to Aunty Pilahi Paki</cite>
+          </div>
+          <div class="lkp-bridge-quote__divider">✦</div>
+          <div class="lkp-bridge-quote__side">
+            <p>"Speak Maʻat. Do Maʻat. For she is mighty, she is great, she endures."</p>
+            <cite>— Kemetic inscription, Tomb of Rekhmire, c. 1425 BCE</cite>
+          </div>
+        </div>
+
+        <div style="text-align:center;margin-top:36px">
+          <a href="lessons.html#bridge" class="lkp-btn lkp-btn--secondary">
+            <i class="fas fa-arrows-left-right"></i> Explore The Bridge Lessons
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── NAVIGATE ──
+    <section class="lkp-section lkp-section--transparent" id="navigate">
+      <div class="lkp-container">
+
+        <div class="lkp-compass-explainer">
+          <div class="lkp-compass-visual lkp-reveal" aria-hidden="true">
+            <div class="lkp-compass-ring"></div>
+            <div class="lkp-compass-ring lkp-compass-ring--inner"></div>
+            <div class="lkp-compass-center">◈</div>
+          </div>
+
+          <div class="lkp-reveal">
+            <div class="lkp-eyebrow">How to Navigate</div>
+            <h2 class="lkp-section-title" style="text-align:left">The Star Navigation Map</h2>
+            <p style="font-family:var(--font-serif);font-size:16px;line-height:1.80;color:var(--muted);margin-bottom:20px">
+              Above, you are standing at the center of a celestial dome — the same vantage point
+              from which Hawaiian navigators read the stars. Knowledge concepts appear as luminous
+              crystal prisms at their positions across the sky.
+            </p>
+            <p style="font-family:var(--font-serif);font-size:16px;line-height:1.80;color:var(--muted);margin-bottom:24px">
+              The 32-house Hawaiian star compass is rendered below the horizon — the same navigation
+              instrument that guided Hōkūleʻa across 2,500 miles of open ocean. Cultural territories
+              glow with their characteristic light: emerald for Kānaka Maoli, gold for Kemet,
+              violet for the Bridge between them.
+            </p>
+            <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--muted)">
+              <li><span style="color:var(--gold);margin-right:8px">◈</span> Drag to rotate the sky — the dome turns around you</li>
+              <li><span style="color:var(--gold);margin-right:8px">◈</span> Scroll wheel or pinch to zoom in and out</li>
+              <li><span style="color:var(--gold);margin-right:8px">◈</span> Hover a crystal node to identify the concept</li>
+              <li><span style="color:var(--gold);margin-right:8px">◈</span> Double-click a node to zoom into it</li>
+              <li><span style="color:var(--gold);margin-right:8px">◈</span> Single-click to navigate to that lesson</li>
+              <li><span style="color:var(--gold);margin-right:8px">◈</span> Double-click empty sky to zoom back out</li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── ECOSYSTEM ── -->
+    <section class="lkp-section" id="ecosystem">
+      <div class="lkp-container">
+        <div class="lkp-section-header lkp-reveal">
+          <div class="lkp-eyebrow">✦ Connected Platforms ✦</div>
+          <h2 class="lkp-section-title">Part of the <em>Ikeverse Ecosystem</em></h2>
+          <p class="lkp-section-desc">Each platform is a portal into a different dimension of knowledge, creativity, and community — all woven together in the Ikeverse.</p>
+        </div>
+
+        <div class="lkp-eco-grid lkp-reveal">
+
+          <a href="https://808cryptobeast.github.io/ikehub/" class="lkp-eco-card" target="_blank" rel="noopener">
+            <div class="lkp-eco-card__icon-wrap lkp-eco-card__icon-wrap--cyan">
+              <img src="assets/images/ikehub.png" alt="IkeHub" class="lkp-eco-card__img"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="lkp-eco-card__icon-fb" style="display:none">⬡</div>
+            </div>
+            <div class="lkp-eco-card__body">
+              <div class="lkp-eco-card__name" style="color:var(--cyan)">IkeHub</div>
+              <div class="lkp-eco-card__desc">The Ikeverse portal hub — gateway to all platforms in the living knowledge universe.</div>
+              <div class="lkp-eco-card__arrow">Visit →</div>
+            </div>
+          </a>
+
+          <a href="https://808cryptobeast.github.io/Ikestar/" class="lkp-eco-card" target="_blank" rel="noopener">
+            <div class="lkp-eco-card__icon-wrap lkp-eco-card__icon-wrap--cyan">
+              <img src="assets/images/ikestar.png" alt="IkeStar" class="lkp-eco-card__img"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="lkp-eco-card__icon-fb" style="display:none">⭐</div>
+            </div>
+            <div class="lkp-eco-card__body">
+              <div class="lkp-eco-card__name" style="color:var(--cyan)">IkeStar</div>
+              <div class="lkp-eco-card__desc">Celestial observatory — cultural astronomy, star navigation, and sky knowledge across traditions.</div>
+              <div class="lkp-eco-card__arrow">Explore →</div>
+            </div>
+          </a>
+
+          <a href="https://808cryptobeast.github.io/Ikeverse/" class="lkp-eco-card" target="_blank" rel="noopener">
+            <div class="lkp-eco-card__icon-wrap lkp-eco-card__icon-wrap--violet">
+              <img src="assets/images/cosmic-weave.png" alt="Cosmic Weave" class="lkp-eco-card__img"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="lkp-eco-card__icon-fb" style="display:none">🌌</div>
+            </div>
+            <div class="lkp-eco-card__body">
+              <div class="lkp-eco-card__name" style="color:var(--violet)">Cosmic Weave</div>
+              <div class="lkp-eco-card__desc">Symbolic systems, worldbuilding, and cosmic cosmology — where myth becomes living map.</div>
+              <div class="lkp-eco-card__arrow">Enter →</div>
+            </div>
+          </a>
+
+          <a href="https://808cryptobeast.github.io/culturalverse/" class="lkp-eco-card" target="_blank" rel="noopener">
+            <div class="lkp-eco-card__icon-wrap lkp-eco-card__icon-wrap--emerald">
+              <img src="assets/images/kanaka.png" alt="Culturalverse" class="lkp-eco-card__img"
+                   onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+              <div class="lkp-eco-card__icon-fb" style="display:none">🌿</div>
+            </div>
+            <div class="lkp-eco-card__body">
+              <div class="lkp-eco-card__name" style="color:var(--emerald)">Culturalverse</div>
+              <div class="lkp-eco-card__desc">The full cultural learning universe — deep dives into heritage, cosmology, and ancestral story.</div>
+              <div class="lkp-eco-card__arrow">Discover →</div>
+            </div>
+          </a>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FOOTER ── -->
+    <footer class="lkp-footer">
+      <div class="lkp-footer__inner">
+        <div>
+          <a href="index.html" class="lkp-footer__logo">◈ Living Knowledge Platform</a>
+          <p class="lkp-footer__desc">
+            Part of the Ikeverse ecosystem. Indigenous knowledge presented with cultural respect,
+            careful sourcing, and the understanding that these traditions belong to living communities.
+            Approach with Aloha.
+          </p>
+        </div>
+        <div class="lkp-footer__col">
+          <h4>Cultures</h4>
+          <ul>
+            <li><a href="#kanaka">🌺 Kānaka Maoli</a></li>
+            <li><a href="#kemet">☥ Kemet</a></li>
+            <li><a href="#bridge">🌐 The Bridge</a></li>
+            <li><a href="#cultures" style="opacity:0.45">🌏 Dreamtime — Soon</a></li>
+          </ul>
+        </div>
+        <div class="lkp-footer__col">
+          <h4>Learn</h4>
+          <ul>
+            <li><a href="lessons.html">📖 Deep Lessons</a></li>
+            <li><a href="lessons.html#bridge">🌐 The Bridge</a></li>
+            <li><a href="https://808cryptobeast.github.io/ikehub/">⬡ IkeHub</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="lkp-footer__bottom">
+        <p>© <span id="year"></span> Ikeverse (Proprietary).
+          Cultural knowledge is presented with respect for source communities.
+          These traditions belong to living peoples — approach with Aloha.</p>
+        <p style="opacity:0.4;font-family:var(--font-mono);font-size:10px">LKP · v1.0</p>
+      </div>
+    </footer>
+
+  </div><!-- /lkp-page -->
+
+  <script>
+    /* Mobile nav */
+    var mobileBtn  = document.getElementById("lkpMobileToggle");
+    var navLinks   = document.getElementById("lkpNavLinks");
+    if (mobileBtn && navLinks) {
+      mobileBtn.addEventListener("click", function() {
+        var open = navLinks.classList.toggle("is-open");
+        mobileBtn.classList.toggle("is-open", open);
+        mobileBtn.setAttribute("aria-expanded", open);
+      });
+      document.addEventListener("click", function(e) {
+        if (!e.target.closest("#lkpNavLinks") && !e.target.closest("#lkpMobileToggle")) {
+          navLinks.classList.remove("is-open");
+          mobileBtn.classList.remove("is-open");
+        }
+      });
+    }
+
+    /* Year */
+    var yr = document.getElementById("year");
+    if (yr) yr.textContent = new Date().getFullYear();
+
+    /* Scroll reveal */
+    if ("IntersectionObserver" in window) {
+      var obs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e, i) {
+          if (e.isIntersecting) {
+            setTimeout(function() { e.target.classList.add("is-visible"); }, i * 70);
+            obs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.07 });
+      document.querySelectorAll(".lkp-reveal").forEach(function(el) { obs.observe(el); });
+    } else {
+      document.querySelectorAll(".lkp-reveal").forEach(function(el) { el.classList.add("is-visible"); });
+    }
+
+    /* Nav active on scroll */
+    var sections = document.querySelectorAll("section[id]");
+    if ("IntersectionObserver" in window) {
+      var navObs = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (!e.isIntersecting) return;
+          document.querySelectorAll(".lkp-nav__link").forEach(function(l) {
+            l.classList.toggle("is-active", l.getAttribute("href") === "#" + e.target.id);
+          });
+        });
+      }, { rootMargin: "-40% 0px -55% 0px" });
+      sections.forEach(function(s) { navObs.observe(s); });
+    }
+
+    /* Smooth anchor scroll */
+    document.querySelectorAll("a[href^='#']").forEach(function(a) {
+      a.addEventListener("click", function(e) {
+        var id = a.getAttribute("href").slice(1);
+        var target = document.getElementById(id);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

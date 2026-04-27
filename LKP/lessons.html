@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Deep Lessons — Culturalverse | Ikeverse</title>
+  <meta name="description" content="Deep reading lessons for Kānaka Maoli, Kemet, and the cross-cultural bridges between them." />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="culturalverse/css/culturalverse.css" />
+  <link rel="stylesheet" href="culturalverse/css/culturalverse-lessons.css" />
+  <link rel="stylesheet" href="culturalverse/css/culturalverse-additions.css" />
+
+  <style>
+    /* ═══════════════════════════════════════════════════
+       NEW COMPONENT STYLES — Laʻau Lapaʻau + Aloha/Maʻat
+       Added for: km-laau, ke-medicine, bridge-aloha-maat
+    ═══════════════════════════════════════════════════ */
+
+    /* ── Plant grid (Laʻau Lapaʻau lesson) ── */
+    .cv-plant-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    @media (max-width: 768px) {
+      .cv-plant-grid { grid-template-columns: 1fr; }
+    }
+
+    .cv-plant-card {
+      border: 1px solid rgba(60, 179, 113, 0.22);
+      border-radius: 12px;
+      padding: 1.25rem;
+      background: rgba(60, 179, 113, 0.04);
+      transition: border-color 0.2s;
+    }
+
+    .cv-plant-card:hover {
+      border-color: rgba(60, 179, 113, 0.4);
+    }
+
+    .cv-plant-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--emerald, #3cb371);
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+
+    .cv-plant-latin {
+      font-size: 0.78rem;
+      font-style: italic;
+      font-weight: 400;
+      opacity: 0.65;
+      display: block;
+      margin-top: 3px;
+    }
+
+    .cv-plant-body p {
+      font-size: 0.88rem;
+      line-height: 1.75;
+      color: var(--text-2, rgba(255,255,255,0.72));
+      margin: 0;
+    }
+
+    /* ── Card grid (Kemet medicine papyri) ── */
+    .cv-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+
+    @media (max-width: 768px) {
+      .cv-card-grid { grid-template-columns: 1fr; }
+    }
+
+    .cv-info-card {
+      border-radius: 12px;
+      padding: 1.25rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+    }
+
+    .cv-info-card--gold {
+      border-color: rgba(240, 201, 106, 0.25);
+      background: rgba(240, 201, 106, 0.04);
+    }
+
+    .cv-info-card__title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--gold, #f0c96a);
+      margin-bottom: 4px;
+    }
+
+    .cv-info-card__subtitle {
+      font-size: 0.75rem;
+      color: rgba(240, 201, 106, 0.55);
+      font-style: italic;
+      margin-bottom: 0.75rem;
+    }
+
+    .cv-info-card p {
+      font-size: 0.87rem;
+      line-height: 1.75;
+      color: var(--text-2, rgba(255,255,255,0.72));
+      margin: 0;
+    }
+
+    /* ── Bridge quote block (Aloha & Maʻat) ── */
+    .cv-bridge-quote {
+      display: flex;
+      align-items: flex-start;
+      gap: 2rem;
+      margin-top: 2rem;
+      padding: 1.5rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      flex-wrap: wrap;
+    }
+
+    .cv-bridge-quote__hawaii,
+    .cv-bridge-quote__kemet {
+      flex: 1;
+      min-width: 200px;
+      font-style: italic;
+      line-height: 1.8;
+      font-size: 0.92rem;
+      opacity: 0.85;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .cv-bridge-quote__attr {
+      font-style: normal;
+      font-size: 0.75rem;
+      opacity: 0.55;
+      margin-top: 0.5rem;
+      display: block;
+      font-family: 'Space Mono', monospace;
+      letter-spacing: 0.02em;
+    }
+
+    .cv-bridge-quote__divider {
+      font-size: 1.5rem;
+      opacity: 0.25;
+      flex-shrink: 0;
+      padding-top: 0.25rem;
+    }
+
+    /* ── Gold heading variant (Kemet lessons) ── */
+    .cv-heading--gold {
+      color: var(--gold, #f0c96a);
+      border-left-color: var(--gold, #f0c96a);
+    }
+
+    /* ── Gold callout variant ── */
+    .cv-callout--gold {
+      border-left-color: var(--gold, #f0c96a);
+      background: rgba(240, 201, 106, 0.05);
+    }
+
+    /* ── Sources block ── */
+    .cv-sources {
+      margin-top: 2rem;
+      padding: 1.25rem;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.07);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .cv-sources__label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.45;
+      margin-bottom: 0.75rem;
+    }
+
+    .cv-sources ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .cv-sources li {
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: var(--text-2, rgba(255,255,255,0.65));
+    }
+
+    .cv-sources a {
+      color: var(--emerald, #3cb371);
+      text-decoration: none;
+    }
+
+    .cv-sources a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── cv-list (shared) ── */
+    .cv-list {
+      padding-left: 1.25rem;
+      margin: 0.75rem 0 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .cv-list li {
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: var(--text-2, rgba(255,255,255,0.75));
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="starfield" aria-hidden="true"></canvas>
+  <div class="progress-bar" aria-hidden="true">
+    <div class="progress-bar__fill" id="progressFill"></div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="cv-nav" id="cvNav">
+    <div class="cv-nav__inner">
+      <a class="cv-nav__brand" href="culturalverse.html">
+        <span>🌿</span>
+        <span class="cv-nav__brand-text">Culturalverse</span>
+      </a>
+      <ul class="cv-nav__links" id="cvNavLinks">
+        <li class="cv-nav__item has-dropdown">
+          <button class="cv-nav__btn" type="button">Cultures <span class="cv-caret">▾</span></button>
+          <div class="cv-dropdown">
+            <div class="cv-dropdown__col">
+              <span class="cv-dropdown__heading">Available Now</span>
+              <a href="#" data-filter="kanaka" class="cv-dd-link cv-filter-btn"><span>🌺</span><div><strong>Kānaka Maoli</strong><small>Hawaiian Indigenous Knowledge</small></div></a>
+              <a href="#" data-filter="kemet" class="cv-dd-link cv-filter-btn"><span>☥</span><div><strong>Kemet</strong><small>Ancient Egyptian Wisdom</small></div></a>
+              <a href="#" data-filter="bridge" class="cv-dd-link cv-filter-btn"><span>🌐</span><div><strong>The Bridge</strong><small>Cross-Cultural Connections</small></div></a>
+            </div>
+            <div class="cv-dropdown__col cv-dropdown__col--soon">
+              <span class="cv-dropdown__heading">Coming Soon</span>
+              <a href="#" class="cv-dd-link cv-dd-link--soon"><span>🌏</span><div><strong>Dreamtime</strong><small>Aboriginal Australia</small></div></a>
+              <a href="#" class="cv-dd-link cv-dd-link--soon"><span>🪘</span><div><strong>Dogon</strong><small>West Africa · Mali</small></div></a>
+              <a href="#" class="cv-dd-link cv-dd-link--soon"><span>🕉️</span><div><strong>Vedic</strong><small>Ancient India</small></div></a>
+            </div>
+          </div>
+        </li>
+        <li class="cv-nav__item has-dropdown">
+          <button class="cv-nav__btn" type="button">Learn <span class="cv-caret">▾</span></button>
+          <div class="cv-dropdown cv-dropdown--narrow">
+            <span class="cv-dropdown__heading">Learning Tools</span>
+            <a href="index.html" class="cv-dd-link"><span>🕸️</span><div><strong>Living Knowledge Matrix</strong><small>Interconnected map</small></div></a>
+            <a href="culturalverse-lessons.html" class="cv-dd-link"><span>📖</span><div><strong>Deep Lessons</strong><small>You are here</small></div></a>
+            <a href="culturalverse-bridge.html" class="cv-dd-link"><span>🌐</span><div><strong>The Bridge</strong><small>Cross-cultural connections</small></div></a>
+          </div>
+        </li>
+        <li class="cv-nav__item has-dropdown">
+          <button class="cv-nav__btn" type="button">Ecosystem <span class="cv-caret">▾</span></button>
+          <div class="cv-dropdown cv-dropdown--narrow">
+            <span class="cv-dropdown__heading">Pikoverse Platforms</span>
+            <a href="https://pikoverse.xyz" target="_blank" rel="noopener" class="cv-dd-link"><span>🌐</span><div><strong>Pikoverse</strong><small>The gateway ecosystem</small></div></a>
+            <a href="digitalverse/index.html" class="cv-dd-link"><span>💎</span><div><strong>DigitalVerse</strong><small>Blockchain learning</small></div></a>
+            <a href="https://808cryptobeast.github.io/NaluLF/" target="_blank" rel="noopener" class="cv-dd-link"><span>🔍</span><div><strong>NaluLF</strong><small>Ledger forensics</small></div></a>
+            <a href="https://pikoverse.xyz/marketplace/index.html" target="_blank" rel="noopener" class="cv-dd-link"><span>🛍️</span><div><strong>AMP Marketplace</strong></div></a>
+          </div>
+        </li>
+      </ul>
+      <div class="cv-nav__actions">
+        <a href="index.html" class="cv-nav__matrix-btn" title="Living Knowledge Matrix">
+          <i class="fas fa-network-wired"></i><span>Matrix</span>
+        </a>
+        <button class="cv-nav__profile-btn" id="cvProfileToggle" title="Your Pikoverse Journey">
+          <img id="cvNavAvatarSmall" src="" alt="" style="display:none;width:20px;height:20px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(60,179,113,.5);">
+          <i class="fas fa-circle-user" id="cvNavProfileIcon"></i>
+          <span id="cvNavProfileName">Profile</span>
+        </button>
+        <button class="cv-nav__mobile-btn" id="cvMobileToggle" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PROFILE PANEL -->
+  <div class="cv-profile-bg" id="cvProfileBg"></div>
+  <aside class="cv-profile" id="cvProfile" aria-hidden="true">
+
+    <div class="cv-profile__header">
+      <h3>Your Journey</h3>
+      <button id="cvProfileClose" aria-label="Close"><i class="fas fa-times"></i></button>
+    </div>
+
+    <div class="cv-profile__user">
+      <div class="cv-profile__avatar" id="cvProfileAvatar">
+        <i class="fas fa-circle-user"></i>
+      </div>
+      <div>
+        <span class="cv-profile__name" id="cvProfileName">Aloha, Explorer</span>
+        <span class="cv-profile__level" id="cvProfileLevel">Cultural Learner</span>
+      </div>
+    </div>
+
+    <!-- Sync banner -->
+    <div class="cv-sync-banner" id="cvSyncBanner">
+      <span class="cv-sync-dot"></span>
+      <span id="cvSyncMsg">Sign in at Pikoverse to sync progress</span>
+    </div>
+
+    <!-- Mana bar -->
+    <div class="cv-profile__mana">
+      <div class="cv-profile__mana-row">
+        <span>Mana</span>
+        <span id="manaDisplay">0 Mana</span>
+      </div>
+      <div class="cv-profile__mana-track">
+        <div class="cv-profile__mana-fill" id="manaFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Learning stats -->
+    <div class="cv-profile__group">
+      <span class="cv-profile__group-label">My Learning</span>
+      <div class="cv-profile__link">
+        <i class="fas fa-book-open"></i>Lessons Completed
+        <span class="cv-profile__badge" id="completedCount">0</span>
+      </div>
+      <div class="cv-profile__link">
+        <i class="fas fa-globe"></i>Cultures Studied
+        <span class="cv-profile__badge" id="culturesCount">0</span>
+      </div>
+      <a href="index.html" class="cv-profile__link">
+        <i class="fas fa-network-wired"></i>Living Knowledge Matrix
+      </a>
+    </div>
+
+    <!-- Achievements -->
+    <div class="cv-profile__group">
+      <span class="cv-profile__group-label">Achievements</span>
+      <div class="cv-achievements-list" id="cvAchievementsList">
+        <div class="cv-ach-item"><span class="cv-ach-icon">🌱</span><div><strong>First Step</strong><small>Complete your first lesson</small></div></div>
+        <div class="cv-ach-item"><span class="cv-ach-icon">🌺</span><div><strong>Kānaka Scholar</strong><small>Complete all Kānaka Maoli lessons</small></div></div>
+        <div class="cv-ach-item"><span class="cv-ach-icon">☥</span><div><strong>Kemetic Scholar</strong><small>Complete all Kemet lessons</small></div></div>
+        <div class="cv-ach-item"><span class="cv-ach-icon">🌐</span><div><strong>Bridge Walker</strong><small>Complete all Bridge lessons</small></div></div>
+        <div class="cv-ach-item"><span class="cv-ach-icon">✦</span><div><strong>Knowledge Weaver</strong><small>Complete all lessons</small></div></div>
+      </div>
+    </div>
+
+    <!-- Pikoverse connected state (hidden until signed in) -->
+    <div class="cv-profile__group" id="cvSyncInfo" style="display:none">
+      <span class="cv-profile__group-label">Pikoverse Connected</span>
+      <a href="https://pikoverse.xyz/profile.html" target="_blank" rel="noopener"
+         class="cv-profile__link cv-profile__link--gold" id="cvPikoProfileLink">
+        <i class="fas fa-user-astronaut"></i>
+        <span id="cvPikoLinkLabel">My Pikoverse Profile</span>
+        <i class="fas fa-arrow-up-right-from-square" style="font-size:9px;margin-left:auto;opacity:.5"></i>
+      </a>
+      <div class="cv-profile__link" style="font-size:11px;opacity:.6">
+        <i class="fas fa-rotate" style="font-size:10px"></i>
+        <span id="cvSyncStatus">Synced with Pikoverse ✓</span>
+      </div>
+    </div>
+
+    <!-- Sign-in prompt (shown when not logged in) -->
+    <div class="cv-profile__group" id="cvProfileSignIn">
+      <span class="cv-profile__group-label">Sync Your Progress</span>
+      <p style="font-size:12px;color:var(--text-3);line-height:1.6;padding:0 10px 10px;margin:0">
+        Sign in through Pikoverse to keep your completed lessons and mana synced across all devices.
+      </p>
+      <a href="https://pikoverse.xyz/profile.html" target="_blank" rel="noopener"
+         class="cv-profile__link" style="color:var(--emerald);font-weight:700">
+        <i class="fas fa-user-astronaut"></i>Sign In via Pikoverse →
+      </a>
+    </div>
+
+    <!-- Ecosystem links -->
+    <div class="cv-profile__group">
+      <span class="cv-profile__group-label">Connected Platforms</span>
+      <a href="digitalverse/index.html" class="cv-profile__link cv-profile__link--cyan">
+        <i class="fas fa-cube"></i>DigitalVerse<span class="cv-profile__dot cv-profile__dot--cyan"></span>
+      </a>
+      <a href="https://pikoverse.xyz/marketplace/index.html" target="_blank" rel="noopener"
+         class="cv-profile__link cv-profile__link--gold">
+        <i class="fas fa-store"></i>AMP Marketplace<span class="cv-profile__dot cv-profile__dot--gold"></span>
+      </a>
+      <a href="https://808cryptobeast.github.io/NaluLF/" target="_blank" rel="noopener"
+         class="cv-profile__link cv-profile__link--blue">
+        <i class="fas fa-shield-halved"></i>NaluLF<span class="cv-profile__dot cv-profile__dot--blue"></span>
+      </a>
+    </div>
+
+  </aside>
+
+  <!-- MAIN LAYOUT -->
+  <div class="cv-lessons-layout">
+
+    <aside class="cv-sidebar" id="cvSidebar">
+      <div class="cv-sidebar__header">
+        <a href="culturalverse.html" class="cv-sidebar__back">← Culturalverse</a>
+        <h2 class="cv-sidebar__title">Deep Lessons</h2>
+        <div class="cv-sidebar__filters" id="cultureFilters"></div>
+      </div>
+      <div class="cv-sidebar__tree" id="lessonTree"></div>
+    </aside>
+
+    <main class="cv-lesson-main" id="lessonMain">
+
+      <div class="cv-lesson-welcome" id="lessonWelcome">
+        <div class="cv-lesson-welcome__inner">
+          <span class="cv-lesson-welcome__glyph">📖</span>
+          <h2>Select a Lesson</h2>
+          <p>Choose a culture and lesson from the sidebar to begin reading.<br>
+             Each lesson is a deep, factual exploration of indigenous knowledge.</p>
+          <div class="cv-lesson-welcome__cultures" id="welcomeCultures"></div>
+        </div>
+      </div>
+
+      <article class="cv-lesson-article" id="lessonArticle" hidden>
+        <div class="cv-lesson-article__header" id="lessonHeader"></div>
+        <div class="cv-lesson-article__body" id="lessonBody"></div>
+        <div class="cv-lesson-article__nav" id="lessonNav"></div>
+      </article>
+
+    </main>
+  </div>
+
+  <button class="cv-sidebar-fab" id="cvSidebarFab" aria-label="Open lesson list">
+    <i class="fas fa-list"></i>
+  </button>
+
+  <footer class="cv-footer" style="margin-top:0;">
+    <div class="cv-container">
+      <div class="cv-footer__bottom">
+        <p>© <span id="year"></span> Ikeverse (Proprietary).
+           Cultural knowledge presented with respect for source communities.
+           These traditions belong to living peoples — approach with Aloha.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts — order matters -->
+  <script src="culturalverse/js/culturalverse-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://pikoverse.xyz/js/supabase-client.js"></script>
+  <script src="culturalverse/js/culturalverse.js"></script>
+  <script src="culturalverse/js/culturalverse-lessons.js"></script>
+  <script src="culturalverse/js/culturalverse-profile.js"></script>
+
+</body>
+</html>
