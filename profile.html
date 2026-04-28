@@ -8,402 +8,751 @@
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   />
 
-  <title>Pikoverse Profile | Wayfinder Passport</title>
+  <title>The Living Knowledge Platform | Wayfinder Passport</title>
 
   <meta
     name="description"
-    content="Your Pikoverse Wayfinder Passport — one profile across Pikoverse, Ikeverse, Digitalverse, Culturalverse, and the Living Knowledge Platform."
+    content="The Living Knowledge Platform Wayfinder Passport. Track lessons, Mana rewards, badges, certificates, and future XRPL-ready proof-of-learning records."
   />
 
-  <meta name="theme-color" content="#01030a" />
+  <meta
+    name="keywords"
+    content="Living Knowledge Platform profile, Wayfinder Passport, LKP rewards, Mana rewards, Ikeverse profile, XRPL learning rewards, proof of learning"
+  />
 
+  <meta name="robots" content="noindex, follow" />
+  <meta name="author" content="The Living Knowledge Platform" />
+  <meta name="theme-color" content="#070b14" />
+  <meta name="color-scheme" content="dark" />
+
+  <link rel="canonical" href="https://www.pikoverse.xyz/profile.html" />
+
+  <!-- Icons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="LKP/assets/images/LKP-2.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="LKP/assets/images/LKP-2.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="LKP/assets/images/LKP-2.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="LKP/assets/images/LKP-2.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="LKP/assets/images/LKP-2.png" />
+  <link rel="shortcut icon" href="LKP/assets/images/LKP-2.png" />
+  <link rel="manifest" href="site.webmanifest" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="profile" />
+  <meta property="og:title" content="The Living Knowledge Platform | Wayfinder Passport" />
+  <meta
+    property="og:description"
+    content="Track your learning path, Mana rewards, badges, certificates, and future XRPL-ready proof-of-learning records."
+  />
+  <meta property="og:url" content="https://www.pikoverse.xyz/profile.html" />
+  <meta property="og:image" content="https://www.pikoverse.xyz/LKP/assets/images/LKP-2.png" />
+  <meta property="og:image:alt" content="The Living Knowledge Platform profile icon" />
+  <meta property="og:site_name" content="The Living Knowledge Platform" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="The Living Knowledge Platform | Wayfinder Passport" />
+  <meta
+    name="twitter:description"
+    content="Track your learning path, Mana rewards, badges, certificates, and future XRPL-ready proof-of-learning records."
+  />
+  <meta name="twitter:image" content="https://www.pikoverse.xyz/LKP/assets/images/LKP-2.png" />
+  <meta name="twitter:image:alt" content="The Living Knowledge Platform profile icon" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
   <link
-    href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;700;900&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;700;900&display=swap"
     rel="stylesheet"
   />
 
+  <!-- CSS -->
+  <link rel="stylesheet" href="LKP/css/lkp-brand.css" />
   <link rel="stylesheet" href="LKP/css/profile.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Optional Supabase library. Safe to keep even before keys are configured. -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Data / rewards / profile logic -->
   <script defer src="LKP/js/lkp-data.js"></script>
+  <script defer src="LKP/js/lkp-rewards.js"></script>
   <script defer src="LKP/js/profile.js"></script>
 </head>
 
-<body>
-  <div class="piko-passport-app">
+<body class="profile-page">
 
-    <!-- Three.js identity constellation -->
-    <canvas
-      id="profileGalaxy"
-      class="profile-galaxy"
-      aria-hidden="true"
-    ></canvas>
+  <!-- Background canvas for profile galaxy / future Three.js profile visual -->
+  <canvas id="profileGalaxyCanvas" class="profile-galaxy-canvas" aria-hidden="true"></canvas>
 
-    <div class="profile-atmosphere" aria-hidden="true"></div>
-    <div class="profile-noise" aria-hidden="true"></div>
+  <div class="profile-bg" aria-hidden="true">
+    <div class="profile-bg__nebula profile-bg__nebula--one"></div>
+    <div class="profile-bg__nebula profile-bg__nebula--two"></div>
+    <div class="profile-bg__grid"></div>
+  </div>
 
-    <div class="profile-orb profile-orb--gold" aria-hidden="true"></div>
-    <div class="profile-orb profile-orb--cyan" aria-hidden="true"></div>
-    <div class="profile-orb profile-orb--violet" aria-hidden="true"></div>
+  <!-- Toast -->
+  <div id="profileToast" class="profile-toast" role="status" aria-live="polite"></div>
 
-    <!-- Header -->
-    <header class="profile-header">
-      <a href="index.html" class="profile-brand" aria-label="Return to Pikoverse home">
-        <span class="profile-brand__sigil">◈</span>
-        <span class="profile-brand__text">
-          <strong>Pikoverse</strong>
-          <small>Wayfinder Passport</small>
-        </span>
+  <!-- Top nav -->
+  <header class="profile-topbar">
+    <a href="index.html" class="profile-brand" aria-label="Return to The Living Knowledge Platform home">
+      <img
+        class="profile-brand__logo"
+        src="LKP/assets/images/LKP-2.png"
+        alt="The Living Knowledge Platform"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='grid';"
+      />
+
+      <span class="profile-brand__sigil" style="display:none;">◈</span>
+
+      <span class="profile-brand__text">
+        <strong>The Living Knowledge Platform</strong>
+        <small>Wayfinder Passport</small>
+      </span>
+    </a>
+
+    <nav class="profile-topbar__links" aria-label="Profile navigation">
+      <a href="index.html">
+        <i class="fas fa-house"></i>
+        Home
       </a>
 
-      <nav class="profile-header-nav" aria-label="Ecosystem navigation">
-        <a href="index.html">Pikoverse</a>
-        <a href="lessons.html">Lessons</a>
-        <a href="https://808cryptobeast.github.io/ikehub/" target="_blank" rel="noopener">IkeHub</a>
-        <a href="https://808cryptobeast.github.io/Ikestar/" target="_blank" rel="noopener">IkeStar</a>
-      </nav>
+      <a href="lessons.html">
+        <i class="fas fa-book-open"></i>
+        Lessons
+      </a>
 
-      <div class="profile-header-actions">
-        <button id="profileSyncBtn" class="profile-header-btn" type="button">
-          Sync
-        </button>
+      <a href="#rewards">
+        <i class="fas fa-gem"></i>
+        Rewards
+      </a>
 
-        <button id="profileSignOutBtn" class="profile-header-btn is-hidden" type="button">
-          Sign Out
-        </button>
-      </div>
-    </header>
-
-    <!-- Mobile quick dock -->
-    <nav class="profile-mobile-dock" aria-label="Profile quick navigation">
-      <a href="#passport">Passport</a>
-      <a href="#access">Access</a>
-      <a href="#edit">Edit</a>
-      <a href="#path">Path</a>
-      <a href="#ecosystem">Links</a>
+      <button id="profileSignOutBtn" class="profile-topbar__button is-hidden" type="button">
+        <i class="fas fa-right-from-bracket"></i>
+        Sign Out
+      </button>
     </nav>
+  </header>
 
-    <main class="profile-main">
+  <!-- Mobile dock -->
+  <nav class="profile-mobile-dock" aria-label="Profile mobile navigation">
+    <a href="#passport">Passport</a>
+    <a href="#access">Access</a>
+    <a href="#rewards">Rewards</a>
+    <a href="#path">Path</a>
+    <a href="#ecosystem">Links</a>
+  </nav>
 
-      <!-- Hero -->
-      <section class="profile-hero" id="passport">
-        <div class="profile-eyebrow">
-          Shared Identity Across The Ecosystem
-        </div>
+  <main class="profile-shell">
 
-        <h1>
-          Wayfinder<br />
-          <em>Passport</em>
-        </h1>
+    <!-- HERO -->
+    <section class="profile-hero" id="top">
+      <div class="profile-hero__icon-wrap">
+        <img
+          src="LKP/assets/images/LKP-2.png"
+          alt="The Living Knowledge Platform"
+          class="profile-hero__icon"
+          onerror="this.style.display='none';"
+        />
+        <div class="profile-hero__ring"></div>
+      </div>
 
+      <div class="profile-hero__copy">
+        <span class="profile-eyebrow">Ka Paepae 'Ike Ola</span>
+        <h1>The Wayfinder Passport</h1>
         <p>
-          One living profile for Pikoverse, Ikeverse, Digitalverse, Culturalverse,
-          IkeHub, IkeStar, and the Living Knowledge Platform. Your profile is not
-          just a login — it is your constellation of progress, access, identity,
-          learning, and creative control.
+          One living profile for The Living Knowledge Platform, Ikeverse, Digitalverse,
+          Culturalverse, IkeHub, IkeStar, and the wider knowledge ecosystem.
         </p>
+      </div>
+    </section>
 
-        <div class="profile-hero-actions">
-          <button class="profile-main-btn" type="button" data-scroll-target="#access">
-            Sign In / Create Profile
-          </button>
+    <!-- AUTH / PROFILE LAYOUT -->
+    <div class="profile-layout">
 
-          <button class="profile-main-btn profile-main-btn--ghost" type="button" data-scroll-target="#path">
-            View Learning Path
-          </button>
-
-          <a class="profile-main-btn profile-main-btn--deep" href="lessons.html">
-            Open Lessons
-          </a>
+      <!-- AUTH CARD -->
+      <aside class="profile-auth-card" id="authPanel">
+        <div class="profile-card-head">
+          <span class="profile-card-icon">◈</span>
+          <div>
+            <h2>Enter Your Passport</h2>
+            <p>Sign in or create your learning profile.</p>
+          </div>
         </div>
-      </section>
 
-      <!-- Dashboard layout -->
-      <section class="profile-grid">
+        <div class="profile-auth-tabs" role="tablist" aria-label="Authentication tabs">
+          <button class="profile-auth-tab is-active" data-auth-tab="signin" type="button">Sign In</button>
+          <button class="profile-auth-tab" data-auth-tab="signup" type="button">Create</button>
+        </div>
+
+        <!-- Sign in -->
+        <form class="profile-auth-form is-active" id="signinForm" data-auth-panel="signin">
+          <label for="signinEmail">Email</label>
+          <input
+            id="signinEmail"
+            name="email"
+            type="email"
+            autocomplete="email"
+            placeholder="you@email.com"
+          />
+
+          <label for="signinPassword">Password</label>
+          <input
+            id="signinPassword"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Your password"
+          />
+
+          <button id="signinBtn" class="profile-main-btn" type="button">
+            <i class="fas fa-user-astronaut"></i>
+            Sign In
+          </button>
+
+          <button id="forgotPasswordBtn" class="profile-text-btn" type="button">
+            Forgot password?
+          </button>
+
+          <p class="profile-form-status" id="signinStatus" hidden></p>
+        </form>
+
+        <!-- Sign up -->
+        <form class="profile-auth-form" id="signupForm" data-auth-panel="signup">
+          <label for="signupDisplayName">Display Name</label>
+          <input
+            id="signupDisplayName"
+            name="displayName"
+            type="text"
+            autocomplete="name"
+            placeholder="Wayfinder name"
+          />
+
+          <label for="signupHandle">Handle</label>
+          <input
+            id="signupHandle"
+            name="handle"
+            type="text"
+            autocomplete="username"
+            placeholder="your-handle"
+          />
+          <small id="handleStatus" class="profile-field-note"></small>
+
+          <label for="signupEmail">Email</label>
+          <input
+            id="signupEmail"
+            name="email"
+            type="email"
+            autocomplete="email"
+            placeholder="you@email.com"
+          />
+
+          <label for="signupPassword">Password</label>
+          <input
+            id="signupPassword"
+            name="password"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Minimum 8 characters"
+          />
+
+          <button id="signupBtn" class="profile-main-btn" type="button">
+            <i class="fas fa-seedling"></i>
+            Create My Passport
+          </button>
+
+          <p class="profile-form-status" id="signupStatus" hidden></p>
+        </form>
+
+        <div class="profile-auth-note">
+          <strong>Privacy note:</strong>
+          your learning profile starts locally and can sync with Supabase once connected.
+        </div>
+      </aside>
+
+      <!-- DASHBOARD CONTENT -->
+      <section class="profile-content" id="profileContent">
 
         <!-- Passport card -->
-        <article class="profile-card profile-passport-card">
-          <div class="passport-topline">
-            <span>Pikoverse Passport</span>
-            <strong id="passportRoleChip">Guest</strong>
+        <article class="profile-card profile-passport-card" id="passport">
+          <div class="profile-passport-card__banner" id="profileBanner">
+            <div class="profile-passport-card__glow"></div>
           </div>
 
-          <div class="passport-core">
-            <div id="profileAvatar" class="passport-avatar">
-              <span id="profileAvatarInitials">PW</span>
+          <div class="profile-passport-card__main">
+            <div class="profile-avatar-wrap">
+              <div class="profile-avatar" id="profileAvatar">
+                <img id="profileAvatarImg" src="" alt="" hidden />
+                <span id="profileAvatarInitial">?</span>
+              </div>
+
+              <button id="profileAvatarBtn" class="profile-avatar-btn" type="button">
+                <i class="fas fa-camera"></i>
+              </button>
+
+              <input
+                id="profileAvatarFile"
+                type="file"
+                accept="image/*"
+                hidden
+              />
             </div>
 
-            <div class="passport-identity">
+            <div class="profile-passport-copy">
+              <span class="profile-eyebrow">Wayfinder Passport</span>
               <h2 id="profileDisplayName">Guest Wayfinder</h2>
-              <p id="profileHandleLine">@guest</p>
-              <p id="profileRoleLine">Local profile mode</p>
+              <p id="profileHandle">@guest</p>
+              <p id="profileBio">
+                Sign in to personalize your profile, track your learning path,
+                and prepare future XRPL-ready proof-of-learning records.
+              </p>
             </div>
           </div>
 
-          <div class="passport-ring-wrap" aria-label="Progress ring">
-            <svg class="passport-ring" viewBox="0 0 120 120" aria-hidden="true">
-              <circle cx="60" cy="60" r="50" class="passport-ring__track"></circle>
-              <circle id="passportRingProgress" cx="60" cy="60" r="50" class="passport-ring__value"></circle>
-            </svg>
-            <div class="passport-ring-center">
-              <strong id="statProgress">0%</strong>
-              <span>Path</span>
+          <div class="profile-passport-meta">
+            <div>
+              <strong id="profileRole">User</strong>
+              <span>Role</span>
+            </div>
+            <div>
+              <strong id="profileHomeRealm">LKP</strong>
+              <span>Home Realm</span>
+            </div>
+            <div>
+              <strong id="profileJoined">Recently</strong>
+              <span>Joined</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Rewards / Mana card -->
+        <section class="profile-card profile-rewards-card" id="rewards">
+          <div class="profile-card-head">
+            <span class="profile-card-icon">◈</span>
+            <div>
+              <h2>Mana Rewards</h2>
+              <p>Internal learning rewards now. XRPL-ready proof and claim records later.</p>
             </div>
           </div>
 
-          <div class="profile-stat-grid">
-            <div>
-              <strong id="statCompleted">0</strong>
-              <span>Completed</span>
+          <div class="rewards-rank-panel">
+            <div class="rewards-rank-orb">
+              <span id="rewardRankIcon">🌱</span>
             </div>
+
+            <div class="rewards-rank-copy">
+              <span>Current Rank</span>
+              <strong id="rewardRankName">Initiate</strong>
+              <p id="rewardRankDesc">Beginning the path of living knowledge.</p>
+            </div>
+          </div>
+
+          <div class="rewards-progress-wrap">
+            <div class="rewards-progress-top">
+              <span id="rewardNextRank">Next rank loading...</span>
+              <strong id="rewardRankProgress">0%</strong>
+            </div>
+            <div class="rewards-progress-bar">
+              <span id="rewardRankBar"></span>
+            </div>
+          </div>
+
+          <div class="profile-stat-grid profile-stat-grid--rewards">
             <div>
-              <strong id="statMana">0</strong>
+              <strong id="rewardMana">0</strong>
               <span>Mana</span>
             </div>
             <div>
-              <strong id="statLessons">0</strong>
-              <span>Lessons</span>
+              <strong id="rewardXP">0</strong>
+              <span>XP</span>
+            </div>
+            <div>
+              <strong id="rewardStreak">0</strong>
+              <span>Streak</span>
             </div>
           </div>
 
-          <div id="profileBadgeRow" class="profile-badge-row"></div>
-        </article>
+          <button id="rewardCheckInBtn" class="profile-main-btn profile-main-btn--ghost" type="button">
+            Daily Learning Check-In
+          </button>
+
+          <div class="rewards-mini-grid">
+            <div>
+              <strong id="rewardModules">0</strong>
+              <span>Modules Complete</span>
+            </div>
+            <div>
+              <strong id="rewardCultures">0</strong>
+              <span>Culture Paths</span>
+            </div>
+            <div>
+              <strong id="rewardClaims">0</strong>
+              <span>XRPL-Ready Records</span>
+            </div>
+          </div>
+
+          <div class="rewards-section-title">Badges</div>
+          <div id="rewardBadges" class="rewards-badge-grid">
+            <div class="profile-note">Complete your first lesson to earn your first badge.</div>
+          </div>
+
+          <div class="rewards-section-title">Certificates</div>
+          <div id="rewardCertificates" class="rewards-certificate-list">
+            <div class="profile-note">Complete a full module to generate your first certificate record.</div>
+          </div>
+        </section>
 
         <!-- Access card -->
-        <aside class="profile-card profile-access-card" id="access">
+        <section class="profile-card" id="access">
           <div class="profile-card-head">
-            <span class="profile-card-icon">🔐</span>
+            <span class="profile-card-icon">✦</span>
             <div>
-              <h2>Access Gate</h2>
-              <p>Email + password profile access through Supabase.</p>
+              <h2>Access Layer</h2>
+              <p>Your current permissions across The Living Knowledge Platform.</p>
             </div>
           </div>
 
-          <div id="profileSessionState" class="profile-session-state">
-            Checking profile session...
-          </div>
-
-          <form id="profileAuthForm" class="profile-form">
-            <label>
-              <span>Email</span>
-              <input
-                id="authEmail"
-                type="email"
-                autocomplete="email"
-                placeholder="you@example.com"
-              />
-            </label>
-
-            <label>
-              <span>Password</span>
-              <input
-                id="authPassword"
-                type="password"
-                autocomplete="current-password"
-                placeholder="••••••••"
-              />
-            </label>
-
-            <label>
-              <span>Display Name <small>new accounts only</small></span>
-              <input
-                id="authDisplayName"
-                type="text"
-                autocomplete="nickname"
-                placeholder="Wayfinder name"
-              />
-            </label>
-
-            <div class="profile-auth-actions">
-              <button id="signInBtn" class="profile-main-btn" type="submit">
-                Sign In
-              </button>
-
-              <button id="signUpBtn" class="profile-main-btn profile-main-btn--ghost" type="button">
-                Create Profile
-              </button>
+          <div class="profile-access-grid">
+            <div class="profile-access-item">
+              <i class="fas fa-book-open"></i>
+              <div>
+                <strong>Learning Access</strong>
+                <span id="profileLearningAccess">Enabled</span>
+              </div>
             </div>
-          </form>
 
-          <div class="profile-note">
-            Guest mode still tracks local progress. Supabase sign-in lets the profile
-            sync across devices and unlocks role-based admin access.
+            <div class="profile-access-item">
+              <i class="fas fa-user-shield"></i>
+              <div>
+                <strong>Admin Access</strong>
+                <span id="profileAdminAccess">User only</span>
+              </div>
+            </div>
+
+            <div class="profile-access-item">
+              <i class="fas fa-wallet"></i>
+              <div>
+                <strong>XRPL Wallet</strong>
+                <span id="profileWalletStatus">Not connected</span>
+              </div>
+            </div>
           </div>
-        </aside>
+        </section>
 
-        <!-- Profile editor -->
-        <section class="profile-card profile-editor-card" id="edit">
+        <!-- Edit card -->
+        <section class="profile-card" id="edit">
           <div class="profile-card-head">
-            <span class="profile-card-icon">✍️</span>
+            <span class="profile-card-icon">✎</span>
             <div>
-              <h2>Edit Identity</h2>
-              <p>Shape your public-facing ecosystem profile.</p>
+              <h2>Edit Profile</h2>
+              <p>Update your public Wayfinder identity.</p>
             </div>
           </div>
 
-          <form id="profileEditForm" class="profile-form profile-form--editor">
-            <label>
-              <span>Display Name</span>
-              <input id="editDisplayName" type="text" placeholder="Your profile name" />
-            </label>
+          <form class="profile-edit-form" id="profileEditForm">
+            <label for="editDisplayName">Display Name</label>
+            <input
+              id="editDisplayName"
+              type="text"
+              maxlength="80"
+              placeholder="Your display name"
+            />
 
-            <label>
-              <span>Handle</span>
-              <input id="editHandle" type="text" placeholder="your_handle" />
-            </label>
+            <label for="editHandle">Handle</label>
+            <input
+              id="editHandle"
+              type="text"
+              maxlength="40"
+              placeholder="your-handle"
+            />
+            <small id="editHandleStatus" class="profile-field-note"></small>
 
-            <label>
-              <span>Home Realm</span>
-              <select id="editHomeRealm">
-                <option value="pikoverse">Pikoverse</option>
-                <option value="ikeverse">Ikeverse</option>
-                <option value="digitalverse">Digitalverse</option>
-                <option value="culturalverse">Culturalverse</option>
-                <option value="lkp">Living Knowledge Platform</option>
-                <option value="ikestar">IkeStar</option>
-                <option value="ikehub">IkeHub</option>
-              </select>
-            </label>
+            <label for="editBio">Bio / Moʻolelo</label>
+            <textarea
+              id="editBio"
+              rows="4"
+              maxlength="500"
+              placeholder="Tell the story of your learning path..."
+            ></textarea>
 
-            <label>
-              <span>Avatar URL</span>
-              <input id="editAvatarUrl" type="url" placeholder="https://..." />
-            </label>
+            <label for="editAvatarUrl">Avatar URL</label>
+            <input
+              id="editAvatarUrl"
+              type="url"
+              placeholder="https://..."
+            />
 
-            <label class="profile-form__wide">
-              <span>Bio / Moʻolelo</span>
-              <textarea
-                id="editBio"
-                rows="5"
-                placeholder="Share your learning path, creative purpose, or project identity."
-              ></textarea>
-            </label>
+            <label for="editHomeRealm">Home Realm</label>
+            <select id="editHomeRealm">
+              <option value="lkp">The Living Knowledge Platform</option>
+              <option value="ikeverse">Ikeverse</option>
+              <option value="culturalverse">Culturalverse</option>
+              <option value="digitalverse">Digitalverse</option>
+              <option value="ikehub">IkeHub</option>
+              <option value="ikestar">IkeStar</option>
+            </select>
 
-            <button class="profile-main-btn profile-form__wide" type="submit">
+            <button id="profileSaveBtn" class="profile-main-btn" type="button">
+              <i class="fas fa-floppy-disk"></i>
               Save Profile
             </button>
+
+            <p class="profile-form-status" id="profileSaveStatus" hidden></p>
           </form>
         </section>
 
-        <!-- Realm wheel -->
-        <section class="profile-card profile-realm-card">
+        <!-- Learning path -->
+        <section class="profile-card" id="path">
           <div class="profile-card-head">
-            <span class="profile-card-icon">🧭</span>
+            <span class="profile-card-icon">🌌</span>
             <div>
-              <h2>Realm Wheel</h2>
-              <p>Your profile connects to every section of the ecosystem.</p>
+              <h2>Learning Path</h2>
+              <p>Lessons completed across cultures, modules, and knowledge galaxies.</p>
             </div>
           </div>
 
-          <div id="realmWheel" class="realm-wheel" aria-label="Pikoverse realm wheel">
-            <button data-realm="pikoverse">Piko</button>
-            <button data-realm="ikeverse">ʻIke</button>
-            <button data-realm="digitalverse">Digital</button>
-            <button data-realm="culturalverse">Culture</button>
-            <button data-realm="lkp">LKP</button>
-            <button data-realm="ikestar">Stars</button>
+          <div class="profile-path-summary">
+            <div>
+              <strong id="profileCompletedLessons">0</strong>
+              <span>Lessons Complete</span>
+            </div>
+            <div>
+              <strong id="profileTotalLessons">0</strong>
+              <span>Total Lessons</span>
+            </div>
+            <div>
+              <strong id="profileProgressPercent">0%</strong>
+              <span>Progress</span>
+            </div>
           </div>
 
-          <div id="realmDescription" class="realm-description">
-            Choose a realm to preview where your profile connects.
+          <div class="profile-path-progress">
+            <span id="profileProgressBar"></span>
+          </div>
+
+          <div id="profileLessonPath" class="profile-lesson-path">
+            <div class="profile-note">Loading lesson path...</div>
           </div>
         </section>
 
-        <!-- Admin deck -->
-        <section id="adminPanel" class="profile-card profile-admin-card is-hidden">
+        <!-- Future XRPL wallet card -->
+        <section class="profile-card" id="wallet">
+          <div class="profile-card-head">
+            <span class="profile-card-icon">✧</span>
+            <div>
+              <h2>Future XRPL Wallet</h2>
+              <p>Prepare a wallet link for future proof-of-learning badges and claim records.</p>
+            </div>
+          </div>
+
+          <div class="profile-wallet-box">
+            <label for="xrplWalletInput">XRPL Address</label>
+            <input
+              id="xrplWalletInput"
+              type="text"
+              placeholder="r..."
+              autocomplete="off"
+            />
+
+            <button id="saveWalletBtn" class="profile-main-btn profile-main-btn--ghost" type="button">
+              Save Wallet for Future Claims
+            </button>
+
+            <p class="profile-note">
+              This does not send crypto or sign transactions. It only stores a future reward wallet reference.
+            </p>
+          </div>
+        </section>
+
+        <!-- Ecosystem links -->
+        <section class="profile-card" id="ecosystem">
+          <div class="profile-card-head">
+            <span class="profile-card-icon">⬡</span>
+            <div>
+              <h2>Connected Knowledge Realms</h2>
+              <p>Move between the main learning platform and related sections.</p>
+            </div>
+          </div>
+
+          <div class="profile-ecosystem-grid" id="profileEcosystemGrid">
+            <a href="index.html" class="profile-ecosystem-card">
+              <img src="LKP/assets/images/LKP-2.png" alt="" onerror="this.style.display='none'">
+              <div>
+                <strong>The Living Knowledge Platform</strong>
+                <span>Main learning hub, rewards, culture registry, and lesson galaxy.</span>
+              </div>
+            </a>
+
+            <a href="lessons.html" class="profile-ecosystem-card">
+              <span class="profile-ecosystem-card__fallback">📖</span>
+              <div>
+                <strong>Deep Lessons</strong>
+                <span>Full lesson library and culture modules.</span>
+              </div>
+            </a>
+
+            <a href="https://808cryptobeast.github.io/ikehub/" target="_blank" rel="noopener" class="profile-ecosystem-card">
+              <span class="profile-ecosystem-card__fallback">⬡</span>
+              <div>
+                <strong>IkeHub</strong>
+                <span>Portal into the wider Ikeverse ecosystem.</span>
+              </div>
+            </a>
+
+            <a href="https://808cryptobeast.github.io/Ikestar/" target="_blank" rel="noopener" class="profile-ecosystem-card">
+              <span class="profile-ecosystem-card__fallback">⭐</span>
+              <div>
+                <strong>IkeStar</strong>
+                <span>Celestial observatory and star knowledge.</span>
+              </div>
+            </a>
+
+            <a href="https://808cryptobeast.github.io/Ikeverse/" target="_blank" rel="noopener" class="profile-ecosystem-card">
+              <span class="profile-ecosystem-card__fallback">🌌</span>
+              <div>
+                <strong>Cosmic Weave</strong>
+                <span>Cross-cultural symbolic and cosmic knowledge map.</span>
+              </div>
+            </a>
+
+            <a href="https://808cryptobeast.github.io/culturalverse/" target="_blank" rel="noopener" class="profile-ecosystem-card">
+              <span class="profile-ecosystem-card__fallback">🌿</span>
+              <div>
+                <strong>Culturalverse</strong>
+                <span>Deep cultural learning universe.</span>
+              </div>
+            </a>
+          </div>
+        </section>
+
+        <!-- Admin panel -->
+        <section class="profile-card profile-admin-panel is-hidden" id="adminPanel">
           <div class="profile-card-head">
             <span class="profile-card-icon">👑</span>
             <div>
               <h2>Admin Control Deck</h2>
-              <p>Your upgraded owner/admin profile unlocks editing and ecosystem controls.</p>
+              <p>Visible only for users with admin or owner role.</p>
             </div>
           </div>
 
-          <div class="admin-grid">
-            <a href="admin.html#lessons" class="admin-tool-card">
-              <strong>Lesson Manager</strong>
-              <span>Add, edit, stage, and publish lessons.</span>
+          <div class="profile-admin-grid">
+            <a href="admin.html" class="profile-admin-card">
+              <i class="fas fa-screwdriver-wrench"></i>
+              <strong>Open Admin Dashboard</strong>
+              <span>Edit lessons, pages, cultures, and platform content.</span>
             </a>
 
-            <a href="admin.html#pages" class="admin-tool-card">
-              <strong>Page Builder</strong>
-              <span>Edit landing pages, modules, and content blocks.</span>
+            <a href="lessons.html" class="profile-admin-card">
+              <i class="fas fa-book"></i>
+              <strong>Review Lessons</strong>
+              <span>Inspect the public lesson library.</span>
             </a>
 
-            <a href="admin.html#ecosystem" class="admin-tool-card">
-              <strong>Ecosystem Router</strong>
-              <span>Control links across Pikoverse sections.</span>
-            </a>
-
-            <a href="admin.html#users" class="admin-tool-card">
-              <strong>User Roles</strong>
-              <span>Review trusted users and assign access.</span>
-            </a>
-
-            <a href="admin.html#media" class="admin-tool-card">
-              <strong>Media Vault</strong>
-              <span>Manage images, icons, and visual assets.</span>
-            </a>
-
-            <a href="admin.html#audit" class="admin-tool-card">
-              <strong>Audit Trail</strong>
-              <span>Review admin edits and publishing history.</span>
-            </a>
+            <button id="exportClaimsBtn" class="profile-admin-card" type="button">
+              <i class="fas fa-file-export"></i>
+              <strong>Export XRPL-Ready Claims</strong>
+              <span>View future claim records generated by rewards.</span>
+            </button>
           </div>
 
-          <div class="profile-note profile-note--admin">
-            The UI reveals admin tools, but real edit permission must stay protected
-            by Supabase Row Level Security and your <strong>role</strong> field.
-          </div>
-        </section>
-
-        <!-- Ecosystem gateway -->
-        <section class="profile-card profile-ecosystem-card" id="ecosystem">
-          <div class="profile-card-head">
-            <span class="profile-card-icon">🌐</span>
-            <div>
-              <h2>Ecosystem Gateway</h2>
-              <p>Move through the Pikoverse from one profile identity.</p>
-            </div>
-          </div>
-
-          <div id="ecosystemGrid" class="ecosystem-grid"></div>
-        </section>
-
-        <!-- Lesson path -->
-        <section class="profile-card profile-lessons-card" id="path">
-          <div class="profile-card-head">
-            <span class="profile-card-icon">📚</span>
-            <div>
-              <h2>Learning Constellation</h2>
-              <p>Generated from the same lesson data used by desktop and mobile LKP.</p>
-            </div>
-          </div>
-
-          <div class="lesson-toolbar">
-            <input id="lessonSearch" type="search" placeholder="Search lessons, cultures, modules..." />
-
-            <select id="lessonCultureFilter">
-              <option value="all">All Cultures</option>
-            </select>
-
-            <select id="lessonStatusFilter">
-              <option value="all">All Status</option>
-              <option value="open">Open</option>
-              <option value="completed">Completed</option>
-            </select>
-          </div>
-
-          <div id="lessonPathList" class="lesson-path-list"></div>
+          <pre id="adminClaimsOutput" class="profile-admin-output" hidden></pre>
         </section>
 
       </section>
-    </main>
+    </div>
+  </main>
 
-    <div id="profileToast" class="profile-toast" role="status" aria-live="polite"></div>
+  <!-- Modal -->
+  <div id="profileModalOverlay" class="profile-modal-overlay" hidden>
+    <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+      <button id="profileModalClose" class="profile-modal__close" type="button" aria-label="Close modal">×</button>
+      <div id="profileModalContent" class="profile-modal__content"></div>
+    </div>
   </div>
+
+  <!-- Small helper script for HTML-only interactions. Main behavior stays in profile.js. -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var tabs = document.querySelectorAll('.profile-auth-tab');
+      var panels = document.querySelectorAll('.profile-auth-form');
+
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var name = tab.getAttribute('data-auth-tab');
+
+          tabs.forEach(function (t) {
+            t.classList.toggle('is-active', t === tab);
+          });
+
+          panels.forEach(function (panel) {
+            panel.classList.toggle('is-active', panel.getAttribute('data-auth-panel') === name);
+          });
+        });
+      });
+
+      var modalOverlay = document.getElementById('profileModalOverlay');
+      var modalClose = document.getElementById('profileModalClose');
+
+      if (modalClose && modalOverlay) {
+        modalClose.addEventListener('click', function () {
+          modalOverlay.hidden = true;
+        });
+
+        modalOverlay.addEventListener('click', function (event) {
+          if (event.target === modalOverlay) {
+            modalOverlay.hidden = true;
+          }
+        });
+      }
+
+      var exportBtn = document.getElementById('exportClaimsBtn');
+      var output = document.getElementById('adminClaimsOutput');
+
+      if (exportBtn && output) {
+        exportBtn.addEventListener('click', function () {
+          if (!window.LKPRewards) {
+            output.hidden = false;
+            output.textContent = 'Rewards engine is not loaded.';
+            return;
+          }
+
+          var claims = window.LKPRewards.exportXRPLReadyClaims();
+          output.hidden = false;
+          output.textContent = JSON.stringify(claims, null, 2);
+        });
+      }
+
+      var saveWalletBtn = document.getElementById('saveWalletBtn');
+      var walletInput = document.getElementById('xrplWalletInput');
+
+      if (saveWalletBtn && walletInput) {
+        saveWalletBtn.addEventListener('click', function () {
+          var value = walletInput.value.trim();
+
+          if (!value) {
+            alert('Enter an XRPL address first.');
+            return;
+          }
+
+          if (window.LKPRewards) {
+            window.LKPRewards.setWalletLink({
+              address: value,
+              network: 'XRPL',
+              verified: false,
+              note: 'Saved for future LKP reward claims.'
+            });
+          }
+
+          var status = document.getElementById('profileWalletStatus');
+          if (status) status.textContent = 'Saved locally';
+
+          alert('Wallet saved locally for future claims.');
+        });
+      }
+    });
+  </script>
+
 </body>
 </html>
