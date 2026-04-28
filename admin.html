@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+
+  <title>LKP Admin Deck | Lesson & Galaxy Manager</title>
+
+  <meta
+    name="description"
+    content="The Living Knowledge Platform Admin Deck for managing cultures, modules, lessons, sources, and galaxy settings."
+  />
+
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#070b14" />
+  <meta name="color-scheme" content="dark" />
+
+  <!-- Icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="LKP/assets/images/LKP-2.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="LKP/assets/images/LKP-2.png" />
+  <link rel="manifest" href="site.webmanifest" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;700;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="LKP/css/lkp-brand.css" />
+  <link rel="stylesheet" href="LKP/css/lkp-admin.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- Supabase -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Admin logic -->
+  <script defer src="LKP/js/lkp-admin.js"></script>
+</head>
+
+<body class="lkp-admin-page">
+
+  <div class="lkp-admin-bg" aria-hidden="true">
+    <div class="lkp-admin-bg__nebula lkp-admin-bg__nebula--one"></div>
+    <div class="lkp-admin-bg__nebula lkp-admin-bg__nebula--two"></div>
+    <div class="lkp-admin-bg__grid"></div>
+  </div>
+
+  <div id="adminToast" class="admin-toast" role="status" aria-live="polite"></div>
+
+  <!-- Topbar -->
+  <header class="admin-topbar">
+    <a href="index.html" class="admin-brand" aria-label="Return to The Living Knowledge Platform">
+      <img
+        class="admin-brand__logo"
+        src="LKP/assets/images/LKP-2.png"
+        alt="The Living Knowledge Platform"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='grid';"
+      />
+      <span class="admin-brand__fallback" style="display:none;">◈</span>
+
+      <span class="admin-brand__text">
+        <strong>Admin Deck</strong>
+        <small>The Living Knowledge Platform</small>
+      </span>
+    </a>
+
+    <nav class="admin-topbar__links" aria-label="Admin navigation">
+      <a href="index.html">
+        <i class="fas fa-house"></i>
+        Home
+      </a>
+      <a href="lessons.html">
+        <i class="fas fa-book-open"></i>
+        Lessons
+      </a>
+      <a href="profile.html">
+        <i class="fas fa-user-astronaut"></i>
+        Profile
+      </a>
+      <button id="adminSignOutBtn" type="button" class="admin-topbar__button is-hidden">
+        <i class="fas fa-right-from-bracket"></i>
+        Sign Out
+      </button>
+    </nav>
+  </header>
+
+  <main class="admin-shell">
+
+    <!-- Hero -->
+    <section class="admin-hero">
+      <div>
+        <span class="admin-eyebrow">Ka Paepae 'Ike Ola</span>
+        <h1>Lesson & Galaxy Manager</h1>
+        <p>
+          Manage cultures as galaxies, modules as orbit rings, lessons as stars,
+          and sources as living references across devices through Supabase.
+        </p>
+      </div>
+
+      <div class="admin-hero__orb">
+        <img src="LKP/assets/images/LKP-1.png" alt="" onerror="this.style.display='none';" />
+        <span></span>
+      </div>
+    </section>
+
+    <!-- Auth / Guard -->
+    <section id="adminAuthPanel" class="admin-card admin-auth-panel">
+      <div class="admin-card-head">
+        <span class="admin-card-icon">👑</span>
+        <div>
+          <h2>Admin Access</h2>
+          <p>Sign in with an account whose profile role is <strong>admin</strong> or <strong>owner</strong>.</p>
+        </div>
+      </div>
+
+      <div class="admin-auth-grid">
+        <label>
+          Email
+          <input id="adminEmail" type="email" autocomplete="email" placeholder="you@email.com" />
+        </label>
+
+        <label>
+          Password
+          <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Your password" />
+        </label>
+
+        <button id="adminSignInBtn" class="admin-main-btn" type="button">
+          <i class="fas fa-user-shield"></i>
+          Sign In
+        </button>
+      </div>
+
+      <p id="adminAccessStatus" class="admin-note">
+        Waiting for admin session...
+      </p>
+    </section>
+
+    <!-- Admin App -->
+    <section id="adminApp" class="admin-app is-hidden">
+
+      <!-- Stats -->
+      <section class="admin-stats-grid">
+        <article class="admin-stat-card">
+          <strong id="statCultures">0</strong>
+          <span>Cultures / Galaxies</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <strong id="statModules">0</strong>
+          <span>Modules / Orbits</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <strong id="statLessons">0</strong>
+          <span>Lessons / Stars</span>
+        </article>
+
+        <article class="admin-stat-card">
+          <strong id="statLiveLessons">0</strong>
+          <span>Live Lessons</span>
+        </article>
+      </section>
+
+      <!-- Tabs -->
+      <nav class="admin-tabs" aria-label="Admin tools">
+        <button class="admin-tab is-active" type="button" data-admin-tab="dashboard">
+          <i class="fas fa-chart-line"></i>
+          Dashboard
+        </button>
+        <button class="admin-tab" type="button" data-admin-tab="cultures">
+          <i class="fas fa-globe"></i>
+          Cultures / Galaxies
+        </button>
+        <button class="admin-tab" type="button" data-admin-tab="modules">
+          <i class="fas fa-ring"></i>
+          Modules / Orbits
+        </button>
+        <button class="admin-tab" type="button" data-admin-tab="lessons">
+          <i class="fas fa-star"></i>
+          Lessons / Stars
+        </button>
+        <button class="admin-tab" type="button" data-admin-tab="sources">
+          <i class="fas fa-link"></i>
+          Sources
+        </button>
+        <button class="admin-tab" type="button" data-admin-tab="galaxy">
+          <i class="fas fa-wand-magic-sparkles"></i>
+          Galaxy Settings
+        </button>
+      </nav>
+
+      <!-- Dashboard -->
+      <section class="admin-panel is-active" data-admin-panel="dashboard">
+        <div class="admin-grid admin-grid--two">
+
+          <article class="admin-card">
+            <div class="admin-card-head">
+              <span class="admin-card-icon">◈</span>
+              <div>
+                <h2>System Overview</h2>
+                <p>Quick status for the content manager.</p>
+              </div>
+            </div>
+
+            <div id="adminOverviewList" class="admin-overview-list"></div>
+          </article>
+
+          <article class="admin-card">
+            <div class="admin-card-head">
+              <span class="admin-card-icon">✦</span>
+              <div>
+                <h2>Publishing Flow</h2>
+                <p>Use draft mode first, then publish live.</p>
+              </div>
+            </div>
+
+            <ol class="admin-flow-list">
+              <li>Create or edit a culture galaxy.</li>
+              <li>Add modules as orbit rings.</li>
+              <li>Add lessons as stars.</li>
+              <li>Add sources and references.</li>
+              <li>Review preview, then set status to live.</li>
+            </ol>
+
+            <button id="adminRefreshBtn" class="admin-main-btn admin-main-btn--ghost" type="button">
+              <i class="fas fa-rotate"></i>
+              Refresh Content
+            </button>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- Cultures -->
+      <section class="admin-panel" data-admin-panel="cultures">
+        <div class="admin-grid admin-grid--editor">
+
+          <article class="admin-card">
+            <div class="admin-card-head">
+              <span class="admin-card-icon">🌌</span>
+              <div>
+                <h2>Culture / Galaxy List</h2>
+                <p>Select a culture to edit, or create a new one.</p>
+              </div>
+            </div>
+
+            <div class="admin-list-toolbar">
+              <input id="cultureSearch" type="search" placeholder="Search cultures..." />
+              <button id="newCultureBtn" class="admin-small-btn" type="button">New</button>
+            </div>
+
+            <div id="cultureList" class="admin-record-list"></div>
+          </article>
+
+          <article class="admin-card">
+            <div class="admin-card-head">
+              <span class="admin-card-icon">✍</span>
+              <div>
+                <h2>Culture Editor</h2>
+                <p>This controls a galaxy across desktop and mobile.</p>
+              </div>
+            </div>
+
+            <form id="cultureForm" class="admin-form">
+              <div class="admin-form-grid">
+                <label>
+                  ID
+                  <input id="cultureId" type="text" placeholder="dogon" />
+                </label>
+
+                <label>
+                  Name
+                  <input id="cultureName" type="text" placeholder="Dogon" />
+                </label>
+
+                <label>
+                  Emoji
+                  <input id="cultureEmoji" type="text" placeholder="🪘" />
+                </label>
+
+                <label>
+                  Status
+                  <select id="cultureStatus">
+                    <option value="draft">Draft</option>
+                    <option value="live">Live</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </label>
+
+                <label>
+                  Theme
+                  <select id="cultureTheme">
+                    <option value="emerald">Emerald</option>
+                    <option value="gold">Gold</option>
+                    <option value="bridge">Bridge</option>
+                    <option value="rust">Rust</option>
+                    <option value="amber">Amber</option>
+                    <option value="saffron">Saffron</option>
+                    <option value="cyan">Cyan</option>
+                    <option value="violet">Violet</option>
+                  </select>
+                </label>
+
+                <label>
+                  Color Hex
+                  <input id="cultureColor" type="text" placeholder="#f0c96a" />
+                </label>
+
+                <label>
+                  Sort Order
+                  <input id="cultureSort" type="number" step="1" placeholder="10" />
+                </label>
+
+                <label class="admin-check-label">
+                  <input id="cultureFeatured" type="checkbox" />
+                  Featured
+                </label>
+              </div>
+
+              <label>
+                Icon URL
+                <input id="cultureIcon" type="text" placeholder="LKP/assets/images/kanaka.png" />
+              </label>
+
+              <label>
+                Hero Image URL
+                <input id="cultureHeroImage" type="text" placeholder="LKP/assets/images/example.jpg" />
+              </label>
+
+              <label>
+                Tagline
+                <input id="cultureTagline" type="text" placeholder="Living knowledge system" />
+              </label>
+
+              <label>
+                Intro
+                <textarea id="cultureIntro" rows="5" placeholder="Culture introduction..."></textarea>
+              </label>
+
+              <div class="admin-actions">
+                <button id="saveCultureBtn" class="admin-main-btn" type="button">
+                  Save Culture
+                </button>
+                <button id="deleteCultureBtn" class="admin-danger-btn" type="button">
+                  Delete
+                </button>
+              </div>
+            </form>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- Modules -->
+      <section class="admin-panel" data-admin-panel="modules">
+        <div class="admin-grid admin-grid--editor">
+
+          <article class="admin-card">
+            <div class="admin-card-head">
+              <span class="admin-card-icon">◎</span>
+              <div>
+                <h2>Module / Orbit List</h2>
+                <p>Modules become orbit rings inside each culture galaxy.</p>
+              </div>
+            </div>
+
+            <div class="admin-list-toolbar">
+              <select id="moduleCultureFilter"></select>
+              <button id="newModuleBtn" class="admin-small-btn" type="button">New</button>
+            </div>
+
+            <div id="moduleList" class="admin-record-list"></div>
+          </article>
+
+          <article class="admin-card">
+            <div class="admin-card-head">
+              <span class="admin-card-icon">✍</span>
+              <div>
+                <h2>Module Editor</h2>
+                <p>Assign modules to cultures and tune orbit behavior.</p>
+              </div>
+            </div>
+
+            <form id="moduleForm" class="admin-form">
+              <div class="admin-form-grid">
+                <label>
+                  ID
+                  <input id="moduleId" type="text" placeholder="dogon-cosmology" />
+                </label>
+
+                <label>
+                  Culture
+                  <select id="moduleCulture"></select>
+                </label>
+
+                <label>
+                  Title
+                  <input id="moduleTitle" type="text" placeholder="Dogon Cosmology" />
+                </label>
+
+                <label>
+                  Emoji
+                  <input id="moduleEmoji" type="text" placeholder="⭐" />
+                </label>
+
+                <label>
+                  Status
+                  <select id="moduleStatus">
+                    <option value="draft">Draft</option>
+                    <option value="live">Live</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </label>
+
+                <label>
+                  Sort Order
+                  <input id="moduleSort" type="number" step="1" placeholder="10" />
+                </label>
+
+                <label>
+                  Orbit Radius
+                  <input id="moduleOrbitRadius" type="number" step="0.1" placeholder="auto" />
+                </label>
+
+                <label>
+                  Orbit Speed
+                  <input id="moduleOrbitSpeed" type="number" step="0.001" placeholder="auto" />
+                </label>
+              </div>
+
+              <label>
+                Description
+                <textarea id="moduleDescription" rows="5" placeholder="Module description..."></textarea>
+              </label>
+
+              <div class="admin-actions">
+                <button id="saveModuleBtn" class="admin-main-btn" type="button">
+                  Save Module
+                </button>
+                <button id="deleteModuleBtn" class="admin-danger-btn" type="button">
+                  Delete
+                </button>
+              </div>
+            </form>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- Lessons -->
+      <section class="admin-panel" data-admin-panel="lessons">
+        <div class="admin-grid admin-grid--editor">
+
+          <article class="admin-card">
+            <div class="admin-card-head">
+              <span class="admin-card-icon">⭐</span>
+              <div>
+                <h2>Lesson / Star List</h2>
+                <p>Lessons become stars inside module orbit rings.</p>
+              </div>
+            </div>
+
+            <div class="admin-list-toolbar admin-list-toolbar--stack">
+              <select id="lessonCultureFilter"></select>
+              <select id="lessonModuleFilter"></select>
+              <input id="lessonSearch" type="search" placeholder="Search lessons..." />
+              <button id="newLessonBtn" class="admin-small-btn" type="button">New</button>
+            </div>
+
+            <div id="lessonList" class="admin-record-list admin-record-list--large"></div>
+          </article>
+
+          <article class="admin-card admin-card--lesson-editor">
+            <div class="admin-card-head">
+              <span class="admin-card-icon">✍</span>
+              <div>
+                <h2>Lesson Editor</h2>
+                <p>Write content, rewards, publish status, and preview.</p>
+              </div>
+            </div>
+
+            <form id="lessonForm" class="admin-form">
+              <div class="admin-form-grid">
+                <label>
+                  ID
+                  <input id="lessonId" type="text" placeholder="dogon-lesson-1" />
+                </label>
+
+                <label>
+                  Module
+                  <select id="lessonModule"></select>
+                </label>
+
+                <label>
+                  Lesson Number
+                  <input id="lessonNum" type="text" placeholder="D01" />
+                </label>
+
+                <label>
+                  Title
+                  <input id="lessonTitle" type="text" placeholder="Lesson title" />
+                </label>
+
+                <label>
+                  Read Time
+                  <input id="lessonReadTime" type="text" placeholder="8 min read" />
+                </label>
+
+                <label>
+                  Status
+                  <select id="lessonStatus">
+                    <option value="draft">Draft</option>
+                    <option value="live">Live</option>
+                    <option value="archived">Archived</option>
+                  </select>
+                </label>
+
+                <label>
+                  Sort Order
+                  <input id="lessonSort" type="number" step="1" placeholder="10" />
+                </label>
+
+                <label>
+                  Mana
+                  <input id="lessonMana" type="number" step="1" placeholder="10" />
+                </label>
+
+                <label>
+                  XP
+                  <input id="lessonXP" type="number" step="1" placeholder="25" />
+                </label>
+
+                <label class="admin-check-label">
+                  <input id="lessonFeatured" type="checkbox" />
+                  Featured
+                </label>
+              </div>
+
+              <label>
+                Tags
+                <input id="lessonTags" type="text" placeholder="wayfinding, cosmology, ethics" />
+              </label>
+
+              <label>
+                Prerequisites
+                <input id="lessonPrerequisites" type="text" placeholder="lesson-id-1, lesson-id-2" />
+              </label>
+
+              <label>
+                Lead Text
+                <textarea id="lessonLead" rows="3" placeholder="Short opening lead..."></textarea>
+              </label>
+
+              <label>
+                Excerpt
+                <textarea id="lessonExcerpt" rows="3" placeholder="Short summary for cards..."></textarea>
+              </label>
+
+              <label>
+                Content HTML
+                <textarea id="lessonContent" rows="16" placeholder="<p>Lesson content...</p>"></textarea>
+              </label>
+
+              <div class="admin-actions">
+                <button id="saveLessonBtn" class="admin-main-btn" type="button">
+                  Save Lesson
+                </button>
+                <button id="previewLessonBtn" class="admin-main-btn admin-main-btn--ghost" type="button">
+                  Preview
+                </button>
+                <button id="deleteLessonBtn" class="admin-danger-btn" type="button">
+                  Delete
+                </button>
+              </div>
+            </form>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- Sources -->
+      <section class="admin-panel" data-admin-panel="sources">
+        <div class="admin-grid admin-grid--editor">
+
+          <article class="admin-card">
+            <div class="admin-card-head">
+              <span class="admin-card-icon">🔗</span>
+              <div>
+                <h2>Sources</h2>
+                <p>Attach citations and references to lessons.</p>
+              </div>
+            </div>
+
+            <div class="admin-list-toolbar admin-list-toolbar--stack">
+              <select id="sourceLessonFilter"></select>
+              <button id="newSourceBtn" class="admin-small-btn" type="button">New</button>
+            </div>
+
+            <div id="sourceList" class="admin-record-list"></div>
+          </article>
+
+          <article class="admin-card">
+            <div class="admin-card-head">
+              <span class="admin-card-icon">✍</span>
+              <div>
+                <h2>Source Editor</h2>
+                <p>Add source metadata for lesson verification.</p>
+              </div>
+            </div>
+
+            <form id="sourceForm" class="admin-form">
+              <label>
+                Lesson
+                <select id="sourceLesson"></select>
+              </label>
+
+              <div class="admin-form-grid">
+                <label>
+                  Label
+                  <input id="sourceLabel" type="text" placeholder="Bishop Museum Article" />
+                </label>
+
+                <label>
+                  Source Type
+                  <select id="sourceType">
+                    <option value="web">Web</option>
+                    <option value="book">Book</option>
+                    <option value="paper">Paper</option>
+                    <option value="archive">Archive</option>
+                    <option value="oral">Oral Tradition</option>
+                    <option value="other">Other</option>
+                  </select>
+                </label>
+
+                <label>
+                  Sort Order
+                  <input id="sourceSort" type="number" step="1" placeholder="10" />
+                </label>
+              </div>
+
+              <label>
+                URL
+                <input id="sourceUrl" type="url" placeholder="https://..." />
+              </label>
+
+              <label>
+                Citation
+                <textarea id="sourceCitation" rows="5" placeholder="Citation text..."></textarea>
+              </label>
+
+              <div class="admin-actions">
+                <button id="saveSourceBtn" class="admin-main-btn" type="button">
+                  Save Source
+                </button>
+                <button id="deleteSourceBtn" class="admin-danger-btn" type="button">
+                  Delete
+                </button>
+              </div>
+            </form>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- Galaxy Settings -->
+      <section class="admin-panel" data-admin-panel="galaxy">
+        <div class="admin-grid admin-grid--editor">
+
+          <article class="admin-card">
+            <div class="admin-card-head">
+              <span class="admin-card-icon">✨</span>
+              <div>
+                <h2>Galaxy Settings List</h2>
+                <p>Visual tuning for cultures, modules, lessons, and platform core.</p>
+              </div>
+            </div>
+
+            <div class="admin-list-toolbar">
+              <select id="galaxyTypeFilter">
+                <option value="all">All Targets</option>
+                <option value="platform">Platform</option>
+                <option value="culture">Culture</option>
+                <option value="module">Module</option>
+                <option value="lesson">Lesson</option>
+              </select>
+              <button id="newGalaxyBtn" class="admin-small-btn" type="button">New</button>
+            </div>
+
+            <div id="galaxyList" class="admin-record-list"></div>
+          </article>
+
+          <article class="admin-card">
+            <div class="admin-card-head">
+              <span class="admin-card-icon">✍</span>
+              <div>
+                <h2>Galaxy Visual Editor</h2>
+                <p>These values can power desktop and mobile Three.js visuals.</p>
+              </div>
+            </div>
+
+            <form id="galaxyForm" class="admin-form">
+              <div class="admin-form-grid">
+                <label>
+                  Target Type
+                  <select id="galaxyTargetType">
+                    <option value="platform">Platform</option>
+                    <option value="culture">Culture</option>
+                    <option value="module">Module</option>
+                    <option value="lesson">Lesson</option>
+                  </select>
+                </label>
+
+                <label>
+                  Target ID
+                  <select id="galaxyTargetId"></select>
+                </label>
+
+                <label>
+                  Core Color
+                  <input id="galaxyCoreColor" type="text" placeholder="#f0c96a" />
+                </label>
+
+                <label>
+                  Glow Color
+                  <input id="galaxyGlowColor" type="text" placeholder="#54c6ee" />
+                </label>
+
+                <label>
+                  Nebula Color
+                  <input id="galaxyNebulaColor" type="text" placeholder="#8fa0ff" />
+                </label>
+
+                <label>
+                  Dust Density
+                  <input id="galaxyDustDensity" type="number" step="0.1" placeholder="1.0" />
+                </label>
+
+                <label>
+                  Orbit Radius
+                  <input id="galaxyOrbitRadius" type="number" step="0.1" placeholder="auto" />
+                </label>
+
+                <label>
+                  Orbit Speed
+                  <input id="galaxyOrbitSpeed" type="number" step="0.001" placeholder="auto" />
+                </label>
+
+                <label>
+                  Label Visibility
+                  <select id="galaxyLabelVisibility">
+                    <option value="auto">Auto</option>
+                    <option value="always">Always</option>
+                    <option value="hidden">Hidden</option>
+                    <option value="focus">Focus Only</option>
+                  </select>
+                </label>
+
+                <label>
+                  Mobile Priority
+                  <input id="galaxyMobilePriority" type="number" step="1" placeholder="0" />
+                </label>
+              </div>
+
+              <label>
+                Settings JSON
+                <textarea id="galaxySettingsJSON" rows="8" placeholder='{"custom": true}'></textarea>
+              </label>
+
+              <div class="admin-actions">
+                <button id="saveGalaxyBtn" class="admin-main-btn" type="button">
+                  Save Galaxy Settings
+                </button>
+                <button id="deleteGalaxyBtn" class="admin-danger-btn" type="button">
+                  Delete
+                </button>
+              </div>
+            </form>
+          </article>
+
+        </div>
+      </section>
+
+    </section>
+  </main>
+
+  <!-- Preview Modal -->
+  <div id="adminModalOverlay" class="admin-modal-overlay" hidden>
+    <div class="admin-modal" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+      <button id="adminModalClose" class="admin-modal__close" type="button" aria-label="Close preview">×</button>
+      <div id="adminModalContent" class="admin-modal__content"></div>
+    </div>
+  </div>
+
+</body>
+</html>
