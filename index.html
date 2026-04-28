@@ -11,8 +11,33 @@
   <link rel="stylesheet" href="LKP/css/lkp.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <!-- Three.js importmap -->
-  <script type="importmap">
+  <!--
+    BRANCHING STRATEGY:
+    Mobile  (≤ 768px OR touch-only) → lkp-mobile.js  (no Three.js, no WebGL, no bloom)
+    Desktop (> 768px with pointer)  → lkp-three.js   (full 3D galaxy dome)
+
+    We check BEFORE loading the importmap so mobile never downloads Three.js at all.
+  -->
+  <script>
+    (function () {
+      var isMobile = (
+        window.innerWidth <= 768 ||
+        window.matchMedia('(pointer: coarse)').matches ||
+        /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
+      );
+      document.documentElement.dataset.experience = isMobile ? 'mobile' : 'desktop';
+
+      if (isMobile) {
+        // Load mobile experience immediately — no importmap, no Three.js
+        var s = document.createElement('script');
+        s.src = 'LKP/js/lkp-mobile.js';
+        document.head.appendChild(s);
+      }
+    })();
+  </script>
+
+  <!-- Desktop only: Three.js importmap + module -->
+  <script type="importmap" data-desktop-only>
   {
     "imports": {
       "three":           "https://unpkg.com/three@0.160.0/build/three.module.js",
@@ -20,9 +45,15 @@
     }
   }
   </script>
-
-  <!-- Three.js scene — loads first so canvas renders behind content -->
-  <script type="module" src="LKP/js/lkp-three.js"></script>
+  <script>
+    // Only execute Three.js module on desktop
+    if (document.documentElement.dataset.experience === 'desktop') {
+      var s = document.createElement('script');
+      s.type = 'module';
+      s.src  = 'LKP/js/lkp-three.js';
+      document.head.appendChild(s);
+    }
+  </script>
 </head>
 <body>
 
