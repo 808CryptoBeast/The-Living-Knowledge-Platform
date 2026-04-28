@@ -2,13 +2,74 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>The Living Knowledge Platform | Ikeverse</title>
-  <meta name="description" content="Navigate the stars of ancestral knowledge. A living portal into Kānaka Maoli and Kemetic wisdom traditions — honoured, studied, and woven into living understanding." />
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+
+  <title>Ka Paepae 'Ike Ola - The Knowledge Platform | Ikeverse</title>
+
+  <meta
+    name="description"
+    content="Ka Paepae 'Ike Ola - The Knowledge Platform. Navigate the stars of ancestral knowledge through Hawaiian, Kemetic, and living cultural wisdom traditions woven into the Ikeverse ecosystem."
+  />
+
+  <meta
+    name="keywords"
+    content="Ka Paepae Ike Ola, The Knowledge Platform, Living Knowledge Platform, LKP, Ikeverse, Pikoverse, Hawaiian knowledge, Kānaka Maoli, Kemet, Ma'at, Aloha, ancestral wisdom, indigenous knowledge, cultural learning platform, Hawaiian star compass"
+  />
+
+  <meta name="author" content="Pikoverse / Ikeverse" />
+  <meta name="theme-color" content="#070b14" />
+  <meta name="color-scheme" content="dark" />
+
+  <!-- Canonical -->
+  <link rel="canonical" href="https://www.pikoverse.xyz/" />
+
+  <!-- Google / favicon / app icons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="LKP/assets/images/LKP-2.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="LKP/assets/images/LKP-2.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="LKP/assets/images/LKP-2.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="LKP/assets/images/LKP-2.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="LKP/assets/images/LKP-2.png" />
+  <link rel="shortcut icon" href="LKP/assets/images/LKP-2.png" />
+  <link rel="manifest" href="site.webmanifest" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Ka Paepae 'Ike Ola - The Knowledge Platform" />
+  <meta
+    property="og:description"
+    content="A living portal into ancestral wisdom, Hawaiian and Kemetic knowledge systems, and the stars of living understanding."
+  />
+  <meta property="og:url" content="https://www.pikoverse.xyz/" />
+  <meta property="og:image" content="https://www.pikoverse.xyz/LKP/assets/images/LKP-2.png" />
+  <meta property="og:image:alt" content="Ka Paepae 'Ike Ola - The Knowledge Platform icon" />
+  <meta property="og:site_name" content="Pikoverse" />
+  <meta property="og:locale" content="en_US" />
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Ka Paepae 'Ike Ola - The Knowledge Platform" />
+  <meta
+    name="twitter:description"
+    content="A living portal into ancestral wisdom, Hawaiian and Kemetic traditions, and the stars of living understanding."
+  />
+  <meta name="twitter:image" content="https://www.pikoverse.xyz/LKP/assets/images/LKP-2.png" />
+  <meta name="twitter:image:alt" content="Ka Paepae 'Ike Ola - The Knowledge Platform icon" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;700;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- CSS -->
   <link rel="stylesheet" href="LKP/css/lkp.css" />
+  <link rel="stylesheet" href="LKP/css/lkp-brand.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <!--
@@ -131,11 +192,19 @@
 
     <!-- ── NAV ── -->
     <nav class="lkp-nav" id="lkpNav">
-      <a class="lkp-nav__brand" href="index.html">
-        <div class="lkp-nav__brand-glyph">◈</div>
+      <a class="lkp-nav__brand" href="index.html" aria-label="Ka Paepae 'Ike Ola - The Knowledge Platform">
+        <img
+          class="lkp-nav__brand-logo"
+          src="LKP/assets/images/LKP-1.png"
+          alt="Ka Paepae 'Ike Ola"
+          onerror="this.style.display='none'; var f=document.querySelector('.lkp-nav__brand-glyph-fallback'); if(f) f.style.display='flex';"
+        />
+
+        <div class="lkp-nav__brand-glyph-fallback" style="display:none;">✦</div>
+
         <div class="lkp-nav__brand-text">
-          <span class="lkp-nav__brand-title">Living Knowledge Platform</span>
-          <span class="lkp-nav__brand-sub">Ikeverse · Ancestral Wisdom</span>
+          <span class="lkp-nav__brand-title">Ka Paepae 'Ike Ola</span>
+          <span class="lkp-nav__brand-sub">The Knowledge Platform</span>
         </div>
       </a>
 
@@ -166,7 +235,7 @@
 
       <div class="lkp-hero__content">
         <div class="lkp-hero__eyebrow">
-          Ikeverse &nbsp;·&nbsp; The Living Knowledge Platform
+          Ikeverse &nbsp;·&nbsp; Ka Paepae 'Ike Ola
         </div>
 
         <h1 class="lkp-hero__title">
@@ -613,7 +682,10 @@
     <footer class="lkp-footer">
       <div class="lkp-footer__inner">
         <div>
-          <a href="index.html" class="lkp-footer__logo">◈ Living Knowledge Platform</a>
+          <a href="index.html" class="lkp-footer__logo">
+            <img src="LKP/assets/images/LKP-2.png" alt="" class="lkp-footer__logo-img" onerror="this.style.display='none'">
+            <span>Ka Paepae 'Ike Ola</span>
+          </a>
           <p class="lkp-footer__desc">
             Part of the Ikeverse ecosystem. Indigenous knowledge presented with cultural respect,
             careful sourcing, and the understanding that these traditions belong to living communities.
