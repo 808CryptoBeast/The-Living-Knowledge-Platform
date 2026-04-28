@@ -32,10 +32,9 @@
   --blur:     blur(24px) saturate(160%);
 
   /* Typography */
-  --font-body:    "DM Sans",           ui-sans-serif, system-ui, sans-serif;
-  --font-serif:   "Cormorant Garamond","Georgia",      serif;
-  --font-title:   "Uncial Antiqua",    "Cormorant Garamond", serif;
-  --font-mono:    "Space Mono",        ui-monospace, monospace;
+--font-title: "Pirata One", "Cormorant Garamond", Georgia, serif;
+--font-body:  "DM Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+--font-serif: "Cormorant Garamond", Georgia, serif;
 
   /* Radius */
   --r-xl: 24px;
