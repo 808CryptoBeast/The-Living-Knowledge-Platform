@@ -1,132 +1,244 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    THE LIVING KNOWLEDGE PLATFORM — Mobile Experience
-   lkp-mobile.js  |  No Three.js. Pure DOM, CSS, SVG.
+   lkp-mobile.js | Data-driven from lkp-data.js / CULTURALVERSE_DATA
 
-   Architecture:
-   ─ CSS animated starfield (zero JS frame cost)
-   ─ Bottom tab navigation (Home / Galaxies / Bridge / Chart / Lessons)
-   ─ Galaxy swipe cards (horizontal scroll snap)
-   ─ Concept bottom sheet (slides up from bottom on galaxy tap)
-   ─ 2D SVG star chart (scrollable constellation diagram, tappable nodes)
-   ─ Ecosystem section
-   All data mirrors lkp-three.js so both experiences stay in sync.
+   Purpose:
+   - Mobile-only DOM/CSS/SVG experience. No Three.js required.
+   - Reads CULTURALVERSE_DATA.cultures when lkp-data.js is loaded first.
+   - Every culture added to lkp-data.js becomes another mobile galaxy/orbit/card.
+   - Keeps the Hawaiian star compass alive on mobile as the portal centerpiece.
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
   'use strict';
 
-  /* ── Asset base ── */
-  const IMG = document.baseURI.replace(/[^/]*$/, '') + 'LKP/assets/images/';
+  /* ────────────────────────────────────────────────────────────────────────
+     PATHS + DATA
+  ──────────────────────────────────────────────────────────────────────── */
+  const BASE = document.baseURI.replace(/[^/]*$/, '');
+  const IMG  = BASE + 'LKP/assets/images/';
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     DATA — mirrors GALAXY_DEFS + BRIDGE_CONCEPTS in lkp-three.js
-     lessonId keys match culturalverse-data.js IDs
-  ───────────────────────────────────────────────────────────────────────── */
-  const GALAXIES = [
-    {
-      id:       'kanaka',
-      name:     'Kānaka Maoli',
-      tagline:  'People of the Land · Children of the Star Navigators',
-      color:    '#3cb371',
+  const DATA =
+    (typeof CULTURALVERSE_DATA !== 'undefined' && CULTURALVERSE_DATA && Array.isArray(CULTURALVERSE_DATA.cultures))
+      ? CULTURALVERSE_DATA
+      : (window.CULTURALVERSE_DATA && Array.isArray(window.CULTURALVERSE_DATA.cultures))
+        ? window.CULTURALVERSE_DATA
+        : { cultures: [] };
+
+  const THEME = {
+    emerald: {
+      color: '#3cb371',
       colorDim: 'rgba(60,179,113,0.12)',
-      colorBorder: 'rgba(60,179,113,0.28)',
-      image:    IMG + 'kanaka.png',
-      emoji:    '🌺',
-      intro:    'The Native Hawaiian people developed one of the most sophisticated civilizations in the Pacific — from the 2,102-line Kumulipo to 400+ fishponds. A complete, living understanding of cosmos, land, and humanity.',
-      concepts: [
-        { id:'kumulipo',   label:'Kumulipo',        lessonId:'km-kumulipo',    major:true,  desc:'2,102-line sacred creation chant. Pō to Ao. The genealogy of the cosmos from coral polyp to human chief.' },
-        { id:'aloha',      label:'Aloha',            lessonId:'km-kumulipo',    major:true,  desc:'The presence of the divine breath, shared. Not a greeting — a complete ethical and spiritual way of being.' },
-        { id:'wayfinding', label:'Wayfinding',       lessonId:'km-starcompass', major:false, desc:'32-house star compass. 2,500 miles open ocean without instruments. One of humanity\'s greatest scientific achievements.' },
-        { id:'hokuleaa',   label:'Hōkūleʻa',         lessonId:'km-hokuleaa',    major:false, desc:'The zenith star of Hawaiʻi (Arcturus). The star that passes overhead tells you you\'re home.' },
-        { id:'ahupuaa',    label:'Ahupuaʻa',         lessonId:'km-ahupuaa',     major:false, desc:'Mountain-to-sea land divisions. Sustained 300k–1M people for 1,000+ years. Zero waste. Completely circular.' },
-        { id:'kalo',       label:'Kalo',             lessonId:'km-loikalo',     major:false, desc:'Sacred taro — the elder sibling of humanity. To tend kalo is to tend your ancestor.' },
-        { id:'mana',       label:'Mana',             lessonId:'km-kumulipo',    major:false, desc:'Spiritual power that flows through all things. The healer, the navigator, the chief — all work with mana.' },
-        { id:'pono',       label:'Pono',             lessonId:'km-kumulipo',    major:false, desc:'Righteousness, balance, doing what is right in relationship to all things.' },
-        { id:'olelo',      label:'ʻŌlelo Hawaiʻi',  lessonId:'km-olelo',       major:false, desc:'One of the most musical languages in the world. Nearly extinct by 1981 — now spoken by thousands of children.' },
-        { id:'laau',       label:'Laʻau Lapaʻau',   lessonId:'km-laau',        major:false, desc:'Hawaiian plant medicine. 300+ medicinal plants. Complete medical science integrating body, spirit, and land.' },
-      ]
+      colorBorder: 'rgba(60,179,113,0.30)',
+      glow: 'rgba(60,179,113,0.28)'
+    },
+    gold: {
+      color: '#f0c96a',
+      colorDim: 'rgba(240,201,106,0.12)',
+      colorBorder: 'rgba(240,201,106,0.34)',
+      glow: 'rgba(240,201,106,0.30)'
+    },
+    bridge: {
+      color: '#8fa0ff',
+      colorDim: 'rgba(143,160,255,0.13)',
+      colorBorder: 'rgba(143,160,255,0.34)',
+      glow: 'rgba(143,160,255,0.30)'
+    },
+    rust: {
+      color: '#d98545',
+      colorDim: 'rgba(217,133,69,0.12)',
+      colorBorder: 'rgba(217,133,69,0.32)',
+      glow: 'rgba(217,133,69,0.28)'
+    },
+    amber: {
+      color: '#e4ad48',
+      colorDim: 'rgba(228,173,72,0.12)',
+      colorBorder: 'rgba(228,173,72,0.32)',
+      glow: 'rgba(228,173,72,0.28)'
+    },
+    saffron: {
+      color: '#ffb347',
+      colorDim: 'rgba(255,179,71,0.12)',
+      colorBorder: 'rgba(255,179,71,0.32)',
+      glow: 'rgba(255,179,71,0.28)'
+    },
+    default: {
+      color: '#54c6ee',
+      colorDim: 'rgba(84,198,238,0.12)',
+      colorBorder: 'rgba(84,198,238,0.30)',
+      glow: 'rgba(84,198,238,0.28)'
+    }
+  };
+
+  const KNOWN_CONNECTIONS = [
+    ['km-kumulipo', 'km-wakea', 0.85],
+    ['km-starcompass', 'km-hokuleaa', 0.95],
+    ['km-ahupuaa', 'km-loikalo', 0.88],
+    ['km-olelo', 'km-hula', 0.74],
+    ['km-loikalo', 'km-laau', 0.68],
+    ['ke-nun', 'ke-ennead', 0.90],
+    ['ke-ennead', 'ke-ptah', 0.72],
+    ['ke-maat', 'ke-maat-politics', 0.86],
+    ['ke-medunetjer', 'ke-medicine', 0.70],
+    ['km-kumulipo', 'bridge-darkness', 0.70],
+    ['ke-nun', 'bridge-darkness', 0.70],
+    ['km-kumulipo', 'bridge-pairs', 0.60],
+    ['ke-ennead', 'bridge-pairs', 0.60],
+    ['km-kumulipo', 'bridge-aloha-maat', 0.52],
+    ['ke-maat', 'bridge-aloha-maat', 0.82]
+  ];
+
+  const FALLBACK_CULTURES = [
+    {
+      id: 'kanaka',
+      name: 'Kānaka Maoli',
+      emoji: '🌺',
+      tagline: 'Hawaiian Indigenous Knowledge',
+      theme: 'emerald',
+      status: 'live',
+      intro: 'Hawaiian cosmology, wayfinding, land stewardship, language, and healing traditions.',
+      modules: []
     },
     {
-      id:       'kemet',
-      name:     'Kemet',
-      tagline:  'The Black Land · Three Thousand Years of Recorded Wisdom',
-      color:    '#f0c96a',
-      colorDim: 'rgba(240,201,106,0.10)',
-      colorBorder: 'rgba(240,201,106,0.28)',
-      image:    IMG + 'kemet.png',
-      emoji:    '☥',
-      intro:    'The ancient Egyptians called their land Kemet — they were African. Their civilization endured for 3,000+ years, producing knowledge in cosmology, medicine, ethics, and philosophy that the world has never fully reckoned with.',
-      concepts: [
-        { id:'maat',       label:'Maʻat',           lessonId:'ke-maat',        major:true,  desc:'Cosmic order, truth, justice, balance. The stars move in Maʻat. The Nile floods in Maʻat. The organizing principle of all existence.' },
-        { id:'nun',        label:'Nun',              lessonId:'ke-nun',         major:true,  desc:'Infinite dark primordial waters — the condition before all conditions. From Nun, everything arose.' },
-        { id:'ennead',     label:'Ennead',           lessonId:'ke-ennead',      major:false, desc:'Nine interconnected divine principles of creation — a complete cosmological model from Heliopolis.' },
-        { id:'ptah',       label:'Ptah',             lessonId:'ke-ptah',        major:false, desc:'Creation through thought and word. The Memphite Theology — 2,700 years before the Gospel of John.' },
-        { id:'medunetjer', label:'Medu Netjer',      lessonId:'ke-medunetjer',  major:false, desc:'"Words of the Gods." One of the oldest writing systems on Earth (~3200 BCE). Every sign carries spiritual weight.' },
-        { id:'duat',       label:'Duat',             lessonId:'ke-maat',        major:false, desc:'The afterlife cosmology. 12 gates of the night. Ra\'s nightly resurrection. The Weighing of the Heart.' },
-        { id:'imhotep',    label:'Imhotep',          lessonId:'ke-medicine',    major:false, desc:'First named physician in history. Architect of the Step Pyramid. Later deified as god of medicine and wisdom.' },
-        { id:'kabakh',     label:'Ka · Ba · Akh',   lessonId:'ke-maat',        major:false, desc:'The three soul components: Ka (life force), Ba (personality), Akh (immortal spirit). A complete soul science.' },
-        { id:'isfet',      label:'Isfet',            lessonId:'ke-maat',        major:false, desc:'Chaos, untruth, injustice — the opposite of Maʻat. Not merely wrong. Cosmically dangerous.' },
-      ]
+      id: 'kemet',
+      name: 'Kemet',
+      emoji: '☥',
+      tagline: 'Ancient Egyptian Wisdom',
+      theme: 'gold',
+      status: 'live',
+      intro: 'Kemetic cosmology, Maʻat, sacred arts, science, and medicine.',
+      modules: []
+    },
+    {
+      id: 'bridge',
+      name: 'The Bridge',
+      emoji: '🌐',
+      tagline: 'Cross-Cultural Connections',
+      theme: 'bridge',
+      status: 'live',
+      intro: 'Shared cosmological and ethical patterns across living knowledge systems.',
+      modules: []
     }
   ];
 
-  const BRIDGE = {
-    id:      'bridge',
-    name:    'The Bridge',
-    tagline: 'Aloha and Maʻat — Two Names for the Same Truth',
-    color:   '#aa99ff',
-    colorDim: 'rgba(170,153,255,0.10)',
-    colorBorder: 'rgba(170,153,255,0.28)',
-    emoji:   '🌐',
-    intro:   'Two civilizations. Opposite ends of the Earth. Thousands of years apart. When you place their creation traditions and ethical frameworks side by side, the parallels are not superficial — they are structural.',
-    pairs: [
-      { kanaka: { name:'Akahai', sub:'Kindness — Tenderness in action', desc:'Strength expressed through gentleness. True power never needs to be cruel.' },
-        kemet:  { name:'Maʻat — Compassion', sub:'Care for the suffering as divine duty', desc:'Feeding the hungry, clothing the naked — among the 42 Declarations of Innocence. Kindness as cosmic law.' }},
-      { kanaka: { name:'Lōkahi', sub:'Unity — Harmony through connectedness', desc:'Working in alignment with ʻohana and ʻāina. No one stands apart from the web of life.' },
-        kemet:  { name:'Cosmic Harmony', sub:'The order that holds all things together', desc:'The Pharaoh\'s primary duty: uphold Maʻat. When the ruler fails, the cosmos tilts into Isfet.' }},
-      { kanaka: { name:'ʻOiaʻiʻo', sub:'Truth — To speak and live in truth', desc:'Unwavering integrity rooted in spirit. Truth is not situational — it is the ground you stand on.' },
-        kemet:  { name:'Feather of Truth', sub:'The measure of every human life', desc:'The heart is weighed against the Feather of Maʻat. A heart heavy with falsehood cannot pass.' }},
-      { kanaka: { name:'Haʻahaʻa', sub:'Humility — True strength in modesty', desc:'The tallest tree that refuses to bow is the first one broken by the storm.' },
-        kemet:  { name:'Declaration of Innocence', sub:'"I have not made myself more than I am"', desc:'Not elevating oneself falsely before the divine. Humility before the Neteru is the foundation of right living.' }},
-      { kanaka: { name:'Mālama ʻĀina', sub:'Stewardship — Care for the land', desc:'Not an environmental position. A spiritual obligation. The land is your ancestor. You are its steward.' },
-        kemet:  { name:'Stewardship of Creation', sub:'"I have not stopped the flow of water"', desc:'Among the Declarations: interfering with natural systems is a moral violation. Earth is sacred trust.' }},
-    ],
-    concepts: [
-      { id:'br-creation',  label:'Creation from Pō', lessonId:'bridge-darkness',   major:true,  desc:'Both begin in primordial darkness and water. The deepest perception available to the human mind about reality.' },
-      { id:'br-pairs',     label:'Paired Forces',    lessonId:'bridge-pairs',      major:false, desc:'Both understand creation requires complementary forces. Duality is the generative principle of reality.' },
-      { id:'br-alohamaat', label:'Aloha ↔ Maʻat',   lessonId:'bridge-aloha-maat', major:true,  desc:'Structurally identical philosophical frameworks developed independently on opposite sides of the Earth.' },
-      { id:'br-star',      label:'Star Knowledge',   lessonId:'bridge-darkness',   major:false, desc:'Hawaiian star navigation and Kemetic astronomical knowledge — two traditions reading the same sky.' },
-    ]
-  };
+  const RAW_CULTURES = DATA.cultures.length ? DATA.cultures : FALLBACK_CULTURES;
 
-  // Flat concept lookup for chart
-  const ALL_CONCEPTS = new Map([
-    ...GALAXIES.flatMap(g => g.concepts.map(c => [c.id, { ...c, culture: g.id, color: g.color }])),
-    ...BRIDGE.concepts.map(c => [c.id, { ...c, culture: 'bridge', color: BRIDGE.color }])
-  ]);
+  function stripTags(html) {
+    return String(html || '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
 
-  // Constellation connections for 2D chart
-  const CHART_CONNECTIONS = [
-    ['kumulipo','aloha',0.9],    ['kumulipo','hokuleaa',0.7],  ['aloha','pono',0.9],
-    ['aloha','mana',0.7],        ['wayfinding','hokuleaa',0.9],['ahupuaa','kalo',0.9],
-    ['maat','ennead',0.8],       ['maat','ptah',0.7],          ['maat','isfet',0.6],
-    ['nun','ennead',0.8],        ['imhotep','medunetjer',0.6], ['duat','kabakh',0.8],
-    ['kumulipo','br-creation',0.5],['nun','br-creation',0.6],
-    ['aloha','br-alohamaat',0.7], ['maat','br-alohamaat',0.7],
-    ['br-creation','br-pairs',0.8],
-  ];
+  function escapeHTML(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 
-  /* ─────────────────────────────────────────────────────────────────────────
+  function shortTitle(title) {
+    return String(title || '')
+      .replace(/\s+—\s+.*$/, '')
+      .replace(/\s+-\s+.*$/, '')
+      .trim();
+  }
+
+  function cultureImage(id) {
+    const map = {
+      kanaka: 'kanaka.png',
+      kemet: 'kemet.png',
+      bridge: 'bridge.png',
+      dreamtime: 'dreamtime.png',
+      dogon: 'dogon.png',
+      vedic: 'vedic.png'
+    };
+
+    return IMG + (map[id] || `${id}.png`);
+  }
+
+  function normalizeCulture(culture, index) {
+    const theme = THEME[culture.theme] || THEME.default;
+    const modules = Array.isArray(culture.modules) ? culture.modules : [];
+
+    const concepts = modules.flatMap((module, moduleIndex) => {
+      const lessons = Array.isArray(module.lessons) ? module.lessons : [];
+
+      return lessons.map((lesson, lessonIndex) => {
+        const body = stripTags(lesson.content || module.desc || culture.intro || '');
+        const globalIndex = moduleIndex * 10 + lessonIndex;
+
+        return {
+          id: lesson.id,
+          label: shortTitle(lesson.title || lesson.id),
+          title: lesson.title || lesson.id,
+          num: lesson.num || '',
+          readTime: lesson.readTime || '',
+          lessonId: lesson.id,
+          moduleId: module.id,
+          moduleTitle: module.title || 'Knowledge Module',
+          moduleEmoji: module.emoji || culture.emoji || '✦',
+          desc: body.slice(0, 180) + (body.length > 180 ? '…' : ''),
+          major: lessonIndex === 0 || globalIndex < 2,
+          status: culture.status || 'live'
+        };
+      });
+    });
+
+    return {
+      id: culture.id || `culture-${index}`,
+      name: culture.name || `Culture ${index + 1}`,
+      emoji: culture.emoji || '✦',
+      tagline: culture.tagline || 'Living knowledge system',
+      intro: culture.intro || '',
+      theme: culture.theme || 'default',
+      status: culture.status || 'live',
+      modules,
+      moduleCount: modules.length,
+      lessonCount: concepts.length,
+      color: theme.color,
+      colorDim: theme.colorDim,
+      colorBorder: theme.colorBorder,
+      glow: theme.glow,
+      image: cultureImage(culture.id || `culture-${index}`),
+      concepts
+    };
+  }
+
+  const CULTURES = RAW_CULTURES.map(normalizeCulture);
+  const GALAXIES = CULTURES.filter(c => c.id !== 'bridge');
+  const BRIDGE = CULTURES.find(c => c.id === 'bridge') || null;
+  const LIVE_CULTURES = CULTURES.filter(c => c.status === 'live');
+
+  const CONCEPTS = new Map();
+  CULTURES.forEach(culture => {
+    culture.concepts.forEach(concept => {
+      CONCEPTS.set(concept.id, {
+        ...concept,
+        cultureId: culture.id,
+        cultureName: culture.name,
+        cultureEmoji: culture.emoji,
+        color: culture.color,
+        colorDim: culture.colorDim,
+        colorBorder: culture.colorBorder,
+        glow: culture.glow
+      });
+    });
+  });
+
+  /* ────────────────────────────────────────────────────────────────────────
      STATE
-  ───────────────────────────────────────────────────────────────────────── */
-  let activeTab    = 'home';
-  let activeGalaxy = 0;  // 0 = kanaka, 1 = kemet, 2 = bridge
-  let sheetOpen    = false;
-  let sheetData    = null;
+  ──────────────────────────────────────────────────────────────────────── */
+  let activeTab = 'home';
+  let activeGalaxy = 0;
+  let sheetOpen = false;
+  let sheetData = null;
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     BOOT — check if mobile, inject CSS + HTML, then init
-  ───────────────────────────────────────────────────────────────────────── */
+  /* ────────────────────────────────────────────────────────────────────────
+     BOOT
+  ──────────────────────────────────────────────────────────────────────── */
   function boot() {
     injectMobileCSS();
     buildShell();
@@ -142,579 +254,628 @@
     initSwipe();
   }
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     CSS LINK INJECTION
-  ───────────────────────────────────────────────────────────────────────── */
   function injectMobileCSS() {
+    if (document.querySelector('link[data-lkp-mobile-css="true"]')) return;
+
     const link = document.createElement('link');
-    link.rel  = 'stylesheet';
+    link.rel = 'stylesheet';
     link.href = 'LKP/css/lkp-mobile.css';
+    link.dataset.lkpMobileCss = 'true';
     document.head.appendChild(link);
   }
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     SHELL — replace body content with mobile app structure
-  ───────────────────────────────────────────────────────────────────────── */
   function buildShell() {
     document.body.innerHTML = `
       <div id="lkp-m-app" class="lkp-m-app">
         <div id="lkp-m-starfield" class="lkp-m-starfield" aria-hidden="true"></div>
         <div id="lkp-m-panels" class="lkp-m-panels">
-          <div id="lkp-m-home"      class="lkp-m-panel" data-panel="home"></div>
-          <div id="lkp-m-galaxies"  class="lkp-m-panel" data-panel="galaxies"></div>
-          <div id="lkp-m-bridge"    class="lkp-m-panel" data-panel="bridge"></div>
-          <div id="lkp-m-chart"     class="lkp-m-panel" data-panel="chart"></div>
-          <div id="lkp-m-ecosystem" class="lkp-m-panel" data-panel="ecosystem"></div>
+          <section id="lkp-m-home"      class="lkp-m-panel" data-panel="home"></section>
+          <section id="lkp-m-galaxies"  class="lkp-m-panel" data-panel="galaxies"></section>
+          <section id="lkp-m-bridge"    class="lkp-m-panel" data-panel="bridge"></section>
+          <section id="lkp-m-chart"     class="lkp-m-panel" data-panel="chart"></section>
+          <section id="lkp-m-ecosystem" class="lkp-m-panel" data-panel="ecosystem"></section>
         </div>
-        <div id="lkp-m-sheet"    class="lkp-m-sheet"></div>
-        <div id="lkp-m-sheet-bg" class="lkp-m-sheet-bg"></div>
-        <nav id="lkp-m-nav"      class="lkp-m-nav"></nav>
+        <div id="lkp-m-sheet" class="lkp-m-sheet" role="dialog" aria-modal="true" aria-hidden="true"></div>
+        <div id="lkp-m-sheet-bg" class="lkp-m-sheet-bg" aria-hidden="true"></div>
+        <nav id="lkp-m-nav" class="lkp-m-nav" aria-label="Mobile platform navigation"></nav>
       </div>`;
   }
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     CSS ANIMATED STARFIELD
-  ───────────────────────────────────────────────────────────────────────── */
   function buildStarfield() {
-    const el  = document.getElementById('lkp-m-starfield');
-    const N   = 72;
-    let   out = '';
-    const COLORS = ['#9ed8ff','#ffffff','#ffe8d0','#b48cff','#ffd0aa'];
-    for (let i = 0; i < N; i++) {
-      const x    = Math.random() * 100;
-      const y    = Math.random() * 100;
-      const s    = 1 + Math.random() * 2.5;
-      const dur  = 2.5 + Math.random() * 5;
-      const del  = Math.random() * 6;
-      const col  = COLORS[Math.floor(Math.random() * COLORS.length)];
-      out += `<div class="lkp-m-star" style="left:${x}%;top:${y}%;width:${s}px;height:${s}px;background:${col};animation-duration:${dur}s;animation-delay:${del}s"></div>`;
+    const el = document.getElementById('lkp-m-starfield');
+    const count = 84;
+    const colors = ['#9ed8ff', '#ffffff', '#ffe8d0', '#b48cff', '#ffd0aa', '#54c6ee'];
+    let out = '<div class="lkp-m-nebula lkp-m-nebula--one"></div><div class="lkp-m-nebula lkp-m-nebula--two"></div>';
+
+    for (let i = 0; i < count; i++) {
+      const x = Math.random() * 100;
+      const y = Math.random() * 100;
+      const s = 1 + Math.random() * 2.8;
+      const dur = 2.8 + Math.random() * 5.5;
+      const del = Math.random() * 6;
+      const col = colors[Math.floor(Math.random() * colors.length)];
+
+      out += `<span class="lkp-m-star" style="left:${x}%;top:${y}%;width:${s}px;height:${s}px;background:${col};animation-duration:${dur}s;animation-delay:${del}s"></span>`;
     }
-    // Nebula blobs
-    out += `<div class="lkp-m-nebula lkp-m-nebula--kanaka"></div>`;
-    out += `<div class="lkp-m-nebula lkp-m-nebula--kemet"></div>`;
-    out += `<div class="lkp-m-nebula lkp-m-nebula--bridge"></div>`;
+
     el.innerHTML = out;
   }
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     HOME PANEL
-  ───────────────────────────────────────────────────────────────────────── */
+  /* ────────────────────────────────────────────────────────────────────────
+     DATA-DRIVEN HOME HELPERS
+  ──────────────────────────────────────────────────────────────────────── */
+  function getOrbitCultures() {
+    return CULTURES;
+  }
+
+  function openCultureFromButton(btn) {
+    const tab = btn.dataset.tab;
+    const galaxyIndex = btn.dataset.galaxy;
+
+    if (galaxyIndex !== undefined && galaxyIndex !== '') {
+      activeGalaxy = Math.max(0, Math.min(GALAXIES.length - 1, parseInt(galaxyIndex, 10)));
+    }
+
+    switchTab(tab || 'home');
+  }
+
+  function bindTabButtons(scope) {
+    scope.querySelectorAll('[data-tab]').forEach(btn => {
+      btn.addEventListener('click', () => openCultureFromButton(btn));
+    });
+  }
+
+  function buildHomePills() {
+    return getOrbitCultures().map((culture, index) => {
+      const isBridge = culture.id === 'bridge';
+      const galaxyIndex = GALAXIES.findIndex(g => g.id === culture.id);
+      const tab = isBridge ? 'bridge' : 'galaxies';
+
+      return `
+        <button class="lkp-m-pill lkp-m-pill--dynamic"
+                style="--pill-color:${culture.color};--pill-bg:${culture.colorDim};--pill-border:${culture.colorBorder}"
+                data-tab="${tab}"
+                ${!isBridge && galaxyIndex >= 0 ? `data-galaxy="${galaxyIndex}"` : ''}>
+          <span>${culture.emoji}</span> ${escapeHTML(culture.name)}
+        </button>`;
+    }).join('');
+  }
+
+  function buildCompassOrbitNodes() {
+    const entries = getOrbitCultures();
+    const total = Math.max(1, entries.length);
+
+    const nodes = entries.map((culture, index) => {
+      const angle = -90 + (360 / total) * index;
+      const isBridge = culture.id === 'bridge';
+      const galaxyIndex = GALAXIES.findIndex(g => g.id === culture.id);
+      const tab = isBridge ? 'bridge' : 'galaxies';
+      const disabled = culture.status !== 'live' && !culture.concepts.length;
+
+      return `
+        <button class="lkp-m-orbit-node ${disabled ? 'is-soon' : ''}"
+                style="--orbit-color:${culture.color};--orbit-bg:${culture.colorDim};--orbit-angle:${angle}deg;--orbit-delay:${(-index * 0.65).toFixed(2)}s"
+                data-tab="${tab}"
+                ${!isBridge && galaxyIndex >= 0 ? `data-galaxy="${galaxyIndex}"` : ''}
+                aria-label="Open ${escapeHTML(culture.name)}">
+          <span class="lkp-m-orbit-node__halo"></span>
+          <img src="${culture.image}" class="lkp-m-orbit-node__img" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+          <span class="lkp-m-orbit-node__emoji" style="display:none">${culture.emoji}</span>
+        </button>`;
+    }).join('');
+
+    const sparks = Array.from({ length: 18 }, (_, i) => {
+      const angle = Math.round((360 / 18) * i);
+      const delay = (-i * 0.37).toFixed(2);
+      return `<span class="lkp-m-orbit-spark" style="--spark-angle:${angle}deg;--spark-delay:${delay}s"></span>`;
+    }).join('');
+
+    return `${nodes}${sparks}`;
+  }
+
+  function buildHomeQuickButtons() {
+    const buttons = getOrbitCultures().map((culture) => {
+      const isBridge = culture.id === 'bridge';
+      const galaxyIndex = GALAXIES.findIndex(g => g.id === culture.id);
+      const tab = isBridge ? 'bridge' : 'galaxies';
+      const count = culture.lessonCount;
+      const label = culture.status === 'live'
+        ? `${count} ${count === 1 ? 'lesson' : 'lessons'}`
+        : 'Coming soon';
+
+      return `
+        <button class="lkp-m-quick-btn lkp-m-quick-btn--dynamic"
+                style="--quick-color:${culture.color};--quick-bg:${culture.colorDim};--quick-border:${culture.colorBorder}"
+                data-tab="${tab}" ${!isBridge && galaxyIndex >= 0 ? `data-galaxy="${galaxyIndex}"` : ''}>
+          <img src="${culture.image}" class="lkp-m-quick-btn__img" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+          <span class="lkp-m-quick-btn__glyph" style="display:none">${culture.emoji}</span>
+          <span class="lkp-m-quick-btn__label">${escapeHTML(culture.name)}</span>
+          <span class="lkp-m-quick-btn__sub">${escapeHTML(label)}</span>
+        </button>`;
+    }).join('');
+
+    return `${buttons}
+      <button class="lkp-m-quick-btn lkp-m-quick-btn--dynamic lkp-m-quick-btn--chart"
+              style="--quick-color:var(--m-cyan);--quick-bg:rgba(84,198,238,0.10);--quick-border:rgba(84,198,238,0.26)"
+              data-tab="chart">
+        <span class="lkp-m-quick-btn__glyph">✦</span>
+        <span class="lkp-m-quick-btn__label">Star Chart</span>
+        <span class="lkp-m-quick-btn__sub">Constellation map</span>
+      </button>`;
+  }
+
   function buildHome() {
     const el = document.getElementById('lkp-m-home');
+    const liveCount = LIVE_CULTURES.length;
+    const totalCount = CULTURES.length;
+
     el.innerHTML = `
       <div class="lkp-m-home">
         <div class="lkp-m-home__brand">
           <div class="lkp-m-home__glyph">◈</div>
           <h1 class="lkp-m-home__title">Living<br><em>Knowledge</em></h1>
-          <p class="lkp-m-home__sub">Navigate the stars of ancestral wisdom. Two galaxies. Infinite connections.</p>
-        </div>
-
-        <div class="lkp-m-home__pills">
-          <span class="lkp-m-pill lkp-m-pill--kanaka">🌺 Kānaka Maoli</span>
-          <span class="lkp-m-pill lkp-m-pill--kemet">☥ Kemet</span>
-          <span class="lkp-m-pill lkp-m-pill--bridge">🌐 The Bridge</span>
-        </div>
-
-        <div class="lkp-m-home__quick">
-          <button class="lkp-m-quick-btn lkp-m-quick-btn--kanaka" data-tab="galaxies" data-galaxy="0">
-            <img src="${IMG}kanaka.png" class="lkp-m-quick-btn__img" onerror="this.style.display='none'">
-            <div class="lkp-m-quick-btn__label">Kānaka Maoli</div>
-            <div class="lkp-m-quick-btn__sub">10 Concepts</div>
-          </button>
-          <button class="lkp-m-quick-btn lkp-m-quick-btn--kemet" data-tab="galaxies" data-galaxy="1">
-            <img src="${IMG}kemet.png" class="lkp-m-quick-btn__img" onerror="this.style.display='none'">
-            <div class="lkp-m-quick-btn__label">Kemet</div>
-            <div class="lkp-m-quick-btn__sub">9 Concepts</div>
-          </button>
-          <button class="lkp-m-quick-btn lkp-m-quick-btn--bridge" data-tab="bridge">
-            <div class="lkp-m-quick-btn__glyph">🌐</div>
-            <div class="lkp-m-quick-btn__label">The Bridge</div>
-            <div class="lkp-m-quick-btn__sub">Aloha ↔ Maʻat</div>
-          </button>
-          <button class="lkp-m-quick-btn lkp-m-quick-btn--chart" data-tab="chart">
-            <div class="lkp-m-quick-btn__glyph">✦</div>
-            <div class="lkp-m-quick-btn__label">Star Chart</div>
-            <div class="lkp-m-quick-btn__sub">Constellation map</div>
-          </button>
-        </div>
-
-        <a href="lessons.html" class="lkp-m-begin-btn">
-          <i class="fas fa-book-open"></i> Begin Learning
-        </a>
-
-        <div class="lkp-m-home__compass" aria-hidden="true">
-          <img src="${IMG}hawaiian-star-compass.png" class="lkp-m-compass-img" onerror="this.style.display='none'">
-        </div>
-      </div>`;
-
-    el.querySelectorAll('[data-tab]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const gal = btn.dataset.galaxy;
-        if (gal !== undefined) activeGalaxy = parseInt(gal);
-        switchTab(btn.dataset.tab);
-      });
-    });
-  }
-
-  /* ─────────────────────────────────────────────────────────────────────────
-     GALAXIES PANEL — horizontal scroll snap between culture cards
-  ───────────────────────────────────────────────────────────────────────── */
-  function buildGalaxiesPanel() {
-    const el  = document.getElementById('lkp-m-galaxies');
-    const all = [...GALAXIES, BRIDGE];
-
-    el.innerHTML = `
-      <div class="lkp-m-galaxies">
-        <div class="lkp-m-panel-header">
-          <div class="lkp-m-eyebrow">✦ The Cultures ✦</div>
-          <h2 class="lkp-m-panel-title">Two Galaxies of<br><em>Living Knowledge</em></h2>
-        </div>
-        <div class="lkp-m-galaxy-dots" id="galaxyDots">
-          ${all.map((g,i) => `<button class="lkp-m-galaxy-dot ${i===activeGalaxy?'is-active':''}" style="--dot-color:${g.color}" data-idx="${i}" aria-label="${g.name}"></button>`).join('')}
-        </div>
-        <div class="lkp-m-galaxy-track" id="galaxyTrack">
-          ${all.map((g, i) => buildGalaxyCard(g, i)).join('')}
-        </div>
-      </div>`;
-
-    // Wire dots
-    el.querySelectorAll('.lkp-m-galaxy-dot').forEach(dot => {
-      dot.addEventListener('click', () => scrollToGalaxy(parseInt(dot.dataset.idx)));
-    });
-
-    // Scroll → update dots
-    const track = el.querySelector('#galaxyTrack');
-    track.addEventListener('scroll', () => {
-      const idx = Math.round(track.scrollLeft / track.clientWidth);
-      if (idx !== activeGalaxy) { activeGalaxy = idx; updateDots(); }
-    }, { passive: true });
-
-    // Wire concept pills
-    el.querySelectorAll('.lkp-m-concept-pill').forEach(pill => {
-      pill.addEventListener('click', () => openConceptSheet(pill.dataset.id));
-    });
-
-    // Wire explore buttons
-    el.querySelectorAll('.lkp-m-galaxy-card__explore').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const id = btn.dataset.galaxy;
-        if (id === 'bridge') switchTab('bridge');
-        else window.location.href = `lessons.html#${id}`;
-      });
-    });
-  }
-
-  function buildGalaxyCard(g, i) {
-    const isBridge = g.id === 'bridge';
-    const concepts = isBridge ? g.concepts : g.concepts;
-    const pills = concepts.map(c =>
-      `<button class="lkp-m-concept-pill ${c.major ? 'lkp-m-concept-pill--major' : ''}"
-         style="--pill-color:${g.color};--pill-bg:${g.colorDim};--pill-border:${g.colorBorder}"
-         data-id="${c.id}">${c.label}</button>`
-    ).join('');
-
-    return `
-      <div class="lkp-m-galaxy-card" data-idx="${i}" style="--galaxy-color:${g.color};--galaxy-dim:${g.colorDim}">
-        <div class="lkp-m-galaxy-card__header">
-          <div class="lkp-m-galaxy-card__disc">
-            ${g.image
-              ? `<img src="${g.image}" class="lkp-m-galaxy-card__img" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-              : ''}
-            <div class="lkp-m-galaxy-card__emoji" ${g.image ? 'style="display:none"' : ''}>${g.emoji}</div>
-          </div>
-          <div class="lkp-m-galaxy-card__meta">
-            <div class="lkp-m-galaxy-card__badge" style="color:${g.color}">◈ ${isBridge ? 'The Bridge' : 'Galaxy ' + (i + 1)}</div>
-            <div class="lkp-m-galaxy-card__name" style="color:${g.color}">${g.name}</div>
-            <div class="lkp-m-galaxy-card__tagline">${g.tagline}</div>
-          </div>
-        </div>
-        <p class="lkp-m-galaxy-card__intro">${g.intro}</p>
-        <div class="lkp-m-galaxy-card__concepts">
-          <div class="lkp-m-galaxy-card__concepts-label">Tap a concept to explore</div>
-          <div class="lkp-m-galaxy-card__pills">${pills}</div>
-        </div>
-        <button class="lkp-m-galaxy-card__explore" data-galaxy="${g.id}"
-          style="background:${g.colorDim};border-color:${g.colorBorder};color:${g.color}">
-          ${isBridge ? 'Explore The Bridge →' : `Enter ${g.name} Lessons →`}
-        </button>
-      </div>`;
-  }
-
-  function scrollToGalaxy(idx) {
-    activeGalaxy = idx;
-    const track = document.getElementById('galaxyTrack');
-    if (track) track.scrollTo({ left: idx * track.clientWidth, behavior: 'smooth' });
-    updateDots();
-  }
-
-  function updateDots() {
-    document.querySelectorAll('.lkp-m-galaxy-dot').forEach(d => {
-      d.classList.toggle('is-active', parseInt(d.dataset.idx) === activeGalaxy);
-    });
-  }
-
-  /* ─────────────────────────────────────────────────────────────────────────
-     BRIDGE PANEL — Aloha ↔ Maʻat comparison
-  ───────────────────────────────────────────────────────────────────────── */
-  function buildBridgePanel() {
-    const el = document.getElementById('lkp-m-bridge');
-
-    const pairs = BRIDGE.pairs.map(p => `
-      <div class="lkp-m-bridge-pair">
-        <div class="lkp-m-bridge-col lkp-m-bridge-col--kanaka">
-          <div class="lkp-m-bridge-col__name">${p.kanaka.name}</div>
-          <div class="lkp-m-bridge-col__sub">${p.kanaka.sub}</div>
-          <p class="lkp-m-bridge-col__desc">${p.kanaka.desc}</p>
-        </div>
-        <div class="lkp-m-bridge-divider">↔</div>
-        <div class="lkp-m-bridge-col lkp-m-bridge-col--kemet">
-          <div class="lkp-m-bridge-col__name">${p.kemet.name}</div>
-          <div class="lkp-m-bridge-col__sub">${p.kemet.sub}</div>
-          <p class="lkp-m-bridge-col__desc">${p.kemet.desc}</p>
-        </div>
-      </div>`).join('');
-
-    el.innerHTML = `
-      <div class="lkp-m-bridge-panel">
-        <div class="lkp-m-panel-header">
-          <div class="lkp-m-eyebrow">✦ The Living Connection ✦</div>
-          <h2 class="lkp-m-panel-title">Aloha &amp; Maʻat —<br><em>One Truth</em></h2>
-        </div>
-
-        <div class="lkp-m-bridge-intro">
-          <div class="lkp-m-bridge-header-cards">
-            <div class="lkp-m-bridge-culture lkp-m-bridge-culture--kanaka">
-              <img src="${IMG}kanaka.png" class="lkp-m-bridge-culture__img" onerror="this.style.display='none'">
-              <div>
-                <div class="lkp-m-bridge-culture__name">Aloha</div>
-                <div class="lkp-m-bridge-culture__sub">Hawaiian Way of Being</div>
-              </div>
-            </div>
-            <div class="lkp-m-bridge-vs">↔</div>
-            <div class="lkp-m-bridge-culture lkp-m-bridge-culture--kemet">
-              <img src="${IMG}kemet.png" class="lkp-m-bridge-culture__img" onerror="this.style.display='none'">
-              <div>
-                <div class="lkp-m-bridge-culture__name">Maʻat</div>
-                <div class="lkp-m-bridge-culture__sub">Kemetic Cosmic Order</div>
-              </div>
-            </div>
-          </div>
-          <p class="lkp-m-bridge-intro__text">
-            Developed independently, on opposite sides of the Earth, thousands of years apart.
-            Yet structurally identical. Both understand cosmic order, personal ethics, and
-            ecological responsibility as one indivisible truth.
+          <p class="lkp-m-home__sub">
+            Navigate the stars of ancestral wisdom. ${liveCount} live ${liveCount === 1 ? 'galaxy' : 'galaxies'}, ${totalCount} total culture orbits.
+            Add another culture to <strong>lkp-data.js</strong> and it becomes another galaxy.
           </p>
         </div>
 
-        <div class="lkp-m-bridge-pairs">${pairs}</div>
-
-        <div class="lkp-m-bridge-quotes">
-          <blockquote class="lkp-m-bridge-quote lkp-m-bridge-quote--kanaka">
-            "Aloha is the intelligence with which we meet life."
-            <cite>— Aunty Pilahi Paki</cite>
-          </blockquote>
-          <blockquote class="lkp-m-bridge-quote lkp-m-bridge-quote--kemet">
-            "Speak Maʻat. Do Maʻat. For she is mighty, she is great, she endures."
-            <cite>— Tomb of Rekhmire, c. 1425 BCE</cite>
-          </blockquote>
+        <div class="lkp-m-home__pills">
+          ${buildHomePills()}
         </div>
 
-        <a href="lessons.html#bridge-aloha-maat" class="lkp-m-bridge-cta">
-          Explore The Bridge Lessons →
+        <div class="lkp-m-compass-portal" aria-label="Living Hawaiian star compass gateway">
+          <div class="lkp-m-compass-aura lkp-m-compass-aura--gold"></div>
+          <div class="lkp-m-compass-aura lkp-m-compass-aura--cyan"></div>
+          <div class="lkp-m-compass-ring lkp-m-compass-ring--outer"></div>
+          <div class="lkp-m-compass-ring lkp-m-compass-ring--inner"></div>
+
+          <div class="lkp-m-home__compass" aria-hidden="true">
+            <img src="${IMG}hawaiian-star-compass.jpg"
+                 class="lkp-m-compass-img"
+                 alt=""
+                 onerror="this.onerror=null;this.src='${IMG}hawaiian-star-compass.png';">
+          </div>
+
+          <div class="lkp-m-orbit" aria-label="Culture orbit selector">
+            ${buildCompassOrbitNodes()}
+          </div>
+
+          <div class="lkp-m-compass-caption">
+            <span>Ka Pā Nānā Hōkū</span>
+            <small>Tap a culture orbit</small>
+          </div>
+        </div>
+
+        <div class="lkp-m-home__quick">
+          ${buildHomeQuickButtons()}
+        </div>
+
+        <a href="lessons.html" class="lkp-m-begin-btn">
+          <span>📖</span> Begin Learning
         </a>
       </div>`;
+
+    bindTabButtons(el);
   }
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     STAR CHART PANEL — 2D SVG constellation map, tappable nodes
-  ───────────────────────────────────────────────────────────────────────── */
-  function buildChartPanel() {
-    const el = document.getElementById('lkp-m-chart');
-
-    // Layout all concepts in a 2D space
-    // Kānaka Maoli: left cluster | Kemet: right cluster | Bridge: top center
-    const LAYOUT = {
-      kumulipo:   [110, 220], aloha:     [80,  310], wayfinding:[160, 280],
-      hokuleaa:   [130, 160], ahupuaa:   [60,  380], kalo:      [40,  440],
-      mana:       [170, 340], pono:      [90,  370], olelo:     [150, 420],
-      laau:       [50,  490],
-      maat:       [520, 220], nun:       [490, 150], ennead:    [570, 280],
-      ptah:       [550, 340], medunetjer:[590, 390], duat:      [530, 420],
-      imhotep:    [480, 310], kabakh:    [560, 460], isfet:     [500, 480],
-      'br-creation':[310,90],  'br-pairs':  [270,160], 'br-alohamaat':[340,170],
-      'br-star':    [280,240],
-    };
-
-    const W = 640, H = 560;
-    const concepts = Array.from(ALL_CONCEPTS.values());
-
-    // Build SVG lines
-    let lines = '';
-    CHART_CONNECTIONS.forEach(([aId, bId, str]) => {
-      const posA = LAYOUT[aId], posB = LAYOUT[bId];
-      if (!posA || !posB) return;
-      const ca = ALL_CONCEPTS.get(aId), cb = ALL_CONCEPTS.get(bId);
-      const midC = ca ? ca.color : '#fff';
-      lines += `<line x1="${posA[0]}" y1="${posA[1]}" x2="${posB[0]}" y2="${posB[1]}"
-        stroke="${midC}" stroke-opacity="${str * 0.30}" stroke-width="${str > 0.7 ? 1.2 : 0.8}"
-        stroke-dasharray="${str > 0.7 ? 'none' : '4,4'}"/>`;
-    });
-
-    // Build SVG nodes
-    let nodes = '';
-    concepts.forEach(c => {
-      const pos = LAYOUT[c.id];
-      if (!pos) return;
-      const r   = c.major ? 8 : 5;
-      const col = c.color;
-      nodes += `
-        <g class="lkp-m-chart-node" data-id="${c.id}" transform="translate(${pos[0]},${pos[1]})">
-          <circle r="${r + 8}" fill="transparent" class="lkp-m-chart-node__hit"/>
-          <circle r="${r}" fill="${col}" opacity="0.88" class="lkp-m-chart-node__dot"/>
-          <circle r="${r + 3}" fill="none" stroke="${col}" stroke-opacity="0.30" stroke-width="1"/>
-          ${c.major ? `<line x1="${-(r+6)}" y1="0" x2="${r+6}" y2="0" stroke="${col}" stroke-opacity="0.40" stroke-width="0.8"/>
-          <line x1="0" y1="${-(r+6)}" x2="0" y2="${r+6}" stroke="${col}" stroke-opacity="0.40" stroke-width="0.8"/>` : ''}
-          <text x="0" y="${r + 14}" text-anchor="middle" font-size="9" fill="${col}" opacity="0.82"
-            font-family="DM Sans,sans-serif" font-weight="${c.major?'600':'400'}">${c.label}</text>
-        </g>`;
-    });
-
-    // Culture region labels
-    const labels = `
-      <text x="105" y="48" text-anchor="middle" font-size="11" fill="#3cb371" opacity="0.50"
-        font-family="DM Sans,sans-serif" font-weight="600" letter-spacing="1">KĀNAKA MAOLI</text>
-      <text x="530" y="48" text-anchor="middle" font-size="11" fill="#f0c96a" opacity="0.50"
-        font-family="DM Sans,sans-serif" font-weight="600" letter-spacing="1">KEMET</text>
-      <text x="310" y="32" text-anchor="middle" font-size="11" fill="#aa99ff" opacity="0.50"
-        font-family="DM Sans,sans-serif" font-weight="600" letter-spacing="1">THE BRIDGE</text>`;
+  /* ────────────────────────────────────────────────────────────────────────
+     GALAXY PANEL
+  ──────────────────────────────────────────────────────────────────────── */
+  function buildGalaxiesPanel() {
+    const el = document.getElementById('lkp-m-galaxies');
 
     el.innerHTML = `
-      <div class="lkp-m-chart-panel">
-        <div class="lkp-m-panel-header">
-          <div class="lkp-m-eyebrow">✦ Constellation Map ✦</div>
-          <h2 class="lkp-m-panel-title">The Star Chart</h2>
-          <p class="lkp-m-panel-desc">Tap any star to learn about that concept. Lines show knowledge connections.</p>
-        </div>
-        <div class="lkp-m-chart-scroll">
-          <svg viewBox="0 0 ${W} ${H}" class="lkp-m-chart-svg" role="img" aria-label="Knowledge constellation chart">
-            <defs>
-              <radialGradient id="mgk" cx="17%" cy="45%" r="28%">
-                <stop offset="0%" stop-color="#3cb371" stop-opacity="0.12"/>
-                <stop offset="100%" stop-color="#3cb371" stop-opacity="0"/>
-              </radialGradient>
-              <radialGradient id="mgm" cx="83%" cy="45%" r="28%">
-                <stop offset="0%" stop-color="#f0c96a" stop-opacity="0.10"/>
-                <stop offset="100%" stop-color="#f0c96a" stop-opacity="0"/>
-              </radialGradient>
-              <radialGradient id="mgb" cx="50%" cy="20%" r="22%">
-                <stop offset="0%" stop-color="#aa99ff" stop-opacity="0.10"/>
-                <stop offset="100%" stop-color="#aa99ff" stop-opacity="0"/>
-              </radialGradient>
-            </defs>
-            <rect width="${W}" height="${H}" fill="url(#mgk)"/>
-            <rect width="${W}" height="${H}" fill="url(#mgm)"/>
-            <rect width="${W}" height="${H}" fill="url(#mgb)"/>
-            ${labels}
-            <g class="lkp-m-chart-lines">${lines}</g>
-            <g class="lkp-m-chart-nodes">${nodes}</g>
-          </svg>
-        </div>
-        <div id="lkp-m-chart-tip" class="lkp-m-chart-tip hidden">
-          <div class="lkp-m-chart-tip__inner">
-            <div id="chartTipLabel" class="lkp-m-chart-tip__label"></div>
-            <div id="chartTipDesc" class="lkp-m-chart-tip__desc"></div>
-            <a id="chartTipLink" href="#" class="lkp-m-chart-tip__link">Study this lesson →</a>
+      <div class="lkp-m-section-head">
+        <span class="lkp-m-eyebrow">Living Galaxies</span>
+        <h2>Choose a Culture</h2>
+        <p>Every culture in <strong>lkp-data.js</strong> becomes a mobile galaxy card. Live cultures show lessons; coming-soon cultures hold the orbit for future expansion.</p>
+      </div>
+
+      <div id="lkp-m-galaxy-scroll" class="lkp-m-galaxy-scroll">
+        ${GALAXIES.map((culture, index) => buildGalaxyCard(culture, index)).join('')}
+      </div>
+
+      <div class="lkp-m-dots" aria-hidden="true">
+        ${GALAXIES.map((_, i) => `<span class="lkp-m-dot ${i === activeGalaxy ? 'is-active' : ''}"></span>`).join('')}
+      </div>`;
+
+    el.querySelectorAll('.lkp-m-concept-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const culture = CULTURES.find(c => c.id === btn.dataset.culture);
+        const concept = CONCEPTS.get(btn.dataset.concept);
+        if (culture && concept) openConceptSheet(culture, concept);
+      });
+    });
+  }
+
+  function buildGalaxyCard(culture, index) {
+    const isSoon = culture.status !== 'live' || !culture.concepts.length;
+    const conceptButtons = culture.concepts.length
+      ? culture.concepts.map(concept => `
+          <button class="lkp-m-concept-btn ${concept.major ? 'is-major' : ''}"
+                  style="--concept-color:${culture.color};--concept-bg:${culture.colorDim};--concept-border:${culture.colorBorder}"
+                  data-culture="${culture.id}"
+                  data-concept="${concept.id}">
+            <span>${concept.moduleEmoji || culture.emoji}</span>
+            <strong>${escapeHTML(concept.label)}</strong>
+            <small>${escapeHTML(concept.moduleTitle || concept.readTime || '')}</small>
+          </button>`).join('')
+      : `<div class="lkp-m-soon-card">
+          <span>${culture.emoji}</span>
+          <strong>Coming Soon</strong>
+          <p>${escapeHTML(culture.tagline || culture.intro || 'This culture orbit is ready for future lessons.')}</p>
+        </div>`;
+
+    return `
+      <article class="lkp-m-galaxy-card ${isSoon ? 'is-soon' : ''}"
+               data-galaxy-card="${index}"
+               style="--galaxy-color:${culture.color};--galaxy-bg:${culture.colorDim};--galaxy-border:${culture.colorBorder};--galaxy-glow:${culture.glow}">
+        <div class="lkp-m-galaxy-card__top">
+          <div class="lkp-m-galaxy-card__icon">
+            <img src="${culture.image}" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+            <span style="display:none">${culture.emoji}</span>
           </div>
-          <button id="chartTipClose" class="lkp-m-chart-tip__close" aria-label="Close">✕</button>
+          <div>
+            <span class="lkp-m-status ${culture.status === 'live' ? 'is-live' : 'is-soon'}">${culture.status === 'live' ? 'Live' : 'Coming Soon'}</span>
+            <h3>${escapeHTML(culture.name)}</h3>
+            <p>${escapeHTML(culture.tagline || '')}</p>
+          </div>
+        </div>
+
+        <div class="lkp-m-galaxy-card__intro">${escapeHTML(culture.intro || '')}</div>
+
+        <div class="lkp-m-galaxy-card__stats">
+          <span><strong>${culture.moduleCount}</strong> modules</span>
+          <span><strong>${culture.lessonCount}</strong> lessons</span>
+          <span><strong>${culture.theme}</strong> theme</span>
+        </div>
+
+        <div class="lkp-m-concept-grid">
+          ${conceptButtons}
+        </div>
+      </article>`;
+  }
+
+  function updateDotsFromScroll() {
+    const scroller = document.getElementById('lkp-m-galaxy-scroll');
+    if (!scroller) return;
+
+    const cards = [...scroller.querySelectorAll('[data-galaxy-card]')];
+    if (!cards.length) return;
+
+    const center = scroller.scrollLeft + scroller.clientWidth / 2;
+    let best = 0;
+    let bestDistance = Infinity;
+
+    cards.forEach((card, index) => {
+      const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+      const distance = Math.abs(cardCenter - center);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = index;
+      }
+    });
+
+    activeGalaxy = best;
+    document.querySelectorAll('.lkp-m-dot').forEach((dot, index) => {
+      dot.classList.toggle('is-active', index === activeGalaxy);
+    });
+  }
+
+  /* ────────────────────────────────────────────────────────────────────────
+     BRIDGE PANEL
+  ──────────────────────────────────────────────────────────────────────── */
+  function buildBridgePanel() {
+    const el = document.getElementById('lkp-m-bridge');
+    const bridge = BRIDGE;
+
+    if (!bridge) {
+      el.innerHTML = `
+        <div class="lkp-m-section-head">
+          <span class="lkp-m-eyebrow">Bridge</span>
+          <h2>No Bridge Data Yet</h2>
+          <p>Add a culture with <code>id: 'bridge'</code> to lkp-data.js.</p>
+        </div>`;
+      return;
+    }
+
+    el.innerHTML = `
+      <div class="lkp-m-section-head">
+        <span class="lkp-m-eyebrow">${bridge.emoji} ${escapeHTML(bridge.tagline || 'Cross-Cultural Connections')}</span>
+        <h2>${escapeHTML(bridge.name)}</h2>
+        <p>${escapeHTML(bridge.intro || '')}</p>
+      </div>
+
+      <div class="lkp-m-bridge-grid">
+        ${bridge.concepts.length
+          ? bridge.concepts.map(concept => `
+            <button class="lkp-m-bridge-card"
+                    style="--bridge-color:${bridge.color};--bridge-bg:${bridge.colorDim};--bridge-border:${bridge.colorBorder}"
+                    data-culture="${bridge.id}"
+                    data-concept="${concept.id}">
+              <span>${concept.moduleEmoji || bridge.emoji}</span>
+              <strong>${escapeHTML(concept.title)}</strong>
+              <small>${escapeHTML(concept.readTime || concept.moduleTitle || '')}</small>
+              <p>${escapeHTML(concept.desc || '')}</p>
+            </button>`).join('')
+          : `<div class="lkp-m-soon-card"><span>${bridge.emoji}</span><strong>Bridge lessons coming soon</strong></div>`}
+      </div>`;
+
+    el.querySelectorAll('[data-concept]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const concept = CONCEPTS.get(btn.dataset.concept);
+        if (concept) openConceptSheet(bridge, concept);
+      });
+    });
+  }
+
+  /* ────────────────────────────────────────────────────────────────────────
+     CHART PANEL
+  ──────────────────────────────────────────────────────────────────────── */
+  function buildChartPanel() {
+    const el = document.getElementById('lkp-m-chart');
+    const chartConcepts = [...CONCEPTS.values()].filter(c => !c.id.endsWith('-soon'));
+    const positioned = getChartPositions(chartConcepts);
+    const positionsById = new Map(positioned.map(item => [item.id, item]));
+    const dynamicConnections = buildDynamicConnections(chartConcepts);
+    const connections = [...KNOWN_CONNECTIONS, ...dynamicConnections]
+      .filter(([a, b]) => positionsById.has(a) && positionsById.has(b));
+
+    const lines = connections.map(([a, b, strength]) => {
+      const p1 = positionsById.get(a);
+      const p2 = positionsById.get(b);
+      const op = 0.18 + Math.min(0.45, Number(strength || 0.5) * 0.35);
+      return `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="rgba(240,201,106,${op})" stroke-width="${1 + Number(strength || 0.5)}" />`;
+    }).join('');
+
+    const nodes = positioned.map(p => `
+      <button class="lkp-m-chart-node ${p.major ? 'is-major' : ''}"
+              style="left:${p.x}px;top:${p.y}px;--node-color:${p.color};--node-bg:${p.colorDim};--node-border:${p.colorBorder}"
+              data-culture="${p.cultureId}"
+              data-concept="${p.id}">
+        <span>${p.moduleEmoji || p.cultureEmoji || '✦'}</span>
+        <strong>${escapeHTML(p.label)}</strong>
+      </button>`).join('');
+
+    el.innerHTML = `
+      <div class="lkp-m-section-head">
+        <span class="lkp-m-eyebrow">Constellation Map</span>
+        <h2>Living Star Chart</h2>
+        <p>Swipe around the chart. Tap any star to open its lesson. New lessons in lkp-data.js appear here automatically.</p>
+      </div>
+
+      <div class="lkp-m-chart-wrap">
+        <div class="lkp-m-chart-canvas" style="width:980px;height:760px">
+          <svg class="lkp-m-chart-lines" width="980" height="760" viewBox="0 0 980 760" aria-hidden="true">
+            ${lines}
+          </svg>
+          ${nodes}
         </div>
       </div>`;
 
-    // Wire node taps
-    el.querySelectorAll('.lkp-m-chart-node').forEach(node => {
-      node.addEventListener('click', () => {
-        const concept = ALL_CONCEPTS.get(node.dataset.id);
-        if (!concept) return;
-        const tip   = document.getElementById('lkp-m-chart-tip');
-        const label = document.getElementById('chartTipLabel');
-        const desc  = document.getElementById('chartTipDesc');
-        const link  = document.getElementById('chartTipLink');
-        label.textContent = concept.label;
-        label.style.color = concept.color;
-        desc.textContent  = concept.desc || '';
-        link.href         = `lessons.html#${concept.lessonId}`;
-        tip.classList.remove('hidden');
+    el.querySelectorAll('.lkp-m-chart-node').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const culture = CULTURES.find(c => c.id === btn.dataset.culture);
+        const concept = CONCEPTS.get(btn.dataset.concept);
+        if (culture && concept) openConceptSheet(culture, concept);
+      });
+    });
+  }
+
+  function getChartPositions(concepts) {
+    const cultures = CULTURES.filter(c => c.concepts.length);
+    const centerX = 490;
+    const centerY = 380;
+    const cultureRadius = 250;
+    const positioned = [];
+
+    cultures.forEach((culture, cultureIndex) => {
+      const angle = -Math.PI / 2 + (Math.PI * 2 * cultureIndex) / Math.max(1, cultures.length);
+      const cx = centerX + Math.cos(angle) * cultureRadius;
+      const cy = centerY + Math.sin(angle) * cultureRadius;
+      const localConcepts = concepts.filter(c => c.cultureId === culture.id);
+      const localRadius = Math.min(128, 62 + localConcepts.length * 7);
+
+      localConcepts.forEach((concept, index) => {
+        const nodeAngle = -Math.PI / 2 + (Math.PI * 2 * index) / Math.max(1, localConcepts.length);
+        const ring = concept.major ? localRadius * 0.48 : localRadius;
+
+        positioned.push({
+          ...concept,
+          x: Math.round(cx + Math.cos(nodeAngle) * ring),
+          y: Math.round(cy + Math.sin(nodeAngle) * ring)
+        });
       });
     });
 
-    el.querySelector('#chartTipClose')?.addEventListener('click', () => {
-      document.getElementById('lkp-m-chart-tip').classList.add('hidden');
-    });
+    return positioned;
   }
 
-  /* ─────────────────────────────────────────────────────────────────────────
+  function buildDynamicConnections(concepts) {
+    const out = [];
+    const byCulture = new Map();
+
+    concepts.forEach(c => {
+      if (!byCulture.has(c.cultureId)) byCulture.set(c.cultureId, []);
+      byCulture.get(c.cultureId).push(c);
+    });
+
+    byCulture.forEach(items => {
+      for (let i = 0; i < items.length - 1; i++) {
+        out.push([items[i].id, items[i + 1].id, 0.42]);
+      }
+    });
+
+    return out;
+  }
+
+  /* ────────────────────────────────────────────────────────────────────────
      ECOSYSTEM PANEL
-  ───────────────────────────────────────────────────────────────────────── */
+  ──────────────────────────────────────────────────────────────────────── */
   function buildEcosystemPanel() {
     const el = document.getElementById('lkp-m-ecosystem');
-    const PLATFORMS = [
-      { name:'IkeHub',       url:'https://808cryptobeast.github.io/ikehub/',         img:'ikehub.png',      fb:'⬡', color:'var(--m-cyan)',    desc:'The Ikeverse portal hub — gateway to all platforms.' },
-      { name:'IkeStar',      url:'https://808cryptobeast.github.io/Ikestar/',        img:'ikestar.png',     fb:'⭐', color:'var(--m-cyan)',    desc:'Celestial observatory — cultural astronomy and sky knowledge.' },
-      { name:'Cosmic Weave', url:'https://808cryptobeast.github.io/Ikeverse/',       img:'cosmic-weave.png',fb:'🌌', color:'var(--m-violet)',  desc:'Symbolic systems, worldbuilding, and cosmic cosmology.' },
-      { name:'Culturalverse',url:'https://808cryptobeast.github.io/culturalverse/',  img:'kanaka.png',      fb:'🌿', color:'var(--m-emerald)', desc:'The full cultural learning universe — heritage and story.' },
-    ];
-
-    const cards = PLATFORMS.map(p => `
-      <a href="${p.url}" class="lkp-m-eco-card" target="_blank" rel="noopener">
-        <div class="lkp-m-eco-card__icon" style="border-color:${p.color}22;background:${p.color}11">
-          <img src="${IMG}${p.img}" class="lkp-m-eco-card__img" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-          <span class="lkp-m-eco-card__fb" style="display:none">${p.fb}</span>
-        </div>
-        <div class="lkp-m-eco-card__body">
-          <div class="lkp-m-eco-card__name" style="color:${p.color}">${p.name}</div>
-          <div class="lkp-m-eco-card__desc">${p.desc}</div>
-        </div>
-        <div class="lkp-m-eco-card__arrow" style="color:${p.color}">→</div>
-      </a>`).join('');
+    const totalModules = CULTURES.reduce((sum, c) => sum + c.moduleCount, 0);
+    const totalLessons = CULTURES.reduce((sum, c) => sum + c.lessonCount, 0);
 
     el.innerHTML = `
-      <div class="lkp-m-eco-panel">
-        <div class="lkp-m-panel-header">
-          <div class="lkp-m-eyebrow">✦ Connected Platforms ✦</div>
-          <h2 class="lkp-m-panel-title">The <em>Ikeverse</em><br>Ecosystem</h2>
-        </div>
-        <div class="lkp-m-eco-list">${cards}</div>
+      <div class="lkp-m-section-head">
+        <span class="lkp-m-eyebrow">Ikeverse Ecosystem</span>
+        <h2>Culture Registry</h2>
+        <p>This view is generated from your data file. More cultures become more orbits, cards, and chart nodes.</p>
+      </div>
+
+      <div class="lkp-m-eco-stats">
+        <div><strong>${CULTURES.length}</strong><span>Cultures</span></div>
+        <div><strong>${totalModules}</strong><span>Modules</span></div>
+        <div><strong>${totalLessons}</strong><span>Lessons</span></div>
+      </div>
+
+      <div class="lkp-m-eco-list">
+        ${CULTURES.map(culture => `
+          <article class="lkp-m-eco-card" style="--eco-color:${culture.color};--eco-bg:${culture.colorDim};--eco-border:${culture.colorBorder}">
+            <div class="lkp-m-eco-card__icon">${culture.emoji}</div>
+            <div>
+              <span class="lkp-m-status ${culture.status === 'live' ? 'is-live' : 'is-soon'}">${culture.status === 'live' ? 'Live' : 'Coming Soon'}</span>
+              <h3>${escapeHTML(culture.name)}</h3>
+              <p>${escapeHTML(culture.tagline || '')}</p>
+              <small>${culture.moduleCount} modules · ${culture.lessonCount} lessons · theme: ${escapeHTML(culture.theme)}</small>
+            </div>
+          </article>`).join('')}
       </div>`;
   }
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     CONCEPT BOTTOM SHEET — slides up when concept pill tapped
-  ───────────────────────────────────────────────────────────────────────── */
+  /* ────────────────────────────────────────────────────────────────────────
+     BOTTOM SHEET
+  ──────────────────────────────────────────────────────────────────────── */
   function buildBottomSheet() {
+    const bg = document.getElementById('lkp-m-sheet-bg');
+    bg.addEventListener('click', closeSheet);
+  }
+
+  function openConceptSheet(culture, concept) {
+    sheetOpen = true;
+    sheetData = { culture, concept };
+
     const sheet = document.getElementById('lkp-m-sheet');
-    const bg    = document.getElementById('lkp-m-sheet-bg');
+    const bg = document.getElementById('lkp-m-sheet-bg');
+    const isSoon = culture.status !== 'live' || !concept.lessonId;
 
     sheet.innerHTML = `
       <div class="lkp-m-sheet__handle"></div>
-      <div id="lkp-m-sheet-content" class="lkp-m-sheet__content"></div>`;
+      <button class="lkp-m-sheet__close" type="button" aria-label="Close">×</button>
 
-    bg.addEventListener('click', closeSheet);
-    // Swipe down to close
-    let startY = 0;
-    sheet.addEventListener('touchstart', e => { startY = e.touches[0].clientY; }, { passive:true });
-    sheet.addEventListener('touchend',   e => {
-      if (e.changedTouches[0].clientY - startY > 60) closeSheet();
-    }, { passive:true });
-  }
+      <div class="lkp-m-sheet__kicker" style="color:${culture.color}">${culture.emoji} ${escapeHTML(culture.name)}</div>
+      <h3>${escapeHTML(concept.title || concept.label)}</h3>
+      <p class="lkp-m-sheet__meta">
+        ${escapeHTML(concept.num || '')}
+        ${concept.readTime ? `<span>·</span>${escapeHTML(concept.readTime)}` : ''}
+        ${concept.moduleTitle ? `<span>·</span>${escapeHTML(concept.moduleTitle)}` : ''}
+      </p>
+      <p class="lkp-m-sheet__body">${escapeHTML(concept.desc || culture.intro || '')}</p>
 
-  function openConceptSheet(id) {
-    const concept = ALL_CONCEPTS.get(id);
-    if (!concept) return;
+      <div class="lkp-m-sheet__actions">
+        ${isSoon
+          ? `<button class="lkp-m-sheet__cta is-disabled" type="button">Coming Soon</button>`
+          : `<a class="lkp-m-sheet__cta" href="lessons.html#${encodeURIComponent(concept.lessonId)}">Open Lesson →</a>`}
+      </div>`;
 
-    const gDef = [...GALAXIES, BRIDGE].find(g => g.id === concept.culture) || GALAXIES[0];
-    const content = document.getElementById('lkp-m-sheet-content');
+    sheet.querySelector('.lkp-m-sheet__close').addEventListener('click', closeSheet);
 
-    content.innerHTML = `
-      <div class="lkp-m-sheet__badge" style="color:${concept.color};background:${gDef.colorDim||'rgba(255,255,255,0.06)'}">
-        ◈ ${gDef.name}
-      </div>
-      <h3 class="lkp-m-sheet__title" style="color:${concept.color}">${concept.label}</h3>
-      <p class="lkp-m-sheet__desc">${concept.desc || ''}</p>
-      <a href="lessons.html#${concept.lessonId}" class="lkp-m-sheet__cta"
-         style="background:${gDef.colorDim};border-color:${gDef.colorBorder||'rgba(255,255,255,0.15)'}; color:${concept.color}">
-        <i class="fas fa-book-open"></i> Study This Lesson
-      </a>`;
-
-    document.getElementById('lkp-m-sheet').classList.add('is-open');
-    document.getElementById('lkp-m-sheet-bg').classList.add('is-open');
-    sheetOpen = true;
+    sheet.classList.add('is-open');
+    bg.classList.add('is-open');
+    sheet.setAttribute('aria-hidden', 'false');
   }
 
   function closeSheet() {
-    document.getElementById('lkp-m-sheet').classList.remove('is-open');
-    document.getElementById('lkp-m-sheet-bg').classList.remove('is-open');
     sheetOpen = false;
+    sheetData = null;
+
+    const sheet = document.getElementById('lkp-m-sheet');
+    const bg = document.getElementById('lkp-m-sheet-bg');
+
+    sheet.classList.remove('is-open');
+    bg.classList.remove('is-open');
+    sheet.setAttribute('aria-hidden', 'true');
   }
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     BOTTOM NAV
-  ───────────────────────────────────────────────────────────────────────── */
-  const NAV_TABS = [
-    { id:'home',      icon:'fa-house',          label:'Home'     },
-    { id:'galaxies',  icon:'fa-circle-nodes',   label:'Galaxies' },
-    { id:'bridge',    icon:'fa-arrows-left-right',label:'Bridge'  },
-    { id:'chart',     icon:'fa-star',           label:'Chart'    },
-    { id:'ecosystem', icon:'fa-network-wired',  label:'Ecosystem'},
-  ];
-
+  /* ────────────────────────────────────────────────────────────────────────
+     NAV + TABS
+  ──────────────────────────────────────────────────────────────────────── */
   function buildBottomNav() {
     const nav = document.getElementById('lkp-m-nav');
-    nav.innerHTML = NAV_TABS.map(t => `
-      <button class="lkp-m-nav__btn ${t.id === activeTab ? 'is-active' : ''}"
-              data-tab="${t.id}" aria-label="${t.label}">
-        <i class="fas ${t.icon} lkp-m-nav__icon"></i>
-        <span class="lkp-m-nav__label">${t.label}</span>
+
+    const items = [
+      { id: 'home', label: 'Home', icon: '◈' },
+      { id: 'galaxies', label: 'Galaxies', icon: '✦' },
+      { id: 'bridge', label: 'Bridge', icon: '🌐' },
+      { id: 'chart', label: 'Chart', icon: '✧' },
+      { id: 'ecosystem', label: 'Data', icon: '☷' }
+    ];
+
+    nav.innerHTML = items.map(item => `
+      <button class="lkp-m-nav__btn" data-tab="${item.id}" aria-label="${item.label}">
+        <span class="lkp-m-nav__icon">${item.icon}</span>
+        <span class="lkp-m-nav__label">${item.label}</span>
       </button>`).join('');
 
-    nav.querySelectorAll('.lkp-m-nav__btn').forEach(btn => {
-      btn.addEventListener('click', () => switchTab(btn.dataset.tab));
-    });
+    bindTabButtons(nav);
   }
 
-  function switchTab(tabId) {
-    activeTab = tabId;
-    // Update panels
-    document.querySelectorAll('.lkp-m-panel').forEach(p => {
-      p.classList.toggle('is-active', p.dataset.panel === tabId);
+  function switchTab(tab) {
+    activeTab = tab;
+    closeSheet();
+
+    document.querySelectorAll('.lkp-m-panel').forEach(panel => {
+      panel.classList.toggle('is-active', panel.dataset.panel === tab);
     });
-    // Update nav
-    document.querySelectorAll('.lkp-m-nav__btn').forEach(b => {
-      b.classList.toggle('is-active', b.dataset.tab === tabId);
+
+    document.querySelectorAll('.lkp-m-nav__btn').forEach(btn => {
+      btn.classList.toggle('is-active', btn.dataset.tab === tab);
     });
-    // If switching to galaxies, scroll to active galaxy
-    if (tabId === 'galaxies') {
-      requestAnimationFrame(() => scrollToGalaxy(activeGalaxy));
+
+    if (tab === 'galaxies') {
+      requestAnimationFrame(() => {
+        const scroller = document.getElementById('lkp-m-galaxy-scroll');
+        const card = scroller?.querySelector(`[data-galaxy-card="${activeGalaxy}"]`);
+        card?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        updateDotsFromScroll();
+      });
     }
   }
 
-  /* ─────────────────────────────────────────────────────────────────────────
-     SWIPE — left/right between tabs
-  ───────────────────────────────────────────────────────────────────────── */
   function initSwipe() {
-    let tx = 0, ty = 0, locked = false;
-    const TAB_ORDER = NAV_TABS.map(t => t.id);
+    const scroller = document.getElementById('lkp-m-galaxy-scroll');
+    if (!scroller) return;
 
-    const panels = document.getElementById('lkp-m-panels');
-    panels.addEventListener('touchstart', e => {
-      tx = e.touches[0].clientX;
-      ty = e.touches[0].clientY;
-      locked = false;
+    let ticking = false;
+    scroller.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        updateDotsFromScroll();
+        ticking = false;
+      });
     }, { passive: true });
 
-    panels.addEventListener('touchmove', e => {
-      if (locked) return;
-      const dx = e.touches[0].clientX - tx;
-      const dy = e.touches[0].clientY - ty;
-      if (Math.abs(dy) > Math.abs(dx)) { locked = true; return; } // vertical scroll wins
-      if (Math.abs(dx) > 12) locked = true; // lock to horizontal swipe
-    }, { passive: true });
-
-    panels.addEventListener('touchend', e => {
-      if (sheetOpen) return;
-      // Skip swipe if inside the galaxy track (it handles its own scroll)
-      if (e.target.closest('#galaxyTrack')) return;
-      const dx = e.changedTouches[0].clientX - tx;
-      if (Math.abs(dx) < 55) return;
-      const idx = TAB_ORDER.indexOf(activeTab);
-      if (dx < 0 && idx < TAB_ORDER.length - 1) switchTab(TAB_ORDER[idx + 1]);
-      if (dx > 0 && idx > 0) switchTab(TAB_ORDER[idx - 1]);
-    }, { passive: true });
+    window.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && sheetOpen) closeSheet();
+    });
   }
 
-  /* ── Go ── */
+  /* ────────────────────────────────────────────────────────────────────────
+     INIT WHEN READY
+  ──────────────────────────────────────────────────────────────────────── */
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot);
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
   } else {
     boot();
   }
 
+  window.LKP_MOBILE_DATA = {
+    cultures: CULTURES,
+    galaxies: GALAXIES,
+    bridge: BRIDGE,
+    concepts: CONCEPTS
+  };
 })();
