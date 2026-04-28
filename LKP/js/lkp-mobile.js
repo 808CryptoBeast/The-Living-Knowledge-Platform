@@ -1,16 +1,17 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    THE LIVING KNOWLEDGE PLATFORM — Mobile Experience
-   lkp-mobile.js | Data-driven from lkp-data.js / CULTURALVERSE_DATA
+   lkp-mobile.js
 
-   Includes:
-   - Shared desktop/mobile lesson data from CULTURALVERSE_DATA
-   - Mobile lessons rendered from the same cultures/modules/lessons
-   - Hawaiian star compass image cleanup/recolor
-   - No Hōkū center blocker over the compass
-   - Three.js mobile lesson galaxy
-   - Distance-based glow boost when zoomed out
-   - Culture galaxies with nebula smoke + spiral dust fields
-   - Profile tab with user/admin gateway structure
+   Mobile-first cosmic system:
+   - Shared data from CULTURALVERSE_DATA
+   - Hawaiian star compass home portal
+   - Culture cards + lesson cards from same desktop lesson data
+   - Three.js Piko Core / ʻIke Sun
+   - Culture galaxies orbiting the center
+   - Tap a galaxy core to zoom into it
+   - Tap a lesson star to open lesson preview
+   - Return-to-core control
+   - Profile tab / admin gateway placeholder
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -277,14 +278,25 @@
     controls: null,
     raycaster: null,
     pointer: null,
+
     nodes: [],
     cultureGroups: [],
+    cultureCores: [],
     dustSystems: [],
+    labels: [],
+    orbitTrails: [],
+
+    pikoCore: null,
+    pikoGlow: null,
+    focusMode: 'ecosystem',
+    focusedCultureIndex: null,
+    cameraTween: null,
+
     frameId: null
   };
 
   /* ────────────────────────────────────────────────────────────────────────
-     LESSON ROUTING HELPERS
+     LESSON ROUTING
   ──────────────────────────────────────────────────────────────────────── */
 
   function lessonHref(lessonId) {
@@ -449,7 +461,6 @@
       return img.src;
     }
 
-    console.log('[LKP Mobile] Hawaiian star compass cleaned and recolored gold.');
     return finalCanvas.toDataURL('image/png');
   }
 
@@ -548,7 +559,7 @@
   }
 
   /* ────────────────────────────────────────────────────────────────────────
-     DATA-DRIVEN HOME
+     HOME
   ──────────────────────────────────────────────────────────────────────── */
 
   function getOrbitCultures() {
@@ -742,7 +753,7 @@
   }
 
   /* ────────────────────────────────────────────────────────────────────────
-     MODULE / LESSON SHOWCASE
+     MODULE / LESSON CARDS
   ──────────────────────────────────────────────────────────────────────── */
 
   function buildModuleBlocks(culture) {
@@ -786,7 +797,7 @@
   }
 
   /* ────────────────────────────────────────────────────────────────────────
-     GALAXY / LESSON PANEL
+     GALAXY LESSON PANEL
   ──────────────────────────────────────────────────────────────────────── */
 
   function buildGalaxiesPanel() {
@@ -921,7 +932,7 @@
   }
 
   /* ────────────────────────────────────────────────────────────────────────
-     THREE.JS MOBILE LESSON GALAXY
+     THREE.JS MOBILE PIKO SYSTEM
   ──────────────────────────────────────────────────────────────────────── */
 
   function buildChartPanel() {
@@ -930,15 +941,18 @@
     el.innerHTML = `
       <div class="lkp-m-section-head">
         <span class="lkp-m-eyebrow">Three.js Star Chart</span>
-        <h2>Lesson Galaxy</h2>
+        <h2>Piko Core Galaxy</h2>
         <p>
-          Every culture becomes a galaxy. Every module becomes an orbit. Every lesson becomes a star.
-          Add lessons to <strong>lkp-data.js</strong> and they propagate here automatically.
+          Culture galaxies orbit the Piko Core. Tap a galaxy to zoom in. Tap a lesson star to open its lesson preview.
         </p>
       </div>
 
       <div class="lkp-m-three-galaxy-wrap">
         <canvas id="lkp-m-three-galaxy" class="lkp-m-three-galaxy" aria-label="Mobile Three.js lesson galaxy"></canvas>
+
+        <button id="lkp-m-return-core" class="lkp-m-return-core" type="button">
+          ← Return to Piko Core
+        </button>
 
         <div class="lkp-m-three-galaxy__hud">
           <div>
@@ -952,16 +966,15 @@
         </div>
 
         <div id="lkp-m-galaxy-tip" class="lkp-m-galaxy-tip">
-          <strong>Tap a star</strong>
-          <span>Open a lesson preview</span>
+          <strong>Piko Core</strong>
+          <span>Tap a galaxy to zoom into its lessons</span>
         </div>
       </div>
 
       <div class="lkp-m-galaxy-legend">
-        ${CULTURES.map(culture => `
+        ${CULTURES.map((culture, index) => `
           <button class="lkp-m-galaxy-legend__item"
-                  data-tab="${culture.id === 'bridge' ? 'bridge' : 'galaxies'}"
-                  ${culture.id !== 'bridge' ? `data-galaxy="${GALAXIES.findIndex(g => g.id === culture.id)}"` : ''}
+                  data-focus-culture="${index}"
                   style="--legend-color:${culture.color};--legend-bg:${culture.colorDim};--legend-border:${culture.colorBorder}">
             <span>${culture.emoji}</span>
             <strong>${escapeHTML(culture.name)}</strong>
@@ -971,7 +984,16 @@
       </div>
     `;
 
-    bindTabButtons(el);
+    const returnBtn = el.querySelector('#lkp-m-return-core');
+    if (returnBtn) {
+      returnBtn.addEventListener('click', returnToPikoCore);
+    }
+
+    el.querySelectorAll('[data-focus-culture]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        focusCultureGalaxy(parseInt(btn.dataset.focusCulture, 10));
+      });
+    });
 
     requestAnimationFrame(() => {
       initMobileThreeLessonGalaxy();
@@ -996,10 +1018,10 @@
     mobileGalaxyState.initialized = true;
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x01030a, 0.018);
+    scene.fog = new THREE.FogExp2(0x01030a, 0.015);
 
-    const camera = new THREE.PerspectiveCamera(62, wrap.clientWidth / wrap.clientHeight, 0.1, 220);
-    camera.position.set(0, 10, 42);
+    const camera = new THREE.PerspectiveCamera(62, wrap.clientWidth / wrap.clientHeight, 0.1, 260);
+    camera.position.set(0, 14, 52);
 
     const renderer = new THREE.WebGLRenderer({
       canvas,
@@ -1012,18 +1034,19 @@
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.22;
+    renderer.toneMappingExposure = 1.25;
 
     const controls = new OrbitControls(camera, canvas);
     controls.enablePan = false;
     controls.enableDamping = true;
     controls.dampingFactor = 0.08;
-    controls.rotateSpeed = 0.45;
+    controls.rotateSpeed = 0.42;
     controls.zoomSpeed = 0.65;
-    controls.minDistance = 18;
-    controls.maxDistance = 78;
+    controls.minDistance = 13;
+    controls.maxDistance = 88;
     controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.32;
+    controls.autoRotateSpeed = 0.24;
+    controls.target.set(0, 0, 0);
 
     const raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector2();
@@ -1034,21 +1057,29 @@
     mobileGalaxyState.controls = controls;
     mobileGalaxyState.raycaster = raycaster;
     mobileGalaxyState.pointer = pointer;
+
     mobileGalaxyState.nodes = [];
     mobileGalaxyState.cultureGroups = [];
+    mobileGalaxyState.cultureCores = [];
     mobileGalaxyState.dustSystems = [];
+    mobileGalaxyState.labels = [];
+    mobileGalaxyState.orbitTrails = [];
 
     scene.add(new THREE.AmbientLight(0xffffff, 0.42));
 
-    const key = new THREE.PointLight(0xffdd9a, 2.2, 140);
-    key.position.set(0, 35, 30);
+    const key = new THREE.PointLight(0xffdd9a, 2.8, 180);
+    key.position.set(0, 42, 34);
     scene.add(key);
 
-    const cyan = new THREE.PointLight(0x54c6ee, 1.2, 100);
-    cyan.position.set(-34, 20, -16);
+    const cyan = new THREE.PointLight(0x54c6ee, 1.35, 130);
+    cyan.position.set(-38, 22, -20);
     scene.add(cyan);
 
-    buildMobileGalaxyStars(scene, THREE);
+    const violet = new THREE.PointLight(0x8fa0ff, 1.1, 120);
+    violet.position.set(32, 14, 28);
+    scene.add(violet);
+
+    buildMobilePikoSystem(scene, THREE);
     bindMobileGalaxyEvents(canvas);
 
     window.addEventListener('resize', resizeMobileThreeGalaxy, { passive: true });
@@ -1057,17 +1088,56 @@
       mobileGalaxyState.frameId = requestAnimationFrame(animate);
 
       const t = performance.now() * 0.001;
-      const distance = camera.position.length();
-      const zoomBoost = Math.min(2.8, Math.max(1, (distance - 20) / 18));
+      const distance = camera.position.distanceTo(controls.target);
+      const zoomBoost = Math.min(3.05, Math.max(1, (distance - 18) / 18));
+
+      updateCameraTween(t);
+
+      if (mobileGalaxyState.pikoCore) {
+        mobileGalaxyState.pikoCore.rotation.y += 0.008;
+        mobileGalaxyState.pikoCore.rotation.x = Math.sin(t * 0.36) * 0.08;
+      }
+
+      if (mobileGalaxyState.pikoGlow) {
+        mobileGalaxyState.pikoGlow.material.opacity = 0.34 + Math.sin(t * 1.1) * 0.08;
+      }
 
       mobileGalaxyState.cultureGroups.forEach((group, index) => {
-        group.rotation.y += group.userData.rotationSpeed || 0.001;
+        const data = group.userData;
+        const isFocused = mobileGalaxyState.focusedCultureIndex === index;
+
+        if (mobileGalaxyState.focusMode === 'ecosystem') {
+          data.orbitAngle += data.orbitSpeed;
+          const orbitRadius = data.orbitRadius;
+
+          group.position.x = Math.cos(data.orbitAngle) * orbitRadius;
+          group.position.z = Math.sin(data.orbitAngle) * orbitRadius;
+          group.position.y = data.baseY + Math.sin(t * 0.32 + index) * 0.45;
+        }
+
+        group.rotation.y += isFocused ? 0.004 : (data.rotationSpeed || 0.001);
         group.rotation.x = Math.sin(t * 0.18 + index) * 0.035;
       });
+
+      if (
+        mobileGalaxyState.focusMode === 'culture' &&
+        mobileGalaxyState.focusedCultureIndex !== null &&
+        !mobileGalaxyState.cameraTween
+      ) {
+        followFocusedCulture();
+      }
 
       mobileGalaxyState.dustSystems.forEach((dust, index) => {
         dust.rotation.y += 0.0009 + index * 0.00012;
         dust.rotation.z += 0.00035;
+      });
+
+      mobileGalaxyState.labels.forEach(label => {
+        const inCultureMode = mobileGalaxyState.focusMode === 'culture';
+        const isFocusedLabel = label.userData.cultureIndex === mobileGalaxyState.focusedCultureIndex;
+        label.material.opacity = inCultureMode
+          ? (isFocusedLabel ? 0.84 : 0.18)
+          : 0.72;
       });
 
       mobileGalaxyState.nodes.forEach((node, index) => {
@@ -1085,7 +1155,7 @@
 
           node.glow.material.opacity = node.isHovered
             ? 0.95
-            : Math.min(0.86, 0.42 + zoomBoost * 0.09 + Math.sin(t * 1.4 + index) * 0.10);
+            : Math.min(0.88, 0.42 + zoomBoost * 0.09 + Math.sin(t * 1.4 + index) * 0.10);
         }
       });
 
@@ -1096,38 +1166,171 @@
     animate();
   }
 
-  function buildMobileGalaxyStars(scene, THREE) {
-    const cultureCount = Math.max(1, CULTURES.length);
-    const galaxyRadius = Math.min(28, 13 + cultureCount * 2.2);
+  function buildMobilePikoSystem(scene, THREE) {
+    addMobileBackgroundStars(scene, THREE);
+    makePikoCore(scene, THREE);
+    addPikoOrbitTrails(scene, THREE);
+    buildMobileGalaxyStars(scene, THREE);
+  }
 
-    const bgCount = 850;
+  function addMobileBackgroundStars(scene, THREE) {
+    const bgCount = 1100;
     const bgPositions = new Float32Array(bgCount * 3);
+    const bgColors = new Float32Array(bgCount * 3);
+
+    const gold = new THREE.Color('#f0c96a');
+    const cyan = new THREE.Color('#54c6ee');
+    const white = new THREE.Color('#dbefff');
 
     for (let i = 0; i < bgCount; i++) {
-      const r = 42 + Math.random() * 54;
+      const r = 48 + Math.random() * 82;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(Math.random() * 2 - 1);
 
       bgPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      bgPositions[i * 3 + 1] = r * Math.cos(phi) * 0.75;
+      bgPositions[i * 3 + 1] = r * Math.cos(phi) * 0.72;
       bgPositions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+
+      const mixed = white.clone();
+
+      if (Math.random() > 0.72) mixed.lerp(gold, 0.45);
+      if (Math.random() > 0.82) mixed.lerp(cyan, 0.35);
+
+      bgColors[i * 3] = mixed.r;
+      bgColors[i * 3 + 1] = mixed.g;
+      bgColors[i * 3 + 2] = mixed.b;
     }
 
     const bgGeo = new THREE.BufferGeometry();
     bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPositions, 3));
+    bgGeo.setAttribute('color', new THREE.BufferAttribute(bgColors, 3));
 
     const bgStars = new THREE.Points(
       bgGeo,
       new THREE.PointsMaterial({
         size: 0.12,
-        color: 0xdbefff,
+        vertexColors: true,
         transparent: true,
-        opacity: 0.65,
+        opacity: 0.68,
         depthWrite: false
       })
     );
 
     scene.add(bgStars);
+  }
+
+  function makePikoCore(scene, THREE) {
+    const coreGroup = new THREE.Group();
+    coreGroup.name = 'Piko Core / ʻIke Sun';
+    scene.add(coreGroup);
+
+    const coreMat = new THREE.MeshPhysicalMaterial({
+      color: 0xf0c96a,
+      emissive: 0xf0c96a,
+      emissiveIntensity: 1.1,
+      metalness: 0.12,
+      roughness: 0.18,
+      transparent: true,
+      opacity: 0.98
+    });
+
+    const core = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(1.45, 2),
+      coreMat
+    );
+
+    coreGroup.add(core);
+
+    const inner = new THREE.Mesh(
+      new THREE.SphereGeometry(0.74, 24, 24),
+      new THREE.MeshBasicMaterial({
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.26
+      })
+    );
+
+    coreGroup.add(inner);
+
+    const glow = makeMobileGlowSprite(THREE, '#f0c96a', 8.2, 0.38);
+    coreGroup.add(glow);
+
+    const cyanGlow = makeMobileGlowSprite(THREE, '#54c6ee', 5.8, 0.18);
+    coreGroup.add(cyanGlow);
+
+    const label = makeMobileTextSprite(THREE, 'Piko Core', '#f0c96a');
+    label.position.set(0, 2.8, 0);
+    label.scale.set(5.2, 1.2, 1);
+    coreGroup.add(label);
+
+    const ringA = makePikoRing(THREE, 2.15, '#f0c96a', 0.28);
+    const ringB = makePikoRing(THREE, 2.72, '#54c6ee', 0.16);
+
+    ringA.rotation.x = Math.PI / 2;
+    ringB.rotation.x = Math.PI / 2.45;
+
+    coreGroup.add(ringA);
+    coreGroup.add(ringB);
+
+    mobileGalaxyState.pikoCore = coreGroup;
+    mobileGalaxyState.pikoGlow = glow;
+  }
+
+  function makePikoRing(THREE, radius, color, opacity) {
+    const pts = [];
+
+    for (let i = 0; i <= 128; i++) {
+      const a = (i / 128) * Math.PI * 2;
+      pts.push(new THREE.Vector3(Math.cos(a) * radius, Math.sin(a) * radius, 0));
+    }
+
+    return new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints(pts),
+      new THREE.LineBasicMaterial({
+        color: new THREE.Color(color),
+        transparent: true,
+        opacity,
+        depthWrite: false
+      })
+    );
+  }
+
+  function addPikoOrbitTrails(scene, THREE) {
+    const cultureCount = Math.max(1, CULTURES.length);
+    const baseRadius = Math.min(28, 13 + cultureCount * 2.2);
+
+    CULTURES.forEach((culture, index) => {
+      const radius = baseRadius + (index % 3) * 0.55;
+      const ring = makeFlatOrbitTrail(THREE, radius, culture.color || '#f0c96a', index % 2 ? 0.08 : 0.11);
+
+      ring.rotation.x = Math.PI / 2;
+      scene.add(ring);
+      mobileGalaxyState.orbitTrails.push(ring);
+    });
+  }
+
+  function makeFlatOrbitTrail(THREE, radius, color, opacity) {
+    const pts = [];
+
+    for (let i = 0; i <= 192; i++) {
+      const a = (i / 192) * Math.PI * 2;
+      pts.push(new THREE.Vector3(Math.cos(a) * radius, Math.sin(a) * radius, 0));
+    }
+
+    return new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints(pts),
+      new THREE.LineBasicMaterial({
+        color: new THREE.Color(color),
+        transparent: true,
+        opacity,
+        depthWrite: false
+      })
+    );
+  }
+
+  function buildMobileGalaxyStars(scene, THREE) {
+    const cultureCount = Math.max(1, CULTURES.length);
+    const galaxyRadius = Math.min(28, 13 + cultureCount * 2.2);
 
     CULTURES.forEach((culture, cultureIndex) => {
       const cultureAngle = -Math.PI / 2 + (Math.PI * 2 * cultureIndex) / cultureCount;
@@ -1138,6 +1341,11 @@
       const cultureGroup = new THREE.Group();
       cultureGroup.position.set(cx, cy, cz);
       cultureGroup.userData.rotationSpeed = 0.0008 + cultureIndex * 0.00018;
+      cultureGroup.userData.orbitAngle = cultureAngle;
+      cultureGroup.userData.orbitSpeed = 0.0014 + cultureIndex * 0.00013;
+      cultureGroup.userData.orbitRadius = galaxyRadius + (cultureIndex % 3) * 0.55;
+      cultureGroup.userData.baseY = cy;
+      cultureGroup.userData.cultureIndex = cultureIndex;
 
       scene.add(cultureGroup);
       mobileGalaxyState.cultureGroups.push(cultureGroup);
@@ -1145,24 +1353,39 @@
       const color = new THREE.Color(culture.color || '#54c6ee');
 
       const core = new THREE.Mesh(
-        new THREE.SphereGeometry(0.68, 24, 24),
-        new THREE.MeshBasicMaterial({
+        new THREE.SphereGeometry(0.72, 24, 24),
+        new THREE.MeshPhysicalMaterial({
           color,
+          emissive: color,
+          emissiveIntensity: culture.status === 'live' ? 0.92 : 0.42,
+          metalness: 0.08,
+          roughness: 0.18,
           transparent: true,
-          opacity: culture.status === 'live' ? 0.92 : 0.42
+          opacity: culture.status === 'live' ? 0.96 : 0.52
         })
       );
 
-      cultureGroup.add(core);
+      core.userData.isCultureCore = true;
+      core.userData.cultureIndex = cultureIndex;
+      core.userData.cultureId = culture.id;
+      core.userData.cultureName = culture.name;
 
-      const coreGlow = makeMobileGlowSprite(THREE, culture.color || '#54c6ee', 4.8, 0.44);
+      cultureGroup.add(core);
+      mobileGalaxyState.cultureCores.push({
+        mesh: core,
+        group: cultureGroup,
+        culture,
+        index: cultureIndex
+      });
+
+      const coreGlow = makeMobileGlowSprite(THREE, culture.color || '#54c6ee', 5.1, 0.46);
       cultureGroup.add(coreGlow);
 
       const nebula = makeMobileNebulaSprite(
         THREE,
         culture.color || '#54c6ee',
         8.5 + Math.min(6, culture.lessonCount * 0.18),
-        culture.id === 'bridge' ? 0.34 : 0.26
+        culture.id === 'bridge' ? 0.36 : 0.28
       );
 
       nebula.rotation.z = cultureIndex * 0.7;
@@ -1174,13 +1397,15 @@
         culture.color || '#54c6ee',
         180 + Math.min(220, culture.lessonCount * 10),
         4.2 + Math.min(5.5, culture.lessonCount * 0.16),
-        culture.id === 'bridge' ? 0.48 : 0.36
+        culture.id === 'bridge' ? 0.50 : 0.38
       );
 
       const label = makeMobileTextSprite(THREE, `${culture.emoji} ${culture.name}`, culture.color || '#f0c96a');
-      label.position.set(0, 2.05, 0);
-      label.scale.set(5.2, 1.2, 1);
+      label.position.set(0, 2.12, 0);
+      label.scale.set(5.4, 1.22, 1);
+      label.userData.cultureIndex = cultureIndex;
       cultureGroup.add(label);
+      mobileGalaxyState.labels.push(label);
 
       const modules = culture.modules || [];
 
@@ -1189,6 +1414,7 @@
         const moduleRadius = 2.35 + modIndex * 1.85;
 
         addMobileOrbitRing(cultureGroup, THREE, moduleRadius, culture.color || '#f0c96a', 0.17);
+
         addMobileGalaxyDust(
           cultureGroup,
           THREE,
@@ -1213,7 +1439,7 @@
           const mat = new THREE.MeshPhysicalMaterial({
             color,
             emissive: color,
-            emissiveIntensity: isMajor ? 0.95 : 0.64,
+            emissiveIntensity: isMajor ? 0.98 : 0.66,
             metalness: 0.05,
             roughness: 0.18,
             transparent: true,
@@ -1225,6 +1451,7 @@
           mesh.position.set(x, y, z);
           mesh.userData.lessonId = lesson.id;
           mesh.userData.cultureId = culture.id;
+          mesh.userData.cultureIndex = cultureIndex;
           mesh.userData.moduleId = mod.id;
           mesh.userData.title = lesson.title || lesson.id;
           mesh.userData.readTime = lesson.readTime || '';
@@ -1251,6 +1478,7 @@
             culture,
             module: mod,
             lesson,
+            cultureIndex,
             baseScale: isMajor ? 1.25 : 1,
             isHovered: false
           });
@@ -1262,6 +1490,7 @@
 
         for (let i = 0; i < 6; i++) {
           const angle = (Math.PI * 2 * i) / 6;
+
           const mesh = new THREE.Mesh(
             new THREE.SphereGeometry(0.15, 12, 12),
             new THREE.MeshBasicMaterial({
@@ -1540,7 +1769,7 @@
   }
 
   function pickMobileGalaxyNode(open) {
-    const { raycaster, pointer, camera, nodes } = mobileGalaxyState;
+    const { raycaster, pointer, camera, nodes, cultureCores } = mobileGalaxyState;
     if (!raycaster || !pointer || !camera) return;
 
     nodes.forEach(n => {
@@ -1549,13 +1778,38 @@
 
     raycaster.setFromCamera(pointer, camera);
 
-    const hits = raycaster.intersectObjects(nodes.map(n => n.mesh), false);
+    const coreHits = raycaster.intersectObjects(cultureCores.map(c => c.mesh), false);
+
+    if (coreHits.length) {
+      const core = coreHits[0].object;
+      const coreEntry = cultureCores.find(c => c.mesh === core);
+      const tip = document.getElementById('lkp-m-galaxy-tip');
+
+      if (coreEntry && tip) {
+        tip.innerHTML = `
+          <strong style="color:${coreEntry.culture.color}">${escapeHTML(coreEntry.culture.name)}</strong>
+          <span>${open ? 'Zooming into galaxy...' : 'Tap to zoom into this culture galaxy'}</span>
+        `;
+      }
+
+      if (open && coreEntry) {
+        focusCultureGalaxy(coreEntry.index);
+      }
+
+      return;
+    }
+
+    const lessonMeshes = nodes.map(n => n.mesh);
+    const hits = raycaster.intersectObjects(lessonMeshes, false);
     const tip = document.getElementById('lkp-m-galaxy-tip');
 
     if (!hits.length) {
       if (tip) {
-        tip.innerHTML = `<strong>Tap a star</strong><span>Open a lesson preview</span>`;
+        tip.innerHTML = mobileGalaxyState.focusMode === 'culture'
+          ? `<strong>Culture Galaxy</strong><span>Tap a lesson star to open a preview</span>`
+          : `<strong>Piko Core</strong><span>Tap a galaxy to zoom into its lessons</span>`;
       }
+
       return;
     }
 
@@ -1584,6 +1838,113 @@
         desc: stripTags(node.lesson.content || node.module.desc || node.culture.intro || '').slice(0, 220)
       });
     }
+  }
+
+  function focusCultureGalaxy(index) {
+    const THREE = mobileGalaxyState.THREE;
+    const group = mobileGalaxyState.cultureGroups[index];
+    const camera = mobileGalaxyState.camera;
+    const controls = mobileGalaxyState.controls;
+
+    if (!THREE || !group || !camera || !controls) return;
+
+    const world = new THREE.Vector3();
+    group.getWorldPosition(world);
+
+    const culture = CULTURES[index];
+
+    mobileGalaxyState.focusMode = 'culture';
+    mobileGalaxyState.focusedCultureIndex = index;
+
+    const offset = new THREE.Vector3(0, 4.5, 12.5);
+    const desiredCamera = world.clone().add(offset);
+
+    animateCameraTo(desiredCamera, world.clone(), 820);
+
+    const btn = document.getElementById('lkp-m-return-core');
+    if (btn) btn.classList.add('is-visible');
+
+    const tip = document.getElementById('lkp-m-galaxy-tip');
+    if (tip && culture) {
+      tip.innerHTML = `
+        <strong style="color:${culture.color}">${escapeHTML(culture.name)} Galaxy</strong>
+        <span>Tap a lesson star to open its preview</span>
+      `;
+    }
+  }
+
+  function returnToPikoCore() {
+    const THREE = mobileGalaxyState.THREE;
+    const camera = mobileGalaxyState.camera;
+
+    if (!THREE || !camera) return;
+
+    mobileGalaxyState.focusMode = 'ecosystem';
+    mobileGalaxyState.focusedCultureIndex = null;
+
+    animateCameraTo(
+      new THREE.Vector3(0, 14, 52),
+      new THREE.Vector3(0, 0, 0),
+      850
+    );
+
+    const btn = document.getElementById('lkp-m-return-core');
+    if (btn) btn.classList.remove('is-visible');
+
+    const tip = document.getElementById('lkp-m-galaxy-tip');
+    if (tip) {
+      tip.innerHTML = `<strong>Piko Core</strong><span>Tap a galaxy to zoom into its lessons</span>`;
+    }
+  }
+
+  function animateCameraTo(position, target, duration = 800) {
+    const THREE = mobileGalaxyState.THREE;
+    const camera = mobileGalaxyState.camera;
+    const controls = mobileGalaxyState.controls;
+
+    if (!THREE || !camera || !controls) return;
+
+    mobileGalaxyState.cameraTween = {
+      startTime: performance.now(),
+      duration,
+      fromPosition: camera.position.clone(),
+      toPosition: position.clone(),
+      fromTarget: controls.target.clone(),
+      toTarget: target.clone()
+    };
+  }
+
+  function updateCameraTween() {
+    const tween = mobileGalaxyState.cameraTween;
+    const camera = mobileGalaxyState.camera;
+    const controls = mobileGalaxyState.controls;
+
+    if (!tween || !camera || !controls) return;
+
+    const elapsed = performance.now() - tween.startTime;
+    const raw = Math.min(1, elapsed / tween.duration);
+    const ease = raw < 0.5
+      ? 4 * raw * raw * raw
+      : 1 - Math.pow(-2 * raw + 2, 3) / 2;
+
+    camera.position.lerpVectors(tween.fromPosition, tween.toPosition, ease);
+    controls.target.lerpVectors(tween.fromTarget, tween.toTarget, ease);
+
+    if (raw >= 1) {
+      mobileGalaxyState.cameraTween = null;
+    }
+  }
+
+  function followFocusedCulture() {
+    const THREE = mobileGalaxyState.THREE;
+    const controls = mobileGalaxyState.controls;
+    const group = mobileGalaxyState.cultureGroups[mobileGalaxyState.focusedCultureIndex];
+
+    if (!THREE || !controls || !group) return;
+
+    const world = new THREE.Vector3();
+    group.getWorldPosition(world);
+    controls.target.lerp(world, 0.045);
   }
 
   function resizeMobileThreeGalaxy() {
