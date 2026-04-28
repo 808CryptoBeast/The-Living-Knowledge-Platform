@@ -2,14 +2,13 @@
    THE LIVING KNOWLEDGE PLATFORM — Mobile Experience
    lkp-mobile.js | Data-driven from lkp-data.js / CULTURALVERSE_DATA
 
-   Purpose:
-   - Mobile-only DOM/CSS/SVG experience. No Three.js required.
-   - Reads CULTURALVERSE_DATA.cultures when lkp-data.js is loaded first.
-   - Every culture added to lkp-data.js becomes another mobile galaxy/orbit/card.
-   - Mobile showcases the SAME modules and lessons as desktop.
-   - Lesson links route to lessons.html#lessonId, matching culturalverse-lessons.js.
-   - Cleans the Hawaiian star compass JPG through Canvas:
-     white background removed, non-white compass artwork recolored gold.
+   Includes:
+   - Shared desktop/mobile lesson data from CULTURALVERSE_DATA
+   - Mobile lessons rendered from the same cultures/modules/lessons
+   - Hawaiian star compass image cleanup/recolor
+   - No Hōkū center blocker over the compass
+   - Three.js mobile lesson galaxy
+   - Profile tab with user/admin gateway structure
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -24,19 +23,35 @@
     /\/LKP\//i.test(location.pathname);
 
   const ASSET_ROOT = IN_LKP_FOLDER ? 'assets/images/' : 'LKP/assets/images/';
-  const CSS_PATH   = IN_LKP_FOLDER ? 'css/lkp-mobile.css' : 'LKP/css/lkp-mobile.css';
-  const LESSONS_PATH = IN_LKP_FOLDER ? 'lessons.html' : 'lessons.html';
+  const CSS_PATH = IN_LKP_FOLDER ? 'css/lkp-mobile.css' : 'LKP/css/lkp-mobile.css';
+  const LESSONS_PATH = 'lessons.html';
 
   function assetPath(file) {
     return ASSET_ROOT + file;
   }
 
-  const DATA =
-    (typeof CULTURALVERSE_DATA !== 'undefined' && CULTURALVERSE_DATA && Array.isArray(CULTURALVERSE_DATA.cultures))
-      ? CULTURALVERSE_DATA
-      : (window.CULTURALVERSE_DATA && Array.isArray(window.CULTURALVERSE_DATA.cultures))
-        ? window.CULTURALVERSE_DATA
-        : { cultures: [] };
+  function getSharedLessonData() {
+    if (
+      window.CULTURALVERSE_DATA &&
+      Array.isArray(window.CULTURALVERSE_DATA.cultures)
+    ) {
+      return window.CULTURALVERSE_DATA;
+    }
+
+    if (
+      typeof CULTURALVERSE_DATA !== 'undefined' &&
+      CULTURALVERSE_DATA &&
+      Array.isArray(CULTURALVERSE_DATA.cultures)
+    ) {
+      window.CULTURALVERSE_DATA = CULTURALVERSE_DATA;
+      return CULTURALVERSE_DATA;
+    }
+
+    console.warn('[LKP Mobile] CULTURALVERSE_DATA was not found. Mobile lessons will not render.');
+    return { cultures: [] };
+  }
+
+  const DATA = getSharedLessonData();
 
   const THEME = {
     emerald: {
@@ -181,7 +196,10 @@
       vedic: 'vedic.png',
       maya: 'maya.png',
       rapanui: 'rapanui.png',
-      taino: 'taino.png'
+      taino: 'taino.png',
+      digitalverse: 'digitalverse.png',
+      ikeverse: 'ikeverse.png',
+      pikoverse: 'pikoverse.png'
     };
 
     return assetPath(map[id] || `${id}.png`);
@@ -241,6 +259,7 @@
   const LIVE_CULTURES = CULTURES.filter(c => c.status === 'live');
 
   const CONCEPTS = new Map();
+
   CULTURES.forEach(culture => {
     culture.concepts.forEach(concept => {
       CONCEPTS.set(concept.id, {
@@ -264,6 +283,19 @@
   let activeGalaxy = 0;
   let sheetOpen = false;
   let sheetData = null;
+
+  const mobileGalaxyState = {
+    initialized: false,
+    THREE: null,
+    scene: null,
+    camera: null,
+    renderer: null,
+    controls: null,
+    raycaster: null,
+    pointer: null,
+    nodes: [],
+    frameId: null
+  };
 
   /* ────────────────────────────────────────────────────────────────────────
      LESSON ROUTING HELPERS
@@ -289,17 +321,6 @@
   function cultureHref(cultureId) {
     const first = getFirstLessonForCulture(cultureId);
     return first ? lessonHref(first.lesson.id) : LESSONS_PATH;
-  }
-
-  function getStarCompassLessonId() {
-    if (CONCEPTS.has('km-starcompass')) return 'km-starcompass';
-
-    const kanaka = CULTURES.find(c => c.id === 'kanaka');
-    const firstWayfinding = kanaka?.concepts.find(c =>
-      /star|compass|wayfinding|hōkū|hoku/i.test(`${c.id} ${c.title} ${c.label}`)
-    );
-
-    return firstWayfinding?.lessonId || kanaka?.concepts[0]?.lessonId || '';
   }
 
   /* ────────────────────────────────────────────────────────────────────────
@@ -337,14 +358,15 @@
 
     const dx = (size - sourceW) / 2;
     const dy = (size - sourceH) / 2;
+
     ctx.drawImage(img, dx, dy, sourceW, sourceH);
 
     const imageData = ctx.getImageData(0, 0, size, size);
     const data = imageData.data;
 
     const goldDark = { r: 112, g: 76, b: 24 };
-    const goldMid  = { r: 216, g: 164, b: 66 };
-    const goldHi   = { r: 255, g: 225, b: 132 };
+    const goldMid = { r: 216, g: 164, b: 66 };
+    const goldHi = { r: 255, g: 225, b: 132 };
 
     let kept = 0;
 
@@ -397,7 +419,7 @@
       const baseG = goldDark.g + (goldMid.g - goldDark.g) * inkStrength;
       const baseB = goldDark.b + (goldMid.b - goldDark.b) * inkStrength;
 
-      data[i]     = Math.round(baseR + (goldHi.r - baseR) * highlight * 0.36);
+      data[i] = Math.round(baseR + (goldHi.r - baseR) * highlight * 0.36);
       data[i + 1] = Math.round(baseG + (goldHi.g - baseG) * highlight * 0.36);
       data[i + 2] = Math.round(baseB + (goldHi.b - baseB) * highlight * 0.36);
 
@@ -477,6 +499,7 @@
     buildBridgePanel();
     buildChartPanel();
     buildEcosystemPanel();
+    buildProfilePanel();
     buildBottomSheet();
     buildBottomNav();
     switchTab('home');
@@ -497,15 +520,19 @@
     document.body.innerHTML = `
       <div id="lkp-m-app" class="lkp-m-app">
         <div id="lkp-m-starfield" class="lkp-m-starfield" aria-hidden="true"></div>
+
         <div id="lkp-m-panels" class="lkp-m-panels">
           <section id="lkp-m-home"      class="lkp-m-panel" data-panel="home"></section>
           <section id="lkp-m-galaxies"  class="lkp-m-panel" data-panel="galaxies"></section>
           <section id="lkp-m-bridge"    class="lkp-m-panel" data-panel="bridge"></section>
           <section id="lkp-m-chart"     class="lkp-m-panel" data-panel="chart"></section>
           <section id="lkp-m-ecosystem" class="lkp-m-panel" data-panel="ecosystem"></section>
+          <section id="lkp-m-profile"   class="lkp-m-panel" data-panel="profile"></section>
         </div>
+
         <div id="lkp-m-sheet" class="lkp-m-sheet" role="dialog" aria-modal="true" aria-hidden="true"></div>
         <div id="lkp-m-sheet-bg" class="lkp-m-sheet-bg" aria-hidden="true"></div>
+
         <nav id="lkp-m-nav" class="lkp-m-nav" aria-label="Mobile platform navigation"></nav>
       </div>`;
   }
@@ -514,7 +541,11 @@
     const el = document.getElementById('lkp-m-starfield');
     const count = 84;
     const colors = ['#9ed8ff', '#ffffff', '#ffe8d0', '#b48cff', '#ffd0aa', '#54c6ee'];
-    let out = '<div class="lkp-m-nebula lkp-m-nebula--one"></div><div class="lkp-m-nebula lkp-m-nebula--two"></div>';
+
+    let out = `
+      <div class="lkp-m-nebula lkp-m-nebula--one"></div>
+      <div class="lkp-m-nebula lkp-m-nebula--two"></div>
+    `;
 
     for (let i = 0; i < count; i++) {
       const x = Math.random() * 100;
@@ -629,8 +660,8 @@
               style="--quick-color:var(--m-cyan);--quick-bg:rgba(84,198,238,0.10);--quick-border:rgba(84,198,238,0.26)"
               data-tab="chart">
         <span class="lkp-m-quick-btn__glyph">✦</span>
-        <span class="lkp-m-quick-btn__label">Star Chart</span>
-        <span class="lkp-m-quick-btn__sub">Constellation map</span>
+        <span class="lkp-m-quick-btn__label">Lesson Galaxy</span>
+        <span class="lkp-m-quick-btn__sub">Three.js star map</span>
       </button>`;
   }
 
@@ -668,7 +699,6 @@
     const el = document.getElementById('lkp-m-home');
     const liveCount = LIVE_CULTURES.length;
     const totalCount = CULTURES.length;
-    const starCompassLessonId = getStarCompassLessonId();
 
     el.innerHTML = `
       <div class="lkp-m-home">
@@ -703,13 +733,6 @@
           <div class="lkp-m-orbit" aria-label="Culture orbit selector">
             ${buildCompassOrbitNodes()}
           </div>
-
-          ${starCompassLessonId
-            ? `<a class="lkp-m-compass-center-link" href="${lessonHref(starCompassLessonId)}">
-                <span>Hōkū</span>
-                <small>Star Compass</small>
-              </a>`
-            : ''}
 
           <div class="lkp-m-compass-caption">
             <span>Ka Pā Nānā Hōkū</span>
@@ -777,7 +800,7 @@
   }
 
   /* ────────────────────────────────────────────────────────────────────────
-     GALAXY PANEL
+     GALAXY / LESSON PANEL
   ──────────────────────────────────────────────────────────────────────── */
 
   function buildGalaxiesPanel() {
@@ -785,7 +808,7 @@
 
     el.innerHTML = `
       <div class="lkp-m-section-head">
-        <span class="lkp-m-eyebrow">Living Galaxies</span>
+        <span class="lkp-m-eyebrow">Living Lessons</span>
         <h2>Choose a Culture</h2>
         <p>Every culture, module, and lesson shown here comes from the same data used by the desktop lesson page.</p>
       </div>
@@ -859,6 +882,7 @@
     });
 
     activeGalaxy = best;
+
     document.querySelectorAll('.lkp-m-dot').forEach((dot, index) => {
       dot.classList.toggle('is-active', index === activeGalaxy);
     });
@@ -910,104 +934,519 @@
   }
 
   /* ────────────────────────────────────────────────────────────────────────
-     CHART PANEL
+     THREE.JS MOBILE LESSON GALAXY
   ──────────────────────────────────────────────────────────────────────── */
 
   function buildChartPanel() {
     const el = document.getElementById('lkp-m-chart');
-    const chartConcepts = [...CONCEPTS.values()].filter(c => !c.id.endsWith('-soon'));
-    const positioned = getChartPositions(chartConcepts);
-    const positionsById = new Map(positioned.map(item => [item.id, item]));
-    const dynamicConnections = buildDynamicConnections(chartConcepts);
-    const connections = [...KNOWN_CONNECTIONS, ...dynamicConnections]
-      .filter(([a, b]) => positionsById.has(a) && positionsById.has(b));
-
-    const lines = connections.map(([a, b, strength]) => {
-      const p1 = positionsById.get(a);
-      const p2 = positionsById.get(b);
-      const op = 0.18 + Math.min(0.45, Number(strength || 0.5) * 0.35);
-      return `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="rgba(240,201,106,${op})" stroke-width="${1 + Number(strength || 0.5)}" />`;
-    }).join('');
-
-    const nodes = positioned.map(p => `
-      <button class="lkp-m-chart-node ${p.major ? 'is-major' : ''}"
-              style="left:${p.x}px;top:${p.y}px;--node-color:${p.color};--node-bg:${p.colorDim};--node-border:${p.colorBorder}"
-              data-culture="${p.cultureId}"
-              data-concept="${p.id}">
-        <span>${p.moduleEmoji || p.cultureEmoji || '✦'}</span>
-        <strong>${escapeHTML(p.label)}</strong>
-      </button>`).join('');
 
     el.innerHTML = `
       <div class="lkp-m-section-head">
-        <span class="lkp-m-eyebrow">Constellation Map</span>
-        <h2>Living Star Chart</h2>
-        <p>Swipe around the chart. Tap any star to preview it, then open the full lesson.</p>
+        <span class="lkp-m-eyebrow">Three.js Star Chart</span>
+        <h2>Lesson Galaxy</h2>
+        <p>
+          Every culture becomes a galaxy. Every module becomes an orbit. Every lesson becomes a star.
+          Add lessons to <strong>lkp-data.js</strong> and they propagate here automatically.
+        </p>
       </div>
 
-      <div class="lkp-m-chart-wrap">
-        <div class="lkp-m-chart-canvas" style="width:980px;height:760px">
-          <svg class="lkp-m-chart-lines" width="980" height="760" viewBox="0 0 980 760" aria-hidden="true">
-            ${lines}
-          </svg>
-          ${nodes}
-        </div>
-      </div>`;
+      <div class="lkp-m-three-galaxy-wrap">
+        <canvas id="lkp-m-three-galaxy" class="lkp-m-three-galaxy" aria-label="Mobile Three.js lesson galaxy"></canvas>
 
-    el.querySelectorAll('.lkp-m-chart-node').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const culture = CULTURES.find(c => c.id === btn.dataset.culture);
-        const concept = CONCEPTS.get(btn.dataset.concept);
-        if (culture && concept) openConceptSheet(culture, concept);
-      });
+        <div class="lkp-m-three-galaxy__hud">
+          <div>
+            <strong id="lkp-m-galaxy-count">${CULTURES.length}</strong>
+            <span>Cultures</span>
+          </div>
+          <div>
+            <strong id="lkp-m-lesson-count">${[...CONCEPTS.values()].length}</strong>
+            <span>Lessons</span>
+          </div>
+        </div>
+
+        <div id="lkp-m-galaxy-tip" class="lkp-m-galaxy-tip">
+          <strong>Tap a star</strong>
+          <span>Open a lesson preview</span>
+        </div>
+      </div>
+
+      <div class="lkp-m-galaxy-legend">
+        ${CULTURES.map(culture => `
+          <button class="lkp-m-galaxy-legend__item"
+                  data-tab="${culture.id === 'bridge' ? 'bridge' : 'galaxies'}"
+                  ${culture.id !== 'bridge' ? `data-galaxy="${GALAXIES.findIndex(g => g.id === culture.id)}"` : ''}
+                  style="--legend-color:${culture.color};--legend-bg:${culture.colorDim};--legend-border:${culture.colorBorder}">
+            <span>${culture.emoji}</span>
+            <strong>${escapeHTML(culture.name)}</strong>
+            <small>${culture.lessonCount} lessons</small>
+          </button>
+        `).join('')}
+      </div>
+    `;
+
+    bindTabButtons(el);
+
+    requestAnimationFrame(() => {
+      initMobileThreeLessonGalaxy();
     });
   }
 
-  function getChartPositions(concepts) {
-    const cultures = CULTURES.filter(c => c.concepts.length);
-    const centerX = 490;
-    const centerY = 380;
-    const cultureRadius = 250;
-    const positioned = [];
+  async function initMobileThreeLessonGalaxy() {
+    const canvas = document.getElementById('lkp-m-three-galaxy');
+    const wrap = canvas?.closest('.lkp-m-three-galaxy-wrap');
 
-    cultures.forEach((culture, cultureIndex) => {
-      const angle = -Math.PI / 2 + (Math.PI * 2 * cultureIndex) / Math.max(1, cultures.length);
-      const cx = centerX + Math.cos(angle) * cultureRadius;
-      const cy = centerY + Math.sin(angle) * cultureRadius;
-      const localConcepts = concepts.filter(c => c.cultureId === culture.id);
-      const localRadius = Math.min(128, 62 + localConcepts.length * 7);
+    if (!canvas || !wrap) return;
 
-      localConcepts.forEach((concept, index) => {
-        const nodeAngle = -Math.PI / 2 + (Math.PI * 2 * index) / Math.max(1, localConcepts.length);
-        const ring = concept.major ? localRadius * 0.48 : localRadius;
+    if (mobileGalaxyState.initialized) {
+      resizeMobileThreeGalaxy();
+      return;
+    }
 
-        positioned.push({
-          ...concept,
-          x: Math.round(cx + Math.cos(nodeAngle) * ring),
-          y: Math.round(cy + Math.sin(nodeAngle) * ring)
+    const THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js');
+    const { OrbitControls } = await import('https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js');
+
+    mobileGalaxyState.THREE = THREE;
+    mobileGalaxyState.initialized = true;
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x01030a, 0.035);
+
+    const camera = new THREE.PerspectiveCamera(62, wrap.clientWidth / wrap.clientHeight, 0.1, 220);
+    camera.position.set(0, 10, 42);
+
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance'
+    });
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    renderer.setSize(wrap.clientWidth, wrap.clientHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    const controls = new OrbitControls(camera, canvas);
+    controls.enablePan = false;
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.08;
+    controls.rotateSpeed = 0.45;
+    controls.zoomSpeed = 0.65;
+    controls.minDistance = 18;
+    controls.maxDistance = 78;
+    controls.autoRotate = true;
+    controls.autoRotateSpeed = 0.32;
+
+    const raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector2();
+
+    mobileGalaxyState.scene = scene;
+    mobileGalaxyState.camera = camera;
+    mobileGalaxyState.renderer = renderer;
+    mobileGalaxyState.controls = controls;
+    mobileGalaxyState.raycaster = raycaster;
+    mobileGalaxyState.pointer = pointer;
+    mobileGalaxyState.nodes = [];
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.42));
+
+    const key = new THREE.PointLight(0xffdd9a, 2.2, 140);
+    key.position.set(0, 35, 30);
+    scene.add(key);
+
+    const cyan = new THREE.PointLight(0x54c6ee, 1.2, 100);
+    cyan.position.set(-34, 20, -16);
+    scene.add(cyan);
+
+    buildMobileGalaxyStars(scene, THREE);
+    bindMobileGalaxyEvents(canvas);
+
+    window.addEventListener('resize', resizeMobileThreeGalaxy, { passive: true });
+
+    function animate() {
+      mobileGalaxyState.frameId = requestAnimationFrame(animate);
+      const t = performance.now() * 0.001;
+
+      mobileGalaxyState.nodes.forEach((node, index) => {
+        node.mesh.rotation.y += 0.01;
+        node.mesh.rotation.x = Math.sin(t + index * 0.37) * 0.18;
+
+        const pulse = 1 + Math.sin(t * 1.7 + index) * 0.055;
+        node.mesh.scale.setScalar(node.baseScale * pulse);
+
+        if (node.glow) {
+          node.glow.material.opacity = node.isHovered
+            ? 0.9
+            : 0.38 + Math.sin(t * 1.4 + index) * 0.12;
+        }
+      });
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  }
+
+  function buildMobileGalaxyStars(scene, THREE) {
+    const cultureCount = Math.max(1, CULTURES.length);
+    const galaxyRadius = Math.min(28, 13 + cultureCount * 2.2);
+
+    const bgCount = 700;
+    const bgPositions = new Float32Array(bgCount * 3);
+
+    for (let i = 0; i < bgCount; i++) {
+      const r = 42 + Math.random() * 54;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(Math.random() * 2 - 1);
+
+      bgPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      bgPositions[i * 3 + 1] = r * Math.cos(phi) * 0.75;
+      bgPositions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+    }
+
+    const bgGeo = new THREE.BufferGeometry();
+    bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPositions, 3));
+
+    const bgStars = new THREE.Points(
+      bgGeo,
+      new THREE.PointsMaterial({
+        size: 0.12,
+        color: 0xdbefff,
+        transparent: true,
+        opacity: 0.65,
+        depthWrite: false
+      })
+    );
+
+    scene.add(bgStars);
+
+    CULTURES.forEach((culture, cultureIndex) => {
+      const cultureAngle = -Math.PI / 2 + (Math.PI * 2 * cultureIndex) / cultureCount;
+      const cx = Math.cos(cultureAngle) * galaxyRadius;
+      const cz = Math.sin(cultureAngle) * galaxyRadius;
+      const cy = culture.id === 'bridge' ? 4 : 0;
+
+      const cultureGroup = new THREE.Group();
+      cultureGroup.position.set(cx, cy, cz);
+      scene.add(cultureGroup);
+
+      const color = new THREE.Color(culture.color || '#54c6ee');
+
+      const core = new THREE.Mesh(
+        new THREE.SphereGeometry(0.68, 24, 24),
+        new THREE.MeshBasicMaterial({
+          color,
+          transparent: true,
+          opacity: culture.status === 'live' ? 0.92 : 0.42
+        })
+      );
+
+      cultureGroup.add(core);
+
+      const coreGlow = makeMobileGlowSprite(THREE, culture.color || '#54c6ee', 4.8, 0.44);
+      cultureGroup.add(coreGlow);
+
+      const label = makeMobileTextSprite(THREE, `${culture.emoji} ${culture.name}`, culture.color || '#f0c96a');
+      label.position.set(0, 2.05, 0);
+      label.scale.set(5.2, 1.2, 1);
+      cultureGroup.add(label);
+
+      const modules = culture.modules || [];
+
+      modules.forEach((mod, modIndex) => {
+        const lessons = mod.lessons || [];
+        const moduleRadius = 2.35 + modIndex * 1.85;
+
+        addMobileOrbitRing(cultureGroup, THREE, moduleRadius, culture.color || '#f0c96a', 0.17);
+
+        lessons.forEach((lesson, lessonIndex) => {
+          const angle = -Math.PI / 2 + (Math.PI * 2 * lessonIndex) / Math.max(1, lessons.length);
+          const x = Math.cos(angle) * moduleRadius;
+          const z = Math.sin(angle) * moduleRadius;
+          const y = Math.sin(angle * 2 + modIndex) * 0.45;
+
+          const isMajor = lessonIndex === 0 && modIndex === 0;
+
+          const geo = isMajor
+            ? new THREE.OctahedronGeometry(0.34, 0)
+            : new THREE.SphereGeometry(0.22, 18, 18);
+
+          const mat = new THREE.MeshPhysicalMaterial({
+            color,
+            emissive: color,
+            emissiveIntensity: isMajor ? 0.9 : 0.52,
+            metalness: 0.05,
+            roughness: 0.22,
+            transparent: true,
+            opacity: 0.94
+          });
+
+          const mesh = new THREE.Mesh(geo, mat);
+
+          mesh.position.set(x, y, z);
+          mesh.userData.lessonId = lesson.id;
+          mesh.userData.cultureId = culture.id;
+          mesh.userData.moduleId = mod.id;
+          mesh.userData.title = lesson.title || lesson.id;
+          mesh.userData.readTime = lesson.readTime || '';
+          mesh.userData.num = lesson.num || '';
+          mesh.userData.cultureName = culture.name;
+          mesh.userData.moduleTitle = mod.title || '';
+          mesh.userData.color = culture.color || '#f0c96a';
+
+          const glow = makeMobileGlowSprite(
+            THREE,
+            culture.color || '#f0c96a',
+            isMajor ? 2.0 : 1.25,
+            isMajor ? 0.54 : 0.34
+          );
+
+          glow.position.copy(mesh.position);
+
+          cultureGroup.add(mesh);
+          cultureGroup.add(glow);
+
+          mobileGalaxyState.nodes.push({
+            mesh,
+            glow,
+            culture,
+            module: mod,
+            lesson,
+            baseScale: isMajor ? 1.25 : 1,
+            isHovered: false
+          });
         });
       });
-    });
 
-    return positioned;
-  }
+      if (!modules.length) {
+        addMobileOrbitRing(cultureGroup, THREE, 2.5, culture.color || '#f0c96a', 0.12);
 
-  function buildDynamicConnections(concepts) {
-    const out = [];
-    const byCulture = new Map();
+        for (let i = 0; i < 6; i++) {
+          const angle = (Math.PI * 2 * i) / 6;
+          const mesh = new THREE.Mesh(
+            new THREE.SphereGeometry(0.15, 12, 12),
+            new THREE.MeshBasicMaterial({
+              color,
+              transparent: true,
+              opacity: 0.34
+            })
+          );
 
-    concepts.forEach(c => {
-      if (!byCulture.has(c.cultureId)) byCulture.set(c.cultureId, []);
-      byCulture.get(c.cultureId).push(c);
-    });
-
-    byCulture.forEach(items => {
-      for (let i = 0; i < items.length - 1; i++) {
-        out.push([items[i].id, items[i + 1].id, 0.42]);
+          mesh.position.set(Math.cos(angle) * 2.5, 0, Math.sin(angle) * 2.5);
+          cultureGroup.add(mesh);
+        }
       }
     });
 
-    return out;
+    const liveCultures = CULTURES.filter(c => c.status === 'live');
+
+    if (liveCultures.length >= 2) {
+      const pts = [];
+
+      liveCultures.forEach((culture) => {
+        const idx = CULTURES.findIndex(c => c.id === culture.id);
+        const angle = -Math.PI / 2 + (Math.PI * 2 * idx) / cultureCount;
+
+        pts.push(
+          new THREE.Vector3(
+            Math.cos(angle) * galaxyRadius,
+            culture.id === 'bridge' ? 4 : 0,
+            Math.sin(angle) * galaxyRadius
+          )
+        );
+      });
+
+      for (let i = 0; i < pts.length - 1; i++) {
+        const curve = new THREE.CatmullRomCurve3([
+          pts[i],
+          new THREE.Vector3(0, 6, 0),
+          pts[i + 1]
+        ]);
+
+        const line = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(curve.getPoints(48)),
+          new THREE.LineBasicMaterial({
+            color: 0xd4ae5a,
+            transparent: true,
+            opacity: 0.17
+          })
+        );
+
+        scene.add(line);
+      }
+    }
+  }
+
+  function addMobileOrbitRing(group, THREE, radius, color, opacity) {
+    const pts = [];
+
+    for (let i = 0; i <= 96; i++) {
+      const a = (i / 96) * Math.PI * 2;
+      pts.push(new THREE.Vector3(Math.cos(a) * radius, 0, Math.sin(a) * radius));
+    }
+
+    const ring = new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints(pts),
+      new THREE.LineBasicMaterial({
+        color: new THREE.Color(color),
+        transparent: true,
+        opacity,
+        depthWrite: false
+      })
+    );
+
+    group.add(ring);
+  }
+
+  function makeMobileGlowSprite(THREE, color, size, opacity) {
+    const c = document.createElement('canvas');
+    c.width = 96;
+    c.height = 96;
+
+    const ctx = c.getContext('2d');
+    const grd = ctx.createRadialGradient(48, 48, 0, 48, 48, 48);
+
+    const col = new THREE.Color(color);
+    const r = Math.round(col.r * 255);
+    const g = Math.round(col.g * 255);
+    const b = Math.round(col.b * 255);
+
+    grd.addColorStop(0, `rgba(${r},${g},${b},0.85)`);
+    grd.addColorStop(0.45, `rgba(${r},${g},${b},0.24)`);
+    grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
+
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, 96, 96);
+
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+
+    const sprite = new THREE.Sprite(
+      new THREE.SpriteMaterial({
+        map: tex,
+        transparent: true,
+        opacity,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      })
+    );
+
+    sprite.scale.setScalar(size);
+    return sprite;
+  }
+
+  function makeMobileTextSprite(THREE, text, color) {
+    const c = document.createElement('canvas');
+    c.width = 512;
+    c.height = 128;
+
+    const ctx = c.getContext('2d');
+
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.font = "700 34px 'DM Sans', system-ui, sans-serif";
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 16;
+    ctx.fillStyle = color;
+    ctx.fillText(text, c.width / 2, c.height / 2);
+
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+
+    return new THREE.Sprite(
+      new THREE.SpriteMaterial({
+        map: tex,
+        transparent: true,
+        depthWrite: false
+      })
+    );
+  }
+
+  function bindMobileGalaxyEvents(canvas) {
+    canvas.addEventListener('pointermove', (event) => {
+      updateMobileGalaxyPointer(event, canvas);
+      pickMobileGalaxyNode(false);
+    }, { passive: true });
+
+    canvas.addEventListener('click', (event) => {
+      updateMobileGalaxyPointer(event, canvas);
+      pickMobileGalaxyNode(true);
+    }, { passive: true });
+
+    canvas.addEventListener('touchend', (event) => {
+      if (!event.changedTouches?.length) return;
+      updateMobileGalaxyPointer(event.changedTouches[0], canvas);
+      pickMobileGalaxyNode(true);
+    }, { passive: true });
+  }
+
+  function updateMobileGalaxyPointer(event, canvas) {
+    const rect = canvas.getBoundingClientRect();
+
+    mobileGalaxyState.pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    mobileGalaxyState.pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  }
+
+  function pickMobileGalaxyNode(open) {
+    const { raycaster, pointer, camera, nodes } = mobileGalaxyState;
+    if (!raycaster || !pointer || !camera) return;
+
+    nodes.forEach(n => {
+      n.isHovered = false;
+    });
+
+    raycaster.setFromCamera(pointer, camera);
+
+    const hits = raycaster.intersectObjects(nodes.map(n => n.mesh), false);
+    const tip = document.getElementById('lkp-m-galaxy-tip');
+
+    if (!hits.length) {
+      if (tip) {
+        tip.innerHTML = `<strong>Tap a star</strong><span>Open a lesson preview</span>`;
+      }
+      return;
+    }
+
+    const mesh = hits[0].object;
+    const node = nodes.find(n => n.mesh === mesh);
+    if (!node) return;
+
+    node.isHovered = true;
+
+    if (tip) {
+      tip.innerHTML = `
+        <strong style="color:${node.culture.color}">${escapeHTML(node.lesson.title || node.lesson.id)}</strong>
+        <span>${escapeHTML(node.culture.name)} · ${escapeHTML(node.module.title || '')}</span>
+      `;
+    }
+
+    if (open) {
+      openConceptSheet(node.culture, {
+        id: node.lesson.id,
+        lessonId: node.lesson.id,
+        title: node.lesson.title || node.lesson.id,
+        label: node.lesson.title || node.lesson.id,
+        num: node.lesson.num || '',
+        readTime: node.lesson.readTime || '',
+        moduleTitle: node.module.title || '',
+        desc: stripTags(node.lesson.content || node.module.desc || node.culture.intro || '').slice(0, 220)
+      });
+    }
+  }
+
+  function resizeMobileThreeGalaxy() {
+    const { renderer, camera } = mobileGalaxyState;
+    const canvas = document.getElementById('lkp-m-three-galaxy');
+    const wrap = canvas?.closest('.lkp-m-three-galaxy-wrap');
+
+    if (!renderer || !camera || !wrap) return;
+
+    camera.aspect = wrap.clientWidth / wrap.clientHeight;
+    camera.updateProjectionMatrix();
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+    renderer.setSize(wrap.clientWidth, wrap.clientHeight);
   }
 
   /* ────────────────────────────────────────────────────────────────────────
@@ -1044,6 +1483,98 @@
             </div>
           </article>`).join('')}
       </div>`;
+  }
+
+  /* ────────────────────────────────────────────────────────────────────────
+     PROFILE PANEL
+  ──────────────────────────────────────────────────────────────────────── */
+
+  function readLocalJSON(key, fallback = null) {
+    try {
+      return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
+    } catch {
+      return fallback;
+    }
+  }
+
+  function buildProfilePanel() {
+    const el = document.getElementById('lkp-m-profile');
+
+    const completed = readLocalJSON('cv_completed', []);
+    const cachedProfile =
+      readLocalJSON('piko_profile_v1', null) ||
+      readLocalJSON('pikoverse_profile', null) ||
+      readLocalJSON('cv_profile', null);
+
+    const mana = parseInt(localStorage.getItem('cv_mana') || '0', 10) || 0;
+    const totalLessons = [...CONCEPTS.values()].length;
+    const pct = totalLessons ? Math.min(100, Math.round((completed.length / totalLessons) * 100)) : 0;
+
+    const displayName =
+      cachedProfile?.display_name ||
+      cachedProfile?.name ||
+      cachedProfile?.handle ||
+      cachedProfile?.email ||
+      'Guest Wayfinder';
+
+    const role = cachedProfile?.role || 'user';
+    const isAdmin = role === 'admin' || role === 'owner';
+
+    el.innerHTML = `
+      <div class="lkp-m-section-head">
+        <span class="lkp-m-eyebrow">Profile</span>
+        <h2>Your Wayfinder Profile</h2>
+        <p>Your learning progress, ecosystem identity, and access across Pikoverse, Ikeverse, Digitalverse, Culturalverse, and the Living Knowledge Platform.</p>
+      </div>
+
+      <div class="lkp-m-profile-card ${isAdmin ? 'is-admin' : ''}">
+        <div class="lkp-m-profile-card__avatar">
+          ${isAdmin ? '👑' : '👤'}
+        </div>
+
+        <div>
+          <span class="lkp-m-status ${isAdmin ? 'is-live' : 'is-soon'}">${isAdmin ? 'Admin Access' : 'User Profile'}</span>
+          <h3>${escapeHTML(displayName)}</h3>
+          <p>${isAdmin ? 'You have expanded control tools for managing lessons, pages, and ecosystem content.' : 'Sign in to sync progress across devices and unlock your full profile.'}</p>
+        </div>
+      </div>
+
+      <div class="lkp-m-profile-stats">
+        <div>
+          <strong>${completed.length}</strong>
+          <span>Completed</span>
+        </div>
+        <div>
+          <strong>${mana}</strong>
+          <span>Mana</span>
+        </div>
+        <div>
+          <strong>${pct}%</strong>
+          <span>Progress</span>
+        </div>
+      </div>
+
+      <div class="lkp-m-profile-progress">
+        <span style="width:${pct}%"></span>
+      </div>
+
+      <div class="lkp-m-profile-actions">
+        <a href="profile.html" class="lkp-m-profile-btn">Open Full Profile</a>
+        ${isAdmin ? `<a href="admin.html" class="lkp-m-profile-btn lkp-m-profile-btn--admin">Open Admin Dashboard</a>` : ''}
+      </div>
+
+      <div class="lkp-m-profile-ecosystem">
+        <a href="https://www.pikoverse.xyz">Pikoverse</a>
+        <a href="https://808cryptobeast.github.io/ikehub/">IkeHub</a>
+        <a href="https://808cryptobeast.github.io/Ikestar/">IkeStar</a>
+        <a href="${LESSONS_PATH}">Lessons</a>
+      </div>
+
+      <div class="lkp-m-profile-note">
+        <strong>Admin security note:</strong>
+        UI access should only reveal tools. Real edit permissions should be enforced by Supabase roles and Row Level Security.
+      </div>
+    `;
   }
 
   /* ────────────────────────────────────────────────────────────────────────
@@ -1096,6 +1627,8 @@
     const sheet = document.getElementById('lkp-m-sheet');
     const bg = document.getElementById('lkp-m-sheet-bg');
 
+    if (!sheet || !bg) return;
+
     sheet.classList.remove('is-open');
     bg.classList.remove('is-open');
     sheet.setAttribute('aria-hidden', 'true');
@@ -1111,9 +1644,9 @@
     const items = [
       { id: 'home', label: 'Home', icon: '◈' },
       { id: 'galaxies', label: 'Lessons', icon: '✦' },
-      { id: 'bridge', label: 'Bridge', icon: '🌐' },
-      { id: 'chart', label: 'Chart', icon: '✧' },
-      { id: 'ecosystem', label: 'Data', icon: '☷' }
+      { id: 'chart', label: 'Galaxy', icon: '✧' },
+      { id: 'ecosystem', label: 'Data', icon: '☷' },
+      { id: 'profile', label: 'Profile', icon: '👤' }
     ];
 
     nav.innerHTML = items.map(item => `
@@ -1141,25 +1674,41 @@
       requestAnimationFrame(() => {
         const scroller = document.getElementById('lkp-m-galaxy-scroll');
         const card = scroller?.querySelector(`[data-galaxy-card="${activeGalaxy}"]`);
+
         card?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
         updateDotsFromScroll();
       });
+    }
+
+    if (tab === 'chart') {
+      requestAnimationFrame(() => {
+        initMobileThreeLessonGalaxy();
+        resizeMobileThreeGalaxy();
+      });
+    }
+
+    if (tab === 'profile') {
+      buildProfilePanel();
     }
   }
 
   function initSwipe() {
     const scroller = document.getElementById('lkp-m-galaxy-scroll');
-    if (!scroller) return;
 
-    let ticking = false;
-    scroller.addEventListener('scroll', () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        updateDotsFromScroll();
-        ticking = false;
-      });
-    }, { passive: true });
+    if (scroller) {
+      let ticking = false;
+
+      scroller.addEventListener('scroll', () => {
+        if (ticking) return;
+
+        ticking = true;
+
+        requestAnimationFrame(() => {
+          updateDotsFromScroll();
+          ticking = false;
+        });
+      }, { passive: true });
+    }
 
     window.addEventListener('keydown', event => {
       if (event.key === 'Escape' && sheetOpen) closeSheet();
@@ -1167,7 +1716,7 @@
   }
 
   /* ────────────────────────────────────────────────────────────────────────
-     INIT WHEN READY
+     INIT
   ──────────────────────────────────────────────────────────────────────── */
 
   if (document.readyState === 'loading') {
