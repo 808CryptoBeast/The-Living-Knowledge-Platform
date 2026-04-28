@@ -8,6 +8,8 @@
    - Hawaiian star compass image cleanup/recolor
    - No Hōkū center blocker over the compass
    - Three.js mobile lesson galaxy
+   - Distance-based glow boost when zoomed out
+   - Culture galaxies with nebula smoke + spiral dust fields
    - Profile tab with user/admin gateway structure
 ═══════════════════════════════════════════════════════════════════════════ */
 
@@ -109,24 +111,6 @@
       glow: 'rgba(84,198,238,0.28)'
     }
   };
-
-  const KNOWN_CONNECTIONS = [
-    ['km-kumulipo', 'km-wakea', 0.85],
-    ['km-starcompass', 'km-hokuleaa', 0.95],
-    ['km-ahupuaa', 'km-loikalo', 0.88],
-    ['km-olelo', 'km-hula', 0.74],
-    ['km-loikalo', 'km-laau', 0.68],
-    ['ke-nun', 'ke-ennead', 0.90],
-    ['ke-ennead', 'ke-ptah', 0.72],
-    ['ke-maat', 'ke-maat-politics', 0.86],
-    ['ke-medunetjer', 'ke-medicine', 0.70],
-    ['km-kumulipo', 'bridge-darkness', 0.70],
-    ['ke-nun', 'bridge-darkness', 0.70],
-    ['km-kumulipo', 'bridge-pairs', 0.60],
-    ['ke-ennead', 'bridge-pairs', 0.60],
-    ['km-kumulipo', 'bridge-aloha-maat', 0.52],
-    ['ke-maat', 'bridge-aloha-maat', 0.82]
-  ];
 
   const FALLBACK_CULTURES = [
     {
@@ -294,6 +278,8 @@
     raycaster: null,
     pointer: null,
     nodes: [],
+    cultureGroups: [],
+    dustSystems: [],
     frameId: null
   };
 
@@ -875,6 +861,7 @@
     cards.forEach((card, index) => {
       const cardCenter = card.offsetLeft + card.offsetWidth / 2;
       const distance = Math.abs(cardCenter - center);
+
       if (distance < bestDistance) {
         bestDistance = distance;
         best = index;
@@ -1009,7 +996,7 @@
     mobileGalaxyState.initialized = true;
 
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x01030a, 0.035);
+    scene.fog = new THREE.FogExp2(0x01030a, 0.018);
 
     const camera = new THREE.PerspectiveCamera(62, wrap.clientWidth / wrap.clientHeight, 0.1, 220);
     camera.position.set(0, 10, 42);
@@ -1024,6 +1011,8 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
     renderer.setSize(wrap.clientWidth, wrap.clientHeight);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.22;
 
     const controls = new OrbitControls(camera, canvas);
     controls.enablePan = false;
@@ -1046,6 +1035,8 @@
     mobileGalaxyState.raycaster = raycaster;
     mobileGalaxyState.pointer = pointer;
     mobileGalaxyState.nodes = [];
+    mobileGalaxyState.cultureGroups = [];
+    mobileGalaxyState.dustSystems = [];
 
     scene.add(new THREE.AmbientLight(0xffffff, 0.42));
 
@@ -1064,19 +1055,37 @@
 
     function animate() {
       mobileGalaxyState.frameId = requestAnimationFrame(animate);
+
       const t = performance.now() * 0.001;
+      const distance = camera.position.length();
+      const zoomBoost = Math.min(2.8, Math.max(1, (distance - 20) / 18));
+
+      mobileGalaxyState.cultureGroups.forEach((group, index) => {
+        group.rotation.y += group.userData.rotationSpeed || 0.001;
+        group.rotation.x = Math.sin(t * 0.18 + index) * 0.035;
+      });
+
+      mobileGalaxyState.dustSystems.forEach((dust, index) => {
+        dust.rotation.y += 0.0009 + index * 0.00012;
+        dust.rotation.z += 0.00035;
+      });
 
       mobileGalaxyState.nodes.forEach((node, index) => {
         node.mesh.rotation.y += 0.01;
         node.mesh.rotation.x = Math.sin(t + index * 0.37) * 0.18;
 
         const pulse = 1 + Math.sin(t * 1.7 + index) * 0.055;
-        node.mesh.scale.setScalar(node.baseScale * pulse);
+        const nodeScale = node.baseScale * pulse * zoomBoost;
+
+        node.mesh.scale.setScalar(nodeScale);
 
         if (node.glow) {
+          const baseSize = node.glow.userData.baseSize || 1;
+          node.glow.scale.setScalar(baseSize * zoomBoost);
+
           node.glow.material.opacity = node.isHovered
-            ? 0.9
-            : 0.38 + Math.sin(t * 1.4 + index) * 0.12;
+            ? 0.95
+            : Math.min(0.86, 0.42 + zoomBoost * 0.09 + Math.sin(t * 1.4 + index) * 0.10);
         }
       });
 
@@ -1091,7 +1100,7 @@
     const cultureCount = Math.max(1, CULTURES.length);
     const galaxyRadius = Math.min(28, 13 + cultureCount * 2.2);
 
-    const bgCount = 700;
+    const bgCount = 850;
     const bgPositions = new Float32Array(bgCount * 3);
 
     for (let i = 0; i < bgCount; i++) {
@@ -1128,7 +1137,10 @@
 
       const cultureGroup = new THREE.Group();
       cultureGroup.position.set(cx, cy, cz);
+      cultureGroup.userData.rotationSpeed = 0.0008 + cultureIndex * 0.00018;
+
       scene.add(cultureGroup);
+      mobileGalaxyState.cultureGroups.push(cultureGroup);
 
       const color = new THREE.Color(culture.color || '#54c6ee');
 
@@ -1146,6 +1158,25 @@
       const coreGlow = makeMobileGlowSprite(THREE, culture.color || '#54c6ee', 4.8, 0.44);
       cultureGroup.add(coreGlow);
 
+      const nebula = makeMobileNebulaSprite(
+        THREE,
+        culture.color || '#54c6ee',
+        8.5 + Math.min(6, culture.lessonCount * 0.18),
+        culture.id === 'bridge' ? 0.34 : 0.26
+      );
+
+      nebula.rotation.z = cultureIndex * 0.7;
+      cultureGroup.add(nebula);
+
+      addMobileGalaxyDust(
+        cultureGroup,
+        THREE,
+        culture.color || '#54c6ee',
+        180 + Math.min(220, culture.lessonCount * 10),
+        4.2 + Math.min(5.5, culture.lessonCount * 0.16),
+        culture.id === 'bridge' ? 0.48 : 0.36
+      );
+
       const label = makeMobileTextSprite(THREE, `${culture.emoji} ${culture.name}`, culture.color || '#f0c96a');
       label.position.set(0, 2.05, 0);
       label.scale.set(5.2, 1.2, 1);
@@ -1158,6 +1189,14 @@
         const moduleRadius = 2.35 + modIndex * 1.85;
 
         addMobileOrbitRing(cultureGroup, THREE, moduleRadius, culture.color || '#f0c96a', 0.17);
+        addMobileGalaxyDust(
+          cultureGroup,
+          THREE,
+          culture.color || '#54c6ee',
+          54 + Math.min(80, lessons.length * 8),
+          moduleRadius + 0.2,
+          0.18
+        );
 
         lessons.forEach((lesson, lessonIndex) => {
           const angle = -Math.PI / 2 + (Math.PI * 2 * lessonIndex) / Math.max(1, lessons.length);
@@ -1174,11 +1213,11 @@
           const mat = new THREE.MeshPhysicalMaterial({
             color,
             emissive: color,
-            emissiveIntensity: isMajor ? 0.9 : 0.52,
+            emissiveIntensity: isMajor ? 0.95 : 0.64,
             metalness: 0.05,
-            roughness: 0.22,
+            roughness: 0.18,
             transparent: true,
-            opacity: 0.94
+            opacity: 0.98
           });
 
           const mesh = new THREE.Mesh(geo, mat);
@@ -1197,8 +1236,8 @@
           const glow = makeMobileGlowSprite(
             THREE,
             culture.color || '#f0c96a',
-            isMajor ? 2.0 : 1.25,
-            isMajor ? 0.54 : 0.34
+            isMajor ? 2.25 : 1.45,
+            isMajor ? 0.62 : 0.42
           );
 
           glow.position.copy(mesh.position);
@@ -1298,6 +1337,117 @@
     group.add(ring);
   }
 
+  function makeMobileNebulaSprite(THREE, color, size, opacity) {
+    const c = document.createElement('canvas');
+    c.width = 256;
+    c.height = 256;
+
+    const ctx = c.getContext('2d');
+    const col = new THREE.Color(color);
+
+    const r = Math.round(col.r * 255);
+    const g = Math.round(col.g * 255);
+    const b = Math.round(col.b * 255);
+
+    ctx.clearRect(0, 0, 256, 256);
+
+    const grd = ctx.createRadialGradient(128, 128, 8, 128, 128, 128);
+    grd.addColorStop(0.00, `rgba(${r},${g},${b},0.36)`);
+    grd.addColorStop(0.28, `rgba(${r},${g},${b},0.18)`);
+    grd.addColorStop(0.58, `rgba(${r},${g},${b},0.07)`);
+    grd.addColorStop(1.00, `rgba(${r},${g},${b},0)`);
+
+    ctx.fillStyle = grd;
+    ctx.fillRect(0, 0, 256, 256);
+
+    for (let i = 0; i < 70; i++) {
+      const x = 128 + (Math.random() - 0.5) * 190;
+      const y = 128 + (Math.random() - 0.5) * 190;
+      const radius = 8 + Math.random() * 28;
+
+      const puff = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      puff.addColorStop(0, `rgba(255,255,255,${0.025 + Math.random() * 0.04})`);
+      puff.addColorStop(1, 'rgba(255,255,255,0)');
+
+      ctx.fillStyle = puff;
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    const tex = new THREE.CanvasTexture(c);
+    tex.colorSpace = THREE.SRGBColorSpace;
+
+    const sprite = new THREE.Sprite(
+      new THREE.SpriteMaterial({
+        map: tex,
+        transparent: true,
+        opacity,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      })
+    );
+
+    sprite.scale.set(size, size * 0.72, 1);
+    sprite.userData.baseSize = size;
+    return sprite;
+  }
+
+  function addMobileGalaxyDust(group, THREE, color, count, radius, opacity) {
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+
+    const base = new THREE.Color(color);
+    const gold = new THREE.Color('#f0c96a');
+    const cyan = new THREE.Color('#54c6ee');
+
+    for (let i = 0; i < count; i++) {
+      const arm = i % 3;
+      const angle = Math.random() * Math.PI * 2 + arm * ((Math.PI * 2) / 3);
+      const spread = Math.pow(Math.random(), 0.55) * radius;
+      const spiral = angle + spread * 0.34;
+
+      positions[i * 3] = Math.cos(spiral) * spread;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 1.25;
+      positions[i * 3 + 2] = Math.sin(spiral) * spread;
+
+      const mixed = base.clone();
+
+      if (Math.random() > 0.65) {
+        mixed.lerp(gold, 0.32);
+      }
+
+      if (Math.random() > 0.78) {
+        mixed.lerp(cyan, 0.22);
+      }
+
+      colors[i * 3] = mixed.r;
+      colors[i * 3 + 1] = mixed.g;
+      colors[i * 3 + 2] = mixed.b;
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const dust = new THREE.Points(
+      geo,
+      new THREE.PointsMaterial({
+        size: 0.055,
+        vertexColors: true,
+        transparent: true,
+        opacity,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      })
+    );
+
+    group.add(dust);
+    mobileGalaxyState.dustSystems.push(dust);
+
+    return dust;
+  }
+
   function makeMobileGlowSprite(THREE, color, size, opacity) {
     const c = document.createElement('canvas');
     c.width = 96;
@@ -1332,6 +1482,7 @@
     );
 
     sprite.scale.setScalar(size);
+    sprite.userData.baseSize = size;
     return sprite;
   }
 
