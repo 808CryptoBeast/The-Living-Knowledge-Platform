@@ -1,9 +1,18 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   PIKOVERSE PROFILE — Wayfinder Passport
-   Shared profile for Pikoverse / Ikeverse / Digitalverse / Culturalverse / LKP
+   THE LIVING KNOWLEDGE PLATFORM — Wayfinder Passport
+   File: LKP/js/profile.js
+
+   Shared profile for:
+   - The Living Knowledge Platform
+   - Ikeverse
+   - Digitalverse
+   - Culturalverse
+   - IkeHub
+   - IkeStar
+   - Pikoverse ecosystem links
 
    IMPORTANT:
-   Replace SUPABASE_URL and SUPABASE_ANON_KEY with your real Supabase values.
+   Supabase URL and anon key must match the same project used by admin.html.
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -28,27 +37,36 @@
       : null;
 
   const realmDescriptions = {
-    pikoverse:
-      'Pikoverse is the main gateway: projects, marketplace, showcase, identity, and the central hub for everything you are building.',
+    lkp:
+      'The Living Knowledge Platform turns lessons into constellations, using star maps, galaxies, rewards, and shared learning paths.',
     ikeverse:
       'Ikeverse is the living learning world for culture, history, ancestral knowledge, and deep systems of understanding.',
     digitalverse:
       'Digitalverse is the technology learning realm: AI, blockchain, XR, Web3, cryptography, and emerging digital tools.',
     culturalverse:
       'Culturalverse is the deep cultural study layer: moʻolelo, cosmology, protocols, living traditions, and cross-cultural respect.',
-    lkp:
-      'The Living Knowledge Platform turns lessons into constellations, using star maps, galaxies, and shared learning paths.',
+    ikehub:
+      'IkeHub is the gateway portal that connects every application, section, and realm in the Ikeverse ecosystem.',
     ikestar:
-      'IkeStar focuses on celestial knowledge, star navigation, astronomy, and sky-based learning across traditions.'
+      'IkeStar focuses on celestial knowledge, star navigation, astronomy, and sky-based learning across traditions.',
+    pikoverse:
+      'Pikoverse is the wider ecosystem layer for projects, showcases, marketplace ideas, identity, and future integrations.'
   };
 
   const ecosystemItems = [
     {
-      id: 'pikoverse',
-      name: 'Pikoverse',
-      desc: 'Main hub, showcase, marketplace, and ecosystem identity.',
-      href: 'https://www.pikoverse.xyz',
+      id: 'lkp',
+      name: 'The Living Knowledge Platform',
+      desc: 'Main learning hub, lesson galaxy, culture registry, rewards, and Wayfinder Passport.',
+      href: 'index.html',
       color: '#f0c96a'
+    },
+    {
+      id: 'lessons',
+      name: 'Deep Lessons',
+      desc: 'The full cultural lesson library and constellation learning path.',
+      href: 'lessons.html',
+      color: '#54c6ee'
     },
     {
       id: 'ikehub',
@@ -79,13 +97,6 @@
       color: '#d98545'
     },
     {
-      id: 'lkp',
-      name: 'Living Knowledge',
-      desc: 'The star-map lesson library and constellation platform.',
-      href: 'lessons.html',
-      color: '#f0c96a'
-    },
-    {
       id: 'ikestar',
       name: 'IkeStar',
       desc: 'Celestial knowledge, astronomy, navigation, and sky lore.',
@@ -93,9 +104,16 @@
       color: '#54c6ee'
     },
     {
+      id: 'pikoverse',
+      name: 'Pikoverse',
+      desc: 'Wider project ecosystem, showcase, marketplace, and identity layer.',
+      href: 'https://www.pikoverse.xyz',
+      color: '#f0c96a'
+    },
+    {
       id: 'admin',
       name: 'Admin Deck',
-      desc: 'Owner/admin controls for lessons, pages, users, and assets.',
+      desc: 'Owner/admin controls for lessons, galaxies, cultures, modules, and sources.',
       href: 'admin.html',
       color: '#ffdf8a',
       adminOnly: true
@@ -135,6 +153,26 @@
 
   function $all(selector) {
     return [...document.querySelectorAll(selector)];
+  }
+
+  function setText(selector, value) {
+    const el = $(selector);
+    if (el) el.textContent = value;
+  }
+
+  function setHTML(selector, value) {
+    const el = $(selector);
+    if (el) el.innerHTML = value;
+  }
+
+  function setValue(selector, value) {
+    const el = $(selector);
+    if (el) el.value = value ?? '';
+  }
+
+  function setHidden(selector, hidden) {
+    const el = $(selector);
+    if (el) el.classList.toggle('is-hidden', Boolean(hidden));
   }
 
   function escapeHTML(value) {
@@ -180,13 +218,13 @@
   }
 
   function initialsFromName(name) {
-    const clean = String(name || 'Piko Wayfinder')
+    const clean = String(name || 'LKP Wayfinder')
       .replace(/[^a-zA-Z0-9\s]/g, ' ')
       .trim();
 
     const parts = clean.split(/\s+/).filter(Boolean);
 
-    if (!parts.length) return 'PW';
+    if (!parts.length) return 'LW';
     if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
 
     return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
@@ -201,7 +239,8 @@
       amber: '#e4ad48',
       saffron: '#ffb347',
       cyan: '#54c6ee',
-      violet: '#8fa0ff'
+      violet: '#8fa0ff',
+      default: '#54c6ee'
     };
 
     return map[theme] || '#54c6ee';
@@ -275,10 +314,25 @@
     state.mana = parseInt(localStorage.getItem(MANA_KEY) || '0', 10) || 0;
     state.lessons = getLessonData();
 
+    if (window.LKPRewards) {
+      try {
+        window.LKPRewards.init({
+          data: window.CULTURALVERSE_DATA || { cultures: [] }
+        });
+
+        const rewardSummary = window.LKPRewards.getProfileSummary();
+        state.mana = rewardSummary.mana || state.mana;
+        localStorage.setItem(MANA_KEY, String(state.mana));
+      } catch (err) {
+        console.warn('[Profile] Rewards engine init failed:', err.message);
+      }
+    }
+
     bindUI();
     populateCultureFilter();
     renderProfileFromCache();
     renderDashboard();
+    renderRewardsPanel();
     renderEcosystem();
     renderLessonPath();
     initProfileGalaxy();
@@ -306,6 +360,7 @@
       }
 
       renderDashboard();
+      renderRewardsPanel();
       renderEcosystem();
       renderLessonPath();
       rebuildProfileGalaxyForRole();
@@ -382,6 +437,31 @@
         desc.textContent = realmDescriptions[realm] || 'This realm is connected to your profile.';
       }
     });
+
+    $('#rewardCheckInBtn')?.addEventListener('click', () => {
+      if (!window.LKPRewards) {
+        showToast('Rewards engine is not loaded yet.');
+        return;
+      }
+
+      const before = window.LKPRewards.getProfileSummary();
+
+      window.LKPRewards.checkInToday();
+
+      const after = window.LKPRewards.getProfileSummary();
+
+      state.mana = after.mana || state.mana;
+      localStorage.setItem(MANA_KEY, String(state.mana));
+
+      renderDashboard();
+      renderRewardsPanel();
+
+      if (before.checkedInToday) {
+        showToast('You already checked in today.');
+      } else {
+        showToast('Daily check-in complete. +5 Mana.');
+      }
+    });
   }
 
   function setSessionState(message, tone = '') {
@@ -412,6 +492,7 @@
       }
 
       renderDashboard();
+      renderRewardsPanel();
       renderEcosystem();
       renderLessonPath();
     } catch (err) {
@@ -451,6 +532,7 @@
       await loadRemoteProgress();
 
       renderDashboard();
+      renderRewardsPanel();
       renderEcosystem();
       renderLessonPath();
       rebuildProfileGalaxyForRole();
@@ -481,13 +563,16 @@
     try {
       setSessionState('Creating profile...');
 
+      const baseName = displayName || email.split('@')[0];
+
       const { data, error } = await supabaseClient.auth.signUp({
         email,
         password,
         options: {
           data: {
-            display_name: displayName || email.split('@')[0],
-            handle: normalizeHandle(displayName || email.split('@')[0])
+            display_name: baseName,
+            handle: normalizeHandle(baseName),
+            home_realm: 'lkp'
           }
         }
       });
@@ -502,6 +587,7 @@
       }
 
       renderDashboard();
+      renderRewardsPanel();
       renderEcosystem();
       renderLessonPath();
 
@@ -528,6 +614,7 @@
 
       renderProfileFromCache();
       renderDashboard();
+      renderRewardsPanel();
       renderEcosystem();
       renderLessonPath();
       rebuildProfileGalaxyForRole();
@@ -549,6 +636,7 @@
       await loadOrCreateProfile();
       await loadRemoteProgress();
       renderDashboard();
+      renderRewardsPanel();
       renderLessonPath();
       showToast('Profile synced.');
     } catch (err) {
@@ -577,15 +665,25 @@
           user.email?.split('@')[0] ||
           'Wayfinder';
 
+        const baseHandle = normalizeHandle(user.user_metadata?.handle || displayName);
+        const safeHandle = baseHandle
+          ? `${baseHandle}_${String(user.id).slice(0, 8)}`
+          : `wayfinder_${String(user.id).slice(0, 8)}`;
+
         const newProfile = {
           id: user.id,
           email: user.email,
           display_name: displayName,
-          handle: normalizeHandle(user.user_metadata?.handle || displayName),
+          handle: safeHandle,
           role: 'user',
-          home_realm: 'pikoverse',
+          home_realm: 'lkp',
           preferences: {},
-          ecosystem_access: {}
+          ecosystem_access: {
+            lkp: true,
+            lessons: true,
+            rewards: true,
+            profile: true
+          }
         };
 
         const { data: inserted, error: insertError } = await supabaseClient
@@ -633,11 +731,18 @@
       state.completed = merged;
       writeJSON(COMPLETED_KEY, merged);
 
-      const remoteMana = (data || []).reduce((sum, row) => sum + (row.mana || 0), 0);
+      if (window.LKPRewards) {
+        window.LKPRewards.setCompletedLessons(merged);
+        const summary = window.LKPRewards.getProfileSummary({ recalculate: true });
+        state.mana = summary.mana || state.mana;
+        localStorage.setItem(MANA_KEY, String(state.mana));
+      } else {
+        const remoteMana = (data || []).reduce((sum, row) => sum + (row.mana || 0), 0);
 
-      if (remoteMana > state.mana) {
-        state.mana = remoteMana;
-        localStorage.setItem(MANA_KEY, String(remoteMana));
+        if (remoteMana > state.mana) {
+          state.mana = remoteMana;
+          localStorage.setItem(MANA_KEY, String(remoteMana));
+        }
       }
     } catch (err) {
       console.warn('[Profile] Could not load remote progress:', err.message);
@@ -671,7 +776,7 @@
   async function saveProfile() {
     const displayName = $('#editDisplayName')?.value.trim();
     const handle = normalizeHandle($('#editHandle')?.value);
-    const homeRealm = $('#editHomeRealm')?.value || 'pikoverse';
+    const homeRealm = $('#editHomeRealm')?.value || 'lkp';
     const avatarUrl = $('#editAvatarUrl')?.value.trim();
     const bio = $('#editBio')?.value.trim();
 
@@ -690,6 +795,7 @@
       writeJSON(PROFILE_CACHE_KEY, localProfile);
 
       renderDashboard();
+      renderRewardsPanel();
       showToast('Saved locally. Sign in with Supabase to sync.');
       return;
     }
@@ -699,10 +805,10 @@
         id: state.user.id,
         email: state.user.email,
         display_name: displayName || state.user.email?.split('@')[0],
-        handle,
+        handle: handle || null,
         home_realm: homeRealm,
-        avatar_url: avatarUrl,
-        bio
+        avatar_url: avatarUrl || null,
+        bio: bio || null
       };
 
       const { data, error } = await supabaseClient
@@ -719,6 +825,7 @@
       writeJSON(PROFILE_CACHE_KEY, data);
 
       renderDashboard();
+      renderRewardsPanel();
       renderEcosystem();
       rebuildProfileGalaxyForRole();
 
@@ -731,24 +838,41 @@
 
   async function toggleLessonComplete(lessonId) {
     const currentlyDone = state.completed.includes(lessonId);
+    const shouldComplete = !currentlyDone;
 
-    if (currentlyDone) {
-      state.completed = state.completed.filter(id => id !== lessonId);
-      state.mana = Math.max(0, state.mana - 10);
-      await saveRemoteProgress(lessonId, false);
-    } else {
+    if (shouldComplete) {
       state.completed = [...new Set([...state.completed, lessonId])];
-      state.mana += 10;
-      await saveRemoteProgress(lessonId, true);
+    } else {
+      state.completed = state.completed.filter(id => id !== lessonId);
     }
 
     writeJSON(COMPLETED_KEY, state.completed);
+
+    let rewardSummary = null;
+
+    if (window.LKPRewards) {
+      window.LKPRewards.toggleLesson(lessonId, shouldComplete);
+      rewardSummary = window.LKPRewards.getProfileSummary({ recalculate: true });
+      state.mana = rewardSummary.mana || 0;
+    } else {
+      state.mana = shouldComplete
+        ? state.mana + 10
+        : Math.max(0, state.mana - 10);
+    }
+
     localStorage.setItem(MANA_KEY, String(state.mana));
 
+    await saveRemoteProgress(lessonId, shouldComplete);
+
     renderDashboard();
+    renderRewardsPanel();
     renderLessonPath();
 
-    showToast(currentlyDone ? 'Lesson marked open.' : 'Lesson completed. +10 mana.');
+    showToast(
+      shouldComplete
+        ? `Lesson completed. ${rewardSummary ? `Rank: ${rewardSummary.rank.current.name}.` : '+10 Mana.'}`
+        : 'Lesson marked open.'
+    );
   }
 
   function renderProfileFromCache() {
@@ -764,6 +888,16 @@
     const profile = state.profile || {};
     const completed = state.completed || [];
     const totalLessons = state.lessons.length;
+
+    if (window.LKPRewards) {
+      try {
+        const rewardSummary = window.LKPRewards.getProfileSummary({ recalculate: true });
+        state.mana = rewardSummary.mana || state.mana;
+        localStorage.setItem(MANA_KEY, String(state.mana));
+      } catch (err) {
+        console.warn('[Profile] Rewards render sync failed:', err.message);
+      }
+    }
 
     const progress = totalLessons
       ? Math.min(100, Math.round((completed.length / totalLessons) * 100))
@@ -786,21 +920,28 @@
 
     state.isAdmin = isAdmin;
 
-    $('#profileDisplayName').textContent = displayName;
-    $('#profileHandleLine').textContent = `@${handle}`;
-    $('#profileRoleLine').textContent = isAdmin
-      ? `${role.toUpperCase()} · upgraded command profile`
-      : state.user
-        ? 'Signed-in wayfinder profile'
-        : 'Guest/local profile mode';
+    setText('#profileDisplayName', displayName);
+    setText('#profileHandleLine', `@${handle}`);
 
-    $('#passportRoleChip').textContent = isAdmin
-      ? role.toUpperCase()
-      : state.user
-        ? 'USER'
-        : 'GUEST';
+    setText(
+      '#profileRoleLine',
+      isAdmin
+        ? `${role.toUpperCase()} · upgraded command profile`
+        : state.user
+          ? 'Signed-in wayfinder profile'
+          : 'Guest/local profile mode'
+    );
 
-    $('#profileAvatarInitials').textContent = initialsFromName(displayName);
+    setText(
+      '#passportRoleChip',
+      isAdmin
+        ? role.toUpperCase()
+        : state.user
+          ? 'USER'
+          : 'GUEST'
+    );
+
+    setText('#profileAvatarInitials', initialsFromName(displayName));
 
     const avatar = $('#profileAvatar');
 
@@ -817,27 +958,120 @@
       }
     }
 
-    $('#statCompleted').textContent = completed.length;
-    $('#statMana').textContent = state.mana;
-    $('#statLessons').textContent = totalLessons;
-    $('#statProgress').textContent = `${progress}%`;
+    setText('#statCompleted', completed.length);
+    setText('#statMana', state.mana);
+    setText('#statLessons', totalLessons);
+    setText('#statProgress', `${progress}%`);
+    setText('#statProgressMirror', `${progress}%`);
 
     const ring = $('#passportRingProgress');
+
     if (ring) {
       const circumference = 314;
       ring.style.strokeDashoffset = String(circumference - (circumference * progress) / 100);
     }
 
-    $('#editDisplayName').value = profile.display_name || '';
-    $('#editHandle').value = profile.handle || '';
-    $('#editHomeRealm').value = profile.home_realm || 'pikoverse';
-    $('#editAvatarUrl').value = profile.avatar_url || '';
-    $('#editBio').value = profile.bio || '';
+    setValue('#editDisplayName', profile.display_name || '');
+    setValue('#editHandle', profile.handle || '');
+    setValue('#editHomeRealm', profile.home_realm || 'lkp');
+    setValue('#editAvatarUrl', profile.avatar_url || '');
+    setValue('#editBio', profile.bio || '');
 
-    $('#profileSignOutBtn')?.classList.toggle('is-hidden', !state.user);
-    $('#adminPanel')?.classList.toggle('is-hidden', !isAdmin);
+    setHidden('#profileSignOutBtn', !state.user);
+    setHidden('#adminPanel', !isAdmin);
 
     renderBadges(progress, isAdmin, role);
+  }
+
+  function renderRewardsPanel() {
+    if (!window.LKPRewards) return;
+
+    let summary;
+
+    try {
+      summary = window.LKPRewards.getProfileSummary({
+        recalculate: true
+      });
+    } catch (err) {
+      console.warn('[Profile] Rewards panel failed:', err.message);
+      return;
+    }
+
+    const rank = summary.rank?.current || {
+      name: 'Initiate',
+      icon: '🌱',
+      desc: 'Beginning the path of living knowledge.'
+    };
+
+    const next = summary.rank?.next || null;
+    const rankProgress = summary.rank?.progressToNext ?? 100;
+
+    setText('#rewardRankIcon', rank.icon || '🌱');
+    setText('#rewardRankName', rank.name || 'Initiate');
+    setText('#rewardRankDesc', rank.desc || 'Beginning the path of living knowledge.');
+
+    setText('#rewardMana', summary.mana || 0);
+    setText('#rewardXP', summary.xp || 0);
+    setText('#rewardStreak', summary.streak || 0);
+
+    setText('#rewardModules', summary.completedModuleCount || 0);
+    setText('#rewardCultures', summary.completedCultureCount || 0);
+
+    const xrplReadyCount = (summary.claimRecords || []).filter(record => record.xrpl?.eligible).length;
+    setText('#rewardClaims', xrplReadyCount);
+
+    setText(
+      '#rewardNextRank',
+      next
+        ? `Next: ${next.name} at ${next.minMana} Mana`
+        : 'Highest rank reached'
+    );
+
+    setText('#rewardRankProgress', `${rankProgress}%`);
+
+    const bar = $('#rewardRankBar');
+    if (bar) {
+      bar.style.width = `${rankProgress}%`;
+    }
+
+    const checkBtn = $('#rewardCheckInBtn');
+
+    if (checkBtn) {
+      checkBtn.textContent = summary.checkedInToday
+        ? 'Checked In Today'
+        : 'Daily Learning Check-In';
+
+      checkBtn.disabled = Boolean(summary.checkedInToday);
+      checkBtn.classList.toggle('is-disabled', Boolean(summary.checkedInToday));
+    }
+
+    const badges = summary.badges || [];
+
+    setHTML(
+      '#rewardBadges',
+      badges.length
+        ? badges.map(badge => `
+            <span class="rewards-badge" title="${escapeHTML(badge.desc || '')}">
+              <span>${badge.icon || '✦'}</span>
+              ${escapeHTML(badge.name)}
+            </span>
+          `).join('')
+        : `<div class="profile-note">Complete your first lesson to earn your first badge.</div>`
+    );
+
+    const certificates = summary.certificates || [];
+
+    setHTML(
+      '#rewardCertificates',
+      certificates.length
+        ? certificates.slice(0, 5).map(cert => `
+            <div class="rewards-certificate">
+              <strong>${escapeHTML(cert.title)}</strong>
+              <span>${escapeHTML(cert.subtitle || cert.type || 'Certificate')} · XRPL-ready future record</span>
+            </div>
+          `).join('')
+        : `<div class="profile-note">Complete a full module to generate your first certificate record.</div>`
+    );
   }
 
   function renderBadges(progress, isAdmin, role) {
@@ -890,7 +1124,7 @@
     grid.innerHTML = ecosystemItems
       .filter(item => !item.adminOnly || state.isAdmin)
       .map(item => `
-        <a class="ecosystem-card"
+        <a class="profile-ecosystem-card ecosystem-card"
            href="${item.href}"
            ${item.href.startsWith('http') ? 'target="_blank" rel="noopener"' : ''}
            style="--eco-color:${item.color};--eco-bg:${hexToRgba(item.color, 0.10)};--eco-border:${hexToRgba(item.color, 0.26)}">
@@ -985,85 +1219,96 @@
     const canvas = $('#profileGalaxy');
     if (!canvas || state.three.initialized) return;
 
-    const THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js');
-    const { OrbitControls } = await import('https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js');
+    try {
+      const THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js');
+      const { OrbitControls } = await import('https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js');
 
-    state.three.THREE = THREE;
-    state.three.initialized = true;
+      state.three.THREE = THREE;
+      state.three.initialized = true;
 
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x01030a, 0.028);
+      const scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x01030a, 0.028);
 
-    const camera = new THREE.PerspectiveCamera(
-      62,
-      window.innerWidth / window.innerHeight,
-      0.1,
-      260
-    );
+      const camera = new THREE.PerspectiveCamera(
+        62,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        260
+      );
 
-    camera.position.set(0, 12, 48);
+      camera.position.set(0, 12, 48);
 
-    const renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true,
-      powerPreference: 'high-performance'
-    });
-
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-
-    const controls = new OrbitControls(camera, canvas);
-    controls.enablePan = false;
-    controls.enableDamping = true;
-    controls.dampingFactor = 0.075;
-    controls.rotateSpeed = 0.35;
-    controls.zoomSpeed = 0.55;
-    controls.minDistance = 24;
-    controls.maxDistance = 82;
-    controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.25;
-
-    scene.add(new THREE.AmbientLight(0xffffff, 0.42));
-
-    const goldLight = new THREE.PointLight(0xffdd9a, 2.2, 150);
-    goldLight.position.set(0, 34, 24);
-    scene.add(goldLight);
-
-    const cyanLight = new THREE.PointLight(0x54c6ee, 1.5, 120);
-    cyanLight.position.set(-30, 14, -26);
-    scene.add(cyanLight);
-
-    state.three.scene = scene;
-    state.three.camera = camera;
-    state.three.renderer = renderer;
-    state.three.controls = controls;
-
-    buildIdentityGalaxy();
-
-    window.addEventListener('resize', resizeProfileGalaxy, { passive: true });
-
-    function animate() {
-      state.three.frameId = requestAnimationFrame(animate);
-
-      const t = performance.now() * 0.001;
-
-      state.three.nodes.forEach((node, index) => {
-        node.mesh.rotation.y += 0.006;
-        node.mesh.rotation.x = Math.sin(t + index * 0.41) * 0.08;
-        node.mesh.position.y = node.baseY + Math.sin(t + index * 0.55) * 0.12;
-
-        if (node.glow) {
-          node.glow.material.opacity = 0.25 + Math.sin(t * 1.3 + index) * 0.08;
-        }
+      const renderer = new THREE.WebGLRenderer({
+        canvas,
+        antialias: true,
+        alpha: true,
+        powerPreference: 'high-performance'
       });
 
-      controls.update();
-      renderer.render(scene, camera);
-    }
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
 
-    animate();
+      const controls = new OrbitControls(camera, canvas);
+      controls.enablePan = false;
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.075;
+      controls.rotateSpeed = 0.35;
+      controls.zoomSpeed = 0.55;
+      controls.minDistance = 24;
+      controls.maxDistance = 82;
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 0.25;
+
+      scene.add(new THREE.AmbientLight(0xffffff, 0.42));
+
+      const goldLight = new THREE.PointLight(0xffdd9a, 2.2, 150);
+      goldLight.position.set(0, 34, 24);
+      scene.add(goldLight);
+
+      const cyanLight = new THREE.PointLight(0x54c6ee, 1.5, 120);
+      cyanLight.position.set(-30, 14, -26);
+      scene.add(cyanLight);
+
+      state.three.scene = scene;
+      state.three.camera = camera;
+      state.three.renderer = renderer;
+      state.three.controls = controls;
+
+      buildIdentityGalaxy();
+
+      window.addEventListener('resize', resizeProfileGalaxy, { passive: true });
+
+      function animate() {
+        state.three.frameId = requestAnimationFrame(animate);
+
+        const t = performance.now() * 0.001;
+
+        state.three.nodes.forEach((node, index) => {
+          if (!node.mesh) return;
+
+          node.mesh.rotation.y += 0.006;
+          node.mesh.rotation.x = Math.sin(t + index * 0.41) * 0.08;
+          node.mesh.position.y = node.baseY + Math.sin(t + index * 0.55) * 0.12;
+
+          if (node.glow) {
+            node.glow.position.copy(node.mesh.position);
+            node.glow.material.opacity = 0.25 + Math.sin(t * 1.3 + index) * 0.08;
+          }
+
+          if (node.label) {
+            node.label.position.y = node.mesh.position.y + 1.35;
+          }
+        });
+
+        controls.update();
+        renderer.render(scene, camera);
+      }
+
+      animate();
+    } catch (err) {
+      console.warn('[Profile] Three.js profile galaxy failed to initialize:', err.message);
+    }
   }
 
   function clearIdentityGalaxy() {
@@ -1082,6 +1327,7 @@
     state.three.nodes = [];
 
     const removable = scene.children.filter(child => child.userData?.profileGalaxyGenerated);
+
     removable.forEach(child => {
       scene.remove(child);
       if (child.geometry) child.geometry.dispose?.();
@@ -1148,7 +1394,12 @@
     core.userData.profileGalaxyGenerated = true;
     scene.add(core);
 
-    const coreGlow = makeGlowSprite(state.isAdmin ? '#ffdf8a' : '#f0c96a', state.isAdmin ? 8 : 6, state.isAdmin ? 0.42 : 0.32);
+    const coreGlow = makeGlowSprite(
+      state.isAdmin ? '#ffdf8a' : '#f0c96a',
+      state.isAdmin ? 8 : 6,
+      state.isAdmin ? 0.42 : 0.32
+    );
+
     coreGlow.userData.profileGalaxyGenerated = true;
     scene.add(coreGlow);
 
@@ -1187,7 +1438,12 @@
       mesh.userData.href = item.href;
       mesh.userData.name = item.name;
 
-      const glow = makeGlowSprite(item.color, item.adminOnly ? 3.1 : 2.0, item.adminOnly ? 0.52 : 0.28);
+      const glow = makeGlowSprite(
+        item.color,
+        item.adminOnly ? 3.1 : 2.0,
+        item.adminOnly ? 0.52 : 0.28
+      );
+
       glow.position.copy(mesh.position);
       glow.userData.profileGalaxyGenerated = true;
 
@@ -1228,6 +1484,8 @@
   function addOrbitLine(radius, color, opacity) {
     const THREE = state.three.THREE;
     const scene = state.three.scene;
+
+    if (!THREE || !scene) return;
 
     const pts = [];
 
