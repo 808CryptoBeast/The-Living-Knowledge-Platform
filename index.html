@@ -13,10 +13,12 @@
 
   <!--
     BRANCHING STRATEGY:
-    Mobile  (≤ 768px OR touch-only) → lkp-mobile.js  (no Three.js, no WebGL, no bloom)
-    Desktop (> 768px with pointer)  → lkp-three.js   (full 3D galaxy dome)
+    Mobile  (≤ 768px OR touch/coarse pointer) → lkp-mobile.js
+    Desktop (> 768px with pointer)            → lkp-three.js
 
-    We check BEFORE loading the importmap so mobile never downloads Three.js at all.
+    IMPORTANT:
+    lkp-data.js loads BEFORE mobile or desktop builds the experience.
+    That gives both versions the same CULTURALVERSE_DATA lessons.
   -->
   <script>
     (function () {
@@ -25,13 +27,67 @@
         window.matchMedia('(pointer: coarse)').matches ||
         /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
       );
+
       document.documentElement.dataset.experience = isMobile ? 'mobile' : 'desktop';
 
+      function loadScript(src, options) {
+        return new Promise(function (resolve, reject) {
+          var s = document.createElement('script');
+
+          if (options && options.type) {
+            s.type = options.type;
+          }
+
+          s.src = src;
+
+          s.onload = function () {
+            resolve();
+          };
+
+          s.onerror = function () {
+            reject(new Error('Failed to load script: ' + src));
+          };
+
+          document.head.appendChild(s);
+        });
+      }
+
+      window.LKP_LOAD_SHARED_DATA = function () {
+        if (
+          window.CULTURALVERSE_DATA &&
+          Array.isArray(window.CULTURALVERSE_DATA.cultures)
+        ) {
+          return Promise.resolve(window.CULTURALVERSE_DATA);
+        }
+
+        return loadScript('LKP/js/lkp-data.js').then(function () {
+          if (
+            typeof CULTURALVERSE_DATA !== 'undefined' &&
+            CULTURALVERSE_DATA &&
+            Array.isArray(CULTURALVERSE_DATA.cultures)
+          ) {
+            window.CULTURALVERSE_DATA = CULTURALVERSE_DATA;
+          }
+
+          if (
+            !window.CULTURALVERSE_DATA ||
+            !Array.isArray(window.CULTURALVERSE_DATA.cultures)
+          ) {
+            console.warn('[LKP] lkp-data.js loaded, but CULTURALVERSE_DATA.cultures was not found.');
+          }
+
+          return window.CULTURALVERSE_DATA;
+        });
+      };
+
       if (isMobile) {
-        // Load mobile experience immediately — no importmap, no Three.js
-        var s = document.createElement('script');
-        s.src = 'LKP/js/lkp-mobile.js';
-        document.head.appendChild(s);
+        window.LKP_LOAD_SHARED_DATA()
+          .then(function () {
+            return loadScript('LKP/js/lkp-mobile.js');
+          })
+          .catch(function (err) {
+            console.error('[LKP] Mobile experience failed to load:', err);
+          });
       }
     })();
   </script>
@@ -40,21 +96,28 @@
   <script type="importmap" data-desktop-only>
   {
     "imports": {
-      "three":           "https://unpkg.com/three@0.160.0/build/three.module.js",
-      "three/addons/":   "https://unpkg.com/three@0.160.0/examples/jsm/"
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
     }
   }
   </script>
+
   <script>
-    // Only execute Three.js module on desktop
     if (document.documentElement.dataset.experience === 'desktop') {
-      var s = document.createElement('script');
-      s.type = 'module';
-      s.src  = 'LKP/js/lkp-three.js';
-      document.head.appendChild(s);
+      window.LKP_LOAD_SHARED_DATA()
+        .then(function () {
+          var s = document.createElement('script');
+          s.type = 'module';
+          s.src = 'LKP/js/lkp-three.js';
+          document.head.appendChild(s);
+        })
+        .catch(function (err) {
+          console.error('[LKP] Desktop experience failed to load:', err);
+        });
     }
   </script>
 </head>
+
 <body>
 
   <!-- ── THREE.JS CANVAS — fixed, full-screen star navigation map ── -->
@@ -193,7 +256,7 @@
             </div>
 
             <div class="lkp-culture-card__actions">
-              <a href="lessons.html#kanaka" class="lkp-btn lkp-btn--emerald">
+              <a href="lessons.html#km-kumulipo" class="lkp-btn lkp-btn--emerald">
                 <i class="fas fa-leaf"></i> Enter Kānaka Maoli Lessons
               </a>
             </div>
@@ -231,7 +294,7 @@
             </div>
 
             <div class="lkp-culture-card__actions">
-              <a href="lessons.html#kemet" class="lkp-btn lkp-btn--primary">
+              <a href="lessons.html#ke-nun" class="lkp-btn lkp-btn--primary">
                 <i class="fas fa-ankh"></i> Enter Kemet Lessons
               </a>
             </div>
@@ -259,7 +322,7 @@
             </p>
 
             <div class="lkp-culture-card__actions">
-              <a href="lessons.html#bridge" class="lkp-btn lkp-btn--secondary">
+              <a href="lessons.html#bridge-darkness" class="lkp-btn lkp-btn--secondary">
                 <i class="fas fa-arrows-left-right"></i> Explore the Bridge Lessons
               </a>
             </div>
@@ -336,7 +399,7 @@
             </p>
           </div>
 
-        </div><!-- /lkp-bridge-grid -->
+        </div>
 
         <!-- Comparison pairs -->
         <div class="lkp-compare-pairs lkp-reveal">
@@ -405,7 +468,7 @@
             </div>
           </div>
 
-        </div><!-- /lkp-compare-pairs -->
+        </div>
 
         <div class="lkp-bridge-quote lkp-reveal">
           <div class="lkp-bridge-quote__side">
@@ -420,7 +483,7 @@
         </div>
 
         <div style="text-align:center;margin-top:36px">
-          <a href="lessons.html#bridge" class="lkp-btn lkp-btn--secondary">
+          <a href="lessons.html#bridge-darkness" class="lkp-btn lkp-btn--secondary">
             <i class="fas fa-arrows-left-right"></i> Explore The Bridge Lessons
           </a>
         </div>
@@ -466,6 +529,7 @@
 
       </div>
     </section>
+    -->
 
     <!-- ── ECOSYSTEM ── -->
     <section class="lkp-section" id="ecosystem">
@@ -558,7 +622,7 @@
           <h4>Learn</h4>
           <ul>
             <li><a href="lessons.html">📖 Deep Lessons</a></li>
-            <li><a href="lessons.html#bridge">🌐 The Bridge</a></li>
+            <li><a href="lessons.html#bridge-darkness">🌐 The Bridge</a></li>
             <li><a href="https://808cryptobeast.github.io/ikehub/">⬡ IkeHub</a></li>
           </ul>
         </div>
