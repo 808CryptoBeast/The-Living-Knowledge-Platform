@@ -1700,3 +1700,122 @@ img {
     scroll-behavior: auto !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════
+   SIGNED-IN PROFILE DASHBOARD LAYOUT FIX
+   Fixes narrow left-column layout after auth card hides.
+═══════════════════════════════════════════════════════ */
+
+/* When signed in, the auth card should not reserve a sidebar column */
+body.profile-is-signed-in #authPanel {
+  display: none !important;
+}
+
+body.profile-is-signed-in .profile-layout {
+  grid-template-columns: 1fr !important;
+  width: 100%;
+}
+
+/* Full dashboard layout instead of skinny sidebar stack */
+body.profile-is-signed-in .profile-content {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(360px, 0.86fr) minmax(520px, 1.14fr);
+  gap: 18px;
+  align-items: start;
+}
+
+/* Left dashboard column */
+body.profile-is-signed-in #passport,
+body.profile-is-signed-in #rewards,
+body.profile-is-signed-in #ecosystem {
+  grid-column: 1;
+}
+
+/* Right dashboard column */
+body.profile-is-signed-in #access,
+body.profile-is-signed-in #edit,
+body.profile-is-signed-in #path,
+body.profile-is-signed-in #adminPanel {
+  grid-column: 2;
+}
+
+/* Fallback for browsers when JS already added .is-hidden to authPanel */
+.profile-layout:has(#authPanel.is-hidden) {
+  grid-template-columns: 1fr !important;
+}
+
+.profile-layout:has(#authPanel.is-hidden) .profile-content {
+  width: 100%;
+}
+
+/* Make the passport card breathe better in dashboard mode */
+body.profile-is-signed-in .profile-passport-card {
+  min-width: 0;
+}
+
+body.profile-is-signed-in .profile-passport-card__main {
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+body.profile-is-signed-in .profile-ring-wrap {
+  grid-column: 1 / -1;
+  justify-self: center;
+  margin-top: 6px;
+}
+
+/* Let ecosystem cards use the full left card cleanly */
+body.profile-is-signed-in .profile-ecosystem-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* Keep the Three.js galaxy visible but not visually overpowering cards */
+.profile-galaxy-canvas {
+  opacity: 0.58;
+}
+
+/* Give foreground UI stronger separation from the galaxy */
+.profile-card,
+.profile-auth-card,
+.profile-hero,
+.profile-session-state {
+  backdrop-filter: blur(20px) saturate(1.08);
+  -webkit-backdrop-filter: blur(20px) saturate(1.08);
+}
+
+/* Tablet/mobile collapse */
+@media (max-width: 1060px) {
+  body.profile-is-signed-in .profile-content {
+    grid-template-columns: 1fr;
+  }
+
+  body.profile-is-signed-in #passport,
+  body.profile-is-signed-in #rewards,
+  body.profile-is-signed-in #ecosystem,
+  body.profile-is-signed-in #access,
+  body.profile-is-signed-in #edit,
+  body.profile-is-signed-in #path,
+  body.profile-is-signed-in #adminPanel {
+    grid-column: 1;
+  }
+
+  body.profile-is-signed-in .profile-passport-card__main {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  body.profile-is-signed-in .profile-passport-topline {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 760px) {
+  body.profile-is-signed-in .profile-ecosystem-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-galaxy-canvas {
+    opacity: 0.40;
+  }
+}

@@ -21,7 +21,7 @@
 
   const SUPABASE_ANON_KEY =
     window.LKP_SUPABASE_ANON_KEY ||
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtcmpkdnNxZGZ5YXF0endiYnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTE2MzYsImV4cCI6MjA5MTE2NzYzNn0.UKyvX02bG4cNhb7U2TK96t8XFREHYYwHJIKbPK06nqs';
+    'PASTE_YOUR_CORRECT_SUPABASE_ANON_KEY_HERE';
 
   const PROFILE_CACHE_KEY = 'lkp_profile_v1';
   const LEGACY_PROFILE_CACHE_KEY = 'piko_profile_v1';
@@ -884,6 +884,10 @@
         profile.avatar_url = null;
       }
 
+      if (profile && (!profile.home_realm || profile.home_realm === 'pikoverse')) {
+        profile.home_realm = 'lkp';
+      }
+
       state.profile = profile;
       state.isAdmin = ['admin', 'owner'].includes(profile.role);
 
@@ -1168,6 +1172,10 @@
     const isAdmin = ['admin', 'owner'].includes(role) && Boolean(state.user);
 
     state.isAdmin = isAdmin;
+
+    /* Important layout classes */
+    document.body.classList.toggle('profile-is-signed-in', Boolean(state.user));
+    document.body.classList.toggle('profile-is-admin', Boolean(isAdmin));
 
     setText('#profileDisplayName', displayName);
     setText('#profileHandleLine', `@${handle}`);
@@ -1487,11 +1495,6 @@
     }).join('');
   }
 
-  /* ────────────────────────────────────────────────────────────────────────
-     THREE.JS PROFILE GALAXY
-     Uses esm.sh so OrbitControls can resolve the "three" dependency.
-  ──────────────────────────────────────────────────────────────────────── */
-
   async function initProfileGalaxy() {
     const canvas = $('#profileGalaxy');
     if (!canvas || state.three.initialized) return;
@@ -1557,7 +1560,6 @@
       buildIdentityGalaxy();
 
       window.addEventListener('resize', resizeProfileGalaxy, { passive: true });
-
       canvas.addEventListener('click', onProfileGalaxyClick);
 
       function animate() {
@@ -1633,10 +1635,9 @@
   }
 
   function clearIdentityGalaxy() {
-    const THREE = state.three.THREE;
     const scene = state.three.scene;
 
-    if (!THREE || !scene) return;
+    if (!scene) return;
 
     state.three.nodes.forEach(node => {
       if (node.mesh) scene.remove(node.mesh);
