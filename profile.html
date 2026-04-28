@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+
+  <title>Pikoverse Profile | Wayfinder Passport</title>
+
+  <meta
+    name="description"
+    content="Your Pikoverse Wayfinder Passport — one profile across Pikoverse, Ikeverse, Digitalverse, Culturalverse, and the Living Knowledge Platform."
+  />
+
+  <meta name="theme-color" content="#01030a" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;700;900&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="LKP/css/profile.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="LKP/js/lkp-data.js"></script>
+  <script defer src="LKP/js/profile.js"></script>
+</head>
+
+<body>
+  <div class="piko-passport-app">
+
+    <!-- Three.js identity constellation -->
+    <canvas
+      id="profileGalaxy"
+      class="profile-galaxy"
+      aria-hidden="true"
+    ></canvas>
+
+    <div class="profile-atmosphere" aria-hidden="true"></div>
+    <div class="profile-noise" aria-hidden="true"></div>
+
+    <div class="profile-orb profile-orb--gold" aria-hidden="true"></div>
+    <div class="profile-orb profile-orb--cyan" aria-hidden="true"></div>
+    <div class="profile-orb profile-orb--violet" aria-hidden="true"></div>
+
+    <!-- Header -->
+    <header class="profile-header">
+      <a href="index.html" class="profile-brand" aria-label="Return to Pikoverse home">
+        <span class="profile-brand__sigil">◈</span>
+        <span class="profile-brand__text">
+          <strong>Pikoverse</strong>
+          <small>Wayfinder Passport</small>
+        </span>
+      </a>
+
+      <nav class="profile-header-nav" aria-label="Ecosystem navigation">
+        <a href="index.html">Pikoverse</a>
+        <a href="lessons.html">Lessons</a>
+        <a href="https://808cryptobeast.github.io/ikehub/" target="_blank" rel="noopener">IkeHub</a>
+        <a href="https://808cryptobeast.github.io/Ikestar/" target="_blank" rel="noopener">IkeStar</a>
+      </nav>
+
+      <div class="profile-header-actions">
+        <button id="profileSyncBtn" class="profile-header-btn" type="button">
+          Sync
+        </button>
+
+        <button id="profileSignOutBtn" class="profile-header-btn is-hidden" type="button">
+          Sign Out
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile quick dock -->
+    <nav class="profile-mobile-dock" aria-label="Profile quick navigation">
+      <a href="#passport">Passport</a>
+      <a href="#access">Access</a>
+      <a href="#edit">Edit</a>
+      <a href="#path">Path</a>
+      <a href="#ecosystem">Links</a>
+    </nav>
+
+    <main class="profile-main">
+
+      <!-- Hero -->
+      <section class="profile-hero" id="passport">
+        <div class="profile-eyebrow">
+          Shared Identity Across The Ecosystem
+        </div>
+
+        <h1>
+          Wayfinder<br />
+          <em>Passport</em>
+        </h1>
+
+        <p>
+          One living profile for Pikoverse, Ikeverse, Digitalverse, Culturalverse,
+          IkeHub, IkeStar, and the Living Knowledge Platform. Your profile is not
+          just a login — it is your constellation of progress, access, identity,
+          learning, and creative control.
+        </p>
+
+        <div class="profile-hero-actions">
+          <button class="profile-main-btn" type="button" data-scroll-target="#access">
+            Sign In / Create Profile
+          </button>
+
+          <button class="profile-main-btn profile-main-btn--ghost" type="button" data-scroll-target="#path">
+            View Learning Path
+          </button>
+
+          <a class="profile-main-btn profile-main-btn--deep" href="lessons.html">
+            Open Lessons
+          </a>
+        </div>
+      </section>
+
+      <!-- Dashboard layout -->
+      <section class="profile-grid">
+
+        <!-- Passport card -->
+        <article class="profile-card profile-passport-card">
+          <div class="passport-topline">
+            <span>Pikoverse Passport</span>
+            <strong id="passportRoleChip">Guest</strong>
+          </div>
+
+          <div class="passport-core">
+            <div id="profileAvatar" class="passport-avatar">
+              <span id="profileAvatarInitials">PW</span>
+            </div>
+
+            <div class="passport-identity">
+              <h2 id="profileDisplayName">Guest Wayfinder</h2>
+              <p id="profileHandleLine">@guest</p>
+              <p id="profileRoleLine">Local profile mode</p>
+            </div>
+          </div>
+
+          <div class="passport-ring-wrap" aria-label="Progress ring">
+            <svg class="passport-ring" viewBox="0 0 120 120" aria-hidden="true">
+              <circle cx="60" cy="60" r="50" class="passport-ring__track"></circle>
+              <circle id="passportRingProgress" cx="60" cy="60" r="50" class="passport-ring__value"></circle>
+            </svg>
+            <div class="passport-ring-center">
+              <strong id="statProgress">0%</strong>
+              <span>Path</span>
+            </div>
+          </div>
+
+          <div class="profile-stat-grid">
+            <div>
+              <strong id="statCompleted">0</strong>
+              <span>Completed</span>
+            </div>
+            <div>
+              <strong id="statMana">0</strong>
+              <span>Mana</span>
+            </div>
+            <div>
+              <strong id="statLessons">0</strong>
+              <span>Lessons</span>
+            </div>
+          </div>
+
+          <div id="profileBadgeRow" class="profile-badge-row"></div>
+        </article>
+
+        <!-- Access card -->
+        <aside class="profile-card profile-access-card" id="access">
+          <div class="profile-card-head">
+            <span class="profile-card-icon">🔐</span>
+            <div>
+              <h2>Access Gate</h2>
+              <p>Email + password profile access through Supabase.</p>
+            </div>
+          </div>
+
+          <div id="profileSessionState" class="profile-session-state">
+            Checking profile session...
+          </div>
+
+          <form id="profileAuthForm" class="profile-form">
+            <label>
+              <span>Email</span>
+              <input
+                id="authEmail"
+                type="email"
+                autocomplete="email"
+                placeholder="you@example.com"
+              />
+            </label>
+
+            <label>
+              <span>Password</span>
+              <input
+                id="authPassword"
+                type="password"
+                autocomplete="current-password"
+                placeholder="••••••••"
+              />
+            </label>
+
+            <label>
+              <span>Display Name <small>new accounts only</small></span>
+              <input
+                id="authDisplayName"
+                type="text"
+                autocomplete="nickname"
+                placeholder="Wayfinder name"
+              />
+            </label>
+
+            <div class="profile-auth-actions">
+              <button id="signInBtn" class="profile-main-btn" type="submit">
+                Sign In
+              </button>
+
+              <button id="signUpBtn" class="profile-main-btn profile-main-btn--ghost" type="button">
+                Create Profile
+              </button>
+            </div>
+          </form>
+
+          <div class="profile-note">
+            Guest mode still tracks local progress. Supabase sign-in lets the profile
+            sync across devices and unlocks role-based admin access.
+          </div>
+        </aside>
+
+        <!-- Profile editor -->
+        <section class="profile-card profile-editor-card" id="edit">
+          <div class="profile-card-head">
+            <span class="profile-card-icon">✍️</span>
+            <div>
+              <h2>Edit Identity</h2>
+              <p>Shape your public-facing ecosystem profile.</p>
+            </div>
+          </div>
+
+          <form id="profileEditForm" class="profile-form profile-form--editor">
+            <label>
+              <span>Display Name</span>
+              <input id="editDisplayName" type="text" placeholder="Your profile name" />
+            </label>
+
+            <label>
+              <span>Handle</span>
+              <input id="editHandle" type="text" placeholder="your_handle" />
+            </label>
+
+            <label>
+              <span>Home Realm</span>
+              <select id="editHomeRealm">
+                <option value="pikoverse">Pikoverse</option>
+                <option value="ikeverse">Ikeverse</option>
+                <option value="digitalverse">Digitalverse</option>
+                <option value="culturalverse">Culturalverse</option>
+                <option value="lkp">Living Knowledge Platform</option>
+                <option value="ikestar">IkeStar</option>
+                <option value="ikehub">IkeHub</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Avatar URL</span>
+              <input id="editAvatarUrl" type="url" placeholder="https://..." />
+            </label>
+
+            <label class="profile-form__wide">
+              <span>Bio / Moʻolelo</span>
+              <textarea
+                id="editBio"
+                rows="5"
+                placeholder="Share your learning path, creative purpose, or project identity."
+              ></textarea>
+            </label>
+
+            <button class="profile-main-btn profile-form__wide" type="submit">
+              Save Profile
+            </button>
+          </form>
+        </section>
+
+        <!-- Realm wheel -->
+        <section class="profile-card profile-realm-card">
+          <div class="profile-card-head">
+            <span class="profile-card-icon">🧭</span>
+            <div>
+              <h2>Realm Wheel</h2>
+              <p>Your profile connects to every section of the ecosystem.</p>
+            </div>
+          </div>
+
+          <div id="realmWheel" class="realm-wheel" aria-label="Pikoverse realm wheel">
+            <button data-realm="pikoverse">Piko</button>
+            <button data-realm="ikeverse">ʻIke</button>
+            <button data-realm="digitalverse">Digital</button>
+            <button data-realm="culturalverse">Culture</button>
+            <button data-realm="lkp">LKP</button>
+            <button data-realm="ikestar">Stars</button>
+          </div>
+
+          <div id="realmDescription" class="realm-description">
+            Choose a realm to preview where your profile connects.
+          </div>
+        </section>
+
+        <!-- Admin deck -->
+        <section id="adminPanel" class="profile-card profile-admin-card is-hidden">
+          <div class="profile-card-head">
+            <span class="profile-card-icon">👑</span>
+            <div>
+              <h2>Admin Control Deck</h2>
+              <p>Your upgraded owner/admin profile unlocks editing and ecosystem controls.</p>
+            </div>
+          </div>
+
+          <div class="admin-grid">
+            <a href="admin.html#lessons" class="admin-tool-card">
+              <strong>Lesson Manager</strong>
+              <span>Add, edit, stage, and publish lessons.</span>
+            </a>
+
+            <a href="admin.html#pages" class="admin-tool-card">
+              <strong>Page Builder</strong>
+              <span>Edit landing pages, modules, and content blocks.</span>
+            </a>
+
+            <a href="admin.html#ecosystem" class="admin-tool-card">
+              <strong>Ecosystem Router</strong>
+              <span>Control links across Pikoverse sections.</span>
+            </a>
+
+            <a href="admin.html#users" class="admin-tool-card">
+              <strong>User Roles</strong>
+              <span>Review trusted users and assign access.</span>
+            </a>
+
+            <a href="admin.html#media" class="admin-tool-card">
+              <strong>Media Vault</strong>
+              <span>Manage images, icons, and visual assets.</span>
+            </a>
+
+            <a href="admin.html#audit" class="admin-tool-card">
+              <strong>Audit Trail</strong>
+              <span>Review admin edits and publishing history.</span>
+            </a>
+          </div>
+
+          <div class="profile-note profile-note--admin">
+            The UI reveals admin tools, but real edit permission must stay protected
+            by Supabase Row Level Security and your <strong>role</strong> field.
+          </div>
+        </section>
+
+        <!-- Ecosystem gateway -->
+        <section class="profile-card profile-ecosystem-card" id="ecosystem">
+          <div class="profile-card-head">
+            <span class="profile-card-icon">🌐</span>
+            <div>
+              <h2>Ecosystem Gateway</h2>
+              <p>Move through the Pikoverse from one profile identity.</p>
+            </div>
+          </div>
+
+          <div id="ecosystemGrid" class="ecosystem-grid"></div>
+        </section>
+
+        <!-- Lesson path -->
+        <section class="profile-card profile-lessons-card" id="path">
+          <div class="profile-card-head">
+            <span class="profile-card-icon">📚</span>
+            <div>
+              <h2>Learning Constellation</h2>
+              <p>Generated from the same lesson data used by desktop and mobile LKP.</p>
+            </div>
+          </div>
+
+          <div class="lesson-toolbar">
+            <input id="lessonSearch" type="search" placeholder="Search lessons, cultures, modules..." />
+
+            <select id="lessonCultureFilter">
+              <option value="all">All Cultures</option>
+            </select>
+
+            <select id="lessonStatusFilter">
+              <option value="all">All Status</option>
+              <option value="open">Open</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+
+          <div id="lessonPathList" class="lesson-path-list"></div>
+        </section>
+
+      </section>
+    </main>
+
+    <div id="profileToast" class="profile-toast" role="status" aria-live="polite"></div>
+  </div>
+</body>
+</html>
