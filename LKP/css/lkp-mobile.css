@@ -28,7 +28,11 @@
 }
 
 /* ─── RESET ──────────────────────────────────────────────────────────────── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
 html,
 body {
@@ -50,10 +54,24 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
-button { border: 0; background: none; cursor: pointer; }
-a { text-decoration: none; }
-strong { color: rgba(255, 236, 183, 0.96); }
-code { color: var(--m-gold); font-size: 0.92em; }
+button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+a {
+  text-decoration: none;
+}
+
+strong {
+  color: rgba(255, 236, 183, 0.96);
+}
+
+code {
+  color: var(--m-gold);
+  font-size: 0.92em;
+}
 
 /* ─── APP SHELL ──────────────────────────────────────────────────────────── */
 .lkp-m-app {
@@ -89,7 +107,10 @@ code { color: var(--m-gold); font-size: 0.92em; }
   scrollbar-color: rgba(240, 201, 106, 0.40) transparent;
 }
 
-.lkp-m-panel::-webkit-scrollbar { width: 5px; }
+.lkp-m-panel::-webkit-scrollbar {
+  width: 5px;
+}
+
 .lkp-m-panel::-webkit-scrollbar-thumb {
   background: rgba(240, 201, 106, 0.32);
   border-radius: 999px;
@@ -246,7 +267,9 @@ code { color: var(--m-gold); font-size: 0.92em; }
   scrollbar-width: none;
 }
 
-.lkp-m-home__pills::-webkit-scrollbar { display: none; }
+.lkp-m-home__pills::-webkit-scrollbar {
+  display: none;
+}
 
 .lkp-m-pill {
   flex: 0 0 auto;
@@ -684,6 +707,11 @@ code { color: var(--m-gold); font-size: 0.92em; }
     0 18px 54px rgba(0, 0, 0, 0.30);
 }
 
+.lkp-m-galaxy-card--bridge {
+  flex: none;
+  min-height: auto;
+}
+
 .lkp-m-galaxy-card.is-soon {
   opacity: 0.78;
 }
@@ -786,6 +814,123 @@ code { color: var(--m-gold); font-size: 0.92em; }
   color: var(--galaxy-color, var(--m-gold));
 }
 
+.lkp-m-enter-lessons {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--enter-border, rgba(240, 201, 106, 0.28));
+  background:
+    radial-gradient(circle at 50% 0%, var(--enter-bg, rgba(240, 201, 106, 0.10)), transparent 64%),
+    rgba(255, 255, 255, 0.035);
+  color: var(--enter-color, var(--m-gold));
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+}
+
+/* ─── SAME DESKTOP LESSONS, MOBILE SHOWCASE LAYOUT ─────────────────────── */
+.lkp-m-module-list {
+  display: grid;
+  gap: 13px;
+}
+
+.lkp-m-module-block {
+  display: grid;
+  gap: 9px;
+  padding: 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.lkp-m-module-block__head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+.lkp-m-module-block__head > span {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.lkp-m-module-block__head strong {
+  color: var(--galaxy-color, var(--m-gold));
+  font-size: 13px;
+}
+
+.lkp-m-module-block__head small {
+  display: block;
+  margin-top: 2px;
+  color: var(--m-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.lkp-m-module-block__lessons {
+  display: grid;
+  gap: 8px;
+}
+
+.lkp-m-lesson-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  min-height: 58px;
+  padding: 10px 11px;
+  border-radius: 16px;
+  border: 1px solid var(--lesson-border, rgba(240, 201, 106, 0.24));
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.045), transparent),
+    var(--lesson-bg, rgba(240, 201, 106, 0.08));
+}
+
+.lkp-m-lesson-row__num {
+  min-width: 42px;
+  color: var(--lesson-color, var(--m-gold));
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+}
+
+.lkp-m-lesson-row__body {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.lkp-m-lesson-row__body strong {
+  color: rgba(255, 239, 198, 0.96);
+  font-size: 12.5px;
+  line-height: 1.25;
+}
+
+.lkp-m-lesson-row__body small {
+  color: var(--m-muted);
+  font-size: 10.5px;
+}
+
+.lkp-m-lesson-row__arrow {
+  color: var(--lesson-color, var(--m-gold));
+  font-weight: 900;
+}
+
+.lkp-m-empty-note {
+  padding: 10px;
+  color: var(--m-muted);
+  font-size: 12px;
+}
+
+/* ─── OLD CONCEPT BUTTON SUPPORT, SAFE FALLBACK ────────────────────────── */
 .lkp-m-concept-grid {
   display: grid;
   gap: 9px;
@@ -1225,50 +1370,96 @@ code { color: var(--m-gold); font-size: 0.92em; }
 
 /* ─── ANIMATIONS ────────────────────────────────────────────────────────── */
 @keyframes m-twinkle {
-  0% { opacity: 0.24; transform: scale(0.72); }
-  100% { opacity: 0.92; transform: scale(1.08); }
+  0% {
+    opacity: 0.24;
+    transform: scale(0.72);
+  }
+  100% {
+    opacity: 0.92;
+    transform: scale(1.08);
+  }
 }
 
 @keyframes m-nebula-drift {
-  from { transform: translate3d(-2%, -1%, 0) scale(0.96); }
-  to { transform: translate3d(3%, 2%, 0) scale(1.06); }
+  from {
+    transform: translate3d(-2%, -1%, 0) scale(0.96);
+  }
+  to {
+    transform: translate3d(3%, 2%, 0) scale(1.06);
+  }
 }
 
 @keyframes m-compass-breath {
-  from { transform: scale(0.96); opacity: 0.64; }
-  to { transform: scale(1.06); opacity: 1; }
+  from {
+    transform: scale(0.96);
+    opacity: 0.64;
+  }
+  to {
+    transform: scale(1.06);
+    opacity: 1;
+  }
 }
 
 @keyframes m-ring-breath {
-  from { transform: scale(0.985); opacity: 0.55; }
-  to { transform: scale(1.02); opacity: 0.95; }
+  from {
+    transform: scale(0.985);
+    opacity: 0.55;
+  }
+  to {
+    transform: scale(1.02);
+    opacity: 0.95;
+  }
 }
 
 @keyframes m-aura-gold {
-  from { transform: scale(0.96); opacity: 0.56; }
-  to { transform: scale(1.08); opacity: 0.95; }
+  from {
+    transform: scale(0.96);
+    opacity: 0.56;
+  }
+  to {
+    transform: scale(1.08);
+    opacity: 0.95;
+  }
 }
 
 @keyframes m-aura-cyan {
-  from { transform: scale(1.04); opacity: 0.34; }
-  to { transform: scale(0.94); opacity: 0.76; }
+  from {
+    transform: scale(1.04);
+    opacity: 0.34;
+  }
+  to {
+    transform: scale(0.94);
+    opacity: 0.76;
+  }
 }
 
 @keyframes m-compass-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes m-compass-counterspin {
-  to { transform: rotate(-360deg); }
+  to {
+    transform: rotate(-360deg);
+  }
 }
 
 @keyframes m-compass-image-pulse {
-  from { opacity: 0.82; filter: brightness(0.94) contrast(1.08); }
-  to { opacity: 1; filter: brightness(1.12) contrast(1.22); }
+  from {
+    opacity: 0.82;
+    filter: brightness(0.94) contrast(1.08);
+  }
+  to {
+    opacity: 1;
+    filter: brightness(1.12) contrast(1.22);
+  }
 }
 
 @keyframes m-orbit-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes m-orbit-node-pulse {
@@ -1285,13 +1476,25 @@ code { color: var(--m-gold); font-size: 0.92em; }
 }
 
 @keyframes m-node-halo {
-  from { transform: scale(0.88); opacity: 0.28; }
-  to { transform: scale(1.14); opacity: 0.70; }
+  from {
+    transform: scale(0.88);
+    opacity: 0.28;
+  }
+  to {
+    transform: scale(1.14);
+    opacity: 0.70;
+  }
 }
 
 @keyframes m-spark-twinkle {
-  from { opacity: 0.10; scale: 0.82; }
-  to { opacity: 0.78; scale: 1.18; }
+  from {
+    opacity: 0.10;
+    scale: 0.82;
+  }
+  to {
+    opacity: 0.78;
+    scale: 1.18;
+  }
 }
 
 /* ─── SMALL SCREENS ─────────────────────────────────────────────────────── */
@@ -1348,6 +1551,15 @@ code { color: var(--m-gold); font-size: 0.92em; }
 
   .lkp-m-galaxy-card__stats {
     grid-template-columns: 1fr;
+  }
+
+  .lkp-m-lesson-row {
+    grid-template-columns: 1fr auto;
+  }
+
+  .lkp-m-lesson-row__num {
+    grid-column: 1 / -1;
+    min-width: 0;
   }
 }
 

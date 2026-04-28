@@ -6,9 +6,10 @@
    - Mobile-only DOM/CSS/SVG experience. No Three.js required.
    - Reads CULTURALVERSE_DATA.cultures when lkp-data.js is loaded first.
    - Every culture added to lkp-data.js becomes another mobile galaxy/orbit/card.
-   - Keeps the Hawaiian star compass alive on mobile as the portal centerpiece.
-   - Cleans the JPG compass background through Canvas, turns non-white artwork gold,
-     and makes the compass larger/readable on mobile.
+   - Mobile showcases the SAME modules and lessons as desktop.
+   - Lesson links route to lessons.html#lessonId, matching culturalverse-lessons.js.
+   - Cleans the Hawaiian star compass JPG through Canvas:
+     white background removed, non-white compass artwork recolored gold.
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -17,10 +18,14 @@
   /* ────────────────────────────────────────────────────────────────────────
      PATHS + DATA
   ──────────────────────────────────────────────────────────────────────── */
-  const IN_LKP_FOLDER = /\/LKP\/?$/i.test(location.pathname.replace(/[^/]*$/, '')) ||
-                        /\/LKP\//i.test(location.pathname);
+
+  const IN_LKP_FOLDER =
+    /\/LKP\/?$/i.test(location.pathname.replace(/[^/]*$/, '')) ||
+    /\/LKP\//i.test(location.pathname);
 
   const ASSET_ROOT = IN_LKP_FOLDER ? 'assets/images/' : 'LKP/assets/images/';
+  const CSS_PATH   = IN_LKP_FOLDER ? 'css/lkp-mobile.css' : 'LKP/css/lkp-mobile.css';
+  const LESSONS_PATH = IN_LKP_FOLDER ? 'lessons.html' : 'lessons.html';
 
   function assetPath(file) {
     return ASSET_ROOT + file;
@@ -254,16 +259,53 @@
   /* ────────────────────────────────────────────────────────────────────────
      STATE
   ──────────────────────────────────────────────────────────────────────── */
+
   let activeTab = 'home';
   let activeGalaxy = 0;
   let sheetOpen = false;
   let sheetData = null;
 
   /* ────────────────────────────────────────────────────────────────────────
-     HAWAIIAN STAR COMPASS IMAGE PROCESSOR
-     Removes white JPG background, converts dark/gray compass artwork to gold,
-     and outputs a clean transparent PNG data URL for the mobile compass.
+     LESSON ROUTING HELPERS
   ──────────────────────────────────────────────────────────────────────── */
+
+  function lessonHref(lessonId) {
+    return `${LESSONS_PATH}#${encodeURIComponent(lessonId)}`;
+  }
+
+  function getFirstLessonForCulture(cultureId) {
+    const culture = CULTURES.find(c => c.id === cultureId);
+    if (!culture) return null;
+
+    for (const mod of culture.modules || []) {
+      for (const lesson of mod.lessons || []) {
+        return { culture, module: mod, lesson };
+      }
+    }
+
+    return null;
+  }
+
+  function cultureHref(cultureId) {
+    const first = getFirstLessonForCulture(cultureId);
+    return first ? lessonHref(first.lesson.id) : LESSONS_PATH;
+  }
+
+  function getStarCompassLessonId() {
+    if (CONCEPTS.has('km-starcompass')) return 'km-starcompass';
+
+    const kanaka = CULTURES.find(c => c.id === 'kanaka');
+    const firstWayfinding = kanaka?.concepts.find(c =>
+      /star|compass|wayfinding|hōkū|hoku/i.test(`${c.id} ${c.title} ${c.label}`)
+    );
+
+    return firstWayfinding?.lessonId || kanaka?.concepts[0]?.lessonId || '';
+  }
+
+  /* ────────────────────────────────────────────────────────────────────────
+     HAWAIIAN STAR COMPASS IMAGE PROCESSOR
+  ──────────────────────────────────────────────────────────────────────── */
+
   function waitForImageReady(img) {
     return new Promise((resolve) => {
       if (!img) return resolve(false);
@@ -319,10 +361,6 @@
       const sat = max - min;
       const lum = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
 
-      /*
-        Remove the white / paper background.
-        CSS filters cannot truly remove JPG white pixels. Canvas can.
-      */
       const isWhitePaper =
         r >= 178 &&
         g >= 178 &&
@@ -330,10 +368,6 @@
         lum >= 0.72 &&
         sat <= 58;
 
-      /*
-        Remove pale anti-aliased white edges around the black compass artwork.
-        This reduces the white/pixel halo.
-      */
       const isWhiteHalo =
         r >= 152 &&
         g >= 152 &&
@@ -356,10 +390,6 @@
         }
       }
 
-      /*
-        Everything not white becomes gold:
-        black lines, gray lines, cardinal labels, symbols, and dark edge pixels.
-      */
       const inkStrength = Math.min(1, Math.max(0.26, (0.92 - lum) / 0.72));
       const highlight = Math.min(1, Math.max(0, (lum - 0.12) / 0.55));
 
@@ -379,10 +409,6 @@
 
     ctx.putImageData(imageData, 0, 0);
 
-    /*
-      Add a soft gold glow behind the cleaned compass,
-      while keeping the actual compass lines sharp.
-    */
     const glowCanvas = document.createElement('canvas');
     const glowCtx = glowCanvas.getContext('2d');
 
@@ -441,6 +467,7 @@
   /* ────────────────────────────────────────────────────────────────────────
      BOOT
   ──────────────────────────────────────────────────────────────────────── */
+
   function boot() {
     injectMobileCSS();
     buildShell();
@@ -461,7 +488,7 @@
 
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = IN_LKP_FOLDER ? 'css/lkp-mobile.css' : 'LKP/css/lkp-mobile.css';
+    link.href = CSS_PATH;
     link.dataset.lkpMobileCss = 'true';
     document.head.appendChild(link);
   }
@@ -504,8 +531,9 @@
   }
 
   /* ────────────────────────────────────────────────────────────────────────
-     DATA-DRIVEN HOME HELPERS
+     DATA-DRIVEN HOME
   ──────────────────────────────────────────────────────────────────────── */
+
   function getOrbitCultures() {
     return CULTURES;
   }
@@ -606,33 +634,33 @@
       </button>`;
   }
 
-  function getStarCompassLessonId() {
-    if (CONCEPTS.has('km-starcompass')) return 'km-starcompass';
-
-    const kanaka = CULTURES.find(c => c.id === 'kanaka');
-    const firstWayfinding = kanaka?.concepts.find(c =>
-      /star|compass|wayfinding|hōkū|hoku/i.test(`${c.id} ${c.title} ${c.label}`)
-    );
-
-    return firstWayfinding?.lessonId || kanaka?.concepts[0]?.lessonId || '';
-  }
-
   function buildContinueLearningCard() {
-    const completed = JSON.parse(localStorage.getItem('cv_completed') || '[]');
-    const allLiveConcepts = CULTURES
-      .filter(c => c.status === 'live')
-      .flatMap(c => c.concepts.map(concept => ({ culture: c, concept })));
+    let completed = [];
 
-    const next = allLiveConcepts.find(item => !completed.includes(item.concept.lessonId)) || allLiveConcepts[0];
+    try {
+      completed = JSON.parse(localStorage.getItem('cv_completed') || '[]');
+    } catch {
+      completed = [];
+    }
+
+    const allLiveLessons = CULTURES
+      .filter(c => c.status === 'live')
+      .flatMap(culture =>
+        (culture.modules || []).flatMap(mod =>
+          (mod.lessons || []).map(lesson => ({ culture, mod, lesson }))
+        )
+      );
+
+    const next = allLiveLessons.find(item => !completed.includes(item.lesson.id)) || allLiveLessons[0];
 
     if (!next) return '';
 
     return `
-      <a class="lkp-m-continue-card" href="lessons.html#${encodeURIComponent(next.concept.lessonId)}"
+      <a class="lkp-m-continue-card" href="${lessonHref(next.lesson.id)}"
          style="--continue-color:${next.culture.color};--continue-bg:${next.culture.colorDim};--continue-border:${next.culture.colorBorder}">
         <span class="lkp-m-continue-card__eyebrow">Continue Learning</span>
-        <strong>${next.culture.emoji} ${escapeHTML(next.concept.title || next.concept.label)}</strong>
-        <small>${escapeHTML(next.culture.name)} · ${escapeHTML(next.concept.readTime || 'Lesson')}</small>
+        <strong>${next.culture.emoji} ${escapeHTML(next.lesson.title || next.lesson.id)}</strong>
+        <small>${escapeHTML(next.culture.name)} · ${escapeHTML(next.mod.title || 'Module')} · ${escapeHTML(next.lesson.readTime || 'Lesson')}</small>
       </a>`;
   }
 
@@ -649,7 +677,7 @@
           <h1 class="lkp-m-home__title">Living<br><em>Knowledge</em></h1>
           <p class="lkp-m-home__sub">
             Navigate the stars of ancestral wisdom. ${liveCount} live ${liveCount === 1 ? 'galaxy' : 'galaxies'}, ${totalCount} total culture orbits.
-            Add another culture to <strong>lkp-data.js</strong> and it becomes another galaxy.
+            Every mobile lesson is pulled from the same desktop data.
           </p>
         </div>
 
@@ -677,7 +705,7 @@
           </div>
 
           ${starCompassLessonId
-            ? `<a class="lkp-m-compass-center-link" href="lessons.html#${encodeURIComponent(starCompassLessonId)}">
+            ? `<a class="lkp-m-compass-center-link" href="${lessonHref(starCompassLessonId)}">
                 <span>Hōkū</span>
                 <small>Star Compass</small>
               </a>`
@@ -695,8 +723,8 @@
           ${buildHomeQuickButtons()}
         </div>
 
-        <a href="lessons.html" class="lkp-m-begin-btn">
-          <span>📖</span> Begin Learning
+        <a href="${LESSONS_PATH}" class="lkp-m-begin-btn">
+          <span>📖</span> Open Full Lesson Library
         </a>
       </div>`;
 
@@ -705,8 +733,53 @@
   }
 
   /* ────────────────────────────────────────────────────────────────────────
+     MODULE / LESSON SHOWCASE
+  ──────────────────────────────────────────────────────────────────────── */
+
+  function buildModuleBlocks(culture) {
+    if (!culture.modules?.length) {
+      return `<div class="lkp-m-soon-card">
+        <span>${culture.emoji}</span>
+        <strong>Coming Soon</strong>
+        <p>${escapeHTML(culture.tagline || culture.intro || 'This culture orbit is ready for future lessons.')}</p>
+      </div>`;
+    }
+
+    return culture.modules.map(mod => {
+      const lessons = (mod.lessons || []).map(lesson => `
+        <a class="lkp-m-lesson-row"
+           href="${lessonHref(lesson.id)}"
+           style="--lesson-color:${culture.color};--lesson-bg:${culture.colorDim};--lesson-border:${culture.colorBorder}">
+          <span class="lkp-m-lesson-row__num">${escapeHTML(lesson.num || '')}</span>
+          <span class="lkp-m-lesson-row__body">
+            <strong>${escapeHTML(lesson.title || lesson.id)}</strong>
+            <small>${escapeHTML(lesson.readTime || 'Lesson')}</small>
+          </span>
+          <span class="lkp-m-lesson-row__arrow">→</span>
+        </a>
+      `).join('');
+
+      return `
+        <section class="lkp-m-module-block">
+          <div class="lkp-m-module-block__head">
+            <span>${mod.emoji || culture.emoji || '✦'}</span>
+            <div>
+              <strong>${escapeHTML(mod.title || 'Knowledge Module')}</strong>
+              <small>${escapeHTML(mod.desc || '')}</small>
+            </div>
+          </div>
+          <div class="lkp-m-module-block__lessons">
+            ${lessons || `<div class="lkp-m-empty-note">Lessons coming soon.</div>`}
+          </div>
+        </section>
+      `;
+    }).join('');
+  }
+
+  /* ────────────────────────────────────────────────────────────────────────
      GALAXY PANEL
   ──────────────────────────────────────────────────────────────────────── */
+
   function buildGalaxiesPanel() {
     const el = document.getElementById('lkp-m-galaxies');
 
@@ -714,7 +787,7 @@
       <div class="lkp-m-section-head">
         <span class="lkp-m-eyebrow">Living Galaxies</span>
         <h2>Choose a Culture</h2>
-        <p>Every culture in <strong>lkp-data.js</strong> becomes a mobile galaxy card. Live cultures show lessons; coming-soon cultures hold the orbit for future expansion.</p>
+        <p>Every culture, module, and lesson shown here comes from the same data used by the desktop lesson page.</p>
       </div>
 
       <div id="lkp-m-galaxy-scroll" class="lkp-m-galaxy-scroll">
@@ -724,33 +797,10 @@
       <div class="lkp-m-dots" aria-hidden="true">
         ${GALAXIES.map((_, i) => `<span class="lkp-m-dot ${i === activeGalaxy ? 'is-active' : ''}"></span>`).join('')}
       </div>`;
-
-    el.querySelectorAll('.lkp-m-concept-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const culture = CULTURES.find(c => c.id === btn.dataset.culture);
-        const concept = CONCEPTS.get(btn.dataset.concept);
-        if (culture && concept) openConceptSheet(culture, concept);
-      });
-    });
   }
 
   function buildGalaxyCard(culture, index) {
-    const isSoon = culture.status !== 'live' || !culture.concepts.length;
-    const conceptButtons = culture.concepts.length
-      ? culture.concepts.map(concept => `
-          <button class="lkp-m-concept-btn ${concept.major ? 'is-major' : ''}"
-                  style="--concept-color:${culture.color};--concept-bg:${culture.colorDim};--concept-border:${culture.colorBorder}"
-                  data-culture="${culture.id}"
-                  data-concept="${concept.id}">
-            <span>${concept.moduleEmoji || culture.emoji}</span>
-            <strong>${escapeHTML(concept.label)}</strong>
-            <small>${escapeHTML(concept.moduleTitle || concept.readTime || '')}</small>
-          </button>`).join('')
-      : `<div class="lkp-m-soon-card">
-          <span>${culture.emoji}</span>
-          <strong>Coming Soon</strong>
-          <p>${escapeHTML(culture.tagline || culture.intro || 'This culture orbit is ready for future lessons.')}</p>
-        </div>`;
+    const isSoon = culture.status !== 'live' || !culture.modules?.length;
 
     return `
       <article class="lkp-m-galaxy-card ${isSoon ? 'is-soon' : ''}"
@@ -776,8 +826,14 @@
           <span><strong>${escapeHTML(culture.theme)}</strong> theme</span>
         </div>
 
-        <div class="lkp-m-concept-grid">
-          ${conceptButtons}
+        <a class="lkp-m-enter-lessons"
+           href="${cultureHref(culture.id)}"
+           style="--enter-color:${culture.color};--enter-bg:${culture.colorDim};--enter-border:${culture.colorBorder}">
+          Enter ${escapeHTML(culture.name)} Lessons →
+        </a>
+
+        <div class="lkp-m-module-list">
+          ${buildModuleBlocks(culture)}
         </div>
       </article>`;
   }
@@ -811,6 +867,7 @@
   /* ────────────────────────────────────────────────────────────────────────
      BRIDGE PANEL
   ──────────────────────────────────────────────────────────────────────── */
+
   function buildBridgePanel() {
     const el = document.getElementById('lkp-m-bridge');
     const bridge = BRIDGE;
@@ -832,32 +889,30 @@
         <p>${escapeHTML(bridge.intro || '')}</p>
       </div>
 
-      <div class="lkp-m-bridge-grid">
-        ${bridge.concepts.length
-          ? bridge.concepts.map(concept => `
-            <button class="lkp-m-bridge-card"
-                    style="--bridge-color:${bridge.color};--bridge-bg:${bridge.colorDim};--bridge-border:${bridge.colorBorder}"
-                    data-culture="${bridge.id}"
-                    data-concept="${concept.id}">
-              <span>${concept.moduleEmoji || bridge.emoji}</span>
-              <strong>${escapeHTML(concept.title)}</strong>
-              <small>${escapeHTML(concept.readTime || concept.moduleTitle || '')}</small>
-              <p>${escapeHTML(concept.desc || '')}</p>
-            </button>`).join('')
-          : `<div class="lkp-m-soon-card"><span>${bridge.emoji}</span><strong>Bridge lessons coming soon</strong></div>`}
-      </div>`;
+      <article class="lkp-m-galaxy-card lkp-m-galaxy-card--bridge"
+               style="--galaxy-color:${bridge.color};--galaxy-bg:${bridge.colorDim};--galaxy-border:${bridge.colorBorder};--galaxy-glow:${bridge.glow}">
+        <div class="lkp-m-galaxy-card__stats">
+          <span><strong>${bridge.moduleCount}</strong> modules</span>
+          <span><strong>${bridge.lessonCount}</strong> lessons</span>
+          <span><strong>${escapeHTML(bridge.theme)}</strong> theme</span>
+        </div>
 
-    el.querySelectorAll('[data-concept]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const concept = CONCEPTS.get(btn.dataset.concept);
-        if (concept) openConceptSheet(bridge, concept);
-      });
-    });
+        <a class="lkp-m-enter-lessons"
+           href="${cultureHref(bridge.id)}"
+           style="--enter-color:${bridge.color};--enter-bg:${bridge.colorDim};--enter-border:${bridge.colorBorder}">
+          Enter Bridge Lessons →
+        </a>
+
+        <div class="lkp-m-module-list">
+          ${buildModuleBlocks(bridge)}
+        </div>
+      </article>`;
   }
 
   /* ────────────────────────────────────────────────────────────────────────
      CHART PANEL
   ──────────────────────────────────────────────────────────────────────── */
+
   function buildChartPanel() {
     const el = document.getElementById('lkp-m-chart');
     const chartConcepts = [...CONCEPTS.values()].filter(c => !c.id.endsWith('-soon'));
@@ -887,7 +942,7 @@
       <div class="lkp-m-section-head">
         <span class="lkp-m-eyebrow">Constellation Map</span>
         <h2>Living Star Chart</h2>
-        <p>Swipe around the chart. Tap any star to open its lesson. New lessons in lkp-data.js appear here automatically.</p>
+        <p>Swipe around the chart. Tap any star to preview it, then open the full lesson.</p>
       </div>
 
       <div class="lkp-m-chart-wrap">
@@ -958,6 +1013,7 @@
   /* ────────────────────────────────────────────────────────────────────────
      ECOSYSTEM PANEL
   ──────────────────────────────────────────────────────────────────────── */
+
   function buildEcosystemPanel() {
     const el = document.getElementById('lkp-m-ecosystem');
     const totalModules = CULTURES.reduce((sum, c) => sum + c.moduleCount, 0);
@@ -993,6 +1049,7 @@
   /* ────────────────────────────────────────────────────────────────────────
      BOTTOM SHEET
   ──────────────────────────────────────────────────────────────────────── */
+
   function buildBottomSheet() {
     const bg = document.getElementById('lkp-m-sheet-bg');
     bg.addEventListener('click', closeSheet);
@@ -1022,7 +1079,7 @@
       <div class="lkp-m-sheet__actions">
         ${isSoon
           ? `<button class="lkp-m-sheet__cta is-disabled" type="button">Coming Soon</button>`
-          : `<a class="lkp-m-sheet__cta" href="lessons.html#${encodeURIComponent(concept.lessonId)}">Open Lesson →</a>`}
+          : `<a class="lkp-m-sheet__cta" href="${lessonHref(concept.lessonId)}">Open Full Lesson →</a>`}
       </div>`;
 
     sheet.querySelector('.lkp-m-sheet__close').addEventListener('click', closeSheet);
@@ -1047,12 +1104,13 @@
   /* ────────────────────────────────────────────────────────────────────────
      NAV + TABS
   ──────────────────────────────────────────────────────────────────────── */
+
   function buildBottomNav() {
     const nav = document.getElementById('lkp-m-nav');
 
     const items = [
       { id: 'home', label: 'Home', icon: '◈' },
-      { id: 'galaxies', label: 'Galaxies', icon: '✦' },
+      { id: 'galaxies', label: 'Lessons', icon: '✦' },
       { id: 'bridge', label: 'Bridge', icon: '🌐' },
       { id: 'chart', label: 'Chart', icon: '✧' },
       { id: 'ecosystem', label: 'Data', icon: '☷' }
@@ -1111,6 +1169,7 @@
   /* ────────────────────────────────────────────────────────────────────────
      INIT WHEN READY
   ──────────────────────────────────────────────────────────────────────── */
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot, { once: true });
   } else {
