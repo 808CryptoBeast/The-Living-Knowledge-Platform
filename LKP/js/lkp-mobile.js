@@ -7,6 +7,8 @@
    - Reads CULTURALVERSE_DATA.cultures when lkp-data.js is loaded first.
    - Every culture added to lkp-data.js becomes another mobile galaxy/orbit/card.
    - Keeps the Hawaiian star compass alive on mobile as the portal centerpiece.
+   - Cleans the JPG compass background through Canvas, turns non-white artwork gold,
+     and makes the compass larger/readable on mobile.
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -15,8 +17,14 @@
   /* ────────────────────────────────────────────────────────────────────────
      PATHS + DATA
   ──────────────────────────────────────────────────────────────────────── */
-  const BASE = document.baseURI.replace(/[^/]*$/, '');
-  const IMG  = BASE + 'LKP/assets/images/';
+  const IN_LKP_FOLDER = /\/LKP\/?$/i.test(location.pathname.replace(/[^/]*$/, '')) ||
+                        /\/LKP\//i.test(location.pathname);
+
+  const ASSET_ROOT = IN_LKP_FOLDER ? 'assets/images/' : 'LKP/assets/images/';
+
+  function assetPath(file) {
+    return ASSET_ROOT + file;
+  }
 
   const DATA =
     (typeof CULTURALVERSE_DATA !== 'undefined' && CULTURALVERSE_DATA && Array.isArray(CULTURALVERSE_DATA.cultures))
@@ -61,6 +69,18 @@
       colorDim: 'rgba(255,179,71,0.12)',
       colorBorder: 'rgba(255,179,71,0.32)',
       glow: 'rgba(255,179,71,0.28)'
+    },
+    cyan: {
+      color: '#54c6ee',
+      colorDim: 'rgba(84,198,238,0.12)',
+      colorBorder: 'rgba(84,198,238,0.30)',
+      glow: 'rgba(84,198,238,0.28)'
+    },
+    violet: {
+      color: '#8fa0ff',
+      colorDim: 'rgba(143,160,255,0.13)',
+      colorBorder: 'rgba(143,160,255,0.34)',
+      glow: 'rgba(143,160,255,0.30)'
     },
     default: {
       color: '#54c6ee',
@@ -153,10 +173,13 @@
       bridge: 'bridge.png',
       dreamtime: 'dreamtime.png',
       dogon: 'dogon.png',
-      vedic: 'vedic.png'
+      vedic: 'vedic.png',
+      maya: 'maya.png',
+      rapanui: 'rapanui.png',
+      taino: 'taino.png'
     };
 
-    return IMG + (map[id] || `${id}.png`);
+    return assetPath(map[id] || `${id}.png`);
   }
 
   function normalizeCulture(culture, index) {
@@ -237,6 +260,185 @@
   let sheetData = null;
 
   /* ────────────────────────────────────────────────────────────────────────
+     HAWAIIAN STAR COMPASS IMAGE PROCESSOR
+     Removes white JPG background, converts dark/gray compass artwork to gold,
+     and outputs a clean transparent PNG data URL for the mobile compass.
+  ──────────────────────────────────────────────────────────────────────── */
+  function waitForImageReady(img) {
+    return new Promise((resolve) => {
+      if (!img) return resolve(false);
+
+      if (img.complete && img.naturalWidth > 0) {
+        resolve(true);
+        return;
+      }
+
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+    });
+  }
+
+  function processCompassToGoldDataURL(img) {
+    const sourceW = img.naturalWidth || img.width || 1024;
+    const sourceH = img.naturalHeight || img.height || 1024;
+    const size = Math.max(sourceW, sourceH);
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+
+    canvas.width = size;
+    canvas.height = size;
+
+    ctx.clearRect(0, 0, size, size);
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+
+    const dx = (size - sourceW) / 2;
+    const dy = (size - sourceH) / 2;
+    ctx.drawImage(img, dx, dy, sourceW, sourceH);
+
+    const imageData = ctx.getImageData(0, 0, size, size);
+    const data = imageData.data;
+
+    const goldDark = { r: 112, g: 76, b: 24 };
+    const goldMid  = { r: 216, g: 164, b: 66 };
+    const goldHi   = { r: 255, g: 225, b: 132 };
+
+    let kept = 0;
+
+    for (let i = 0; i < data.length; i += 4) {
+      const r = data[i];
+      const g = data[i + 1];
+      const b = data[i + 2];
+      const a = data[i + 3];
+
+      if (a === 0) continue;
+
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      const sat = max - min;
+      const lum = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+
+      /*
+        Remove the white / paper background.
+        CSS filters cannot truly remove JPG white pixels. Canvas can.
+      */
+      const isWhitePaper =
+        r >= 178 &&
+        g >= 178 &&
+        b >= 178 &&
+        lum >= 0.72 &&
+        sat <= 58;
+
+      /*
+        Remove pale anti-aliased white edges around the black compass artwork.
+        This reduces the white/pixel halo.
+      */
+      const isWhiteHalo =
+        r >= 152 &&
+        g >= 152 &&
+        b >= 152 &&
+        lum >= 0.62 &&
+        sat <= 66;
+
+      if (isWhitePaper) {
+        data[i + 3] = 0;
+        continue;
+      }
+
+      if (isWhiteHalo) {
+        const fade = Math.min(1, Math.max(0, (lum - 0.62) / 0.14));
+        data[i + 3] = Math.round(a * (1 - fade));
+
+        if (data[i + 3] <= 8) {
+          data[i + 3] = 0;
+          continue;
+        }
+      }
+
+      /*
+        Everything not white becomes gold:
+        black lines, gray lines, cardinal labels, symbols, and dark edge pixels.
+      */
+      const inkStrength = Math.min(1, Math.max(0.26, (0.92 - lum) / 0.72));
+      const highlight = Math.min(1, Math.max(0, (lum - 0.12) / 0.55));
+
+      const baseR = goldDark.r + (goldMid.r - goldDark.r) * inkStrength;
+      const baseG = goldDark.g + (goldMid.g - goldDark.g) * inkStrength;
+      const baseB = goldDark.b + (goldMid.b - goldDark.b) * inkStrength;
+
+      data[i]     = Math.round(baseR + (goldHi.r - baseR) * highlight * 0.36);
+      data[i + 1] = Math.round(baseG + (goldHi.g - baseG) * highlight * 0.36);
+      data[i + 2] = Math.round(baseB + (goldHi.b - baseB) * highlight * 0.36);
+
+      const alphaBoost = Math.min(1, Math.max(0.35, (0.90 - lum) / 0.55));
+      data[i + 3] = Math.max(data[i + 3], Math.round(255 * alphaBoost));
+
+      kept++;
+    }
+
+    ctx.putImageData(imageData, 0, 0);
+
+    /*
+      Add a soft gold glow behind the cleaned compass,
+      while keeping the actual compass lines sharp.
+    */
+    const glowCanvas = document.createElement('canvas');
+    const glowCtx = glowCanvas.getContext('2d');
+
+    glowCanvas.width = size;
+    glowCanvas.height = size;
+
+    glowCtx.clearRect(0, 0, size, size);
+    glowCtx.drawImage(canvas, 0, 0);
+    glowCtx.globalCompositeOperation = 'source-in';
+    glowCtx.fillStyle = 'rgba(255, 205, 92, 0.72)';
+    glowCtx.fillRect(0, 0, size, size);
+
+    const finalCanvas = document.createElement('canvas');
+    const finalCtx = finalCanvas.getContext('2d');
+
+    finalCanvas.width = size;
+    finalCanvas.height = size;
+
+    finalCtx.clearRect(0, 0, size, size);
+    finalCtx.filter = 'blur(1.2px)';
+    finalCtx.globalAlpha = 0.42;
+    finalCtx.drawImage(glowCanvas, 0, 0);
+
+    finalCtx.filter = 'none';
+    finalCtx.globalAlpha = 1;
+    finalCtx.drawImage(canvas, 0, 0);
+
+    if (kept < size * size * 0.001) {
+      console.warn('[LKP Mobile] Compass processor removed too much. Keeping original image.');
+      return img.src;
+    }
+
+    console.log('[LKP Mobile] Hawaiian star compass cleaned and recolored gold.');
+    return finalCanvas.toDataURL('image/png');
+  }
+
+  async function activateMobileCompassImage(scope = document) {
+    const img = scope.querySelector('#lkp-m-compass-img');
+    if (!img) return;
+
+    const ready = await waitForImageReady(img);
+    if (!ready) {
+      console.warn('[LKP Mobile] Compass image could not be loaded.');
+      return;
+    }
+
+    try {
+      const cleaned = processCompassToGoldDataURL(img);
+      img.src = cleaned;
+      img.classList.add('is-processed');
+    } catch (err) {
+      console.warn('[LKP Mobile] Compass canvas processing failed:', err.message);
+    }
+  }
+
+  /* ────────────────────────────────────────────────────────────────────────
      BOOT
   ──────────────────────────────────────────────────────────────────────── */
   function boot() {
@@ -259,7 +461,7 @@
 
     const link = document.createElement('link');
     link.rel = 'stylesheet';
-    link.href = 'LKP/css/lkp-mobile.css';
+    link.href = IN_LKP_FOLDER ? 'css/lkp-mobile.css' : 'LKP/css/lkp-mobile.css';
     link.dataset.lkpMobileCss = 'true';
     document.head.appendChild(link);
   }
@@ -326,7 +528,7 @@
   }
 
   function buildHomePills() {
-    return getOrbitCultures().map((culture, index) => {
+    return getOrbitCultures().map((culture) => {
       const isBridge = culture.id === 'bridge';
       const galaxyIndex = GALAXIES.findIndex(g => g.id === culture.id);
       const tab = isBridge ? 'bridge' : 'galaxies';
@@ -404,10 +606,41 @@
       </button>`;
   }
 
+  function getStarCompassLessonId() {
+    if (CONCEPTS.has('km-starcompass')) return 'km-starcompass';
+
+    const kanaka = CULTURES.find(c => c.id === 'kanaka');
+    const firstWayfinding = kanaka?.concepts.find(c =>
+      /star|compass|wayfinding|hōkū|hoku/i.test(`${c.id} ${c.title} ${c.label}`)
+    );
+
+    return firstWayfinding?.lessonId || kanaka?.concepts[0]?.lessonId || '';
+  }
+
+  function buildContinueLearningCard() {
+    const completed = JSON.parse(localStorage.getItem('cv_completed') || '[]');
+    const allLiveConcepts = CULTURES
+      .filter(c => c.status === 'live')
+      .flatMap(c => c.concepts.map(concept => ({ culture: c, concept })));
+
+    const next = allLiveConcepts.find(item => !completed.includes(item.concept.lessonId)) || allLiveConcepts[0];
+
+    if (!next) return '';
+
+    return `
+      <a class="lkp-m-continue-card" href="lessons.html#${encodeURIComponent(next.concept.lessonId)}"
+         style="--continue-color:${next.culture.color};--continue-bg:${next.culture.colorDim};--continue-border:${next.culture.colorBorder}">
+        <span class="lkp-m-continue-card__eyebrow">Continue Learning</span>
+        <strong>${next.culture.emoji} ${escapeHTML(next.concept.title || next.concept.label)}</strong>
+        <small>${escapeHTML(next.culture.name)} · ${escapeHTML(next.concept.readTime || 'Lesson')}</small>
+      </a>`;
+  }
+
   function buildHome() {
     const el = document.getElementById('lkp-m-home');
     const liveCount = LIVE_CULTURES.length;
     const totalCount = CULTURES.length;
+    const starCompassLessonId = getStarCompassLessonId();
 
     el.innerHTML = `
       <div class="lkp-m-home">
@@ -431,21 +664,32 @@
           <div class="lkp-m-compass-ring lkp-m-compass-ring--inner"></div>
 
           <div class="lkp-m-home__compass" aria-hidden="true">
-            <img src="${IMG}hawaiian-star-compass.jpg"
+            <img id="lkp-m-compass-img"
+                 src="${assetPath('hawaiian-star-compass.jpg')}"
                  class="lkp-m-compass-img"
                  alt=""
-                 onerror="this.onerror=null;this.src='${IMG}hawaiian-star-compass.png';">
+                 decoding="async"
+                 onerror="this.onerror=null;this.src='${assetPath('hawaiian-star-compass.png')}';">
           </div>
 
           <div class="lkp-m-orbit" aria-label="Culture orbit selector">
             ${buildCompassOrbitNodes()}
           </div>
 
+          ${starCompassLessonId
+            ? `<a class="lkp-m-compass-center-link" href="lessons.html#${encodeURIComponent(starCompassLessonId)}">
+                <span>Hōkū</span>
+                <small>Star Compass</small>
+              </a>`
+            : ''}
+
           <div class="lkp-m-compass-caption">
             <span>Ka Pā Nānā Hōkū</span>
             <small>Tap a culture orbit</small>
           </div>
         </div>
+
+        ${buildContinueLearningCard()}
 
         <div class="lkp-m-home__quick">
           ${buildHomeQuickButtons()}
@@ -457,6 +701,7 @@
       </div>`;
 
     bindTabButtons(el);
+    activateMobileCompassImage(el);
   }
 
   /* ────────────────────────────────────────────────────────────────────────
@@ -528,7 +773,7 @@
         <div class="lkp-m-galaxy-card__stats">
           <span><strong>${culture.moduleCount}</strong> modules</span>
           <span><strong>${culture.lessonCount}</strong> lessons</span>
-          <span><strong>${culture.theme}</strong> theme</span>
+          <span><strong>${escapeHTML(culture.theme)}</strong> theme</span>
         </div>
 
         <div class="lkp-m-concept-grid">
