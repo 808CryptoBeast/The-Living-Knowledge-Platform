@@ -45,7 +45,7 @@ function assetUrl(path) {
 
 const ASSET_CANDIDATES = {
   kanaka: [
-    "assets/images/kanaka.png",
+    "LKP/assets/images/kanaka.png",
     "assets/HI/kanaka.png",
     "assets/HI/kanaka-maoli.png"
   ],
@@ -59,7 +59,7 @@ const ASSET_CANDIDATES = {
   // Hawaiian star compass image.
   // JPG first because your actual file is JPG. PNG is fallback only.
   compass: [
-    "assets/images/hawaiian-star-compass.jpg",
+    "LKP/assets/images/hawaiian-star-compass.jpg",
     "assets/HI/hawaiian-star-compass.jpg",
     "assets/hawaiian-star-compass.jpg",
     "assets/images/hawaiian-star-compass.jpeg",
