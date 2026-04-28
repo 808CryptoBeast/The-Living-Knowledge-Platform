@@ -4,12 +4,10 @@
 
    Shared profile for:
    - The Living Knowledge Platform
-   - Ikeverse
-   - Digitalverse
-   - Culturalverse
-   - IkeHub
-   - IkeStar
-   - Pikoverse ecosystem links
+   - Lessons / Rewards / Badges
+   - Future XRPL-ready proof records
+   - Admin / Owner access routing
+   - Ikeverse ecosystem links
 
    IMPORTANT:
    Supabase URL and anon key must match the same project used by admin.html.
@@ -19,7 +17,9 @@
   'use strict';
 
   const SUPABASE_URL = 'https://fmrjdvsqdfyaqtzwbbqi.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtcmpkdnNxZGZ5YXF0endiYnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTE2MzYsImV4cCI6MjA5MTE2NzYzNn0.UKyvX02bG4cNhb7U2TK96t8XFREHYYwHJIKbPK06nqs';
+
+  const SUPABASE_ANON_KEY =
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6ImZtcmpkdnNxZGZ5YXF0endiYnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTE2MzYsImV4cCI6MjA5MTE2NzYzNn0.UKyvX02bG4cNhb7U2TK96t8XFREHYYwHJIKbPK06nqs';
 
   const PROFILE_CACHE_KEY = 'piko_profile_v1';
   const COMPLETED_KEY = 'cv_completed';
@@ -69,6 +69,14 @@
       color: '#54c6ee'
     },
     {
+      id: 'admin',
+      name: 'Admin Deck',
+      desc: 'Owner/admin controls for lessons, galaxies, cultures, modules, sources, and publishing.',
+      href: 'admin.html',
+      color: '#ffdf8a',
+      adminOnly: true
+    },
+    {
       id: 'ikehub',
       name: 'IkeHub',
       desc: 'The portal hub connecting every application and realm.',
@@ -109,14 +117,6 @@
       desc: 'Wider project ecosystem, showcase, marketplace, and identity layer.',
       href: 'https://www.pikoverse.xyz',
       color: '#f0c96a'
-    },
-    {
-      id: 'admin',
-      name: 'Admin Deck',
-      desc: 'Owner/admin controls for lessons, galaxies, cultures, modules, and sources.',
-      href: 'admin.html',
-      color: '#ffdf8a',
-      adminOnly: true
     }
   ];
 
@@ -125,14 +125,17 @@
     user: null,
     profile: null,
     isAdmin: false,
+
     completed: [],
     mana: 0,
     lessons: [],
+
     filters: {
       search: '',
       culture: 'all',
       status: 'all'
     },
+
     three: {
       initialized: false,
       THREE: null,
@@ -140,8 +143,6 @@
       camera: null,
       renderer: null,
       controls: null,
-      raycaster: null,
-      pointer: null,
       nodes: [],
       frameId: null
     }
@@ -152,7 +153,7 @@
   }
 
   function $all(selector) {
-    return [...document.querySelectorAll(selector)];
+    return Array.from(document.querySelectorAll(selector));
   }
 
   function setText(selector, value) {
@@ -248,16 +249,29 @@
 
   function hexToRgba(hex, alpha) {
     const clean = String(hex || '#ffffff').replace('#', '');
-    const full = clean.length === 3
-      ? clean.split('').map(c => c + c).join('')
-      : clean;
+    const full =
+      clean.length === 3
+        ? clean.split('').map(c => c + c).join('')
+        : clean;
 
     const num = parseInt(full, 16);
+
+    if (Number.isNaN(num)) {
+      return `rgba(255,255,255,${alpha})`;
+    }
+
     const r = (num >> 16) & 255;
     const g = (num >> 8) & 255;
     const b = num & 255;
 
     return `rgba(${r},${g},${b},${alpha})`;
+  }
+
+  function stripHTML(html) {
+    return String(html || '')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 
   function getLessonData() {
@@ -300,7 +314,8 @@
             num: lesson.num || '',
             title: lesson.title || lesson.id,
             readTime: lesson.readTime || '',
-            content: lesson.content || ''
+            content: lesson.content || '',
+            contentText: stripHTML(lesson.content || '')
           });
         });
       });
@@ -434,7 +449,8 @@
       const desc = $('#realmDescription');
 
       if (desc) {
-        desc.textContent = realmDescriptions[realm] || 'This realm is connected to your profile.';
+        desc.textContent =
+          realmDescriptions[realm] || 'This realm is connected to your profile.';
       }
     });
 
@@ -495,6 +511,7 @@
       renderRewardsPanel();
       renderEcosystem();
       renderLessonPath();
+      rebuildProfileGalaxyForRole();
     } catch (err) {
       console.error(err);
       setSessionState('Could not load Supabase session. Guest mode active.', 'warning');
@@ -590,6 +607,7 @@
       renderRewardsPanel();
       renderEcosystem();
       renderLessonPath();
+      rebuildProfileGalaxyForRole();
 
       showToast('Profile created. Check email confirmation if Supabase requires it.');
     } catch (err) {
@@ -635,9 +653,12 @@
     try {
       await loadOrCreateProfile();
       await loadRemoteProgress();
+
       renderDashboard();
       renderRewardsPanel();
       renderLessonPath();
+      rebuildProfileGalaxyForRole();
+
       showToast('Profile synced.');
     } catch (err) {
       console.error(err);
@@ -666,6 +687,7 @@
           'Wayfinder';
 
         const baseHandle = normalizeHandle(user.user_metadata?.handle || displayName);
+
         const safeHandle = baseHandle
           ? `${baseHandle}_${String(user.id).slice(0, 8)}`
           : `wayfinder_${String(user.id).slice(0, 8)}`;
@@ -733,11 +755,17 @@
 
       if (window.LKPRewards) {
         window.LKPRewards.setCompletedLessons(merged);
-        const summary = window.LKPRewards.getProfileSummary({ recalculate: true });
+
+        const summary = window.LKPRewards.getProfileSummary({
+          recalculate: true
+        });
+
         state.mana = summary.mana || state.mana;
         localStorage.setItem(MANA_KEY, String(state.mana));
       } else {
-        const remoteMana = (data || []).reduce((sum, row) => sum + (row.mana || 0), 0);
+        const remoteMana = (data || []).reduce((sum, row) => {
+          return sum + (row.mana || 0);
+        }, 0);
 
         if (remoteMana > state.mana) {
           state.mana = remoteMana;
@@ -796,6 +824,8 @@
 
       renderDashboard();
       renderRewardsPanel();
+      rebuildProfileGalaxyForRole();
+
       showToast('Saved locally. Sign in with Supabase to sync.');
       return;
     }
@@ -852,7 +882,11 @@
 
     if (window.LKPRewards) {
       window.LKPRewards.toggleLesson(lessonId, shouldComplete);
-      rewardSummary = window.LKPRewards.getProfileSummary({ recalculate: true });
+
+      rewardSummary = window.LKPRewards.getProfileSummary({
+        recalculate: true
+      });
+
       state.mana = rewardSummary.mana || 0;
     } else {
       state.mana = shouldComplete
@@ -891,7 +925,10 @@
 
     if (window.LKPRewards) {
       try {
-        const rewardSummary = window.LKPRewards.getProfileSummary({ recalculate: true });
+        const rewardSummary = window.LKPRewards.getProfileSummary({
+          recalculate: true
+        });
+
         state.mana = rewardSummary.mana || state.mana;
         localStorage.setItem(MANA_KEY, String(state.mana));
       } catch (err) {
@@ -916,7 +953,7 @@
       'guest';
 
     const role = profile.role || (state.user ? 'user' : 'guest');
-    const isAdmin = ['admin', 'owner'].includes(role) && !!state.user;
+    const isAdmin = ['admin', 'owner'].includes(role) && Boolean(state.user);
 
     state.isAdmin = isAdmin;
 
@@ -968,7 +1005,9 @@
 
     if (ring) {
       const circumference = 314;
-      ring.style.strokeDashoffset = String(circumference - (circumference * progress) / 100);
+      ring.style.strokeDashoffset = String(
+        circumference - (circumference * progress) / 100
+      );
     }
 
     setValue('#editDisplayName', profile.display_name || '');
@@ -978,6 +1017,7 @@
     setValue('#editBio', profile.bio || '');
 
     setHidden('#profileSignOutBtn', !state.user);
+    setHidden('#authPanel', Boolean(state.user));
     setHidden('#adminPanel', !isAdmin);
 
     renderBadges(progress, isAdmin, role);
@@ -1017,7 +1057,10 @@
     setText('#rewardModules', summary.completedModuleCount || 0);
     setText('#rewardCultures', summary.completedCultureCount || 0);
 
-    const xrplReadyCount = (summary.claimRecords || []).filter(record => record.xrpl?.eligible).length;
+    const xrplReadyCount = (summary.claimRecords || []).filter(record => {
+      return record.xrpl?.eligible;
+    }).length;
+
     setText('#rewardClaims', xrplReadyCount);
 
     setText(
@@ -1030,6 +1073,7 @@
     setText('#rewardRankProgress', `${rankProgress}%`);
 
     const bar = $('#rewardRankBar');
+
     if (bar) {
       bar.style.width = `${rankProgress}%`;
     }
@@ -1111,7 +1155,9 @@
     });
 
     const options = [...cultures.entries()]
-      .map(([id, name]) => `<option value="${escapeHTML(id)}">${escapeHTML(name)}</option>`)
+      .map(([id, name]) => {
+        return `<option value="${escapeHTML(id)}">${escapeHTML(name)}</option>`;
+      })
       .join('');
 
     select.innerHTML = `<option value="all">All Cultures</option>${options}`;
@@ -1132,7 +1178,8 @@
           <span>${escapeHTML(item.desc)}</span>
           <small>Open →</small>
         </a>
-      `).join('');
+      `)
+      .join('');
   }
 
   function renderLessonPath() {
@@ -1143,14 +1190,19 @@
 
     if (state.filters.search) {
       const q = state.filters.search;
+
       lessons = lessons.filter(lesson => {
         return [
           lesson.title,
           lesson.num,
           lesson.cultureName,
           lesson.moduleTitle,
+          lesson.contentText,
           lesson.content
-        ].join(' ').toLowerCase().includes(q);
+        ]
+          .join(' ')
+          .toLowerCase()
+          .includes(q);
       });
     }
 
@@ -1213,6 +1265,7 @@
 
   /* ────────────────────────────────────────────────────────────────────────
      THREE.JS PROFILE GALAXY
+     Uses esm.sh so OrbitControls can resolve the "three" dependency.
   ──────────────────────────────────────────────────────────────────────── */
 
   async function initProfileGalaxy() {
@@ -1220,8 +1273,10 @@
     if (!canvas || state.three.initialized) return;
 
     try {
-      const THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js');
-      const { OrbitControls } = await import('https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js');
+      const THREE = await import('https://esm.sh/three@0.160.0');
+      const { OrbitControls } = await import(
+        'https://esm.sh/three@0.160.0/examples/jsm/controls/OrbitControls.js'
+      );
 
       state.three.THREE = THREE;
       state.three.initialized = true;
@@ -1307,7 +1362,10 @@
 
       animate();
     } catch (err) {
-      console.warn('[Profile] Three.js profile galaxy failed to initialize:', err.message);
+      console.warn(
+        '[Profile] Three.js profile galaxy failed to initialize:',
+        err.message
+      );
     }
   }
 
@@ -1326,12 +1384,24 @@
 
     state.three.nodes = [];
 
-    const removable = scene.children.filter(child => child.userData?.profileGalaxyGenerated);
+    const removable = scene.children.filter(child => {
+      return child.userData?.profileGalaxyGenerated;
+    });
 
     removable.forEach(child => {
       scene.remove(child);
-      if (child.geometry) child.geometry.dispose?.();
-      if (child.material) child.material.dispose?.();
+
+      if (child.geometry) {
+        child.geometry.dispose?.();
+      }
+
+      if (child.material) {
+        if (Array.isArray(child.material)) {
+          child.material.forEach(mat => mat.dispose?.());
+        } else {
+          child.material.dispose?.();
+        }
+      }
     });
   }
 
