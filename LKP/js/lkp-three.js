@@ -71,7 +71,7 @@ const ASSET_CANDIDATES = {
   ],
 
   iwa: [
-    "assets/images/iwa-middle.png",
+    "LKP/assets/images/iwa-middle.png",
     "assets/HI/iwa-middle.png",
     "assets/HI/iwa.png",
     "assets/images/iwa.png"
