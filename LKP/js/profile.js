@@ -2,26 +2,29 @@
    THE LIVING KNOWLEDGE PLATFORM — Wayfinder Passport
    File: LKP/js/profile.js
 
-   Shared profile for:
-   - The Living Knowledge Platform
-   - Lessons / Rewards / Badges
-   - Future XRPL-ready proof records
-   - Admin / Owner access routing
-   - Ikeverse ecosystem links
-
-   IMPORTANT:
-   Supabase URL and anon key must match the same project used by admin.html.
+   Handles:
+   - Supabase auth/session
+   - Profile loading/saving
+   - Owner/admin display
+   - Lesson progress
+   - Mana/reward UI
+   - Ecosystem cards
+   - Profile Three.js galaxy
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
   'use strict';
 
-  const SUPABASE_URL = 'https://fmrjdvsqdfyaqtzwbbqi.supabase.co';
+  const SUPABASE_URL =
+    window.LKP_SUPABASE_URL ||
+    'https://fmrjdvsqdfyaqtzwbbqi.supabase.co';
 
   const SUPABASE_ANON_KEY =
+    window.LKP_SUPABASE_ANON_KEY ||
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtcmpkdnNxZGZ5YXF0endiYnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTE2MzYsImV4cCI6MjA5MTE2NzYzNn0.UKyvX02bG4cNhb7U2TK96t8XFREHYYwHJIKbPK06nqs';
 
-  const PROFILE_CACHE_KEY = 'piko_profile_v1';
+  const PROFILE_CACHE_KEY = 'lkp_profile_v1';
+  const LEGACY_PROFILE_CACHE_KEY = 'piko_profile_v1';
   const COMPLETED_KEY = 'cv_completed';
   const MANA_KEY = 'cv_mana';
 
@@ -31,10 +34,7 @@
     !SUPABASE_URL.includes('PASTE_YOUR') &&
     !SUPABASE_ANON_KEY.includes('PASTE_YOUR');
 
-  const supabaseClient =
-    isSupabaseConfigured && window.supabase
-      ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-      : null;
+  let supabaseClient = null;
 
   const realmDescriptions = {
     lkp:
@@ -129,6 +129,7 @@
     completed: [],
     mana: 0,
     lessons: [],
+    contentData: null,
 
     filters: {
       search: '',
@@ -187,14 +188,20 @@
 
   function readJSON(key, fallback) {
     try {
-      return JSON.parse(localStorage.getItem(key) || JSON.stringify(fallback));
+      const raw = localStorage.getItem(key);
+      if (!raw) return fallback;
+      return JSON.parse(raw);
     } catch {
       return fallback;
     }
   }
 
   function writeJSON(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (err) {
+      console.warn('[Profile] Could not write localStorage:', err.message);
+    }
   }
 
   function showToast(message) {
@@ -274,28 +281,83 @@
       .trim();
   }
 
-  function getLessonData() {
-    let data = null;
+  function isDataImage(value) {
+    return String(value || '').trim().startsWith('data:image/');
+  }
 
+  function getSafeAvatarUrl(value) {
+    const url = String(value || '').trim();
+
+    if (!url) return '';
+    if (isDataImage(url)) return '';
+    if (url.length > 2000) return '';
+
+    return url;
+  }
+
+  function getStaticContentData() {
     if (
       window.CULTURALVERSE_DATA &&
       Array.isArray(window.CULTURALVERSE_DATA.cultures)
     ) {
-      data = window.CULTURALVERSE_DATA;
-    } else if (
+      return window.CULTURALVERSE_DATA;
+    }
+
+    if (
       typeof CULTURALVERSE_DATA !== 'undefined' &&
       CULTURALVERSE_DATA &&
       Array.isArray(CULTURALVERSE_DATA.cultures)
     ) {
-      data = CULTURALVERSE_DATA;
       window.CULTURALVERSE_DATA = CULTURALVERSE_DATA;
-    } else {
-      data = { cultures: [] };
+      return CULTURALVERSE_DATA;
     }
 
+    return { cultures: [] };
+  }
+
+  function normalizeContentData(data) {
+    if (!data || !Array.isArray(data.cultures)) {
+      return { cultures: [] };
+    }
+
+    return {
+      ...data,
+      cultures: data.cultures.map(culture => ({
+        id: culture.id,
+        name: culture.name,
+        emoji: culture.emoji || '✦',
+        theme: culture.theme || culture.culture_theme || 'default',
+        colorHex: culture.colorHex || culture.color_hex || null,
+        modules: Array.isArray(culture.modules)
+          ? culture.modules.map(module => ({
+              id: module.id,
+              title: module.title || module.module_title || 'Module',
+              emoji: module.emoji || module.module_emoji || culture.emoji || '✦',
+              desc: module.desc || module.description || '',
+              lessons: Array.isArray(module.lessons)
+                ? module.lessons.map(lesson => ({
+                    id: lesson.id,
+                    num: lesson.num || lesson.lesson_num || '',
+                    title: lesson.title || lesson.id,
+                    readTime: lesson.readTime || lesson.read_time || '',
+                    content: lesson.content || '',
+                    leadText: lesson.leadText || lesson.lead_text || '',
+                    excerpt: lesson.excerpt || '',
+                    mana: lesson.mana || 10,
+                    xp: lesson.xp || 25
+                  }))
+                : []
+            }))
+          : []
+      }))
+    };
+  }
+
+  function flattenLessons(data) {
+    const normalized = normalizeContentData(data);
     const lessons = [];
 
-    data.cultures.forEach(culture => {
+    normalized.cultures.forEach(culture => {
       const modules = Array.isArray(culture.modules) ? culture.modules : [];
 
       modules.forEach(module => {
@@ -307,6 +369,7 @@
             cultureName: culture.name,
             cultureEmoji: culture.emoji || '✦',
             cultureTheme: culture.theme || 'default',
+            cultureColor: culture.colorHex || themeColor(culture.theme),
             moduleId: module.id,
             moduleTitle: module.title || 'Module',
             moduleEmoji: module.emoji || culture.emoji || '✦',
@@ -315,7 +378,11 @@
             title: lesson.title || lesson.id,
             readTime: lesson.readTime || '',
             content: lesson.content || '',
-            contentText: stripHTML(lesson.content || '')
+            contentText: stripHTML(lesson.content || ''),
+            leadText: lesson.leadText || '',
+            excerpt: lesson.excerpt || '',
+            mana: lesson.mana || 10,
+            xp: lesson.xp || 25
           });
         });
       });
@@ -324,24 +391,102 @@
     return lessons;
   }
 
-  async function init() {
-    state.completed = readJSON(COMPLETED_KEY, []);
-    state.mana = parseInt(localStorage.getItem(MANA_KEY) || '0', 10) || 0;
-    state.lessons = getLessonData();
+  function hydrateLessonsFromData(data) {
+    state.contentData = normalizeContentData(data);
+    state.lessons = flattenLessons(state.contentData);
 
-    if (window.LKPRewards) {
+    if (window.LKPRewards && typeof window.LKPRewards.init === 'function') {
       try {
         window.LKPRewards.init({
-          data: window.CULTURALVERSE_DATA || { cultures: [] }
+          data: state.contentData
         });
 
-        const rewardSummary = window.LKPRewards.getProfileSummary();
-        state.mana = rewardSummary.mana || state.mana;
-        localStorage.setItem(MANA_KEY, String(state.mana));
+        if (typeof window.LKPRewards.setCompletedLessons === 'function') {
+          window.LKPRewards.setCompletedLessons(state.completed);
+        }
+
+        const rewardSummary = window.LKPRewards.getProfileSummary?.({
+          recalculate: true
+        });
+
+        if (rewardSummary && typeof rewardSummary.mana === 'number') {
+          state.mana = rewardSummary.mana;
+          localStorage.setItem(MANA_KEY, String(state.mana));
+        }
       } catch (err) {
         console.warn('[Profile] Rewards engine init failed:', err.message);
       }
     }
+  }
+
+  async function waitForSupabaseLibrary() {
+    if (!isSupabaseConfigured) return null;
+
+    if (window.supabase) return window.supabase;
+
+    return new Promise(resolve => {
+      let tries = 0;
+
+      const timer = setInterval(() => {
+        tries += 1;
+
+        if (window.supabase) {
+          clearInterval(timer);
+          resolve(window.supabase);
+        }
+
+        if (tries > 60) {
+          clearInterval(timer);
+          resolve(null);
+        }
+      }, 100);
+    });
+  }
+
+  async function setupSupabaseClient() {
+    if (!isSupabaseConfigured) return null;
+
+    const supaLib = await waitForSupabaseLibrary();
+
+    if (!supaLib) {
+      console.warn('[Profile] Supabase library did not load.');
+      return null;
+    }
+
+    supabaseClient = supaLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    return supabaseClient;
+  }
+
+  async function loadManagedContent() {
+    if (!supabaseClient) return false;
+
+    try {
+      const { data, error } = await supabaseClient.rpc('get_lkp_content', {
+        public_only: !state.isAdmin
+      });
+
+      if (error) throw error;
+
+      if (data && Array.isArray(data.cultures)) {
+        hydrateLessonsFromData(data);
+        populateCultureFilter();
+        renderLessonPath();
+        renderDashboard();
+        renderRewardsPanel();
+        return true;
+      }
+    } catch (err) {
+      console.warn('[Profile] Supabase content load skipped:', err.message);
+    }
+
+    return false;
+  }
+
+  async function init() {
+    state.completed = readJSON(COMPLETED_KEY, []);
+    state.mana = parseInt(localStorage.getItem(MANA_KEY) || '0', 10) || 0;
+
+    hydrateLessonsFromData(getStaticContentData());
 
     bindUI();
     populateCultureFilter();
@@ -351,6 +496,8 @@
     renderEcosystem();
     renderLessonPath();
     initProfileGalaxy();
+
+    await setupSupabaseClient();
 
     if (!supabaseClient) {
       setSessionState(
@@ -368,10 +515,12 @@
 
       if (state.user) {
         await loadOrCreateProfile();
+        await loadManagedContent();
         await loadRemoteProgress();
       } else {
         state.profile = null;
         state.isAdmin = false;
+        await loadManagedContent();
       }
 
       renderDashboard();
@@ -450,7 +599,8 @@
 
       if (desc) {
         desc.textContent =
-          realmDescriptions[realm] || 'This realm is connected to your profile.';
+          realmDescriptions[realm] ||
+          'This realm is connected to your profile.';
       }
     });
 
@@ -460,11 +610,15 @@
         return;
       }
 
-      const before = window.LKPRewards.getProfileSummary();
+      const before = window.LKPRewards.getProfileSummary?.() || {};
 
-      window.LKPRewards.checkInToday();
+      if (typeof window.LKPRewards.checkInToday === 'function') {
+        window.LKPRewards.checkInToday();
+      }
 
-      const after = window.LKPRewards.getProfileSummary();
+      const after = window.LKPRewards.getProfileSummary?.({
+        recalculate: true
+      }) || {};
 
       state.mana = after.mana || state.mana;
       localStorage.setItem(MANA_KEY, String(state.mana));
@@ -484,10 +638,11 @@
     const el = $('#profileSessionState');
     if (!el) return;
 
-    el.classList.remove('is-good', 'is-warning');
+    el.classList.remove('is-good', 'is-warning', 'is-bad');
 
     if (tone === 'good') el.classList.add('is-good');
     if (tone === 'warning') el.classList.add('is-warning');
+    if (tone === 'bad') el.classList.add('is-bad');
 
     el.textContent = message;
   }
@@ -502,9 +657,11 @@
 
       if (state.user) {
         await loadOrCreateProfile();
+        await loadManagedContent();
         await loadRemoteProgress();
       } else {
         setSessionState('Not signed in. Guest/local profile mode is active.', 'warning');
+        await loadManagedContent();
       }
 
       renderDashboard();
@@ -520,7 +677,7 @@
 
   async function signIn() {
     if (!supabaseClient) {
-      showToast('Add your Supabase URL and anon key in profile.js first.');
+      showToast('Supabase is not ready yet.');
       return;
     }
 
@@ -546,6 +703,7 @@
       state.user = data.user;
 
       await loadOrCreateProfile();
+      await loadManagedContent();
       await loadRemoteProgress();
 
       renderDashboard();
@@ -564,7 +722,7 @@
 
   async function signUp() {
     if (!supabaseClient) {
-      showToast('Add your Supabase URL and anon key in profile.js first.');
+      showToast('Supabase is not ready yet.');
       return;
     }
 
@@ -601,6 +759,7 @@
 
       if (state.user) {
         await loadOrCreateProfile();
+        await loadRemoteProgress();
       }
 
       renderDashboard();
@@ -652,10 +811,12 @@
 
     try {
       await loadOrCreateProfile();
+      await loadManagedContent();
       await loadRemoteProgress();
 
       renderDashboard();
       renderRewardsPanel();
+      renderEcosystem();
       renderLessonPath();
       rebuildProfileGalaxyForRole();
 
@@ -719,6 +880,10 @@
         profile = inserted;
       }
 
+      if (profile && isDataImage(profile.avatar_url)) {
+        profile.avatar_url = null;
+      }
+
       state.profile = profile;
       state.isAdmin = ['admin', 'owner'].includes(profile.role);
 
@@ -753,15 +918,20 @@
       state.completed = merged;
       writeJSON(COMPLETED_KEY, merged);
 
-      if (window.LKPRewards) {
+      if (
+        window.LKPRewards &&
+        typeof window.LKPRewards.setCompletedLessons === 'function'
+      ) {
         window.LKPRewards.setCompletedLessons(merged);
 
-        const summary = window.LKPRewards.getProfileSummary({
+        const summary = window.LKPRewards.getProfileSummary?.({
           recalculate: true
         });
 
-        state.mana = summary.mana || state.mana;
-        localStorage.setItem(MANA_KEY, String(state.mana));
+        if (summary && typeof summary.mana === 'number') {
+          state.mana = summary.mana;
+          localStorage.setItem(MANA_KEY, String(state.mana));
+        }
       } else {
         const remoteMana = (data || []).reduce((sum, row) => {
           return sum + (row.mana || 0);
@@ -781,12 +951,14 @@
     if (!supabaseClient || !state.user) return;
 
     try {
+      const lesson = state.lessons.find(item => item.id === lessonId);
+
       const payload = {
         user_id: state.user.id,
         lesson_id: lessonId,
         ecosystem: 'lkp',
         completed,
-        mana: completed ? 10 : 0
+        mana: completed ? (lesson?.mana || 10) : 0
       };
 
       const { error } = await supabaseClient
@@ -805,16 +977,27 @@
     const displayName = $('#editDisplayName')?.value.trim();
     const handle = normalizeHandle($('#editHandle')?.value);
     const homeRealm = $('#editHomeRealm')?.value || 'lkp';
-    const avatarUrl = $('#editAvatarUrl')?.value.trim();
+
+    let avatarUrl = $('#editAvatarUrl')?.value.trim();
     const bio = $('#editBio')?.value.trim();
+
+    if (avatarUrl && isDataImage(avatarUrl)) {
+      showToast('Avatar URL cannot be a base64 image. Use a normal image path or hosted URL.');
+      avatarUrl = '';
+    }
+
+    if (avatarUrl && avatarUrl.length > 2000) {
+      showToast('Avatar URL is too long. Use a shorter hosted image URL or local file path.');
+      avatarUrl = '';
+    }
 
     const localProfile = {
       ...(state.profile || readJSON(PROFILE_CACHE_KEY, {}) || {}),
       display_name: displayName || 'Guest Wayfinder',
       handle,
       home_realm: homeRealm,
-      avatar_url: avatarUrl,
-      bio,
+      avatar_url: avatarUrl || null,
+      bio: bio || null,
       role: state.profile?.role || 'user'
     };
 
@@ -849,6 +1032,10 @@
 
       if (error) throw error;
 
+      if (data && isDataImage(data.avatar_url)) {
+        data.avatar_url = null;
+      }
+
       state.profile = data;
       state.isAdmin = ['admin', 'owner'].includes(data.role);
 
@@ -881,17 +1068,24 @@
     let rewardSummary = null;
 
     if (window.LKPRewards) {
-      window.LKPRewards.toggleLesson(lessonId, shouldComplete);
+      if (typeof window.LKPRewards.toggleLesson === 'function') {
+        window.LKPRewards.toggleLesson(lessonId, shouldComplete);
+      }
 
-      rewardSummary = window.LKPRewards.getProfileSummary({
+      rewardSummary = window.LKPRewards.getProfileSummary?.({
         recalculate: true
       });
 
-      state.mana = rewardSummary.mana || 0;
+      if (rewardSummary && typeof rewardSummary.mana === 'number') {
+        state.mana = rewardSummary.mana;
+      }
     } else {
+      const lesson = state.lessons.find(item => item.id === lessonId);
+      const manaValue = lesson?.mana || 10;
+
       state.mana = shouldComplete
-        ? state.mana + 10
-        : Math.max(0, state.mana - 10);
+        ? state.mana + manaValue
+        : Math.max(0, state.mana - manaValue);
     }
 
     localStorage.setItem(MANA_KEY, String(state.mana));
@@ -904,17 +1098,29 @@
 
     showToast(
       shouldComplete
-        ? `Lesson completed. ${rewardSummary ? `Rank: ${rewardSummary.rank.current.name}.` : '+10 Mana.'}`
+        ? `Lesson completed. ${rewardSummary?.rank?.current?.name ? `Rank: ${rewardSummary.rank.current.name}.` : '+ Mana.'}`
         : 'Lesson marked open.'
     );
   }
 
   function renderProfileFromCache() {
-    const cached = readJSON(PROFILE_CACHE_KEY, null);
+    const cached =
+      readJSON(PROFILE_CACHE_KEY, null) ||
+      readJSON(LEGACY_PROFILE_CACHE_KEY, null);
 
     if (cached && !state.profile) {
+      if (isDataImage(cached.avatar_url)) {
+        cached.avatar_url = null;
+      }
+
+      if (!cached.home_realm || cached.home_realm === 'pikoverse') {
+        cached.home_realm = 'lkp';
+      }
+
       state.profile = cached;
       state.isAdmin = ['admin', 'owner'].includes(cached.role);
+
+      writeJSON(PROFILE_CACHE_KEY, cached);
     }
   }
 
@@ -925,12 +1131,18 @@
 
     if (window.LKPRewards) {
       try {
-        const rewardSummary = window.LKPRewards.getProfileSummary({
+        if (typeof window.LKPRewards.setCompletedLessons === 'function') {
+          window.LKPRewards.setCompletedLessons(completed);
+        }
+
+        const rewardSummary = window.LKPRewards.getProfileSummary?.({
           recalculate: true
         });
 
-        state.mana = rewardSummary.mana || state.mana;
-        localStorage.setItem(MANA_KEY, String(state.mana));
+        if (rewardSummary && typeof rewardSummary.mana === 'number') {
+          state.mana = rewardSummary.mana;
+          localStorage.setItem(MANA_KEY, String(state.mana));
+        }
       } catch (err) {
         console.warn('[Profile] Rewards render sync failed:', err.message);
       }
@@ -981,12 +1193,13 @@
     setText('#profileAvatarInitials', initialsFromName(displayName));
 
     const avatar = $('#profileAvatar');
+    const safeAvatarUrl = getSafeAvatarUrl(profile.avatar_url);
 
     if (avatar) {
-      if (profile.avatar_url) {
+      if (safeAvatarUrl) {
         avatar.style.backgroundImage = `
           linear-gradient(rgba(1,3,10,0.12), rgba(1,3,10,0.12)),
-          url("${profile.avatar_url}")
+          url("${safeAvatarUrl}")
         `;
         avatar.style.backgroundSize = 'cover';
         avatar.style.backgroundPosition = 'center';
@@ -1013,7 +1226,7 @@
     setValue('#editDisplayName', profile.display_name || '');
     setValue('#editHandle', profile.handle || '');
     setValue('#editHomeRealm', profile.home_realm || 'lkp');
-    setValue('#editAvatarUrl', profile.avatar_url || '');
+    setValue('#editAvatarUrl', safeAvatarUrl);
     setValue('#editBio', profile.bio || '');
 
     setHidden('#profileSignOutBtn', !state.user);
@@ -1029,13 +1242,15 @@
     let summary;
 
     try {
-      summary = window.LKPRewards.getProfileSummary({
+      summary = window.LKPRewards.getProfileSummary?.({
         recalculate: true
       });
     } catch (err) {
       console.warn('[Profile] Rewards panel failed:', err.message);
       return;
     }
+
+    if (!summary) return;
 
     const rank = summary.rank?.current || {
       name: 'Initiate',
@@ -1151,7 +1366,9 @@
     const cultures = new Map();
 
     state.lessons.forEach(lesson => {
-      cultures.set(lesson.cultureId, lesson.cultureName);
+      if (lesson.cultureId && lesson.cultureName) {
+        cultures.set(lesson.cultureId, lesson.cultureName);
+      }
     });
 
     const options = [...cultures.entries()]
@@ -1161,6 +1378,11 @@
       .join('');
 
     select.innerHTML = `<option value="all">All Cultures</option>${options}`;
+
+    if (!cultures.has(state.filters.culture) && state.filters.culture !== 'all') {
+      state.filters.culture = 'all';
+      select.value = 'all';
+    }
   }
 
   function renderEcosystem() {
@@ -1198,7 +1420,9 @@
           lesson.cultureName,
           lesson.moduleTitle,
           lesson.contentText,
-          lesson.content
+          lesson.content,
+          lesson.leadText,
+          lesson.excerpt
         ]
           .join(' ')
           .toLowerCase()
@@ -1221,7 +1445,7 @@
       list.innerHTML = `
         <div class="profile-note">
           No lesson data found. Make sure <strong>LKP/js/lkp-data.js</strong>
-          loads before <strong>profile.js</strong>.
+          loads before <strong>profile.js</strong>, or that Supabase content is live.
         </div>
       `;
       return;
@@ -1237,7 +1461,7 @@
     }
 
     list.innerHTML = lessons.map(lesson => {
-      const color = themeColor(lesson.cultureTheme);
+      const color = lesson.cultureColor || themeColor(lesson.cultureTheme);
       const completed = state.completed.includes(lesson.id);
 
       return `
@@ -1334,6 +1558,8 @@
 
       window.addEventListener('resize', resizeProfileGalaxy, { passive: true });
 
+      canvas.addEventListener('click', onProfileGalaxyClick);
+
       function animate() {
         state.three.frameId = requestAnimationFrame(animate);
 
@@ -1366,6 +1592,43 @@
         '[Profile] Three.js profile galaxy failed to initialize:',
         err.message
       );
+    }
+  }
+
+  function onProfileGalaxyClick(event) {
+    const THREE = state.three.THREE;
+    const camera = state.three.camera;
+    const scene = state.three.scene;
+
+    if (!THREE || !camera || !scene) return;
+
+    const canvas = event.currentTarget;
+    const rect = canvas.getBoundingClientRect();
+
+    const pointer = new THREE.Vector2(
+      ((event.clientX - rect.left) / rect.width) * 2 - 1,
+      -((event.clientY - rect.top) / rect.height) * 2 + 1
+    );
+
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(pointer, camera);
+
+    const meshes = state.three.nodes
+      .map(node => node.mesh)
+      .filter(mesh => mesh && mesh.userData?.href);
+
+    const hits = raycaster.intersectObjects(meshes, false);
+
+    if (!hits.length) return;
+
+    const href = hits[0].object.userData.href;
+
+    if (href) {
+      if (href.startsWith('http')) {
+        window.open(href, '_blank', 'noopener');
+      } else {
+        window.location.href = href;
+      }
     }
   }
 
