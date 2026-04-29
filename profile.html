@@ -15,7 +15,7 @@
   />
   <meta name="robots" content="noindex, follow" />
   <meta name="theme-color" content="#070b14" />
-  <meta name="color-scheme" content="dark" />
+  <meta name="color-scheme" content="dark light" />
 
   <link rel="icon" type="image/png" sizes="32x32" href="LKP/assets/images/LKP-2.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="LKP/assets/images/LKP-2.png" />
@@ -41,10 +41,14 @@
   <script defer src="LKP/js/profile.js"></script>
 </head>
 
-<body class="profile-page">
+<body class="profile-page profile-theme-dark" data-time-phase="night" data-bg-variant="0">
   <div class="profile-bg" aria-hidden="true">
+    <div class="profile-bg__sky"></div>
+    <div class="profile-bg__image"></div>
+    <div class="profile-bg__stars"></div>
     <div class="profile-bg__nebula profile-bg__nebula--one"></div>
     <div class="profile-bg__nebula profile-bg__nebula--two"></div>
+    <div class="profile-bg__nebula profile-bg__nebula--three"></div>
     <div class="profile-bg__grid"></div>
   </div>
 
@@ -73,6 +77,16 @@
       <a href="index.html"><i class="fas fa-house"></i> Home</a>
       <a href="lessons.html"><i class="fas fa-book-open"></i> Lessons</a>
       <a href="admin.html"><i class="fas fa-user-shield"></i> Admin</a>
+
+      <button
+        id="profileThemeToggleBtn"
+        class="profile-topbar__button profile-theme-toggle"
+        type="button"
+        aria-label="Toggle light and dark mode"
+      >
+        <i class="fas fa-circle-half-stroke"></i>
+        <span id="profileThemeToggleLabel">Light Mode</span>
+      </button>
 
       <button id="profileSyncBtn" class="profile-topbar__button" type="button">
         <i class="fas fa-rotate"></i> Sync
@@ -117,8 +131,6 @@
     </section>
 
     <div class="profile-layout">
-
-      <!-- ── Auth sidebar (guest only) ──────────────────────────────────── -->
       <aside class="profile-auth-card" id="authPanel">
         <div class="profile-card-head">
           <span class="profile-card-icon">◈</span>
@@ -168,10 +180,7 @@
         </p>
       </aside>
 
-      <!-- ── Main content ───────────────────────────────────────────────── -->
       <section class="profile-content">
-
-        <!-- Passport + Galaxy — always full width inside content -->
         <section class="profile-stage" aria-label="Profile passport and knowledge galaxy">
           <article class="profile-card profile-passport-card" id="passport">
             <div class="profile-passport-card__banner">
@@ -241,8 +250,8 @@
                 <span class="profile-eyebrow">Knowledge Galaxy</span>
                 <h2>Connected Realms</h2>
                 <p>
-                  Your ecosystem map lives in this contained galaxy panel so the
-                  Three.js scene supports the dashboard without breaking desktop layout.
+                  Each realm now moves through its own nebula field while the profile background
+                  shifts with the time of day.
                 </p>
               </div>
 
@@ -251,7 +260,6 @@
           </aside>
         </section>
 
-        <!-- LEFT column — stacks its children with no row-height gaps -->
         <div class="profile-col profile-col--left">
           <section class="profile-card profile-rewards-card" id="rewards">
             <div class="profile-card-head">
@@ -342,7 +350,6 @@
           </section>
         </div>
 
-        <!-- RIGHT column — stacks its children with no row-height gaps -->
         <div class="profile-col profile-col--right">
           <section class="profile-card" id="access">
             <div class="profile-card-head">
@@ -436,7 +443,6 @@
           </section>
         </div>
 
-        <!-- Learning Path — always full width -->
         <section class="profile-card" id="path">
           <div class="profile-card-head">
             <span class="profile-card-icon">🌌</span>
@@ -462,7 +468,6 @@
             <div class="profile-note">Loading lesson path...</div>
           </div>
         </section>
-
       </section>
     </div>
   </main>

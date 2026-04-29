@@ -12,12 +12,15 @@
 
   const SUPABASE_ANON_KEY =
     window.LKP_SUPABASE_ANON_KEY ||
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtcmpkdnNxZGZ5YXF0endiYnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTE2MzYsImV4cCI6MjA5MTE2NzYzNn0.UKyvX02bG4cNhb7U2TK96t8XFREHYYwHJIKbPK06nqs';
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6ImZtcmpkdnNxZGZ5YXF0endiYnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTE2MzYsImV4cCI6MjA5MTE2NzYzNn0.UKyvX02bG4cNhb7U2TK96t8XFREHYYwHJIKbPK06nqs';
 
   const PROFILE_CACHE_KEY = 'lkp_profile_v1';
   const LEGACY_PROFILE_CACHE_KEY = 'piko_profile_v1';
   const COMPLETED_KEY = 'cv_completed';
   const MANA_KEY = 'cv_mana';
+  const THEME_KEY = 'lkp_profile_theme';
+  const BACKGROUND_VARIANT_KEY = 'lkp_profile_bg_variant';
+  const BACKGROUND_ROTATION_MS = 90000;
 
   const isSupabaseConfigured =
     SUPABASE_URL &&
@@ -111,6 +114,113 @@
     }
   ];
 
+  const backgroundPhasePalettes = {
+    dawn: [
+      {
+        themeColor: '#10203d',
+        sky:
+          'radial-gradient(circle at 18% 18%, rgba(255, 184, 122, 0.24), transparent 28%), radial-gradient(circle at 80% 16%, rgba(115, 172, 255, 0.18), transparent 30%), linear-gradient(180deg, #08101f 0%, #132745 34%, #2a3552 66%, #120f21 100%)',
+        image:
+          'radial-gradient(circle at 50% 115%, rgba(255, 219, 166, 0.18), transparent 34%), radial-gradient(circle at 84% 26%, rgba(155, 112, 255, 0.11), transparent 26%)',
+        stars:
+          'radial-gradient(circle at 20% 30%, rgba(255,255,255,0.88) 0 1px, transparent 1.6px), radial-gradient(circle at 72% 22%, rgba(255,255,255,0.7) 0 1.2px, transparent 1.8px), radial-gradient(circle at 58% 58%, rgba(255,255,255,0.42) 0 1px, transparent 1.6px), radial-gradient(circle at 38% 72%, rgba(255,255,255,0.5) 0 1.1px, transparent 1.7px)',
+        glowOne: 'rgba(255, 173, 110, 0.24)',
+        glowTwo: 'rgba(101, 171, 255, 0.18)',
+        glowThree: 'rgba(178, 127, 255, 0.12)'
+      },
+      {
+        themeColor: '#102440',
+        sky:
+          'radial-gradient(circle at 22% 20%, rgba(255, 196, 123, 0.22), transparent 26%), radial-gradient(circle at 77% 20%, rgba(96, 183, 255, 0.14), transparent 28%), linear-gradient(180deg, #070d1a 0%, #14253d 32%, #364f7a 68%, #161726 100%)',
+        image:
+          'radial-gradient(circle at 50% 110%, rgba(255, 210, 155, 0.14), transparent 32%), radial-gradient(circle at 12% 78%, rgba(126, 100, 255, 0.12), transparent 26%)',
+        stars:
+          'radial-gradient(circle at 26% 36%, rgba(255,255,255,0.78) 0 1px, transparent 1.6px), radial-gradient(circle at 68% 18%, rgba(255,255,255,0.62) 0 1.1px, transparent 1.7px), radial-gradient(circle at 82% 58%, rgba(255,255,255,0.34) 0 1px, transparent 1.6px), radial-gradient(circle at 44% 74%, rgba(255,255,255,0.46) 0 1.1px, transparent 1.8px)',
+        glowOne: 'rgba(255, 196, 123, 0.2)',
+        glowTwo: 'rgba(96, 183, 255, 0.16)',
+        glowThree: 'rgba(126, 100, 255, 0.10)'
+      }
+    ],
+    day: [
+      {
+        themeColor: '#0f2840',
+        sky:
+          'radial-gradient(circle at 18% 16%, rgba(255, 252, 226, 0.18), transparent 24%), radial-gradient(circle at 82% 14%, rgba(138, 228, 255, 0.15), transparent 28%), linear-gradient(180deg, #0b1830 0%, #16345e 30%, #376ba0 66%, #1c3457 100%)',
+        image:
+          'radial-gradient(circle at 48% 108%, rgba(175, 218, 255, 0.16), transparent 30%), radial-gradient(circle at 20% 78%, rgba(125, 176, 255, 0.14), transparent 24%)',
+        stars:
+          'radial-gradient(circle at 26% 30%, rgba(255,255,255,0.48) 0 1px, transparent 1.6px), radial-gradient(circle at 68% 26%, rgba(255,255,255,0.4) 0 1px, transparent 1.7px), radial-gradient(circle at 74% 58%, rgba(255,255,255,0.26) 0 1px, transparent 1.7px)',
+        glowOne: 'rgba(120, 202, 255, 0.18)',
+        glowTwo: 'rgba(255, 239, 189, 0.12)',
+        glowThree: 'rgba(131, 164, 255, 0.10)'
+      },
+      {
+        themeColor: '#13304d',
+        sky:
+          'radial-gradient(circle at 14% 18%, rgba(255, 248, 212, 0.14), transparent 22%), radial-gradient(circle at 84% 16%, rgba(173, 238, 255, 0.16), transparent 28%), linear-gradient(180deg, #091429 0%, #17385e 28%, #4577ab 66%, #213859 100%)',
+        image:
+          'radial-gradient(circle at 50% 108%, rgba(185, 226, 255, 0.14), transparent 28%), radial-gradient(circle at 80% 76%, rgba(111, 167, 255, 0.12), transparent 24%)',
+        stars:
+          'radial-gradient(circle at 24% 32%, rgba(255,255,255,0.4) 0 1px, transparent 1.6px), radial-gradient(circle at 70% 24%, rgba(255,255,255,0.32) 0 1px, transparent 1.7px), radial-gradient(circle at 58% 70%, rgba(255,255,255,0.2) 0 1px, transparent 1.7px)',
+        glowOne: 'rgba(120, 202, 255, 0.16)',
+        glowTwo: 'rgba(255, 248, 212, 0.10)',
+        glowThree: 'rgba(111, 167, 255, 0.12)'
+      }
+    ],
+    dusk: [
+      {
+        themeColor: '#241634',
+        sky:
+          'radial-gradient(circle at 20% 18%, rgba(255, 176, 107, 0.2), transparent 26%), radial-gradient(circle at 78% 18%, rgba(132, 138, 255, 0.18), transparent 28%), linear-gradient(180deg, #0a0d18 0%, #241638 32%, #53305f 62%, #211524 100%)',
+        image:
+          'radial-gradient(circle at 50% 110%, rgba(255, 188, 125, 0.14), transparent 30%), radial-gradient(circle at 20% 76%, rgba(122, 92, 255, 0.12), transparent 24%)',
+        stars:
+          'radial-gradient(circle at 24% 28%, rgba(255,255,255,0.9) 0 1px, transparent 1.6px), radial-gradient(circle at 70% 22%, rgba(255,255,255,0.72) 0 1.1px, transparent 1.8px), radial-gradient(circle at 48% 62%, rgba(255,255,255,0.38) 0 1px, transparent 1.7px), radial-gradient(circle at 80% 56%, rgba(255,255,255,0.44) 0 1px, transparent 1.8px)',
+        glowOne: 'rgba(255, 176, 107, 0.18)',
+        glowTwo: 'rgba(132, 138, 255, 0.18)',
+        glowThree: 'rgba(228, 115, 255, 0.10)'
+      },
+      {
+        themeColor: '#2b183e',
+        sky:
+          'radial-gradient(circle at 20% 18%, rgba(255, 167, 108, 0.18), transparent 26%), radial-gradient(circle at 80% 18%, rgba(132, 155, 255, 0.14), transparent 28%), linear-gradient(180deg, #090c16 0%, #281941 30%, #5b346f 62%, #251726 100%)',
+        image:
+          'radial-gradient(circle at 50% 112%, rgba(255, 187, 124, 0.12), transparent 28%), radial-gradient(circle at 14% 74%, rgba(180, 115, 255, 0.10), transparent 24%)',
+        stars:
+          'radial-gradient(circle at 26% 26%, rgba(255,255,255,0.84) 0 1px, transparent 1.6px), radial-gradient(circle at 68% 22%, rgba(255,255,255,0.64) 0 1.1px, transparent 1.8px), radial-gradient(circle at 54% 70%, rgba(255,255,255,0.34) 0 1px, transparent 1.8px), radial-gradient(circle at 82% 54%, rgba(255,255,255,0.4) 0 1px, transparent 1.8px)',
+        glowOne: 'rgba(255, 167, 108, 0.16)',
+        glowTwo: 'rgba(132, 155, 255, 0.15)',
+        glowThree: 'rgba(180, 115, 255, 0.10)'
+      }
+    ],
+    night: [
+      {
+        themeColor: '#070b14',
+        sky:
+          'radial-gradient(circle at 18% 0%, rgba(84, 198, 238, 0.16), transparent 34%), radial-gradient(circle at 86% 12%, rgba(240, 201, 106, 0.13), transparent 36%), radial-gradient(circle at 50% 105%, rgba(143, 160, 255, 0.10), transparent 36%), linear-gradient(180deg, #01030a 0%, #020711 52%, #01030a 100%)',
+        image:
+          'radial-gradient(circle at 22% 22%, rgba(97, 208, 255, 0.12), transparent 24%), radial-gradient(circle at 72% 30%, rgba(144, 103, 255, 0.10), transparent 26%), radial-gradient(circle at 50% 110%, rgba(78, 102, 216, 0.10), transparent 28%)',
+        stars:
+          'radial-gradient(circle at 15% 18%, rgba(255,255,255,0.92) 0 1px, transparent 1.7px), radial-gradient(circle at 32% 44%, rgba(255,255,255,0.78) 0 1px, transparent 1.7px), radial-gradient(circle at 74% 24%, rgba(255,255,255,0.72) 0 1.1px, transparent 1.8px), radial-gradient(circle at 58% 60%, rgba(255,255,255,0.44) 0 1px, transparent 1.8px), radial-gradient(circle at 80% 74%, rgba(255,255,255,0.34) 0 1px, transparent 1.7px)',
+        glowOne: 'rgba(84, 198, 238, 0.22)',
+        glowTwo: 'rgba(240, 201, 106, 0.16)',
+        glowThree: 'rgba(143, 160, 255, 0.12)'
+      },
+      {
+        themeColor: '#080c18',
+        sky:
+          'radial-gradient(circle at 16% 4%, rgba(76, 198, 255, 0.14), transparent 32%), radial-gradient(circle at 84% 12%, rgba(255, 214, 128, 0.10), transparent 34%), radial-gradient(circle at 50% 105%, rgba(126, 148, 255, 0.08), transparent 34%), linear-gradient(180deg, #01030a 0%, #020814 48%, #040818 100%)',
+        image:
+          'radial-gradient(circle at 24% 28%, rgba(90, 210, 255, 0.1), transparent 24%), radial-gradient(circle at 78% 32%, rgba(179, 111, 255, 0.08), transparent 24%), radial-gradient(circle at 48% 112%, rgba(90, 116, 220, 0.10), transparent 28%)',
+        stars:
+          'radial-gradient(circle at 12% 18%, rgba(255,255,255,0.88) 0 1px, transparent 1.7px), radial-gradient(circle at 28% 42%, rgba(255,255,255,0.72) 0 1px, transparent 1.7px), radial-gradient(circle at 70% 20%, rgba(255,255,255,0.68) 0 1.1px, transparent 1.8px), radial-gradient(circle at 54% 58%, rgba(255,255,255,0.38) 0 1px, transparent 1.8px), radial-gradient(circle at 82% 72%, rgba(255,255,255,0.28) 0 1px, transparent 1.7px)',
+        glowOne: 'rgba(76, 198, 255, 0.20)',
+        glowTwo: 'rgba(255, 214, 128, 0.14)',
+        glowThree: 'rgba(126, 148, 255, 0.10)'
+      }
+    ]
+  };
+
   const state = {
     session: null,
     user: null,
@@ -120,12 +230,17 @@
     mana: 0,
     lessons: [],
     contentData: null,
-    /* ── NEW: tracks whether the Supabase session check has fully resolved ── */
     sessionReady: false,
     filters: {
       search: '',
       culture: 'all',
       status: 'all'
+    },
+    visuals: {
+      theme: localStorage.getItem(THEME_KEY) || 'dark',
+      timePhase: 'night',
+      bgVariant: parseInt(localStorage.getItem(BACKGROUND_VARIANT_KEY) || '0', 10) || 0,
+      bgTimer: null
     },
     three: {
       initialized: false,
@@ -247,10 +362,9 @@
 
   function hexToRgba(hex, alpha) {
     const clean = String(hex || '#ffffff').replace('#', '');
-    const full =
-      clean.length === 3
-        ? clean.split('').map(c => c + c).join('')
-        : clean;
+    const full = clean.length === 3
+      ? clean.split('').map(c => c + c).join('')
+      : clean;
 
     const num = parseInt(full, 16);
 
@@ -282,6 +396,110 @@
     if (isDataImage(url)) return '';
     if (url.length > 2000) return '';
     return url;
+  }
+
+  function getThemeMeta() {
+    return document.querySelector('meta[name="theme-color"]');
+  }
+
+  function syncThemeToggleLabel() {
+    const label = $('#profileThemeToggleLabel');
+    if (!label) return;
+    label.textContent = state.visuals.theme === 'dark' ? 'Light Mode' : 'Dark Mode';
+  }
+
+  function resolveTimePhase(date = new Date()) {
+    const hour = date.getHours();
+    if (hour >= 5 && hour < 10) return 'dawn';
+    if (hour >= 10 && hour < 17) return 'day';
+    if (hour >= 17 && hour < 20) return 'dusk';
+    return 'night';
+  }
+
+  function getBackgroundPalette(phase, variantIndex) {
+    const set = backgroundPhasePalettes[phase] || backgroundPhasePalettes.night;
+    const safeIndex = Math.abs(variantIndex) % set.length;
+    return set[safeIndex];
+  }
+
+  function applyVisualEnvironment(options = {}) {
+    const body = document.body;
+    if (!body) return;
+
+    const nextTheme = options.theme || state.visuals.theme || 'dark';
+    const nextPhase = options.phase || resolveTimePhase();
+    const nextVariant = Number.isFinite(options.variant)
+      ? options.variant
+      : state.visuals.bgVariant || 0;
+
+    const palette = getBackgroundPalette(nextPhase, nextVariant);
+
+    state.visuals.theme = nextTheme;
+    state.visuals.timePhase = nextPhase;
+    state.visuals.bgVariant = nextVariant;
+
+    body.classList.toggle('profile-theme-dark', nextTheme === 'dark');
+    body.classList.toggle('profile-theme-light', nextTheme === 'light');
+    body.dataset.timePhase = nextPhase;
+    body.dataset.bgVariant = String(nextVariant);
+
+    body.style.setProperty('--profile-page-backdrop', palette.sky);
+    body.style.setProperty('--profile-sky-gradient', palette.sky);
+    body.style.setProperty('--profile-sky-image', palette.image);
+    body.style.setProperty('--profile-star-field', palette.stars);
+    body.style.setProperty('--profile-nebula-one', palette.glowOne);
+    body.style.setProperty('--profile-nebula-two', palette.glowTwo);
+    body.style.setProperty('--profile-nebula-three', palette.glowThree);
+
+    const themeMeta = getThemeMeta();
+    if (themeMeta) {
+      themeMeta.setAttribute('content', palette.themeColor || (nextTheme === 'light' ? '#dbe9ff' : '#070b14'));
+    }
+
+    try {
+      localStorage.setItem(THEME_KEY, nextTheme);
+      localStorage.setItem(BACKGROUND_VARIANT_KEY, String(nextVariant));
+    } catch (err) {
+      console.warn('[Profile] Could not persist theme/background:', err.message);
+    }
+
+    syncThemeToggleLabel();
+  }
+
+  function cycleBackgroundVariant() {
+    const phase = resolveTimePhase();
+    const set = backgroundPhasePalettes[phase] || backgroundPhasePalettes.night;
+    const nextVariant = (state.visuals.bgVariant + 1) % set.length;
+    applyVisualEnvironment({
+      theme: state.visuals.theme,
+      phase,
+      variant: nextVariant
+    });
+  }
+
+  function startBackgroundClock() {
+    clearInterval(state.visuals.bgTimer);
+
+    applyVisualEnvironment({
+      theme: localStorage.getItem(THEME_KEY) || state.visuals.theme || 'dark',
+      phase: resolveTimePhase(),
+      variant: state.visuals.bgVariant
+    });
+
+    state.visuals.bgTimer = setInterval(() => {
+      const phase = resolveTimePhase();
+
+      if (phase !== state.visuals.timePhase) {
+        applyVisualEnvironment({
+          theme: state.visuals.theme,
+          phase,
+          variant: 0
+        });
+        return;
+      }
+
+      cycleBackgroundVariant();
+    }, BACKGROUND_ROTATION_MS);
   }
 
   function getStaticContentData() {
@@ -414,10 +632,12 @@
       let tries = 0;
       const timer = setInterval(() => {
         tries += 1;
+
         if (window.supabase) {
           clearInterval(timer);
           resolve(window.supabase);
         }
+
         if (tries > 60) {
           clearInterval(timer);
           resolve(null);
@@ -428,6 +648,7 @@
 
   async function setupSupabaseClient() {
     if (!isSupabaseConfigured) return null;
+
     const supaLib = await waitForSupabaseLibrary();
 
     if (!supaLib) {
@@ -464,14 +685,7 @@
     return false;
   }
 
-  /* ── INIT ──────────────────────────────────────────────────────────────────
-     FIX: body gets 'profile-loading' immediately so the layout is hidden while
-     the async Supabase session check runs. This prevents the layout from
-     rendering in guest mode and then snapping to signed-in mode (or vice versa).
-     'profile-loading' is removed inside loadSession() via a finally block.
-  ──────────────────────────────────────────────────────────────────────────── */
   async function init() {
-    /* Hide the layout immediately — we reveal it once session is confirmed */
     document.body.classList.add('profile-loading');
 
     state.completed = readJSON(COMPLETED_KEY, []);
@@ -480,11 +694,9 @@
     hydrateLessonsFromData(getStaticContentData());
 
     bindUI();
+    startBackgroundClock();
     populateCultureFilter();
     renderProfileFromCache();
-
-    /* Render non-layout UI (stats, lesson list, ecosystem links) without
-       committing layout-altering body classes yet */
     renderRewardsPanel();
     renderEcosystem();
     renderLessonPath();
@@ -493,7 +705,6 @@
     await setupSupabaseClient();
 
     if (!supabaseClient) {
-      /* No Supabase — reveal layout in guest mode immediately */
       document.body.classList.remove('profile-loading');
       state.sessionReady = true;
       renderDashboard();
@@ -507,7 +718,6 @@
       return;
     }
 
-    /* loadSession() removes 'profile-loading' in its finally block */
     await loadSession();
 
     supabaseClient.auth.onAuthStateChange(async (_event, session) => {
@@ -533,10 +743,12 @@
   }
 
   function bindUI() {
-    $all('[data-scroll-target]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const target = document.querySelector(btn.dataset.scrollTarget);
-        target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    $('#profileThemeToggleBtn')?.addEventListener('click', () => {
+      const next = state.visuals.theme === 'dark' ? 'light' : 'dark';
+      applyVisualEnvironment({
+        theme: next,
+        phase: state.visuals.timePhase,
+        variant: state.visuals.bgVariant
       });
     });
 
@@ -642,11 +854,6 @@
     el.textContent = message;
   }
 
-  /* ── loadSession ───────────────────────────────────────────────────────────
-     FIX: 'profile-loading' is always removed here via finally{}, regardless
-     of whether the session check succeeds or fails. The layout then fades in
-     with the correct classes already applied — no visible snap.
-  ──────────────────────────────────────────────────────────────────────────── */
   async function loadSession() {
     try {
       const { data, error } = await supabaseClient.auth.getSession();
@@ -676,7 +883,6 @@
       renderDashboard();
       setSessionState('Could not load Supabase session. Guest mode active.', 'warning');
     } finally {
-      /* Always reveal the layout once session state is known */
       document.body.classList.remove('profile-loading');
     }
   }
@@ -1099,11 +1305,7 @@
     renderRewardsPanel();
     renderLessonPath();
 
-    showToast(
-      shouldComplete
-        ? `Lesson completed. ${rewardSummary?.rank?.current?.name ? `Rank: ${rewardSummary.rank.current.name}.` : '+ Mana.'}`
-        : 'Lesson marked open.'
-    );
+    showToast(shouldComplete ? 'Lesson completed. + Mana.' : 'Lesson marked open.');
   }
 
   function renderProfileFromCache() {
@@ -1522,6 +1724,7 @@
       window.addEventListener('resize', resizeProfileGalaxy, { passive: true });
 
       const holder = getGalaxyHolder();
+
       if (holder && 'ResizeObserver' in window) {
         state.three.resizeObserver = new ResizeObserver(() => resizeProfileGalaxy());
         state.three.resizeObserver.observe(holder);
@@ -1543,6 +1746,17 @@
           if (node.glow) {
             node.glow.position.copy(node.mesh.position);
             node.glow.material.opacity = 0.25 + Math.sin(t * 1.3 + index) * 0.08;
+          }
+
+          if (node.nebula) {
+            node.nebula.position.copy(node.mesh.position);
+            node.nebula.rotation.z += 0.0025;
+
+            node.nebula.children.forEach((child, childIndex) => {
+              child.material.opacity =
+                0.12 +
+                ((Math.sin(t * 0.95 + index + childIndex + (node.nebulaDrift || 0)) + 1) * 0.06);
+            });
           }
 
           if (node.label) node.label.position.y = node.mesh.position.y + 1.35;
@@ -1577,9 +1791,8 @@
   function onProfileGalaxyClick(event) {
     const THREE = state.three.THREE;
     const camera = state.three.camera;
-    const scene = state.three.scene;
 
-    if (!THREE || !camera || !scene) return;
+    if (!THREE || !camera) return;
 
     const canvas = event.currentTarget;
     const rect = canvas.getBoundingClientRect();
@@ -1616,6 +1829,7 @@
     state.three.nodes.forEach(node => {
       if (node.mesh) scene.remove(node.mesh);
       if (node.glow) scene.remove(node.glow);
+      if (node.nebula) scene.remove(node.nebula);
       if (node.label) scene.remove(node.label);
       if (node.line) scene.remove(node.line);
     });
@@ -1640,6 +1854,7 @@
 
   function rebuildProfileGalaxyForRole() {
     if (!state.three.initialized) return;
+
     clearIdentityGalaxy();
     buildIdentityGalaxy();
     resizeProfileGalaxy();
@@ -1648,6 +1863,7 @@
   function buildIdentityGalaxy() {
     const THREE = state.three.THREE;
     const scene = state.three.scene;
+
     if (!THREE || !scene) return;
 
     const bgCount = 850;
@@ -1744,6 +1960,15 @@
       glow.position.copy(mesh.position);
       glow.userData.profileGalaxyGenerated = true;
 
+      const nebula = makeNebulaCluster(
+        item.color,
+        item.adminOnly ? 3.8 : 2.9,
+        item.adminOnly ? 0.34 : 0.22
+      );
+
+      nebula.position.copy(mesh.position);
+      nebula.userData.profileGalaxyGenerated = true;
+
       const label = makeTextSprite(item.name, item.color);
       label.position.set(x, y + 1.35, z);
       label.scale.set(4.2, 1, 1);
@@ -1751,6 +1976,7 @@
 
       scene.add(mesh);
       scene.add(glow);
+      scene.add(nebula);
       scene.add(label);
 
       const line = makeCurveLine(
@@ -1764,7 +1990,16 @@
       line.userData.profileGalaxyGenerated = true;
       scene.add(line);
 
-      state.three.nodes.push({ mesh, glow, label, line, item, baseY: y });
+      state.three.nodes.push({
+        mesh,
+        glow,
+        nebula,
+        label,
+        line,
+        item,
+        baseY: y,
+        nebulaDrift: Math.random() * Math.PI * 2
+      });
     });
 
     addOrbitLine(radius, '#f0c96a', 0.065);
@@ -1774,9 +2009,11 @@
   function addOrbitLine(radius, color, opacity) {
     const THREE = state.three.THREE;
     const scene = state.three.scene;
+
     if (!THREE || !scene) return;
 
     const pts = [];
+
     for (let i = 0; i <= 160; i++) {
       const a = (i / 160) * Math.PI * 2;
       pts.push(new THREE.Vector3(Math.cos(a) * radius, 0, Math.sin(a) * radius));
@@ -1808,6 +2045,25 @@
         opacity
       })
     );
+  }
+
+  function makeNebulaCluster(color, scale, opacity) {
+    const THREE = state.three.THREE;
+    const group = new THREE.Group();
+
+    const offsets = [
+      { x: -0.4, y: 0.12, z: 0.14, size: scale * 1.05 },
+      { x: 0.46, y: -0.14, z: -0.08, size: scale * 0.88 },
+      { x: 0.08, y: 0.34, z: -0.16, size: scale * 0.72 }
+    ];
+
+    offsets.forEach((offset, idx) => {
+      const sprite = makeGlowSprite(color, offset.size, opacity * (idx === 0 ? 1 : 0.82));
+      sprite.position.set(offset.x, offset.y, offset.z);
+      group.add(sprite);
+    });
+
+    return group;
   }
 
   function makeGlowSprite(color, size, opacity) {
@@ -1877,6 +2133,7 @@
 
   function resizeProfileGalaxy() {
     const { renderer, camera } = state.three;
+
     if (!renderer || !camera) return;
 
     const { width, height } = getGalaxySize();
