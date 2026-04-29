@@ -1,45 +1,21 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    THE LIVING KNOWLEDGE PLATFORM — WAYFINDER PASSPORT
    File: LKP/css/profile.css
-
-   This file matches the current profile.html structure:
-   - profile-page
-   - profile-galaxy-canvas
-   - profile-bg
-   - profile-topbar
-   - profile-shell
-   - profile-layout
-   - profile-auth-card
-   - profile-content
-   - profile-passport-card
-   - profile-rewards-card
-   - profile-realm-wheel
-   - profile-filter-row
-   - profile-lesson-path
-   - profile-ecosystem-grid
-   - profile-admin-grid
 ═══════════════════════════════════════════════════════════════════════════ */
-
-/* ────────────────────────────────────────────────────────────────────────
-   ROOT / THEME
-──────────────────────────────────────────────────────────────────────── */
 
 :root {
   --profile-bg: #01030a;
   --profile-deep: #030814;
-  --profile-card: rgba(5, 12, 32, 0.82);
+  --profile-card: rgba(5, 12, 32, 0.84);
   --profile-card-strong: rgba(8, 18, 45, 0.92);
   --profile-glass: rgba(4, 10, 26, 0.76);
-
   --profile-border: rgba(255, 255, 255, 0.085);
   --profile-border-soft: rgba(255, 255, 255, 0.06);
   --profile-border-gold: rgba(240, 201, 106, 0.25);
   --profile-border-cyan: rgba(84, 198, 238, 0.24);
-
   --profile-text: rgba(235, 245, 255, 0.96);
   --profile-muted: rgba(171, 194, 226, 0.72);
   --profile-faint: rgba(155, 178, 212, 0.44);
-
   --profile-gold: #f0c96a;
   --profile-gold-soft: #f4df9e;
   --profile-cyan: #54c6ee;
@@ -47,25 +23,17 @@
   --profile-violet: #8fa0ff;
   --profile-rust: #d98545;
   --profile-red: #ff7676;
-
   --profile-radius-lg: 30px;
   --profile-radius-md: 22px;
   --profile-radius-sm: 16px;
-
   --profile-shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
   --profile-shadow-soft: 0 16px 44px rgba(0, 0, 0, 0.25);
-
   --profile-font-title: var(--lkp-font-display, "Pirata One", "Cormorant Garamond", Georgia, serif);
   --profile-font-serif: var(--lkp-font-elegant, "Cormorant Garamond", Georgia, serif);
   --profile-font-body: var(--lkp-font-ui, "DM Sans", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif);
-
   --safe-bottom: max(14px, env(safe-area-inset-bottom));
   --safe-top: max(0px, env(safe-area-inset-top));
 }
-
-/* ────────────────────────────────────────────────────────────────────────
-   RESET
-──────────────────────────────────────────────────────────────────────── */
 
 *,
 *::before,
@@ -83,9 +51,9 @@ body {
   min-height: 100%;
   margin: 0;
   overflow-x: hidden;
-  background: var(--profile-bg);
   color: var(--profile-text);
   font-family: var(--profile-font-body);
+  background: var(--profile-bg);
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
 }
@@ -133,24 +101,10 @@ img {
   display: none !important;
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   BACKGROUND / CANVAS
-──────────────────────────────────────────────────────────────────────── */
-
-.profile-galaxy-canvas {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.82;
-  pointer-events: auto;
-}
-
 .profile-bg {
   position: fixed;
   inset: 0;
-  z-index: 1;
+  z-index: 0;
   overflow: hidden;
   pointer-events: none;
 }
@@ -160,8 +114,8 @@ img {
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(1, 3, 10, 0.20), rgba(1, 3, 10, 0.64)),
-    radial-gradient(circle at center, transparent 0%, rgba(1, 3, 10, 0.36) 74%, rgba(1, 3, 10, 0.82) 100%);
+    linear-gradient(180deg, rgba(1, 3, 10, 0.16), rgba(1, 3, 10, 0.72)),
+    radial-gradient(circle at center, transparent 0%, rgba(1, 3, 10, 0.36) 72%, rgba(1, 3, 10, 0.86) 100%);
 }
 
 .profile-bg__nebula {
@@ -200,10 +154,6 @@ img {
   mask-image: radial-gradient(circle at center, black, transparent 72%);
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   TOAST
-──────────────────────────────────────────────────────────────────────── */
-
 .profile-toast {
   position: fixed;
   right: 18px;
@@ -219,19 +169,13 @@ img {
   transform: translateY(16px);
   opacity: 0;
   pointer-events: none;
-  transition:
-    transform 0.2s ease,
-    opacity 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .profile-toast.is-visible {
   transform: translateY(0);
   opacity: 1;
 }
-
-/* ────────────────────────────────────────────────────────────────────────
-   TOPBAR
-──────────────────────────────────────────────────────────────────────── */
 
 .profile-topbar {
   position: sticky;
@@ -244,7 +188,7 @@ img {
   gap: 18px;
   padding: calc(12px + var(--safe-top)) clamp(14px, 3vw, 30px) 12px;
   border-bottom: 1px solid rgba(255,255,255,0.075);
-  background: rgba(1, 3, 10, 0.84);
+  background: rgba(1, 3, 10, 0.86);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
@@ -256,23 +200,31 @@ img {
   gap: 12px;
 }
 
-.profile-brand__logo,
+.profile-brand__logo-frame,
 .profile-brand__sigil {
   width: 52px;
   height: 52px;
   flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
   border-radius: 50%;
-  object-fit: contain;
-  filter:
-    drop-shadow(0 0 10px rgba(240, 201, 106, 0.32))
-    drop-shadow(0 0 18px rgba(84, 198, 238, 0.12));
+  border: 1px solid rgba(240, 201, 106, 0.22);
+  background: rgba(1, 3, 10, 0.42);
+  box-shadow:
+    0 0 10px rgba(240, 201, 106, 0.26),
+    0 0 18px rgba(84, 198, 238, 0.12),
+    inset 0 0 18px rgba(255,255,255,0.04);
+}
+
+.profile-brand__logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .profile-brand__sigil {
-  display: grid;
-  place-items: center;
-  border: 1px solid rgba(240, 201, 106, 0.24);
-  background: rgba(240, 201, 106, 0.08);
   color: var(--profile-gold);
 }
 
@@ -283,7 +235,7 @@ img {
 }
 
 .profile-brand__text strong {
-  max-width: min(360px, 42vw);
+  max-width: min(420px, 42vw);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -327,11 +279,7 @@ img {
   font-weight: 900;
   line-height: 1;
   cursor: pointer;
-  transition:
-    transform 0.18s ease,
-    border-color 0.18s ease,
-    background 0.18s ease,
-    color 0.18s ease;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
 }
 
 .profile-topbar__links a:hover,
@@ -342,22 +290,14 @@ img {
   color: var(--profile-gold);
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   MOBILE DOCK
-──────────────────────────────────────────────────────────────────────── */
-
 .profile-mobile-dock {
   display: none;
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   PAGE SHELL
-──────────────────────────────────────────────────────────────────────── */
-
 .profile-shell {
   position: relative;
   z-index: 2;
-  width: min(1420px, calc(100% - 28px));
+  width: min(1480px, calc(100% - 32px));
   margin: 0 auto;
   padding: 28px 0 96px;
 }
@@ -406,9 +346,7 @@ img {
   font-weight: 400;
   letter-spacing: 0.03em;
   line-height: 0.84;
-  text-shadow:
-    0 0 22px rgba(240, 201, 106, 0.20),
-    0 0 52px rgba(84, 198, 238, 0.08);
+  text-shadow: 0 0 22px rgba(240, 201, 106, 0.20), 0 0 52px rgba(84, 198, 238, 0.08);
 }
 
 .profile-hero p {
@@ -425,28 +363,20 @@ img {
   height: 138px;
   display: grid;
   place-items: center;
+  overflow: hidden;
   border-radius: 50%;
   border: 1px solid rgba(240, 201, 106, 0.24);
-  background:
-    radial-gradient(circle, rgba(240, 201, 106, 0.16), transparent 66%),
-    rgba(1, 3, 10, 0.52);
-  box-shadow:
-    0 0 30px rgba(240, 201, 106, 0.15),
-    inset 0 0 24px rgba(255,255,255,0.04);
+  background: radial-gradient(circle, rgba(240, 201, 106, 0.16), transparent 66%), rgba(1, 3, 10, 0.52);
+  box-shadow: 0 0 30px rgba(240, 201, 106, 0.15), inset 0 0 24px rgba(255,255,255,0.04);
 }
 
 .profile-hero__mark img {
-  width: 96px;
-  height: 96px;
-  object-fit: contain;
-  filter:
-    drop-shadow(0 0 12px rgba(240, 201, 106, 0.22))
-    drop-shadow(0 0 18px rgba(84, 198, 238, 0.10));
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  filter: drop-shadow(0 0 12px rgba(240, 201, 106, 0.22)) drop-shadow(0 0 18px rgba(84, 198, 238, 0.10));
 }
-
-/* ────────────────────────────────────────────────────────────────────────
-   SESSION STATE
-──────────────────────────────────────────────────────────────────────── */
 
 .profile-session-state {
   position: relative;
@@ -474,9 +404,11 @@ img {
   color: var(--profile-gold);
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   MAIN LAYOUT
-──────────────────────────────────────────────────────────────────────── */
+.profile-session-state.is-bad {
+  border-color: rgba(255, 118, 118, 0.26);
+  background: rgba(255, 118, 118, 0.08);
+  color: var(--profile-red);
+}
 
 .profile-layout {
   position: relative;
@@ -487,10 +419,48 @@ img {
   align-items: start;
 }
 
+body.profile-is-signed-in .profile-layout {
+  grid-template-columns: 1fr;
+}
+
 .profile-content {
+  min-width: 0;
   display: grid;
   gap: 18px;
+}
+
+body.profile-is-signed-in .profile-content {
+  display: grid;
+  grid-template-columns: minmax(380px, 520px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.profile-stage {
   min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(380px, 520px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+body.profile-is-signed-in .profile-stage {
+  grid-column: 1 / -1;
+}
+
+body.profile-is-signed-in #rewards,
+body.profile-is-signed-in #ecosystem {
+  grid-column: 1;
+}
+
+body.profile-is-signed-in #access,
+body.profile-is-signed-in #edit,
+body.profile-is-signed-in #adminPanel {
+  grid-column: 2;
+}
+
+body.profile-is-signed-in #path {
+  grid-column: 1 / -1;
 }
 
 .profile-card,
@@ -506,9 +476,7 @@ img {
     radial-gradient(circle at 20% 0%, rgba(240, 201, 106, 0.08), transparent 44%),
     linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0)),
     var(--profile-card);
-  box-shadow:
-    var(--profile-shadow-soft),
-    inset 0 0 26px rgba(255, 255, 255, 0.025);
+  box-shadow: var(--profile-shadow-soft), inset 0 0 26px rgba(255, 255, 255, 0.025);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
@@ -520,9 +488,7 @@ img {
   inset: 0;
   pointer-events: none;
   opacity: 0.36;
-  background:
-    linear-gradient(135deg, rgba(255,255,255,0.08), transparent 34%),
-    radial-gradient(circle at 100% 0%, rgba(84,198,238,0.08), transparent 32%);
+  background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent 34%), radial-gradient(circle at 100% 0%, rgba(84,198,238,0.08), transparent 32%);
 }
 
 .profile-card > *,
@@ -545,9 +511,7 @@ img {
   place-items: center;
   border-radius: 50%;
   border: 1px solid rgba(240, 201, 106, 0.24);
-  background:
-    radial-gradient(circle, rgba(240, 201, 106, 0.16), transparent 62%),
-    rgba(255, 255, 255, 0.035);
+  background: radial-gradient(circle, rgba(240, 201, 106, 0.16), transparent 62%), rgba(255, 255, 255, 0.035);
   color: var(--profile-gold);
   font-size: 24px;
   box-shadow: inset 0 0 16px rgba(255,255,255,0.025);
@@ -573,10 +537,6 @@ img {
   font-size: 13px;
   line-height: 1.52;
 }
-
-/* ────────────────────────────────────────────────────────────────────────
-   FORMS / BUTTONS
-──────────────────────────────────────────────────────────────────────── */
 
 .profile-auth-form,
 .profile-edit-form {
@@ -624,9 +584,7 @@ img {
 .profile-filter-row input:focus,
 .profile-filter-row select:focus {
   border-color: rgba(84, 198, 238, 0.42);
-  box-shadow:
-    0 0 0 3px rgba(84, 198, 238, 0.10),
-    inset 0 0 16px rgba(0,0,0,0.18);
+  box-shadow: 0 0 0 3px rgba(84, 198, 238, 0.10), inset 0 0 16px rgba(0,0,0,0.18);
 }
 
 .profile-main-btn {
@@ -638,17 +596,11 @@ img {
   padding: 11px 17px;
   border: 1px solid rgba(240, 201, 106, 0.34);
   border-radius: 999px;
-  background:
-    radial-gradient(circle at 50% 0%, rgba(240, 201, 106, 0.24), transparent 60%),
-    rgba(240, 201, 106, 0.11);
+  background: radial-gradient(circle at 50% 0%, rgba(240, 201, 106, 0.24), transparent 60%), rgba(240, 201, 106, 0.11);
   color: rgba(255, 239, 198, 0.98);
   font-weight: 900;
   box-shadow: 0 0 24px rgba(240, 201, 106, 0.12);
-  transition:
-    transform 0.18s ease,
-    border-color 0.18s ease,
-    box-shadow 0.18s ease,
-    background 0.18s ease;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
 }
 
 .profile-main-btn:hover {
@@ -684,28 +636,18 @@ img {
   color: var(--profile-gold);
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   PASSPORT CARD
-──────────────────────────────────────────────────────────────────────── */
-
 .profile-passport-card {
   gap: 0;
   padding: 0;
   border-color: rgba(240, 201, 106, 0.18);
-  background:
-    radial-gradient(circle at 50% 0%, rgba(240, 201, 106, 0.12), transparent 46%),
-    radial-gradient(circle at 100% 70%, rgba(84, 198, 238, 0.08), transparent 38%),
-    rgba(5, 12, 32, 0.80);
+  background: radial-gradient(circle at 50% 0%, rgba(240, 201, 106, 0.12), transparent 46%), radial-gradient(circle at 100% 70%, rgba(84, 198, 238, 0.08), transparent 38%), rgba(5, 12, 32, 0.80);
 }
 
 .profile-passport-card__banner {
   position: relative;
   min-height: 86px;
   border-bottom: 1px solid rgba(255,255,255,0.075);
-  background:
-    radial-gradient(circle at 20% 0%, rgba(84, 198, 238, 0.25), transparent 34%),
-    radial-gradient(circle at 78% 42%, rgba(240, 201, 106, 0.18), transparent 42%),
-    linear-gradient(135deg, rgba(84,198,238,0.13), rgba(143,160,255,0.10));
+  background: radial-gradient(circle at 20% 0%, rgba(84, 198, 238, 0.25), transparent 34%), radial-gradient(circle at 78% 42%, rgba(240, 201, 106, 0.18), transparent 42%), linear-gradient(135deg, rgba(84,198,238,0.13), rgba(143,160,255,0.10));
 }
 
 .profile-passport-card__glow {
@@ -738,13 +680,8 @@ img {
   place-items: center;
   border-radius: 36% 64% 55% 45% / 46% 36% 64% 54%;
   border: 1px solid rgba(240, 201, 106, 0.34);
-  background:
-    radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 0.18), transparent 28%),
-    radial-gradient(circle at 50% 50%, rgba(240, 201, 106, 0.22), transparent 64%),
-    rgba(1, 3, 10, 0.72);
-  box-shadow:
-    0 0 28px rgba(240, 201, 106, 0.20),
-    inset 0 0 26px rgba(84, 198, 238, 0.08);
+  background: radial-gradient(circle at 40% 30%, rgba(255, 255, 255, 0.18), transparent 28%), radial-gradient(circle at 50% 50%, rgba(240, 201, 106, 0.22), transparent 64%), rgba(1, 3, 10, 0.72);
+  box-shadow: 0 0 28px rgba(240, 201, 106, 0.20), inset 0 0 26px rgba(84, 198, 238, 0.08);
   animation: passport-morph 9s ease-in-out infinite alternate;
 }
 
@@ -875,9 +812,63 @@ img {
   font-weight: 900;
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   STAT GRID
-──────────────────────────────────────────────────────────────────────── */
+.profile-galaxy-panel {
+  min-height: 460px;
+  padding: 0;
+  border-color: rgba(84, 198, 238, 0.16);
+}
+
+.profile-galaxy-panel__inner {
+  position: relative;
+  width: 100%;
+  min-height: 460px;
+  height: 100%;
+  overflow: hidden;
+  border-radius: var(--profile-radius-lg);
+  background: radial-gradient(circle at 18% 18%, rgba(84, 198, 238, 0.12), transparent 32%), radial-gradient(circle at 80% 18%, rgba(240, 201, 106, 0.10), transparent 36%), radial-gradient(circle at 50% 100%, rgba(143, 160, 255, 0.10), transparent 42%), rgba(2, 7, 20, 0.84);
+}
+
+.profile-galaxy-panel__overlay {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 18px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.profile-galaxy-panel__overlay .profile-eyebrow {
+  margin-bottom: 8px;
+}
+
+.profile-galaxy-panel__overlay h2 {
+  margin: 0;
+  color: var(--profile-gold);
+  font-family: var(--profile-font-title);
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 400;
+  line-height: 0.95;
+}
+
+.profile-galaxy-panel__overlay p {
+  max-width: 620px;
+  margin: 10px 0 0;
+  color: var(--profile-muted);
+  font-family: var(--profile-font-serif);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.profile-galaxy-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0.86;
+  pointer-events: auto;
+}
 
 .profile-stat-grid {
   display: grid;
@@ -913,16 +904,9 @@ img {
   text-transform: uppercase;
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   REWARDS CARD
-──────────────────────────────────────────────────────────────────────── */
-
 .profile-rewards-card {
   border-color: rgba(240, 201, 106, 0.22);
-  background:
-    radial-gradient(circle at 50% 0%, rgba(240, 201, 106, 0.13), transparent 44%),
-    radial-gradient(circle at 100% 70%, rgba(84, 198, 238, 0.08), transparent 38%),
-    rgba(5, 12, 32, 0.82);
+  background: radial-gradient(circle at 50% 0%, rgba(240, 201, 106, 0.13), transparent 44%), radial-gradient(circle at 100% 70%, rgba(84, 198, 238, 0.08), transparent 38%), rgba(5, 12, 32, 0.82);
 }
 
 .rewards-rank-panel {
@@ -933,9 +917,7 @@ img {
   padding: 14px;
   border-radius: 22px;
   border: 1px solid rgba(240, 201, 106, 0.18);
-  background:
-    radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.12), transparent 54%),
-    rgba(255,255,255,0.035);
+  background: radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.12), transparent 54%), rgba(255,255,255,0.035);
 }
 
 .rewards-rank-orb {
@@ -945,12 +927,8 @@ img {
   place-items: center;
   border-radius: 50%;
   border: 1px solid rgba(240, 201, 106, 0.30);
-  background:
-    radial-gradient(circle, rgba(240, 201, 106, 0.22), transparent 64%),
-    rgba(1, 3, 10, 0.56);
-  box-shadow:
-    0 0 22px rgba(240, 201, 106, 0.14),
-    inset 0 0 18px rgba(255,255,255,0.035);
+  background: radial-gradient(circle, rgba(240, 201, 106, 0.22), transparent 64%), rgba(1, 3, 10, 0.56);
+  box-shadow: 0 0 22px rgba(240, 201, 106, 0.14), inset 0 0 18px rgba(255,255,255,0.035);
   font-size: 30px;
 }
 
@@ -1103,10 +1081,6 @@ img {
   font-size: 11px;
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   REALM / ACCESS CARD
-──────────────────────────────────────────────────────────────────────── */
-
 .profile-realm-wheel {
   display: flex;
   flex-wrap: wrap;
@@ -1124,11 +1098,7 @@ img {
   background: rgba(255,255,255,0.04);
   color: rgba(230, 242, 255, 0.84);
   font-weight: 900;
-  transition:
-    transform 0.18s ease,
-    color 0.18s ease,
-    border-color 0.18s ease,
-    background 0.18s ease;
+  transition: transform 0.18s ease, color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
 }
 
 .profile-realm-wheel button:hover,
@@ -1148,10 +1118,6 @@ img {
   color: var(--profile-muted);
   line-height: 1.65;
 }
-
-/* ────────────────────────────────────────────────────────────────────────
-   LESSON PATH
-──────────────────────────────────────────────────────────────────────── */
 
 .profile-filter-row {
   display: flex;
@@ -1188,9 +1154,7 @@ img {
   padding: 12px;
   border-radius: 18px;
   border: 1px solid rgba(255,255,255,0.075);
-  background:
-    linear-gradient(90deg, rgba(240, 201, 106, 0.06), transparent 48%),
-    rgba(255,255,255,0.035);
+  background: linear-gradient(90deg, rgba(240, 201, 106, 0.06), transparent 48%), rgba(255,255,255,0.035);
   box-shadow: inset 3px 0 0 var(--lesson-color, var(--profile-cyan));
 }
 
@@ -1209,18 +1173,19 @@ img {
   gap: 4px;
 }
 
-.lesson-row__body strong {
+.lesson-row__body strong,
+.lesson-row__body small {
   overflow: hidden;
-  color: rgba(255, 239, 198, 0.96);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+.lesson-row__body strong {
+  color: rgba(255, 239, 198, 0.96);
+}
+
 .lesson-row__body small {
-  overflow: hidden;
   color: var(--profile-muted);
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .lesson-row__complete,
@@ -1244,10 +1209,6 @@ img {
   color: #8fffc7;
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   ECOSYSTEM
-──────────────────────────────────────────────────────────────────────── */
-
 .profile-ecosystem-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1262,13 +1223,8 @@ img {
   padding: 14px;
   border-radius: 20px;
   border: 1px solid var(--eco-border, rgba(255,255,255,0.08));
-  background:
-    radial-gradient(circle at 0 0, var(--eco-bg, rgba(240,201,106,0.08)), transparent 62%),
-    rgba(255,255,255,0.035);
-  transition:
-    transform 0.18s ease,
-    border-color 0.18s ease,
-    background 0.18s ease;
+  background: radial-gradient(circle at 0 0, var(--eco-bg, rgba(240,201,106,0.08)), transparent 62%), rgba(255,255,255,0.035);
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease;
 }
 
 .profile-ecosystem-card:hover,
@@ -1298,16 +1254,9 @@ img {
   font-weight: 900;
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   ADMIN PANEL
-──────────────────────────────────────────────────────────────────────── */
-
 .profile-admin-panel {
   border-color: rgba(240, 201, 106, 0.24);
-  background:
-    radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.13), transparent 42%),
-    radial-gradient(circle at 100% 0, rgba(143, 160, 255, 0.09), transparent 42%),
-    var(--profile-card-strong);
+  background: radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.13), transparent 42%), radial-gradient(circle at 100% 0, rgba(143, 160, 255, 0.09), transparent 42%), var(--profile-card-strong);
 }
 
 .profile-admin-grid {
@@ -1323,12 +1272,8 @@ img {
   padding: 15px;
   border-radius: 22px;
   border: 1px solid rgba(240, 201, 106, 0.22);
-  background:
-    radial-gradient(circle at 50% 0%, rgba(240, 201, 106, 0.13), transparent 62%),
-    rgba(255,255,255,0.035);
-  transition:
-    transform 0.18s ease,
-    border-color 0.18s ease;
+  background: radial-gradient(circle at 50% 0%, rgba(240, 201, 106, 0.13), transparent 62%), rgba(255,255,255,0.035);
+  transition: transform 0.18s ease, border-color 0.18s ease;
 }
 
 .profile-admin-card:hover {
@@ -1347,114 +1292,37 @@ img {
   line-height: 1.45;
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   COMPATIBILITY FOR OLDER GENERATED CLASSES
-──────────────────────────────────────────────────────────────────────── */
-
-.profile-access-grid,
-.profile-path-summary,
-.profile-wallet-box {
-  display: grid;
-  gap: 10px;
-}
-
-.profile-access-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.profile-access-item {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 10px;
-  align-items: center;
-  padding: 12px;
-  border-radius: 18px;
-  border: 1px solid rgba(255,255,255,0.07);
-  background: rgba(255,255,255,0.035);
-}
-
-.profile-access-item i {
-  color: var(--profile-gold);
-}
-
-.profile-access-item strong {
-  display: block;
-  font-size: 13px;
-}
-
-.profile-access-item span {
-  color: var(--profile-muted);
-  font-size: 12px;
-}
-
-.profile-path-summary {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.profile-path-summary div {
-  display: grid;
-  justify-items: center;
-  gap: 4px;
-  padding: 14px 8px;
-  border-radius: 18px;
-  border: 1px solid rgba(255,255,255,0.07);
-  background: rgba(255,255,255,0.035);
-}
-
-.profile-path-summary strong {
-  color: var(--profile-cyan);
-  font-size: 24px;
-}
-
-.profile-path-summary span {
-  color: var(--profile-muted);
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.profile-path-progress {
-  height: 10px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.075);
-}
-
-.profile-path-progress span,
-#profileProgressBar {
-  display: block;
-  height: 100%;
-  width: 0%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--profile-cyan), var(--profile-gold));
-}
-
-/* ────────────────────────────────────────────────────────────────────────
-   RESPONSIVE
-──────────────────────────────────────────────────────────────────────── */
-
-@media (max-width: 1180px) {
-  .profile-layout {
-    grid-template-columns: minmax(260px, 0.48fr) minmax(0, 1fr);
-  }
-
-  .profile-brand__text strong {
-    max-width: 280px;
+@media (max-width: 1320px) {
+  body.profile-is-signed-in .profile-content,
+  .profile-stage {
+    grid-template-columns: minmax(340px, 480px) minmax(0, 1fr);
   }
 }
 
-@media (max-width: 1060px) {
-  .profile-layout {
+@media (max-width: 1120px) {
+  .profile-layout,
+  body.profile-is-signed-in .profile-layout,
+  body.profile-is-signed-in .profile-content,
+  .profile-stage {
     grid-template-columns: 1fr;
+  }
+
+  body.profile-is-signed-in #rewards,
+  body.profile-is-signed-in #ecosystem,
+  body.profile-is-signed-in #access,
+  body.profile-is-signed-in #edit,
+  body.profile-is-signed-in #adminPanel,
+  body.profile-is-signed-in #path {
+    grid-column: auto;
+  }
+
+  .profile-galaxy-panel,
+  .profile-galaxy-panel__inner {
+    min-height: 380px;
   }
 
   .profile-auth-card.is-hidden {
     display: none !important;
-  }
-
-  .profile-passport-card__main {
-    grid-template-columns: auto minmax(0, 1fr) auto;
   }
 }
 
@@ -1480,8 +1348,7 @@ img {
   }
 
   .profile-ecosystem-grid,
-  .profile-admin-grid,
-  .profile-access-grid {
+  .profile-admin-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -1492,7 +1359,7 @@ img {
     padding-bottom: 110px;
   }
 
-  .profile-brand__logo,
+  .profile-brand__logo-frame,
   .profile-brand__sigil {
     width: 42px;
     height: 42px;
@@ -1531,11 +1398,7 @@ img {
     height: 106px;
   }
 
-  .profile-ring-wrap {
-    width: 112px;
-    height: 112px;
-  }
-
+  .profile-ring-wrap,
   .profile-ring {
     width: 112px;
     height: 112px;
@@ -1543,8 +1406,7 @@ img {
 
   .profile-stat-grid,
   .profile-stat-grid--rewards,
-  .rewards-mini-grid,
-  .profile-path-summary {
+  .rewards-mini-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1582,6 +1444,15 @@ img {
     width: 100%;
   }
 
+  .profile-galaxy-panel,
+  .profile-galaxy-panel__inner {
+    min-height: 340px;
+  }
+
+  .profile-galaxy-panel__overlay p {
+    display: none;
+  }
+
   .profile-mobile-dock {
     position: fixed;
     left: 10px;
@@ -1607,7 +1478,6 @@ img {
     color: rgba(230, 242, 255, 0.80);
     font-size: 11px;
     font-weight: 900;
-    text-decoration: none;
   }
 
   .profile-mobile-dock a:active {
@@ -1624,7 +1494,8 @@ img {
     border-radius: 22px;
   }
 
-  .profile-passport-card {
+  .profile-passport-card,
+  .profile-galaxy-panel {
     padding: 0;
   }
 
@@ -1656,14 +1527,11 @@ img {
   }
 }
 
-/* ────────────────────────────────────────────────────────────────────────
-   MOTION
-──────────────────────────────────────────────────────────────────────── */
-
 @keyframes profile-nebula-float {
   from {
     transform: translate3d(-2%, -1%, 0) scale(0.96);
   }
+
   to {
     transform: translate3d(3%, 2%, 0) scale(1.06);
   }
@@ -1673,9 +1541,11 @@ img {
   0% {
     border-radius: 36% 64% 55% 45% / 46% 36% 64% 54%;
   }
+
   50% {
     border-radius: 48% 52% 42% 58% / 42% 54% 46% 58%;
   }
+
   100% {
     border-radius: 58% 42% 54% 46% / 52% 40% 60% 48%;
   }
@@ -1698,124 +1568,5 @@ img {
     animation: none !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════
-   SIGNED-IN PROFILE DASHBOARD LAYOUT FIX
-   Fixes narrow left-column layout after auth card hides.
-═══════════════════════════════════════════════════════ */
-
-/* When signed in, the auth card should not reserve a sidebar column */
-body.profile-is-signed-in #authPanel {
-  display: none !important;
-}
-
-body.profile-is-signed-in .profile-layout {
-  grid-template-columns: 1fr !important;
-  width: 100%;
-}
-
-/* Full dashboard layout instead of skinny sidebar stack */
-body.profile-is-signed-in .profile-content {
-  width: 100%;
-  display: grid;
-  grid-template-columns: minmax(360px, 0.86fr) minmax(520px, 1.14fr);
-  gap: 18px;
-  align-items: start;
-}
-
-/* Left dashboard column */
-body.profile-is-signed-in #passport,
-body.profile-is-signed-in #rewards,
-body.profile-is-signed-in #ecosystem {
-  grid-column: 1;
-}
-
-/* Right dashboard column */
-body.profile-is-signed-in #access,
-body.profile-is-signed-in #edit,
-body.profile-is-signed-in #path,
-body.profile-is-signed-in #adminPanel {
-  grid-column: 2;
-}
-
-/* Fallback for browsers when JS already added .is-hidden to authPanel */
-.profile-layout:has(#authPanel.is-hidden) {
-  grid-template-columns: 1fr !important;
-}
-
-.profile-layout:has(#authPanel.is-hidden) .profile-content {
-  width: 100%;
-}
-
-/* Make the passport card breathe better in dashboard mode */
-body.profile-is-signed-in .profile-passport-card {
-  min-width: 0;
-}
-
-body.profile-is-signed-in .profile-passport-card__main {
-  grid-template-columns: auto minmax(0, 1fr);
-}
-
-body.profile-is-signed-in .profile-ring-wrap {
-  grid-column: 1 / -1;
-  justify-self: center;
-  margin-top: 6px;
-}
-
-/* Let ecosystem cards use the full left card cleanly */
-body.profile-is-signed-in .profile-ecosystem-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-/* Keep the Three.js galaxy visible but not visually overpowering cards */
-.profile-galaxy-canvas {
-  opacity: 0.58;
-}
-
-/* Give foreground UI stronger separation from the galaxy */
-.profile-card,
-.profile-auth-card,
-.profile-hero,
-.profile-session-state {
-  backdrop-filter: blur(20px) saturate(1.08);
-  -webkit-backdrop-filter: blur(20px) saturate(1.08);
-}
-
-/* Tablet/mobile collapse */
-@media (max-width: 1060px) {
-  body.profile-is-signed-in .profile-content {
-    grid-template-columns: 1fr;
-  }
-
-  body.profile-is-signed-in #passport,
-  body.profile-is-signed-in #rewards,
-  body.profile-is-signed-in #ecosystem,
-  body.profile-is-signed-in #access,
-  body.profile-is-signed-in #edit,
-  body.profile-is-signed-in #path,
-  body.profile-is-signed-in #adminPanel {
-    grid-column: 1;
-  }
-
-  body.profile-is-signed-in .profile-passport-card__main {
-    grid-template-columns: 1fr;
-    justify-items: center;
-    text-align: center;
-  }
-
-  body.profile-is-signed-in .profile-passport-topline {
-    justify-content: center;
-  }
-}
-
-@media (max-width: 760px) {
-  body.profile-is-signed-in .profile-ecosystem-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .profile-galaxy-canvas {
-    opacity: 0.40;
   }
 }

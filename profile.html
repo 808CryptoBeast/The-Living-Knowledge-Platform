@@ -2,11 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
   <title>The Living Knowledge Platform | Wayfinder Passport</title>
 
@@ -14,7 +10,6 @@
     name="description"
     content="The Living Knowledge Platform Wayfinder Passport. Track lessons, Mana rewards, profile identity, badges, and future XRPL-ready learning records."
   />
-
   <meta name="robots" content="noindex, follow" />
   <meta name="theme-color" content="#070b14" />
   <meta name="color-scheme" content="dark" />
@@ -23,7 +18,6 @@
   <link rel="apple-touch-icon" sizes="180x180" href="LKP/assets/images/LKP-2.png" />
   <link rel="manifest" href="site.webmanifest" />
 
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -31,25 +25,17 @@
     rel="stylesheet"
   />
 
-  <!-- CSS -->
   <link rel="stylesheet" href="LKP/css/lkp-brand.css" />
   <link rel="stylesheet" href="LKP/css/profile.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-  <!-- Supabase -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Data / rewards / profile logic -->
   <script defer src="LKP/js/lkp-data.js"></script>
   <script defer src="LKP/js/lkp-rewards.js"></script>
   <script defer src="LKP/js/profile.js"></script>
 </head>
 
 <body class="profile-page">
-
-  <!-- Your current profile.js expects this exact canvas ID -->
-  <canvas id="profileGalaxy" class="profile-galaxy-canvas" aria-hidden="true"></canvas>
-
   <div class="profile-bg" aria-hidden="true">
     <div class="profile-bg__nebula profile-bg__nebula--one"></div>
     <div class="profile-bg__nebula profile-bg__nebula--two"></div>
@@ -60,12 +46,14 @@
 
   <header class="profile-topbar">
     <a href="index.html" class="profile-brand" aria-label="Return to The Living Knowledge Platform home">
-      <img
-        class="profile-brand__logo"
-        src="LKP/assets/images/LKP-2.png"
-        alt="The Living Knowledge Platform"
-        onerror="this.style.display='none';this.nextElementSibling.style.display='grid';"
-      />
+      <span class="profile-brand__logo-frame">
+        <img
+          class="profile-brand__logo"
+          src="LKP/assets/images/LKP-2.png"
+          alt="The Living Knowledge Platform"
+          onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='grid';"
+        />
+      </span>
 
       <span class="profile-brand__sigil" style="display:none;">◈</span>
 
@@ -76,29 +64,16 @@
     </a>
 
     <nav class="profile-topbar__links" aria-label="Profile navigation">
-      <a href="index.html">
-        <i class="fas fa-house"></i>
-        Home
-      </a>
-
-      <a href="lessons.html">
-        <i class="fas fa-book-open"></i>
-        Lessons
-      </a>
-
-      <a href="admin.html">
-        <i class="fas fa-user-shield"></i>
-        Admin
-      </a>
+      <a href="index.html"><i class="fas fa-house"></i> Home</a>
+      <a href="lessons.html"><i class="fas fa-book-open"></i> Lessons</a>
+      <a href="admin.html"><i class="fas fa-user-shield"></i> Admin</a>
 
       <button id="profileSyncBtn" class="profile-topbar__button" type="button">
-        <i class="fas fa-rotate"></i>
-        Sync
+        <i class="fas fa-rotate"></i> Sync
       </button>
 
       <button id="profileSignOutBtn" class="profile-topbar__button is-hidden" type="button">
-        <i class="fas fa-right-from-bracket"></i>
-        Sign Out
+        <i class="fas fa-right-from-bracket"></i> Sign Out
       </button>
     </nav>
   </header>
@@ -112,7 +87,6 @@
   </nav>
 
   <main class="profile-shell">
-
     <section class="profile-hero">
       <div>
         <span class="profile-eyebrow">Ka Paepae 'Ike Ola</span>
@@ -124,7 +98,7 @@
       </div>
 
       <div class="profile-hero__mark">
-        <img src="LKP/assets/images/LKP-1.png" alt="" onerror="this.style.display='none';" />
+        <img src="LKP/assets/images/LKP-1.png" alt="Ka Paepae 'Ike Ola" onerror="this.style.display='none';" />
       </div>
     </section>
 
@@ -133,8 +107,6 @@
     </section>
 
     <div class="profile-layout">
-
-      <!-- AUTH PANEL -->
       <aside class="profile-auth-card" id="authPanel">
         <div class="profile-card-head">
           <span class="profile-card-icon">◈</span>
@@ -144,40 +116,22 @@
           </div>
         </div>
 
-        <!-- profile.js expects profileAuthForm, authEmail, authPassword -->
         <form id="profileAuthForm" class="profile-auth-form">
           <label for="authDisplayName">Display Name</label>
-          <input
-            id="authDisplayName"
-            type="text"
-            autocomplete="name"
-            placeholder="Wayfinder name"
-          />
+          <input id="authDisplayName" type="text" autocomplete="name" placeholder="Wayfinder name" />
 
           <label for="authEmail">Email</label>
-          <input
-            id="authEmail"
-            type="email"
-            autocomplete="email"
-            placeholder="you@email.com"
-          />
+          <input id="authEmail" type="email" autocomplete="email" placeholder="you@email.com" />
 
           <label for="authPassword">Password</label>
-          <input
-            id="authPassword"
-            type="password"
-            autocomplete="current-password"
-            placeholder="Your password"
-          />
+          <input id="authPassword" type="password" autocomplete="current-password" placeholder="Your password" />
 
           <button class="profile-main-btn" type="submit">
-            <i class="fas fa-user-astronaut"></i>
-            Sign In
+            <i class="fas fa-user-astronaut"></i> Sign In
           </button>
 
           <button id="signUpBtn" class="profile-main-btn profile-main-btn--ghost" type="button">
-            <i class="fas fa-seedling"></i>
-            Create Profile
+            <i class="fas fa-seedling"></i> Create Profile
           </button>
         </form>
 
@@ -188,71 +142,85 @@
       </aside>
 
       <section class="profile-content">
+        <section class="profile-stage" aria-label="Profile passport and knowledge galaxy">
+          <article class="profile-card profile-passport-card" id="passport">
+            <div class="profile-passport-card__banner">
+              <div class="profile-passport-card__glow"></div>
+            </div>
 
-        <!-- PASSPORT CARD -->
-        <article class="profile-card profile-passport-card" id="passport">
-          <div class="profile-passport-card__banner">
-            <div class="profile-passport-card__glow"></div>
-          </div>
+            <div class="profile-passport-card__main">
+              <div class="profile-avatar-wrap">
+                <div class="profile-avatar" id="profileAvatar">
+                  <span id="profileAvatarInitials">PW</span>
+                </div>
+              </div>
 
-          <div class="profile-passport-card__main">
-            <div class="profile-avatar-wrap">
-              <div class="profile-avatar" id="profileAvatar">
-                <span id="profileAvatarInitials">PW</span>
+              <div class="profile-passport-copy">
+                <div class="profile-passport-topline">
+                  <span class="profile-eyebrow">Wayfinder Passport</span>
+                  <span id="passportRoleChip" class="profile-role-chip">GUEST</span>
+                </div>
+
+                <h2 id="profileDisplayName">Guest Wayfinder</h2>
+                <p id="profileHandleLine">@guest</p>
+                <p id="profileRoleLine">Guest/local profile mode</p>
+
+                <div id="profileBadgeRow" class="profile-badge-row"></div>
+              </div>
+
+              <div class="profile-ring-wrap">
+                <svg class="profile-ring" viewBox="0 0 120 120" aria-hidden="true">
+                  <circle cx="60" cy="60" r="50" class="profile-ring__track"></circle>
+                  <circle
+                    id="passportRingProgress"
+                    cx="60"
+                    cy="60"
+                    r="50"
+                    class="profile-ring__progress"
+                    stroke-dasharray="314"
+                    stroke-dashoffset="314"
+                  ></circle>
+                </svg>
+                <span id="statProgress">0%</span>
               </div>
             </div>
 
-            <div class="profile-passport-copy">
-              <div class="profile-passport-topline">
-                <span class="profile-eyebrow">Wayfinder Passport</span>
-                <span id="passportRoleChip" class="profile-role-chip">GUEST</span>
+            <div class="profile-stat-grid">
+              <div>
+                <strong id="statCompleted">0</strong>
+                <span>Completed</span>
+              </div>
+              <div>
+                <strong id="statMana">0</strong>
+                <span>Mana</span>
+              </div>
+              <div>
+                <strong id="statLessons">0</strong>
+                <span>Lessons</span>
+              </div>
+              <div>
+                <strong id="statProgressMirror">0%</strong>
+                <span>Progress</span>
+              </div>
+            </div>
+          </article>
+
+          <aside class="profile-card profile-galaxy-panel" aria-label="Knowledge Galaxy">
+            <div class="profile-galaxy-panel__inner">
+              <div class="profile-galaxy-panel__overlay">
+                <span class="profile-eyebrow">Knowledge Galaxy</span>
+                <h2>Connected Realms</h2>
+                <p>
+                  The ecosystem map now lives in its own container, so the galaxy supports the dashboard
+                  without breaking the desktop layout.
+                </p>
               </div>
 
-              <h2 id="profileDisplayName">Guest Wayfinder</h2>
-              <p id="profileHandleLine">@guest</p>
-              <p id="profileRoleLine">Guest/local profile mode</p>
+              <canvas id="profileGalaxy" class="profile-galaxy-canvas" aria-hidden="true"></canvas>
+            </div>
+          </aside>
+        </section>
 
-              <div id="profileBadgeRow" class="profile-badge-row"></div>
-            </div>
-
-            <div class="profile-ring-wrap">
-              <svg class="profile-ring" viewBox="0 0 120 120" aria-hidden="true">
-                <circle cx="60" cy="60" r="50" class="profile-ring__track"></circle>
-                <circle
-                  id="passportRingProgress"
-                  cx="60"
-                  cy="60"
-                  r="50"
-                  class="profile-ring__progress"
-                  stroke-dasharray="314"
-                  stroke-dashoffset="314"
-                ></circle>
-              </svg>
-              <span id="statProgress">0%</span>
-            </div>
-          </div>
-
-          <div class="profile-stat-grid">
-            <div>
-              <strong id="statCompleted">0</strong>
-              <span>Completed</span>
-            </div>
-            <div>
-              <strong id="statMana">0</strong>
-              <span>Mana</span>
-            </div>
-            <div>
-              <strong id="statLessons">0</strong>
-              <span>Lessons</span>
-            </div>
-            <div>
-              <strong id="statProgressMirror">0%</strong>
-              <span>Progress</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- REWARDS CARD -->
         <section class="profile-card profile-rewards-card" id="rewards">
           <div class="profile-card-head">
             <span class="profile-card-icon">◈</span>
@@ -263,10 +231,7 @@
           </div>
 
           <div class="rewards-rank-panel">
-            <div class="rewards-rank-orb">
-              <span id="rewardRankIcon">🌱</span>
-            </div>
-
+            <div class="rewards-rank-orb"><span id="rewardRankIcon">🌱</span></div>
             <div class="rewards-rank-copy">
               <span>Current Rank</span>
               <strong id="rewardRankName">Initiate</strong>
@@ -279,24 +244,13 @@
               <span id="rewardNextRank">Next rank loading...</span>
               <strong id="rewardRankProgress">0%</strong>
             </div>
-            <div class="rewards-progress-bar">
-              <span id="rewardRankBar"></span>
-            </div>
+            <div class="rewards-progress-bar"><span id="rewardRankBar"></span></div>
           </div>
 
           <div class="profile-stat-grid profile-stat-grid--rewards">
-            <div>
-              <strong id="rewardMana">0</strong>
-              <span>Mana</span>
-            </div>
-            <div>
-              <strong id="rewardXP">0</strong>
-              <span>XP</span>
-            </div>
-            <div>
-              <strong id="rewardStreak">0</strong>
-              <span>Streak</span>
-            </div>
+            <div><strong id="rewardMana">0</strong><span>Mana</span></div>
+            <div><strong id="rewardXP">0</strong><span>XP</span></div>
+            <div><strong id="rewardStreak">0</strong><span>Streak</span></div>
           </div>
 
           <button id="rewardCheckInBtn" class="profile-main-btn profile-main-btn--ghost" type="button">
@@ -304,18 +258,9 @@
           </button>
 
           <div class="rewards-mini-grid">
-            <div>
-              <strong id="rewardModules">0</strong>
-              <span>Modules Complete</span>
-            </div>
-            <div>
-              <strong id="rewardCultures">0</strong>
-              <span>Culture Paths</span>
-            </div>
-            <div>
-              <strong id="rewardClaims">0</strong>
-              <span>XRPL-Ready Records</span>
-            </div>
+            <div><strong id="rewardModules">0</strong><span>Modules Complete</span></div>
+            <div><strong id="rewardCultures">0</strong><span>Culture Paths</span></div>
+            <div><strong id="rewardClaims">0</strong><span>XRPL-Ready Records</span></div>
           </div>
 
           <div class="rewards-section-title">Badges</div>
@@ -329,7 +274,6 @@
           </div>
         </section>
 
-        <!-- ACCESS / REALMS -->
         <section class="profile-card" id="access">
           <div class="profile-card-head">
             <span class="profile-card-icon">✦</span>
@@ -354,7 +298,6 @@
           </p>
         </section>
 
-        <!-- EDIT PROFILE -->
         <section class="profile-card" id="edit">
           <div class="profile-card-head">
             <span class="profile-card-icon">✎</span>
@@ -388,13 +331,11 @@
             <textarea id="editBio" rows="4" maxlength="500" placeholder="Tell the story of your learning path..."></textarea>
 
             <button class="profile-main-btn" type="submit">
-              <i class="fas fa-floppy-disk"></i>
-              Save Profile
+              <i class="fas fa-floppy-disk"></i> Save Profile
             </button>
           </form>
         </section>
 
-        <!-- LEARNING PATH -->
         <section class="profile-card" id="path">
           <div class="profile-card-head">
             <span class="profile-card-icon">🌌</span>
@@ -406,11 +347,7 @@
 
           <div class="profile-filter-row">
             <input id="lessonSearch" type="search" placeholder="Search lessons..." />
-
-            <select id="lessonCultureFilter">
-              <option value="all">All Cultures</option>
-            </select>
-
+            <select id="lessonCultureFilter"><option value="all">All Cultures</option></select>
             <select id="lessonStatusFilter">
               <option value="all">All Status</option>
               <option value="completed">Completed</option>
@@ -423,7 +360,6 @@
           </div>
         </section>
 
-        <!-- ECOSYSTEM -->
         <section class="profile-card" id="ecosystem">
           <div class="profile-card-head">
             <span class="profile-card-icon">⬡</span>
@@ -436,7 +372,6 @@
           <div id="ecosystemGrid" class="profile-ecosystem-grid"></div>
         </section>
 
-        <!-- ADMIN PANEL -->
         <section class="profile-card profile-admin-panel is-hidden" id="adminPanel">
           <div class="profile-card-head">
             <span class="profile-card-icon">👑</span>
@@ -460,32 +395,20 @@
             </a>
           </div>
         </section>
-
       </section>
     </div>
   </main>
 
   <script>
-    /*
-      Small compatibility helper:
-      profile.js updates #statProgress, but some CSS layouts may also show #statProgressMirror.
-    */
     document.addEventListener("DOMContentLoaded", function () {
       var mirror = document.getElementById("statProgressMirror");
       var main = document.getElementById("statProgress");
-
       if (!mirror || !main) return;
-
-      var sync = function () {
-        mirror.textContent = main.textContent || "0%";
-      };
-
+      var sync = function () { mirror.textContent = main.textContent || "0%"; };
       sync();
-
       var obs = new MutationObserver(sync);
       obs.observe(main, { childList: true, characterData: true, subtree: true });
     });
   </script>
-
 </body>
 </html>
