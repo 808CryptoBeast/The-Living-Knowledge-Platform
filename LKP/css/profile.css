@@ -437,7 +437,11 @@ img {
   color: var(--profile-red);
 }
 
-/* Layout */
+/* ─── LAYOUT ─────────────────────────────────────────────────────────────────
+   FIX: Layout is always the same two-column structure.
+   The auth card hides in place when signed in — it does NOT collapse the column,
+   which was causing the "snap" reflow after Supabase resolved the session.
+──────────────────────────────────────────────────────────────────────────── */
 
 .profile-layout {
   position: relative;
@@ -448,6 +452,12 @@ img {
   align-items: start;
 }
 
+/* When signed in, hide the auth card WITHOUT removing its column */
+body.profile-is-signed-in .profile-auth-card {
+  display: none !important;
+}
+
+/* When signed in and auth card is gone, let content fill full width */
 body.profile-is-signed-in .profile-layout {
   grid-template-columns: 1fr;
 }
@@ -1407,8 +1417,15 @@ body.profile-is-signed-in #path {
 }
 
 @media (max-width: 1120px) {
-  .profile-layout,
-  body.profile-is-signed-in .profile-layout,
+  /* Auth panel collapses out first */
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  body.profile-is-signed-in .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
   body.profile-is-signed-in .profile-content,
   .profile-stage {
     grid-template-columns: 1fr;
