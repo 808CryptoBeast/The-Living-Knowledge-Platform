@@ -1,21 +1,28 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   THE LIVING KNOWLEDGE PLATFORM — Wayfinder Passport
+   THE LIVING KNOWLEDGE PLATFORM — WAYFINDER PASSPORT
    File: LKP/js/profile.js
 
-   Handles:
+   Includes:
    - Supabase auth/session
    - Profile loading/saving
    - Lesson progress
    - Mana/reward UI
-   - Time-of-day cosmic background
-   - Dark / light mode
+   - Dark/light mode
+   - Time-of-day background system: dawn/day/dusk/night
    - Three.js Knowledge Galaxy
-   - Sun core, realm orbits, realm nebulae, moons/mini-planets
-   - Hover tooltip, click-to-focus realm card, return-to-orbit controls
+   - Realm-specific nebula colors
+   - Distant galaxies, dust/gas, mini orbiting planets
+   - Click-to-focus realm preview
+   - Reset View / Center Sun / Open Realm chips
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
   'use strict';
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     SUPABASE CONFIG
+     Replace the anon key below if needed.
+  ═══════════════════════════════════════════════════════════════════════ */
 
   const SUPABASE_URL =
     window.LKP_SUPABASE_URL ||
@@ -23,16 +30,7 @@
 
   const SUPABASE_ANON_KEY =
     window.LKP_SUPABASE_ANON_KEY ||
-    'PASTE_YOUR_CORRECT_SUPABASE_ANON_KEY_HERE';
-
-  const PROFILE_CACHE_KEY = 'lkp_profile_v1';
-  const LEGACY_PROFILE_CACHE_KEY = 'piko_profile_v1';
-  const COMPLETED_KEY = 'cv_completed';
-  const MANA_KEY = 'cv_mana';
-
-  const THEME_KEY = 'lkp_profile_theme';
-  const BACKGROUND_VARIANT_KEY = 'lkp_profile_bg_variant';
-  const BACKGROUND_ROTATION_MS = 90000;
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtcmpkdnNxZGZ5YXF0endiYnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTE2MzYsImV4cCI6MjA5MTE2NzYzNn0.UKyvX02bG4cNhb7U2TK96t8XFREHYYwHJIKbPK06nqs';
 
   const isSupabaseConfigured =
     SUPABASE_URL &&
@@ -42,9 +40,29 @@
 
   let supabaseClient = null;
 
+  /* ═══════════════════════════════════════════════════════════════════════
+     STORAGE KEYS
+  ═══════════════════════════════════════════════════════════════════════ */
+
+  const PROFILE_CACHE_KEY = 'lkp_profile_v1';
+  const LEGACY_PROFILE_CACHE_KEY = 'piko_profile_v1';
+  const COMPLETED_KEY = 'cv_completed';
+  const MANA_KEY = 'cv_mana';
+  const THEME_KEY = 'lkp_profile_theme';
+  const BACKGROUND_VARIANT_KEY = 'lkp_profile_bg_variant';
+  const BACKGROUND_ROTATION_MS = 90000;
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     REALM DATA
+  ═══════════════════════════════════════════════════════════════════════ */
+
   const realmDescriptions = {
     lkp:
       'The Living Knowledge Platform turns lessons into constellations, using star maps, galaxies, rewards, and shared learning paths.',
+    lessons:
+      'Deep Lessons is the full living library where lessons, culture modules, and constellation paths are explored.',
+    admin:
+      'Admin Deck is the command layer for adding, editing, publishing, and managing lessons, galaxies, cultures, modules, and sources.',
     ikeverse:
       'Ikeverse is the living learning world for culture, history, ancestral knowledge, and deep systems of understanding.',
     digitalverse:
@@ -63,68 +81,108 @@
     {
       id: 'lkp',
       name: 'The Living Knowledge Platform',
+      shortName: 'LKP',
       desc: 'Main learning hub, lesson galaxy, culture registry, rewards, and Wayfinder Passport.',
       href: 'index.html',
-      color: '#f0c96a'
+      color: '#f0c96a',
+      secondaryColor: '#54c6ee',
+      paletteName: 'Gold / Cyan',
+      progressScope: 'lkp'
     },
     {
       id: 'lessons',
       name: 'Deep Lessons',
+      shortName: 'Lessons',
       desc: 'The full cultural lesson library and constellation learning path.',
       href: 'lessons.html',
-      color: '#54c6ee'
+      color: '#54c6ee',
+      secondaryColor: '#f0c96a',
+      paletteName: 'Cyan / Gold',
+      progressScope: 'lessons'
     },
     {
       id: 'admin',
       name: 'Admin Deck',
+      shortName: 'Admin',
       desc: 'Owner/admin controls for lessons, galaxies, cultures, modules, sources, and publishing.',
       href: 'admin.html',
       color: '#ffdf8a',
-      adminOnly: true
+      secondaryColor: '#8fa0ff',
+      paletteName: 'Command Gold / Violet',
+      adminOnly: true,
+      progressScope: 'admin'
     },
     {
       id: 'ikehub',
       name: 'IkeHub',
+      shortName: 'IkeHub',
       desc: 'The portal hub connecting every application and realm.',
       href: 'https://808cryptobeast.github.io/ikehub/',
-      color: '#54c6ee'
+      color: '#54c6ee',
+      secondaryColor: '#8fa0ff',
+      paletteName: 'Portal Cyan / Violet',
+      progressScope: 'ikehub'
     },
     {
       id: 'ikeverse',
       name: 'Ikeverse',
+      shortName: 'Ikeverse',
       desc: 'Ancestral knowledge, living cultures, and learning systems.',
       href: 'https://808cryptobeast.github.io/Ikeverse/',
-      color: '#3cb371'
+      color: '#3cb371',
+      secondaryColor: '#8fffc7',
+      paletteName: 'Emerald / Jade',
+      progressScope: 'ikeverse'
     },
     {
       id: 'digitalverse',
       name: 'Digitalverse',
+      shortName: 'Digital',
       desc: 'AI, blockchain, Web3, XR, smart systems, and future tech.',
       href: '#digitalverse',
-      color: '#8fa0ff'
+      color: '#8fa0ff',
+      secondaryColor: '#54c6ee',
+      paletteName: 'Violet / Neon Cyan',
+      progressScope: 'digitalverse'
     },
     {
       id: 'culturalverse',
       name: 'Culturalverse',
+      shortName: 'Culture',
       desc: 'Deep cultural study, cosmology, moʻolelo, and protocols.',
       href: 'https://808cryptobeast.github.io/culturalverse/',
-      color: '#d98545'
+      color: '#d98545',
+      secondaryColor: '#f0c96a',
+      paletteName: 'Amber / Rust',
+      progressScope: 'culturalverse'
     },
     {
       id: 'ikestar',
       name: 'IkeStar',
+      shortName: 'IkeStar',
       desc: 'Celestial knowledge, astronomy, navigation, and sky lore.',
       href: 'https://808cryptobeast.github.io/Ikestar/',
-      color: '#54c6ee'
+      color: '#54c6ee',
+      secondaryColor: '#ffffff',
+      paletteName: 'Star Blue / White',
+      progressScope: 'ikestar'
     },
     {
       id: 'pikoverse',
       name: 'Pikoverse',
+      shortName: 'Pikoverse',
       desc: 'Wider project ecosystem, showcase, marketplace, and identity layer.',
       href: 'https://www.pikoverse.xyz',
-      color: '#f0c96a'
+      color: '#f0c96a',
+      secondaryColor: '#ff9f43',
+      paletteName: 'Gold / Orange',
+      progressScope: 'pikoverse'
     }
   ];
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     TIME-OF-DAY PALETTES
+  ═══════════════════════════════════════════════════════════════════════ */
 
   const backgroundPhasePalettes = {
     dawn: [
@@ -233,6 +291,10 @@
     ]
   };
 
+  /* ═══════════════════════════════════════════════════════════════════════
+     STATE
+  ═══════════════════════════════════════════════════════════════════════ */
+
   const state = {
     session: null,
     user: null,
@@ -265,19 +327,31 @@
       camera: null,
       renderer: null,
       controls: null,
+
       nodes: [],
+      distantGalaxies: [],
+      sunGroup: null,
       frameId: null,
       resizeObserver: null,
+
       raycaster: null,
       pointer: null,
+
+      activeNode: null,
       hoveredNode: null,
-      focusedNode: null,
-      targetCameraPosition: null,
-      targetControlTarget: null,
-      defaultCameraPosition: null,
-      defaultControlTarget: null
+      tooltipEl: null,
+      selectionEl: null,
+
+      defaultCameraPos: null,
+      defaultTarget: null,
+      focusCameraPos: null,
+      focusTarget: null
     }
   };
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     DOM / UTILITY HELPERS
+  ═══════════════════════════════════════════════════════════════════════ */
 
   function $(selector) {
     return document.querySelector(selector);
@@ -289,12 +363,12 @@
 
   function setText(selector, value) {
     const el = $(selector);
-    if (el) el.textContent = value;
+    if (el) el.textContent = value ?? '';
   }
 
   function setHTML(selector, value) {
     const el = $(selector);
-    if (el) el.innerHTML = value;
+    if (el) el.innerHTML = value ?? '';
   }
 
   function setValue(selector, value) {
@@ -425,16 +499,17 @@
     return url;
   }
 
+  function clamp(num, min, max) {
+    return Math.max(min, Math.min(max, num));
+  }
+
   function getThemeMeta() {
     return document.querySelector('meta[name="theme-color"]');
   }
 
-  function syncThemeToggleLabel() {
-    const label = $('#profileThemeToggleLabel');
-    if (!label) return;
-
-    label.textContent = state.visuals.theme === 'dark' ? 'Light Mode' : 'Dark Mode';
-  }
+  /* ═══════════════════════════════════════════════════════════════════════
+     THEME + TIME-OF-DAY SYSTEM
+  ═══════════════════════════════════════════════════════════════════════ */
 
   function resolveTimePhase(date = new Date()) {
     const hour = date.getHours();
@@ -448,9 +523,22 @@
 
   function getBackgroundPalette(phase, variantIndex) {
     const set = backgroundPhasePalettes[phase] || backgroundPhasePalettes.night;
-    const safeIndex = Math.abs(variantIndex) % set.length;
+    const safeIndex = Math.abs(variantIndex || 0) % set.length;
 
     return set[safeIndex];
+  }
+
+  function syncThemeToggleLabel() {
+    const btn = $('#profileThemeToggle');
+    if (!btn) return;
+
+    if (state.visuals.theme === 'light') {
+      btn.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+      btn.setAttribute('aria-label', 'Switch to dark mode');
+    } else {
+      btn.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+      btn.setAttribute('aria-label', 'Switch to light mode');
+    }
   }
 
   function applyVisualEnvironment(options = {}) {
@@ -459,18 +547,19 @@
 
     const nextTheme = options.theme || state.visuals.theme || 'dark';
     const nextPhase = options.phase || resolveTimePhase();
+
     const nextVariant = Number.isFinite(options.variant)
       ? options.variant
       : state.visuals.bgVariant || 0;
 
     const palette = getBackgroundPalette(nextPhase, nextVariant);
 
-    state.visuals.theme = nextTheme;
+    state.visuals.theme = nextTheme === 'light' ? 'light' : 'dark';
     state.visuals.timePhase = nextPhase;
     state.visuals.bgVariant = nextVariant;
 
-    body.classList.toggle('profile-theme-dark', nextTheme === 'dark');
-    body.classList.toggle('profile-theme-light', nextTheme === 'light');
+    body.classList.toggle('profile-theme-light', state.visuals.theme === 'light');
+    body.classList.toggle('profile-theme-dark', state.visuals.theme === 'dark');
     body.dataset.timePhase = nextPhase;
     body.dataset.bgVariant = String(nextVariant);
 
@@ -483,22 +572,37 @@
     body.style.setProperty('--profile-nebula-three', palette.glowThree);
 
     const themeMeta = getThemeMeta();
-
     if (themeMeta) {
       themeMeta.setAttribute(
         'content',
-        palette.themeColor || (nextTheme === 'light' ? '#dbe9ff' : '#070b14')
+        palette.themeColor || (state.visuals.theme === 'light' ? '#dbe9ff' : '#070b14')
       );
     }
 
     try {
-      localStorage.setItem(THEME_KEY, nextTheme);
+      localStorage.setItem(THEME_KEY, state.visuals.theme);
       localStorage.setItem(BACKGROUND_VARIANT_KEY, String(nextVariant));
     } catch (err) {
       console.warn('[Profile] Could not persist theme/background:', err.message);
     }
 
     syncThemeToggleLabel();
+  }
+
+  function initThemeSystem() {
+    let savedTheme = 'dark';
+
+    try {
+      savedTheme = localStorage.getItem(THEME_KEY) || state.visuals.theme || 'dark';
+    } catch {
+      savedTheme = 'dark';
+    }
+
+    applyVisualEnvironment({
+      theme: savedTheme,
+      phase: resolveTimePhase(),
+      variant: state.visuals.bgVariant
+    });
   }
 
   function cycleBackgroundVariant() {
@@ -516,11 +620,7 @@
   function startBackgroundClock() {
     clearInterval(state.visuals.bgTimer);
 
-    applyVisualEnvironment({
-      theme: localStorage.getItem(THEME_KEY) || state.visuals.theme || 'dark',
-      phase: resolveTimePhase(),
-      variant: state.visuals.bgVariant
-    });
+    initThemeSystem();
 
     state.visuals.bgTimer = setInterval(() => {
       const phase = resolveTimePhase();
@@ -537,6 +637,10 @@
       cycleBackgroundVariant();
     }, BACKGROUND_ROTATION_MS);
   }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     DATA NORMALIZATION
+  ═══════════════════════════════════════════════════════════════════════ */
 
   function getStaticContentData() {
     if (
@@ -662,6 +766,10 @@
     }
   }
 
+  /* ═══════════════════════════════════════════════════════════════════════
+     SUPABASE
+  ═══════════════════════════════════════════════════════════════════════ */
+
   async function waitForSupabaseLibrary() {
     if (!isSupabaseConfigured) return null;
     if (window.supabase) return window.supabase;
@@ -715,6 +823,7 @@
         renderLessonPath();
         renderDashboard();
         renderRewardsPanel();
+        updateGalaxySelectionMeta();
         return true;
       }
     } catch (err) {
@@ -722,188 +831,6 @@
     }
 
     return false;
-  }
-
-  async function init() {
-    document.body.classList.add('profile-loading');
-
-    state.completed = readJSON(COMPLETED_KEY, []);
-    state.mana = parseInt(localStorage.getItem(MANA_KEY) || '0', 10) || 0;
-
-    hydrateLessonsFromData(getStaticContentData());
-
-    bindUI();
-    startBackgroundClock();
-    populateCultureFilter();
-    renderProfileFromCache();
-    renderRewardsPanel();
-    renderEcosystem();
-    renderLessonPath();
-
-    await initProfileGalaxy();
-    await setupSupabaseClient();
-
-    if (!supabaseClient) {
-      document.body.classList.remove('profile-loading');
-      state.sessionReady = true;
-      renderDashboard();
-
-      setSessionState(
-        isSupabaseConfigured
-          ? 'Supabase library is not ready. Guest/local profile mode is active.'
-          : 'Supabase is not configured yet. Guest/local profile mode is active.',
-        'warning'
-      );
-      return;
-    }
-
-    await loadSession();
-
-    supabaseClient.auth.onAuthStateChange(async (_event, session) => {
-      state.session = session || null;
-      state.user = session?.user || null;
-
-      if (state.user) {
-        await loadOrCreateProfile();
-        await loadManagedContent();
-        await loadRemoteProgress();
-      } else {
-        state.profile = null;
-        state.isAdmin = false;
-        await loadManagedContent();
-      }
-
-      renderDashboard();
-      renderRewardsPanel();
-      renderEcosystem();
-      renderLessonPath();
-      rebuildProfileGalaxyForRole();
-    });
-  }
-
-  function bindUI() {
-    $('#profileThemeToggleBtn')?.addEventListener('click', () => {
-      const next = state.visuals.theme === 'dark' ? 'light' : 'dark';
-
-      applyVisualEnvironment({
-        theme: next,
-        phase: state.visuals.timePhase,
-        variant: state.visuals.bgVariant
-      });
-    });
-
-    $('#profileAuthForm')?.addEventListener('submit', async event => {
-      event.preventDefault();
-      await signIn();
-    });
-
-    $('#signUpBtn')?.addEventListener('click', async () => {
-      await signUp();
-    });
-
-    $('#profileSignOutBtn')?.addEventListener('click', async () => {
-      await signOut();
-    });
-
-    $('#profileSyncBtn')?.addEventListener('click', async () => {
-      await syncNow();
-    });
-
-    $('#profileEditForm')?.addEventListener('submit', async event => {
-      event.preventDefault();
-      await saveProfile();
-    });
-
-    $('#lessonSearch')?.addEventListener('input', event => {
-      state.filters.search = event.target.value.trim().toLowerCase();
-      renderLessonPath();
-    });
-
-    $('#lessonCultureFilter')?.addEventListener('change', event => {
-      state.filters.culture = event.target.value;
-      renderLessonPath();
-    });
-
-    $('#lessonStatusFilter')?.addEventListener('change', event => {
-      state.filters.status = event.target.value;
-      renderLessonPath();
-    });
-
-    $('#lessonPathList')?.addEventListener('click', async event => {
-      const btn = event.target.closest('[data-toggle-complete]');
-      if (!btn) return;
-
-      event.preventDefault();
-      await toggleLessonComplete(btn.dataset.toggleComplete);
-    });
-
-    $('#realmWheel')?.addEventListener('click', event => {
-      const btn = event.target.closest('[data-realm]');
-      if (!btn) return;
-
-      $all('#realmWheel [data-realm]').forEach(el => {
-        el.classList.toggle('is-active', el === btn);
-      });
-
-      const desc = $('#realmDescription');
-
-      if (desc) {
-        desc.textContent =
-          realmDescriptions[btn.dataset.realm] ||
-          'This realm is connected to your profile.';
-      }
-    });
-
-    $('#rewardCheckInBtn')?.addEventListener('click', () => {
-      if (!window.LKPRewards) {
-        showToast('Rewards engine is not loaded yet.');
-        return;
-      }
-
-      const before = window.LKPRewards.getProfileSummary?.() || {};
-
-      if (typeof window.LKPRewards.checkInToday === 'function') {
-        window.LKPRewards.checkInToday();
-      }
-
-      const after = window.LKPRewards.getProfileSummary?.({
-        recalculate: true
-      }) || {};
-
-      state.mana = after.mana || state.mana;
-      localStorage.setItem(MANA_KEY, String(state.mana));
-
-      renderDashboard();
-      renderRewardsPanel();
-
-      if (before.checkedInToday) {
-        showToast('You already checked in today.');
-      } else {
-        showToast('Daily check-in complete. +5 Mana.');
-      }
-    });
-
-    $('#profileGalaxyCloseBtn')?.addEventListener('click', clearGalaxyFocus);
-    $('#profileGalaxyResetBtn')?.addEventListener('click', clearGalaxyFocus);
-
-    document.addEventListener('keydown', event => {
-      if (event.key === 'Escape') {
-        clearGalaxyFocus();
-      }
-    });
-  }
-
-  function setSessionState(message, tone = '') {
-    const el = $('#profileSessionState');
-    if (!el) return;
-
-    el.classList.remove('is-good', 'is-warning', 'is-bad');
-
-    if (tone === 'good') el.classList.add('is-good');
-    if (tone === 'warning') el.classList.add('is-warning');
-    if (tone === 'bad') el.classList.add('is-bad');
-
-    el.textContent = message;
   }
 
   async function loadSession() {
@@ -924,6 +851,7 @@
       }
 
       state.sessionReady = true;
+
       renderDashboard();
       renderRewardsPanel();
       renderEcosystem();
@@ -1303,6 +1231,10 @@
         data.avatar_url = null;
       }
 
+      if (data && (!data.home_realm || data.home_realm === 'pikoverse')) {
+        data.home_realm = 'lkp';
+      }
+
       state.profile = data;
       state.isAdmin = ['admin', 'owner'].includes(data.role);
 
@@ -1362,6 +1294,7 @@
     renderDashboard();
     renderRewardsPanel();
     renderLessonPath();
+    updateGalaxySelectionMeta();
 
     showToast(
       shouldComplete
@@ -1369,6 +1302,10 @@
         : 'Lesson marked open.'
     );
   }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     RENDERING
+  ═══════════════════════════════════════════════════════════════════════ */
 
   function renderProfileFromCache() {
     const cached =
@@ -1746,11 +1683,152 @@
     }).join('');
   }
 
+  function setSessionState(message, tone = '') {
+    const el = $('#profileSessionState');
+    if (!el) return;
+
+    el.classList.remove('is-good', 'is-warning', 'is-bad');
+
+    if (tone === 'good') el.classList.add('is-good');
+    if (tone === 'warning') el.classList.add('is-warning');
+    if (tone === 'bad') el.classList.add('is-bad');
+
+    el.textContent = message;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     UI BINDING
+  ═══════════════════════════════════════════════════════════════════════ */
+
+  function bindUI() {
+    $('#profileThemeToggle')?.addEventListener('click', () => {
+      const next = state.visuals.theme === 'light' ? 'dark' : 'light';
+
+      applyVisualEnvironment({
+        theme: next,
+        phase: state.visuals.timePhase,
+        variant: state.visuals.bgVariant
+      });
+    });
+
+    $('#profileAuthForm')?.addEventListener('submit', async event => {
+      event.preventDefault();
+      await signIn();
+    });
+
+    $('#signUpBtn')?.addEventListener('click', async () => {
+      await signUp();
+    });
+
+    $('#profileSignOutBtn')?.addEventListener('click', async () => {
+      await signOut();
+    });
+
+    $('#profileSyncBtn')?.addEventListener('click', async () => {
+      await syncNow();
+    });
+
+    $('#profileEditForm')?.addEventListener('submit', async event => {
+      event.preventDefault();
+      await saveProfile();
+    });
+
+    $('#lessonSearch')?.addEventListener('input', event => {
+      state.filters.search = event.target.value.trim().toLowerCase();
+      renderLessonPath();
+    });
+
+    $('#lessonCultureFilter')?.addEventListener('change', event => {
+      state.filters.culture = event.target.value;
+      renderLessonPath();
+    });
+
+    $('#lessonStatusFilter')?.addEventListener('change', event => {
+      state.filters.status = event.target.value;
+      renderLessonPath();
+    });
+
+    $('#lessonPathList')?.addEventListener('click', async event => {
+      const btn = event.target.closest('[data-toggle-complete]');
+      if (!btn) return;
+
+      event.preventDefault();
+      await toggleLessonComplete(btn.dataset.toggleComplete);
+    });
+
+    $('#realmWheel')?.addEventListener('click', event => {
+      const btn = event.target.closest('[data-realm]');
+      if (!btn) return;
+
+      $all('#realmWheel [data-realm]').forEach(el => {
+        el.classList.toggle('is-active', el === btn);
+      });
+
+      const desc = $('#realmDescription');
+
+      if (desc) {
+        desc.textContent =
+          realmDescriptions[btn.dataset.realm] ||
+          'This realm is connected to your profile.';
+      }
+    });
+
+    $('#rewardCheckInBtn')?.addEventListener('click', () => {
+      if (!window.LKPRewards) {
+        showToast('Rewards engine is not loaded yet.');
+        return;
+      }
+
+      const before = window.LKPRewards.getProfileSummary?.() || {};
+
+      if (typeof window.LKPRewards.checkInToday === 'function') {
+        window.LKPRewards.checkInToday();
+      }
+
+      const after = window.LKPRewards.getProfileSummary?.({
+        recalculate: true
+      }) || {};
+
+      state.mana = after.mana || state.mana;
+      localStorage.setItem(MANA_KEY, String(state.mana));
+
+      renderDashboard();
+      renderRewardsPanel();
+      updateGalaxySelectionMeta();
+
+      if (before.checkedInToday) {
+        showToast('You already checked in today.');
+      } else {
+        showToast('Daily check-in complete. +5 Mana.');
+      }
+    });
+
+    $('#profileGalaxyResetBtn')?.addEventListener('click', clearGalaxySelection);
+    $('#profileGalaxyCenterBtn')?.addEventListener('click', centerGalaxySun);
+    $('#profileGalaxyOpenFocusedBtn')?.addEventListener('click', openActiveGalaxyNode);
+    $('#profileGalaxyCloseBtn')?.addEventListener('click', clearGalaxySelection);
+    $('#profileGalaxySelectionCenter')?.addEventListener('click', () => {
+      if (state.three.activeNode) focusGalaxyNode(state.three.activeNode, { keepPanel: true });
+    });
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        clearGalaxySelection();
+      }
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     THREE.JS GALAXY
+  ═══════════════════════════════════════════════════════════════════════ */
+
   async function initProfileGalaxy() {
     const canvas = $('#profileGalaxy');
     if (!canvas || state.three.initialized) return;
 
     try {
+      ensureGalaxyUI();
+
       const THREE = await import('https://esm.sh/three@0.160.0');
       const { OrbitControls } = await import(
         'https://esm.sh/three@0.160.0/examples/jsm/controls/OrbitControls.js'
@@ -1762,9 +1840,9 @@
       state.three.pointer = new THREE.Vector2();
 
       const scene = new THREE.Scene();
-      scene.fog = new THREE.FogExp2(0x01030a, 0.023);
+      scene.fog = new THREE.FogExp2(0x01030a, 0.015);
 
-      const camera = new THREE.PerspectiveCamera(58, 1, 0.1, 300);
+      const camera = new THREE.PerspectiveCamera(58, 1, 0.1, 320);
       camera.position.set(0, 13, 52);
 
       const renderer = new THREE.WebGLRenderer({
@@ -1780,34 +1858,44 @@
       const controls = new OrbitControls(camera, canvas);
       controls.enablePan = false;
       controls.enableDamping = true;
-      controls.dampingFactor = 0.075;
-      controls.rotateSpeed = 0.32;
-      controls.zoomSpeed = 0.52;
-      controls.minDistance = 24;
-      controls.maxDistance = 88;
+      controls.dampingFactor = 0.065;
+      controls.rotateSpeed = 0.42;
+      controls.zoomSpeed = 0.85;
+      controls.enableZoom = true;
+      controls.minDistance = 16;
+      controls.maxDistance = 92;
       controls.autoRotate = true;
-      controls.autoRotateSpeed = 0.23;
+      controls.autoRotateSpeed = 0.22;
+      controls.target.set(0, 0, 0);
 
-      scene.add(new THREE.AmbientLight(0xffffff, 0.42));
+      if ('zoomToCursor' in controls) {
+        controls.zoomToCursor = true;
+      }
 
-      const sunLight = new THREE.PointLight(0xffd36b, 3.2, 160);
+      scene.add(new THREE.AmbientLight(0xffffff, 0.46));
+
+      const sunLight = new THREE.PointLight(0xffd36b, 3.1, 190);
       sunLight.position.set(0, 0, 0);
       scene.add(sunLight);
 
-      const goldLight = new THREE.PointLight(0xffdd9a, 2.2, 150);
-      goldLight.position.set(0, 34, 24);
+      const goldLight = new THREE.PointLight(0xffdd9a, 2.3, 180);
+      goldLight.position.set(0, 32, 24);
       scene.add(goldLight);
 
-      const cyanLight = new THREE.PointLight(0x54c6ee, 1.5, 120);
-      cyanLight.position.set(-30, 14, -26);
+      const cyanLight = new THREE.PointLight(0x54c6ee, 1.7, 150);
+      cyanLight.position.set(-30, 12, -26);
       scene.add(cyanLight);
+
+      const violetLight = new THREE.PointLight(0x8fa0ff, 1.1, 120);
+      violetLight.position.set(26, -8, -20);
+      scene.add(violetLight);
 
       state.three.scene = scene;
       state.three.camera = camera;
       state.three.renderer = renderer;
       state.three.controls = controls;
-      state.three.defaultCameraPosition = camera.position.clone();
-      state.three.defaultControlTarget = controls.target.clone();
+      state.three.defaultCameraPos = camera.position.clone();
+      state.three.defaultTarget = controls.target.clone();
 
       buildIdentityGalaxy();
       resizeProfileGalaxy();
@@ -1822,126 +1910,230 @@
       }
 
       canvas.addEventListener('click', onProfileGalaxyClick);
+      canvas.addEventListener('dblclick', openActiveGalaxyNode);
       canvas.addEventListener('pointermove', onProfileGalaxyPointerMove);
       canvas.addEventListener('pointerleave', () => {
         state.three.hoveredNode = null;
         hideGalaxyTooltip();
       });
 
-      function animate() {
-        state.three.frameId = requestAnimationFrame(animate);
-        const t = performance.now() * 0.001;
+      canvas.addEventListener(
+        'wheel',
+        event => {
+          event.stopPropagation();
+        },
+        { passive: false }
+      );
 
-        state.three.nodes.forEach((node, index) => {
-          if (!node.mesh) return;
-
-          if (node.isSun) {
-            node.mesh.rotation.y += 0.0035;
-            node.mesh.rotation.z += 0.0012;
-
-            if (node.glow) {
-              node.glow.position.copy(node.mesh.position);
-              node.glow.material.opacity = 0.34 + Math.sin(t * 1.4) * 0.04;
-            }
-
-            if (node.extraObjects && node.extraObjects.length) {
-              node.extraObjects.forEach((obj, objIndex) => {
-                if (!obj) return;
-
-                obj.position.copy(node.mesh.position);
-
-                if (obj.type === 'Points') {
-                  obj.rotation.y += 0.0008 + objIndex * 0.0002;
-                  obj.rotation.x += 0.0003;
-                } else {
-                  obj.rotation.z += 0.001 + objIndex * 0.0004;
-                }
-              });
-            }
-
-            return;
-          }
-
-          const focusSlowdown = state.three.focusedNode ? 0.25 : 1;
-          const angle = node.baseAngle + t * node.orbitSpeed * focusSlowdown;
-
-          const pos = new THREE.Vector3(
-            Math.cos(angle) * node.orbitRadius,
-            0,
-            Math.sin(angle) * node.orbitRadius
-          );
-
-          pos.applyEuler(
-            new THREE.Euler(node.orbitTiltX || 0, 0, node.orbitTiltZ || 0)
-          );
-
-          pos.y += Math.sin(t * 1.15 + index * 0.7) * (node.verticalFloat || 0.12);
-
-          node.mesh.position.copy(pos);
-          node.mesh.rotation.y += node === state.three.focusedNode ? 0.009 : 0.005;
-          node.mesh.rotation.x = Math.sin(t + index * 0.41) * 0.07;
-
-          const selectedScale = node === state.three.focusedNode ? 1.32 : 1;
-          node.mesh.scale.lerp(new THREE.Vector3(selectedScale, selectedScale, selectedScale), 0.08);
-
-          if (node.glow) {
-            node.glow.position.copy(pos);
-            node.glow.material.opacity =
-              (node.glow.userData.baseOpacity || 0.24) +
-              Math.sin(t * 1.2 + index) * 0.05 +
-              (node === state.three.focusedNode ? 0.12 : 0);
-          }
-
-          if (node.nebula) {
-            node.nebula.position.copy(pos);
-            node.nebula.rotation.z += 0.0014;
-            node.nebula.rotation.y += 0.0007;
-
-            node.nebula.children.forEach((child, childIndex) => {
-              if (child.material && typeof child.material.opacity === 'number') {
-                child.material.opacity =
-                  (child.userData.baseOpacity || 0.12) +
-                  ((Math.sin(t * 0.9 + index + childIndex) + 1) * 0.04) +
-                  (node === state.three.focusedNode ? 0.03 : 0);
-              }
-
-              if (child.type === 'Points') {
-                child.rotation.y += 0.0009;
-                child.rotation.x += 0.0002;
-              } else {
-                child.rotation.z += 0.001;
-              }
-            });
-          }
-
-          if (node.satelliteSystem) {
-            node.satelliteSystem.position.copy(pos);
-          }
-
-          if (node.satellitePivots && node.satellitePivots.length) {
-            node.satellitePivots.forEach((pivot, pIndex) => {
-              pivot.rotation.y += pivot.userData.speed || (0.01 + pIndex * 0.002);
-              pivot.rotation.x += pivot.userData.wobble || 0.0006;
-            });
-          }
-
-          if (node.label) {
-            node.label.position.set(pos.x, pos.y + 1.45, pos.z);
-            const labelScale = node === state.three.focusedNode ? 5.2 : 4.4;
-            node.label.scale.lerp(new THREE.Vector3(labelScale, 1.15, 1), 0.08);
-          }
-        });
-
-        updateFocusedCamera();
-
-        controls.update();
-        renderer.render(scene, camera);
-      }
-
-      animate();
+      animateGalaxy();
     } catch (err) {
       console.warn('[Profile] Three.js profile galaxy failed to initialize:', err.message);
     }
+  }
+
+  function animateGalaxy() {
+    const THREE = state.three.THREE;
+    const scene = state.three.scene;
+    const camera = state.three.camera;
+    const controls = state.three.controls;
+    const renderer = state.three.renderer;
+
+    if (!THREE || !scene || !camera || !controls || !renderer) return;
+
+    state.three.frameId = requestAnimationFrame(animateGalaxy);
+
+    const t = performance.now() * 0.001;
+    const activeNode = state.three.activeNode;
+
+    state.three.nodes.forEach((node, index) => {
+      if (!node.mesh) return;
+
+      if (node.isSun) {
+        animateSun(node, t);
+        return;
+      }
+
+      animateRealmNode(node, index, t, activeNode);
+    });
+
+    if (state.three.distantGalaxies?.length) {
+      state.three.distantGalaxies.forEach((galaxy, index) => {
+        if (!galaxy.group) return;
+
+        galaxy.group.rotation.z += 0.00045 + index * 0.00005;
+        galaxy.group.rotation.y += 0.00022 + index * 0.00003;
+
+        if (galaxy.dust) {
+          galaxy.dust.rotation.z -= 0.0003;
+        }
+      });
+    }
+
+    updateGalaxyCamera();
+
+    controls.update();
+    renderer.render(scene, camera);
+  }
+
+  function animateSun(node, t) {
+    if (!node.mesh) return;
+
+    node.mesh.rotation.y += 0.0035;
+    node.mesh.rotation.z += 0.0011;
+
+    if (node.glow) {
+      node.glow.position.copy(node.mesh.position);
+      node.glow.material.opacity = 0.34 + Math.sin(t * 1.4) * 0.04;
+    }
+
+    if (node.extraObjects && node.extraObjects.length) {
+      node.extraObjects.forEach((obj, objIndex) => {
+        if (!obj) return;
+
+        obj.position.copy(node.mesh.position);
+
+        if (obj.type === 'Points') {
+          obj.rotation.y += 0.0008 + objIndex * 0.0002;
+          obj.rotation.x += 0.0003;
+        } else {
+          obj.rotation.z += 0.001 + objIndex * 0.0004;
+        }
+      });
+    }
+  }
+
+  function animateRealmNode(node, index, t, activeNode) {
+    const THREE = state.three.THREE;
+    const isFocused = activeNode === node;
+    const focusSlowdown = activeNode ? 0.34 : 1;
+
+    const angle = node.baseAngle + t * node.orbitSpeed * focusSlowdown;
+
+    const pos = new THREE.Vector3(
+      Math.cos(angle) * node.orbitRadius,
+      0,
+      Math.sin(angle) * node.orbitRadius
+    );
+
+    pos.applyEuler(
+      new THREE.Euler(node.orbitTiltX || 0, 0, node.orbitTiltZ || 0)
+    );
+
+    pos.y += node.baseY || 0;
+    pos.y += Math.sin(t * 1.15 + index * 0.7) * (node.verticalFloat || 0.14);
+
+    node.mesh.position.copy(pos);
+    node.mesh.rotation.y += isFocused ? 0.009 : 0.005;
+    node.mesh.rotation.x = Math.sin(t + index * 0.41) * 0.07;
+
+    const targetScale = isFocused ? 1.34 : 1;
+    node.mesh.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.08);
+
+    if (node.glow) {
+      node.glow.position.copy(pos);
+      node.glow.material.opacity =
+        (node.glow.userData.baseOpacity || 0.24) +
+        Math.sin(t * 1.2 + index) * 0.05 +
+        (isFocused ? 0.16 : 0);
+    }
+
+    if (node.nebula) {
+      node.nebula.position.copy(pos);
+      node.nebula.rotation.z += 0.0014;
+      node.nebula.rotation.y += 0.0007;
+
+      node.nebula.children.forEach((child, childIndex) => {
+        if (child.material && typeof child.material.opacity === 'number') {
+          child.material.opacity =
+            (child.userData.baseOpacity || 0.12) +
+            ((Math.sin(t * 0.9 + index + childIndex) + 1) * 0.04) +
+            (isFocused ? 0.04 : 0);
+        }
+
+        if (child.type === 'Points') {
+          child.rotation.y += 0.0009;
+          child.rotation.x += 0.0002;
+        } else {
+          child.rotation.z += 0.001;
+        }
+      });
+    }
+
+    if (node.gasCloud) {
+      node.gasCloud.position.copy(pos);
+      node.gasCloud.rotation.y += 0.001;
+      node.gasCloud.rotation.z -= 0.0007;
+    }
+
+    if (node.satelliteSystem) {
+      node.satelliteSystem.position.copy(pos);
+    }
+
+    if (node.satellitePivots?.length) {
+      node.satellitePivots.forEach((pivot, pivotIndex) => {
+        pivot.rotation.y += pivot.userData.speed || (0.01 + pivotIndex * 0.002);
+        pivot.rotation.x += pivot.userData.wobble || 0.0006;
+      });
+    }
+
+    if (node.label) {
+      node.label.position.set(pos.x, pos.y + 1.55, pos.z);
+      const labelScale = isFocused ? 5.2 : 4.4;
+      node.label.scale.lerp(new THREE.Vector3(labelScale, 1.15, 1), 0.08);
+    }
+  }
+
+  function updateGalaxyCamera() {
+    const THREE = state.three.THREE;
+    const camera = state.three.camera;
+    const controls = state.three.controls;
+
+    if (!THREE || !camera || !controls) return;
+
+    const activeNode = state.three.activeNode;
+
+    if (activeNode?.mesh) {
+      const nodePosition = new THREE.Vector3();
+      activeNode.mesh.getWorldPosition(nodePosition);
+
+      const direction = nodePosition.clone().normalize();
+
+      if (direction.lengthSq() < 0.0001) {
+        direction.set(0, 0.22, 1).normalize();
+      }
+
+      const cameraDistance = 8.2;
+      const lift = new THREE.Vector3(0, 2.6, 0);
+
+      state.three.focusTarget = nodePosition.clone();
+      state.three.focusCameraPos = nodePosition
+        .clone()
+        .add(direction.multiplyScalar(cameraDistance))
+        .add(lift);
+
+      controls.autoRotate = false;
+    } else {
+      controls.autoRotate = true;
+      state.three.focusTarget = state.three.defaultTarget?.clone() || new THREE.Vector3(0, 0, 0);
+      state.three.focusCameraPos =
+        state.three.defaultCameraPos?.clone() || new THREE.Vector3(0, 13, 52);
+    }
+
+    if (state.three.focusCameraPos) {
+      camera.position.lerp(state.three.focusCameraPos, activeNode ? 0.055 : 0.032);
+    }
+
+    if (state.three.focusTarget) {
+      controls.target.lerp(state.three.focusTarget, activeNode ? 0.075 : 0.046);
+    }
+  }
+
+  function ensureGalaxyUI() {
+    const holder = getGalaxyHolder();
+    if (!holder) return;
+
+    state.three.tooltipEl = $('#profileGalaxyTooltip');
+    state.three.selectionEl = $('#profileGalaxySelection');
   }
 
   function getGalaxyHolder() {
@@ -1961,52 +2153,60 @@
     };
   }
 
-  function setPointerFromEvent(event) {
-    const THREE = state.three.THREE;
-    const canvas = $('#profileGalaxy');
-    const pointer = state.three.pointer;
+  function resizeProfileGalaxy() {
+    const { renderer, camera } = state.three;
 
-    if (!THREE || !canvas || !pointer) return false;
+    if (!renderer || !camera) return;
+
+    const { width, height } = getGalaxySize();
+
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
+    renderer.setSize(width, height, false);
+  }
+
+  function raycastGalaxyNode(event) {
+    const THREE = state.three.THREE;
+    const camera = state.three.camera;
+    const raycaster = state.three.raycaster;
+
+    if (!THREE || !camera || !raycaster) return null;
+
+    const canvas = $('#profileGalaxy');
+    if (!canvas) return null;
 
     const rect = canvas.getBoundingClientRect();
+    const pointer = state.three.pointer || new THREE.Vector2();
 
     pointer.set(
       ((event.clientX - rect.left) / rect.width) * 2 - 1,
       -((event.clientY - rect.top) / rect.height) * 2 + 1
     );
 
-    return true;
-  }
-
-  function getRealmNodes() {
-    return state.three.nodes.filter(node => {
-      return node && node.mesh && node.item && node.mesh.userData?.href;
-    });
-  }
-
-  function getIntersectedRealmNode(event) {
-    const THREE = state.three.THREE;
-    const camera = state.three.camera;
-    const raycaster = state.three.raycaster;
-    const pointer = state.three.pointer;
-
-    if (!THREE || !camera || !raycaster || !pointer) return null;
-    if (!setPointerFromEvent(event)) return null;
-
+    state.three.pointer = pointer;
     raycaster.setFromCamera(pointer, camera);
 
-    const nodes = getRealmNodes();
+    const nodes = state.three.nodes.filter(node => {
+      return node.item && node.mesh && node.mesh.userData?.href;
+    });
+
     const meshes = nodes.map(node => node.mesh);
     const hits = raycaster.intersectObjects(meshes, false);
 
     if (!hits.length) return null;
 
-    const hitMesh = hits[0].object;
-    return nodes.find(node => node.mesh === hitMesh) || null;
+    const mesh = hits[0].object;
+    return nodes.find(node => node.mesh === mesh) || null;
   }
 
   function onProfileGalaxyPointerMove(event) {
-    const node = getIntersectedRealmNode(event);
+    const node = raycastGalaxyNode(event);
+    const tooltip = state.three.tooltipEl || $('#profileGalaxyTooltip');
+    const holder = getGalaxyHolder();
+
+    if (!tooltip || !holder) return;
 
     if (!node) {
       state.three.hoveredNode = null;
@@ -2015,25 +2215,6 @@
     }
 
     state.three.hoveredNode = node;
-    showGalaxyTooltip(node, event);
-  }
-
-  function onProfileGalaxyClick(event) {
-    const node = getIntersectedRealmNode(event);
-
-    if (!node) {
-      clearGalaxyFocus();
-      return;
-    }
-
-    focusRealmNode(node);
-  }
-
-  function showGalaxyTooltip(node, event) {
-    const tooltip = $('#profileGalaxyTooltip');
-    const holder = getGalaxyHolder();
-
-    if (!tooltip || !holder || !node?.item) return;
 
     const holderRect = holder.getBoundingClientRect();
 
@@ -2051,58 +2232,114 @@
   }
 
   function hideGalaxyTooltip() {
-    const tooltip = $('#profileGalaxyTooltip');
+    const tooltip = state.three.tooltipEl || $('#profileGalaxyTooltip');
     if (!tooltip) return;
 
     tooltip.classList.remove('is-visible');
     tooltip.setAttribute('aria-hidden', 'true');
   }
 
-  function focusRealmNode(node) {
-    const THREE = state.three.THREE;
-    const camera = state.three.camera;
-    const controls = state.three.controls;
+  function onProfileGalaxyClick(event) {
+    const node = raycastGalaxyNode(event);
 
-    if (!THREE || !camera || !controls || !node?.item) return;
-
-    state.three.focusedNode = node;
-    controls.autoRotate = false;
-    hideGalaxyTooltip();
-
-    const nodePosition = new THREE.Vector3();
-    node.mesh.getWorldPosition(nodePosition);
-
-    const direction = nodePosition.clone().normalize();
-
-    if (direction.lengthSq() < 0.0001) {
-      direction.set(0, 0.22, 1).normalize();
+    if (!node) {
+      clearGalaxySelection();
+      return;
     }
 
-    const cameraDistance = 7.8;
-    const cameraLift = new THREE.Vector3(0, 2.5, 0);
+    focusGalaxyNode(node);
+  }
 
-    state.three.targetControlTarget = nodePosition.clone();
-    state.three.targetCameraPosition = nodePosition
-      .clone()
-      .add(direction.multiplyScalar(cameraDistance))
-      .add(cameraLift);
+  function focusGalaxyNode(node, options = {}) {
+    if (!node?.item) return;
+
+    state.three.activeNode = node;
+    hideGalaxyTooltip();
 
     showGalaxySelection(node);
+
+    if (!options.keepPanel) {
+      showToast(`Focused ${node.item.name}. Use Enter Realm to open it.`);
+    }
+  }
+
+  function centerGalaxySun() {
+    state.three.activeNode = null;
+
+    const panel = state.three.selectionEl || $('#profileGalaxySelection');
+    if (panel) {
+      panel.classList.remove('is-visible');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+
+    showToast('Centered on the IkeStar core.');
+  }
+
+  function clearGalaxySelection() {
+    state.three.activeNode = null;
+
+    const panel = state.three.selectionEl || $('#profileGalaxySelection');
+
+    if (panel) {
+      panel.classList.remove('is-visible');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+  }
+
+  function openActiveGalaxyNode() {
+    const node = state.three.activeNode;
+
+    if (!node?.item?.href) {
+      showToast('Select a realm first.');
+      return;
+    }
+
+    const href = node.item.href;
+
+    if (href === '#digitalverse') {
+      showToast('Digitalverse preview is reserved for the next connected realm.');
+      return;
+    }
+
+    if (href.startsWith('http')) {
+      window.open(href, '_blank', 'noopener');
+    } else {
+      window.location.href = href;
+    }
   }
 
   function showGalaxySelection(node) {
-    const panel = $('#profileGalaxySelection');
+    const panel = state.three.selectionEl || $('#profileGalaxySelection');
     if (!panel || !node?.item) return;
 
-    setText('#profileGalaxySelectionKicker', node.item.adminOnly ? 'Admin Realm' : 'Focused Realm');
+    const completedCount = state.completed.length || 0;
+    const totalLessons = state.lessons.length || 0;
+    const progress = totalLessons ? Math.round((completedCount / totalLessons) * 100) : 0;
+
+    setText(
+      '#profileGalaxySelectionKicker',
+      node.item.adminOnly ? 'Admin Realm' : `${node.item.paletteName || 'Realm Nebula'}`
+    );
+
     setText('#profileGalaxySelectionTitle', node.item.name);
     setText('#profileGalaxySelectionDesc', node.item.desc);
+
+    setHTML(
+      '#profileGalaxySelectionMeta',
+      `
+        <strong>${escapeHTML(node.item.shortName || node.item.name)}</strong>
+        <span>
+          ${escapeHTML(node.item.paletteName || 'Realm palette')} ·
+          ${completedCount}/${totalLessons} LKP lessons complete ·
+          ${progress}% current learning progress.
+        </span>
+      `
+    );
 
     const openLink = $('#profileGalaxySelectionOpen');
 
     if (openLink) {
       openLink.href = node.item.href || '#';
-      openLink.style.setProperty('--realm-color', node.item.color);
 
       if (node.item.href && node.item.href.startsWith('http')) {
         openLink.target = '_blank';
@@ -2113,75 +2350,14 @@
       }
     }
 
-    panel.style.borderColor = hexToRgba(node.item.color, 0.36);
+    panel.style.borderColor = hexToRgba(node.item.color, 0.42);
     panel.classList.add('is-visible');
     panel.setAttribute('aria-hidden', 'false');
   }
 
-  function clearGalaxyFocus() {
-    const controls = state.three.controls;
-
-    state.three.focusedNode = null;
-
-    if (controls) {
-      controls.autoRotate = true;
-    }
-
-    if (state.three.defaultCameraPosition) {
-      state.three.targetCameraPosition = state.three.defaultCameraPosition.clone();
-    }
-
-    if (state.three.defaultControlTarget) {
-      state.three.targetControlTarget = state.three.defaultControlTarget.clone();
-    }
-
-    const panel = $('#profileGalaxySelection');
-
-    if (panel) {
-      panel.classList.remove('is-visible');
-      panel.setAttribute('aria-hidden', 'true');
-    }
-  }
-
-  function updateFocusedCamera() {
-    const THREE = state.three.THREE;
-    const camera = state.three.camera;
-    const controls = state.three.controls;
-
-    if (!THREE || !camera || !controls) return;
-
-    if (state.three.focusedNode?.mesh) {
-      const nodePosition = new THREE.Vector3();
-      state.three.focusedNode.mesh.getWorldPosition(nodePosition);
-
-      const direction = nodePosition.clone().normalize();
-
-      if (direction.lengthSq() < 0.0001) {
-        direction.set(0, 0.22, 1).normalize();
-      }
-
-      state.three.targetControlTarget = nodePosition.clone();
-      state.three.targetCameraPosition = nodePosition
-        .clone()
-        .add(direction.multiplyScalar(7.8))
-        .add(new THREE.Vector3(0, 2.5, 0));
-    }
-
-    if (state.three.targetCameraPosition) {
-      camera.position.lerp(state.three.targetCameraPosition, 0.055);
-    }
-
-    if (state.three.targetControlTarget) {
-      controls.target.lerp(state.three.targetControlTarget, 0.055);
-
-      if (
-        !state.three.focusedNode &&
-        camera.position.distanceTo(state.three.targetCameraPosition) < 0.08 &&
-        controls.target.distanceTo(state.three.targetControlTarget) < 0.08
-      ) {
-        state.three.targetCameraPosition = null;
-        state.three.targetControlTarget = null;
-      }
+  function updateGalaxySelectionMeta() {
+    if (state.three.activeNode) {
+      showGalaxySelection(state.three.activeNode);
     }
   }
 
@@ -2206,23 +2382,14 @@
     if (!scene) return;
 
     hideGalaxyTooltip();
-
-    const panel = $('#profileGalaxySelection');
-    if (panel) {
-      panel.classList.remove('is-visible');
-      panel.setAttribute('aria-hidden', 'true');
-    }
-
-    state.three.focusedNode = null;
-    state.three.hoveredNode = null;
-    state.three.targetCameraPosition = null;
-    state.three.targetControlTarget = null;
+    clearGalaxySelection();
 
     state.three.nodes.forEach(node => {
       [
         node.mesh,
         node.glow,
         node.nebula,
+        node.gasCloud,
         node.label,
         node.line,
         node.orbitLine,
@@ -2245,6 +2412,10 @@
     });
 
     state.three.nodes = [];
+    state.three.distantGalaxies = [];
+    state.three.sunGroup = null;
+    state.three.activeNode = null;
+    state.three.hoveredNode = null;
 
     const removable = scene.children.filter(child => child.userData?.profileGalaxyGenerated);
 
@@ -2268,39 +2439,14 @@
 
     if (!THREE || !scene) return;
 
-    const bgCount = 1100;
-    const positions = new Float32Array(bgCount * 3);
-
-    for (let i = 0; i < bgCount; i++) {
-      const r = 34 + Math.random() * 78;
-      const theta = Math.random() * Math.PI * 2;
-      const phi = Math.acos(Math.random() * 2 - 1);
-
-      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      positions[i * 3 + 1] = r * Math.cos(phi) * 0.55;
-      positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
-    }
-
-    const bgGeo = new THREE.BufferGeometry();
-    bgGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-    const bg = new THREE.Points(
-      bgGeo,
-      new THREE.PointsMaterial({
-        size: 0.09,
-        color: 0xdbefff,
-        transparent: true,
-        opacity: 0.56,
-        depthWrite: false
-      })
-    );
-
-    bg.userData.profileGalaxyGenerated = true;
-    scene.add(bg);
+    addDustField();
+    addDistantGalaxies();
 
     const sun = makeSunCore();
     sun.group.userData.profileGalaxyGenerated = true;
     scene.add(sun.group);
+
+    state.three.sunGroup = sun.group;
 
     state.three.nodes.push({
       mesh: sun.group,
@@ -2311,21 +2457,24 @@
     });
 
     const items = ecosystemItems.filter(item => !item.adminOnly || state.isAdmin);
-    const baseRadius = state.isAdmin ? 10.8 : 9.2;
+    const baseRadius = state.isAdmin ? 12.4 : 10.8;
 
     items.forEach((item, index) => {
-      const color = new THREE.Color(item.color);
+      const primaryColor = item.color;
+      const secondaryColor = item.secondaryColor || item.color;
+      const color = new THREE.Color(primaryColor);
 
-      const orbitRadius = baseRadius + (index % 4) * 2.15;
+      const orbitRadius = baseRadius + (index % 4) * 2.05;
       const orbitTiltX = -0.34 + (index % 5) * 0.16;
       const orbitTiltZ = -0.22 + (index % 4) * 0.14;
-      const orbitSpeed = 0.10 + (index % 3) * 0.022;
+      const orbitSpeed = 0.082 + (index % 4) * 0.013;
       const baseAngle = -Math.PI / 2 + (Math.PI * 2 * index) / items.length;
+      const baseY = Math.sin(index * 1.7) * 0.55;
 
       const orbitLine = makeOrbitRing(
         orbitRadius,
-        item.color,
-        item.adminOnly ? 0.13 : 0.07,
+        primaryColor,
+        item.adminOnly ? 0.13 : 0.065,
         orbitTiltX,
         orbitTiltZ
       );
@@ -2334,15 +2483,15 @@
       scene.add(orbitLine);
 
       const mesh = new THREE.Mesh(
-        new THREE.SphereGeometry(item.adminOnly ? 0.62 : 0.48, 24, 24),
+        new THREE.SphereGeometry(item.adminOnly ? 0.74 : 0.56, 28, 28),
         new THREE.MeshPhysicalMaterial({
           color,
           emissive: color,
-          emissiveIntensity: item.adminOnly ? 0.95 : 0.58,
-          metalness: 0.07,
+          emissiveIntensity: item.adminOnly ? 1.0 : 0.68,
+          metalness: 0.08,
           roughness: 0.24,
           transparent: true,
-          opacity: 0.95
+          opacity: 0.96
         })
       );
 
@@ -2351,32 +2500,50 @@
       mesh.userData.name = item.name;
 
       const glow = makeGlowSprite(
-        item.color,
-        item.adminOnly ? 2.9 : 2.2,
-        item.adminOnly ? 0.34 : 0.22
+        primaryColor,
+        item.adminOnly ? 4.9 : 3.6,
+        item.adminOnly ? 0.42 : 0.28
       );
 
       glow.userData.profileGalaxyGenerated = true;
-      glow.userData.baseOpacity = item.adminOnly ? 0.34 : 0.22;
+      glow.userData.baseOpacity = item.adminOnly ? 0.42 : 0.28;
 
-      const nebula = makeNebulaCluster(
-        item.color,
-        item.adminOnly ? 3.2 : 2.55,
-        item.adminOnly ? 0.22 : 0.16
+      const nebula = makeRealmNebulaCluster(
+        primaryColor,
+        secondaryColor,
+        item.adminOnly ? 3.35 : 2.7,
+        item.adminOnly ? 0.25 : 0.18
       );
 
       nebula.userData.profileGalaxyGenerated = true;
 
-      const satellite = makeSatelliteSystem(item.color, item.adminOnly ? 2.2 : 1.7);
+      const gasCloud = makeGasCloud(
+        primaryColor,
+        secondaryColor,
+        item.adminOnly ? 3.4 : 2.7,
+        item.adminOnly ? 210 : 160,
+        item.adminOnly ? 0.28 : 0.20
+      );
+
+      gasCloud.userData.profileGalaxyGenerated = true;
+
+      const satellite = makeSatelliteSystem(
+        primaryColor,
+        secondaryColor,
+        item.adminOnly ? 2.15 : 1.75,
+        item.adminOnly ? 3 : 2
+      );
+
       satellite.group.userData.profileGalaxyGenerated = true;
 
-      const label = makeTextSprite(item.name, item.color);
+      const label = makeTextSprite(item.name, primaryColor);
       label.scale.set(4.4, 1, 1);
       label.userData.profileGalaxyGenerated = true;
 
       scene.add(mesh);
       scene.add(glow);
       scene.add(nebula);
+      scene.add(gasCloud);
       scene.add(satellite.group);
       scene.add(label);
 
@@ -2384,6 +2551,7 @@
         mesh,
         glow,
         nebula,
+        gasCloud,
         label,
         orbitLine,
         satelliteSystem: satellite.group,
@@ -2394,10 +2562,327 @@
         orbitTiltZ,
         orbitSpeed,
         baseAngle,
-        verticalFloat: 0.1 + (index % 2) * 0.04,
-        baseY: 0
+        baseY,
+        verticalFloat: 0.12 + (index % 2) * 0.05
       });
     });
+  }
+
+  function addDustField() {
+    const THREE = state.three.THREE;
+    const scene = state.three.scene;
+    if (!THREE || !scene) return;
+
+    const count = 1800;
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+
+    const palette = [
+      new THREE.Color('#dbefff'),
+      new THREE.Color('#f0c96a'),
+      new THREE.Color('#54c6ee'),
+      new THREE.Color('#8fa0ff')
+    ];
+
+    for (let i = 0; i < count; i++) {
+      const r = 24 + Math.random() * 92;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(Math.random() * 2 - 1);
+
+      positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+      positions[i * 3 + 1] = r * Math.cos(phi) * 0.55;
+      positions[i * 3 + 2] = r * Math.sin(phi) * Math.sin(theta);
+
+      const c = palette[Math.floor(Math.random() * palette.length)];
+      colors[i * 3] = c.r;
+      colors[i * 3 + 1] = c.g;
+      colors[i * 3 + 2] = c.b;
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const stars = new THREE.Points(
+      geo,
+      new THREE.PointsMaterial({
+        size: 0.105,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.62,
+        depthWrite: false
+      })
+    );
+
+    stars.userData.profileGalaxyGenerated = true;
+    scene.add(stars);
+  }
+
+  function addDistantGalaxies() {
+    const THREE = state.three.THREE;
+    const scene = state.three.scene;
+    if (!THREE || !scene) return;
+
+    state.three.distantGalaxies = [];
+
+    const distant = [
+      { pos: [-44, 18, -58], color: '#54c6ee', secondary: '#8fa0ff', scale: 5.8 },
+      { pos: [38, -14, -62], color: '#8fa0ff', secondary: '#54c6ee', scale: 6.2 },
+      { pos: [50, 20, -48], color: '#f0c96a', secondary: '#ff9f43', scale: 4.8 },
+      { pos: [-56, -20, -68], color: '#d98545', secondary: '#f0c96a', scale: 6.8 },
+      { pos: [0, 26, -80], color: '#54c6ee', secondary: '#ffffff', scale: 5.0 }
+    ];
+
+    distant.forEach((item, index) => {
+      const group = new THREE.Group();
+
+      const glow = makeGlowSprite(item.color, item.scale, 0.13);
+      glow.position.set(0, 0, 0);
+
+      const cloud = makeGasCloud(
+        item.color,
+        item.secondary,
+        item.scale * 0.72,
+        140,
+        0.11
+      );
+
+      const ring = makeOrbitRing(
+        item.scale * 0.58,
+        item.secondary,
+        0.08,
+        Math.PI / 4,
+        Math.PI / 10
+      );
+
+      ring.scale.set(1.7, 0.46, 1);
+
+      group.position.set(item.pos[0], item.pos[1], item.pos[2]);
+      group.rotation.z = Math.random() * Math.PI;
+      group.add(glow);
+      group.add(cloud);
+      group.add(ring);
+      group.userData.profileGalaxyGenerated = true;
+
+      scene.add(group);
+      state.three.distantGalaxies.push({
+        group,
+        dust: cloud,
+        index
+      });
+    });
+  }
+
+  function makeSunCore() {
+    const THREE = state.three.THREE;
+    const group = new THREE.Group();
+
+    const core = new THREE.Mesh(
+      new THREE.SphereGeometry(1.9, 34, 34),
+      new THREE.MeshPhysicalMaterial({
+        color: 0xffd36b,
+        emissive: 0xffc247,
+        emissiveIntensity: 1.35,
+        roughness: 0.18,
+        metalness: 0.04,
+        transparent: true,
+        opacity: 0.98
+      })
+    );
+
+    core.userData.profileGalaxyGenerated = true;
+
+    const outer = new THREE.Mesh(
+      new THREE.SphereGeometry(2.55, 30, 30),
+      new THREE.MeshBasicMaterial({
+        color: 0xffd36b,
+        transparent: true,
+        opacity: 0.09,
+        depthWrite: false
+      })
+    );
+
+    outer.userData.profileGalaxyGenerated = true;
+
+    const innerGlow = makeGlowSprite('#ffd76d', 7.2, 0.44);
+    innerGlow.userData.baseOpacity = 0.44;
+
+    const outerGlow = makeGlowSprite('#ffb347', 12.4, 0.23);
+    outerGlow.userData.baseOpacity = 0.23;
+
+    const coronaDust = makeGasCloud('#ffd76d', '#ffb347', 4.4, 310, 0.24);
+    const coronaDust2 = makeGasCloud('#ffb347', '#54c6ee', 5.4, 230, 0.14);
+    coronaDust2.rotation.x = Math.PI / 5;
+
+    const coronaRingA = makeOrbitRing(3.2, '#ffd76d', 0.13, Math.PI / 6, Math.PI / 8);
+    const coronaRingB = makeOrbitRing(4.2, '#ffb347', 0.09, -Math.PI / 5, Math.PI / 10);
+    const coronaRingC = makeOrbitRing(5.0, '#54c6ee', 0.06, Math.PI / 3.5, -Math.PI / 7);
+
+    group.add(core);
+    group.add(outer);
+    group.add(innerGlow);
+    group.add(outerGlow);
+    group.add(coronaDust);
+    group.add(coronaDust2);
+    group.add(coronaRingA);
+    group.add(coronaRingB);
+    group.add(coronaRingC);
+
+    group.userData.profileGalaxyGenerated = true;
+
+    return {
+      group,
+      primaryGlow: innerGlow,
+      extras: [outerGlow, coronaDust, coronaDust2, coronaRingA, coronaRingB, coronaRingC]
+    };
+  }
+
+  function makeRealmNebulaCluster(primaryColor, secondaryColor, scale, opacity) {
+    const THREE = state.three.THREE;
+    const group = new THREE.Group();
+
+    const layers = [
+      { color: primaryColor, x: -0.62, y: 0.18, z: 0.16, size: scale * 1.55, alpha: opacity * 0.85 },
+      { color: secondaryColor, x: 0.66, y: -0.12, z: -0.22, size: scale * 1.28, alpha: opacity * 0.72 },
+      { color: primaryColor, x: 0.12, y: 0.38, z: -0.18, size: scale * 1.02, alpha: opacity * 0.58 },
+      { color: secondaryColor, x: -0.20, y: -0.40, z: 0.10, size: scale * 0.92, alpha: opacity * 0.50 },
+      { color: '#ffffff', x: 0.0, y: 0.0, z: 0.0, size: scale * 0.52, alpha: opacity * 0.18 }
+    ];
+
+    layers.forEach(layer => {
+      const sprite = makeGlowSprite(layer.color, layer.size, layer.alpha);
+      sprite.position.set(layer.x, layer.y, layer.z);
+      sprite.userData.baseOpacity = layer.alpha;
+      group.add(sprite);
+    });
+
+    const dustA = makeGasCloud(primaryColor, secondaryColor, scale * 1.38, 170, opacity * 0.72);
+    dustA.userData.baseOpacity = opacity * 0.72;
+    group.add(dustA);
+
+    const dustB = makeGasCloud(secondaryColor, primaryColor, scale * 1.02, 130, opacity * 0.50);
+    dustB.rotation.x = Math.PI / 5;
+    dustB.userData.baseOpacity = opacity * 0.50;
+    group.add(dustB);
+
+    const ringA = makeOrbitRing(scale * 0.9, primaryColor, opacity * 0.22, Math.PI / 3, Math.PI / 9);
+    ringA.userData.baseOpacity = opacity * 0.22;
+    group.add(ringA);
+
+    const ringB = makeOrbitRing(scale * 1.15, secondaryColor, opacity * 0.17, Math.PI / 6, -Math.PI / 5);
+    ringB.userData.baseOpacity = opacity * 0.17;
+    group.add(ringB);
+
+    group.userData.profileGalaxyGenerated = true;
+
+    return group;
+  }
+
+  function makeGasCloud(primaryColor, secondaryColor, radius, count = 160, opacity = 0.18) {
+    const THREE = state.three.THREE;
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+
+    const c1 = new THREE.Color(primaryColor);
+    const c2 = new THREE.Color(secondaryColor || primaryColor);
+    const white = new THREE.Color('#ffffff');
+
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const spread = radius * (0.18 + Math.random() * 0.9);
+      const vertical = (Math.random() - 0.5) * radius * 0.56;
+      const wobble = 0.64 + Math.random() * 0.74;
+
+      positions[i * 3] = Math.cos(angle) * spread * wobble;
+      positions[i * 3 + 1] = vertical;
+      positions[i * 3 + 2] = Math.sin(angle) * spread;
+
+      const mix = Math.random();
+      const color = c1.clone().lerp(c2, mix).lerp(white, Math.random() * 0.12);
+
+      colors[i * 3] = color.r;
+      colors[i * 3 + 1] = color.g;
+      colors[i * 3 + 2] = color.b;
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const cloud = new THREE.Points(
+      geo,
+      new THREE.PointsMaterial({
+        size: Math.max(0.05, radius * 0.034),
+        vertexColors: true,
+        transparent: true,
+        opacity,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+      })
+    );
+
+    cloud.userData.profileGalaxyGenerated = true;
+    cloud.userData.baseOpacity = opacity;
+
+    return cloud;
+  }
+
+  function makeSatelliteSystem(primaryColor, secondaryColor, radius = 1.8, moonCount = 2) {
+    const THREE = state.three.THREE;
+    const group = new THREE.Group();
+    const pivots = [];
+
+    for (let i = 0; i < moonCount; i++) {
+      const orbitRadius = radius * (0.62 + i * 0.34);
+      const orbitTiltX = (Math.PI / 10) * (i % 2 === 0 ? 1 : -1);
+      const orbitTiltZ = (Math.PI / 8) * (i % 3 === 0 ? -1 : 1);
+      const useSecondary = i % 2 === 1;
+      const moonColor = useSecondary ? secondaryColor : primaryColor;
+
+      const orbitRing = makeOrbitRing(
+        orbitRadius,
+        moonColor,
+        0.16,
+        orbitTiltX,
+        orbitTiltZ
+      );
+
+      group.add(orbitRing);
+
+      const pivot = new THREE.Object3D();
+      pivot.rotation.x = orbitTiltX;
+      pivot.rotation.z = orbitTiltZ;
+      pivot.userData.speed = 0.008 + i * 0.0028;
+      pivot.userData.wobble = 0.0004 + i * 0.0002;
+
+      const moonSize = 0.08 + i * 0.036;
+
+      const moon = new THREE.Mesh(
+        new THREE.SphereGeometry(moonSize, 14, 14),
+        new THREE.MeshPhysicalMaterial({
+          color: new THREE.Color(moonColor).offsetHSL(0.03 * i, 0.04, 0.08),
+          emissive: new THREE.Color(moonColor),
+          emissiveIntensity: 0.30 + i * 0.07,
+          roughness: 0.35,
+          metalness: 0.06
+        })
+      );
+
+      moon.position.set(orbitRadius, 0, 0);
+      moon.userData.profileGalaxyGenerated = true;
+
+      const moonGlow = makeGlowSprite(moonColor, 0.58 + i * 0.22, 0.14 + i * 0.03);
+      moonGlow.position.copy(moon.position);
+
+      pivot.add(moon);
+      pivot.add(moonGlow);
+      group.add(pivot);
+      pivots.push(pivot);
+    }
+
+    group.userData.profileGalaxyGenerated = true;
+
+    return { group, pivots };
   }
 
   function makeOrbitRing(radius, color, opacity, tiltX = 0, tiltZ = 0) {
@@ -2426,205 +2911,12 @@
     return line;
   }
 
-  function makeDustCloud(color, radius, count = 140, opacity = 0.16) {
-    const THREE = state.three.THREE;
-    const positions = new Float32Array(count * 3);
-
-    for (let i = 0; i < count; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const spread = radius * (0.2 + Math.random() * 0.9);
-      const y = (Math.random() - 0.5) * radius * 0.55;
-      const wobble = 0.75 + Math.random() * 0.6;
-
-      positions[i * 3] = Math.cos(angle) * spread * wobble;
-      positions[i * 3 + 1] = y;
-      positions[i * 3 + 2] = Math.sin(angle) * spread;
-    }
-
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-
-    const dust = new THREE.Points(
-      geo,
-      new THREE.PointsMaterial({
-        color: new THREE.Color(color),
-        size: Math.max(0.045, radius * 0.03),
-        transparent: true,
-        opacity,
-        depthWrite: false,
-        blending: THREE.AdditiveBlending
-      })
-    );
-
-    dust.userData.profileGalaxyGenerated = true;
-    dust.userData.baseOpacity = opacity;
-
-    return dust;
-  }
-
-  function makeNebulaCluster(color, scale, opacity) {
-    const group = new state.three.THREE.Group();
-
-    const layers = [
-      { x: -0.55, y: 0.18, z: 0.16, size: scale * 1.5, alpha: opacity * 0.85 },
-      { x: 0.62, y: -0.12, z: -0.22, size: scale * 1.15, alpha: opacity * 0.72 },
-      { x: 0.12, y: 0.36, z: -0.18, size: scale * 0.95, alpha: opacity * 0.58 },
-      { x: -0.18, y: -0.38, z: 0.10, size: scale * 0.85, alpha: opacity * 0.50 }
-    ];
-
-    layers.forEach(layer => {
-      const sprite = makeGlowSprite(color, layer.size, layer.alpha);
-      sprite.position.set(layer.x, layer.y, layer.z);
-      sprite.userData.baseOpacity = layer.alpha;
-      group.add(sprite);
-    });
-
-    const dustA = makeDustCloud(color, scale * 1.2, 130, opacity * 0.65);
-    dustA.userData.baseOpacity = opacity * 0.65;
-    group.add(dustA);
-
-    const dustB = makeDustCloud(color, scale * 0.8, 90, opacity * 0.42);
-    dustB.rotation.x = Math.PI / 5;
-    dustB.userData.baseOpacity = opacity * 0.42;
-    group.add(dustB);
-
-    const ringA = makeOrbitRing(scale * 0.8, color, opacity * 0.22, Math.PI / 3, Math.PI / 9);
-    ringA.userData.baseOpacity = opacity * 0.22;
-    group.add(ringA);
-
-    const ringB = makeOrbitRing(scale * 1.05, color, opacity * 0.15, Math.PI / 6, -Math.PI / 5);
-    ringB.userData.baseOpacity = opacity * 0.15;
-    group.add(ringB);
-
-    group.userData.profileGalaxyGenerated = true;
-
-    return group;
-  }
-
-  function makeSatelliteSystem(color, radius = 1.8) {
-    const THREE = state.three.THREE;
-    const group = new THREE.Group();
-    const pivots = [];
-    const moonCount = 2 + Math.floor(Math.random() * 2);
-
-    for (let i = 0; i < moonCount; i++) {
-      const orbitRadius = radius * (0.62 + i * 0.34);
-      const orbitTiltX = (Math.PI / 10) * (i % 2 === 0 ? 1 : -1);
-      const orbitTiltZ = (Math.PI / 8) * (i % 3 === 0 ? -1 : 1);
-
-      const orbitRing = makeOrbitRing(
-        orbitRadius,
-        color,
-        0.16,
-        orbitTiltX,
-        orbitTiltZ
-      );
-
-      group.add(orbitRing);
-
-      const pivot = new THREE.Object3D();
-      pivot.rotation.x = orbitTiltX;
-      pivot.rotation.z = orbitTiltZ;
-      pivot.userData.speed = 0.008 + i * 0.0025;
-      pivot.userData.wobble = 0.0004 + i * 0.0002;
-
-      const moonSize = 0.08 + i * 0.035;
-
-      const moon = new THREE.Mesh(
-        new THREE.SphereGeometry(moonSize, 14, 14),
-        new THREE.MeshPhysicalMaterial({
-          color: new THREE.Color(color).offsetHSL(0.03 * i, 0.03, 0.08),
-          emissive: new THREE.Color(color),
-          emissiveIntensity: 0.28 + i * 0.06,
-          roughness: 0.35,
-          metalness: 0.06
-        })
-      );
-
-      moon.position.set(orbitRadius, 0, 0);
-      moon.userData.profileGalaxyGenerated = true;
-
-      const moonGlow = makeGlowSprite(color, 0.55 + i * 0.22, 0.12 + i * 0.03);
-      moonGlow.position.copy(moon.position);
-
-      pivot.add(moon);
-      pivot.add(moonGlow);
-      group.add(pivot);
-      pivots.push(pivot);
-    }
-
-    group.userData.profileGalaxyGenerated = true;
-
-    return { group, pivots };
-  }
-
-  function makeSunCore() {
-    const THREE = state.three.THREE;
-    const group = new THREE.Group();
-
-    const core = new THREE.Mesh(
-      new THREE.SphereGeometry(1.9, 30, 30),
-      new THREE.MeshPhysicalMaterial({
-        color: 0xffd36b,
-        emissive: 0xffc247,
-        emissiveIntensity: 1.25,
-        roughness: 0.18,
-        metalness: 0.04,
-        transparent: true,
-        opacity: 0.98
-      })
-    );
-
-    core.userData.profileGalaxyGenerated = true;
-
-    const outer = new THREE.Mesh(
-      new THREE.SphereGeometry(2.45, 26, 26),
-      new THREE.MeshBasicMaterial({
-        color: 0xffd36b,
-        transparent: true,
-        opacity: 0.08
-      })
-    );
-
-    outer.userData.profileGalaxyGenerated = true;
-
-    const innerGlow = makeGlowSprite('#ffd76d', 6.5, 0.44);
-    innerGlow.userData.baseOpacity = 0.44;
-
-    const outerGlow = makeGlowSprite('#ffb347', 10.5, 0.22);
-    outerGlow.userData.baseOpacity = 0.22;
-
-    const coronaDust = makeDustCloud('#ffd76d', 3.6, 220, 0.22);
-    const coronaDust2 = makeDustCloud('#ffb347', 4.4, 170, 0.14);
-    coronaDust2.rotation.x = Math.PI / 5;
-
-    const coronaRingA = makeOrbitRing(3.0, '#ffd76d', 0.12, Math.PI / 6, Math.PI / 8);
-    const coronaRingB = makeOrbitRing(3.8, '#ffb347', 0.08, -Math.PI / 5, Math.PI / 10);
-
-    group.add(core);
-    group.add(outer);
-    group.add(innerGlow);
-    group.add(outerGlow);
-    group.add(coronaDust);
-    group.add(coronaDust2);
-    group.add(coronaRingA);
-    group.add(coronaRingB);
-
-    group.userData.profileGalaxyGenerated = true;
-
-    return {
-      group,
-      primaryGlow: innerGlow,
-      extras: [outerGlow, coronaDust, coronaDust2, coronaRingA, coronaRingB]
-    };
-  }
-
   function makeGlowSprite(color, size, opacity) {
     const THREE = state.three.THREE;
 
     const c = document.createElement('canvas');
-    c.width = 96;
-    c.height = 96;
+    c.width = 128;
+    c.height = 128;
 
     const ctx = c.getContext('2d');
     const col = new THREE.Color(color);
@@ -2633,13 +2925,14 @@
     const g = Math.round(col.g * 255);
     const b = Math.round(col.b * 255);
 
-    const grd = ctx.createRadialGradient(48, 48, 0, 48, 48, 48);
-    grd.addColorStop(0, `rgba(${r},${g},${b},0.88)`);
-    grd.addColorStop(0.45, `rgba(${r},${g},${b},0.22)`);
+    const grd = ctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+    grd.addColorStop(0, `rgba(${r},${g},${b},0.95)`);
+    grd.addColorStop(0.28, `rgba(${r},${g},${b},0.34)`);
+    grd.addColorStop(0.62, `rgba(${r},${g},${b},0.10)`);
     grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
 
     ctx.fillStyle = grd;
-    ctx.fillRect(0, 0, 96, 96);
+    ctx.fillRect(0, 0, 128, 128);
 
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
@@ -2695,18 +2988,66 @@
     return sprite;
   }
 
-  function resizeProfileGalaxy() {
-    const { renderer, camera } = state.three;
+  /* ═══════════════════════════════════════════════════════════════════════
+     INIT
+  ═══════════════════════════════════════════════════════════════════════ */
 
-    if (!renderer || !camera) return;
+  async function init() {
+    document.body.classList.add('profile-loading');
 
-    const { width, height } = getGalaxySize();
+    state.completed = readJSON(COMPLETED_KEY, []);
+    state.mana = parseInt(localStorage.getItem(MANA_KEY) || '0', 10) || 0;
 
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
+    startBackgroundClock();
+    hydrateLessonsFromData(getStaticContentData());
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
-    renderer.setSize(width, height, false);
+    bindUI();
+    populateCultureFilter();
+    renderProfileFromCache();
+    renderRewardsPanel();
+    renderEcosystem();
+    renderLessonPath();
+
+    await initProfileGalaxy();
+    await setupSupabaseClient();
+
+    if (!supabaseClient) {
+      document.body.classList.remove('profile-loading');
+      state.sessionReady = true;
+      renderDashboard();
+
+      setSessionState(
+        isSupabaseConfigured
+          ? 'Supabase library is not ready. Guest/local profile mode is active.'
+          : 'Supabase is not configured yet. Guest/local profile mode is active.',
+        'warning'
+      );
+
+      return;
+    }
+
+    await loadSession();
+
+    supabaseClient.auth.onAuthStateChange(async (_event, session) => {
+      state.session = session || null;
+      state.user = session?.user || null;
+
+      if (state.user) {
+        await loadOrCreateProfile();
+        await loadManagedContent();
+        await loadRemoteProgress();
+      } else {
+        state.profile = null;
+        state.isAdmin = false;
+        await loadManagedContent();
+      }
+
+      renderDashboard();
+      renderRewardsPanel();
+      renderEcosystem();
+      renderLessonPath();
+      rebuildProfileGalaxyForRole();
+    });
   }
 
   document.addEventListener('DOMContentLoaded', init);

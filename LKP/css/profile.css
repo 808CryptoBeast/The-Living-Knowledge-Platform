@@ -1,6 +1,14 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    THE LIVING KNOWLEDGE PLATFORM — WAYFINDER PASSPORT
    File: LKP/css/profile.css
+
+   Includes:
+   - full passport/profile layout
+   - dark/light mode
+   - time-of-day visual system
+   - interactive Three.js Knowledge Galaxy container
+   - galaxy tooltip, realm preview, reset chips
+   - mobile responsive layout
 ═══════════════════════════════════════════════════════════════════════════ */
 
 :root {
@@ -46,21 +54,29 @@
     radial-gradient(circle at 86% 12%, rgba(240, 201, 106, 0.13), transparent 36%),
     radial-gradient(circle at 50% 105%, rgba(143, 160, 255, 0.10), transparent 36%),
     linear-gradient(180deg, #01030a 0%, #020711 52%, #01030a 100%);
+
   --profile-sky-gradient: var(--profile-page-backdrop);
+
   --profile-sky-image:
     radial-gradient(circle at 24% 28%, rgba(84, 198, 238, 0.12), transparent 24%),
     radial-gradient(circle at 78% 32%, rgba(143, 160, 255, 0.10), transparent 24%),
     radial-gradient(circle at 50% 112%, rgba(88, 118, 228, 0.10), transparent 28%);
+
   --profile-star-field:
     radial-gradient(circle at 15% 18%, rgba(255,255,255,0.92) 0 1px, transparent 1.7px),
     radial-gradient(circle at 32% 44%, rgba(255,255,255,0.78) 0 1px, transparent 1.7px),
     radial-gradient(circle at 74% 24%, rgba(255,255,255,0.72) 0 1.1px, transparent 1.8px),
     radial-gradient(circle at 58% 60%, rgba(255,255,255,0.44) 0 1px, transparent 1.8px),
     radial-gradient(circle at 80% 74%, rgba(255,255,255,0.34) 0 1px, transparent 1.7px);
+
   --profile-nebula-one: rgba(84, 198, 238, 0.30);
   --profile-nebula-two: rgba(240, 201, 106, 0.20);
   --profile-nebula-three: rgba(143, 160, 255, 0.14);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESET / BASE
+═══════════════════════════════════════════════════════════════════════════ */
 
 *,
 *::before,
@@ -88,24 +104,43 @@ body {
 body.profile-page {
   min-height: 100vh;
   background: var(--profile-page-backdrop);
-  transition: background 0.8s ease, color 0.3s ease;
+  transition:
+    background 0.8s ease,
+    color 0.3s ease;
+}
+
+body.profile-theme-dark {
+  color-scheme: dark;
 }
 
 body.profile-theme-light {
-  --profile-bg: #d7e7fb;
-  --profile-deep: #edf4ff;
-  --profile-card: rgba(255, 255, 255, 0.76);
-  --profile-card-strong: rgba(255, 255, 255, 0.88);
-  --profile-glass: rgba(239, 246, 255, 0.78);
-  --profile-border: rgba(22, 45, 74, 0.10);
-  --profile-border-soft: rgba(22, 45, 74, 0.08);
-  --profile-border-gold: rgba(185, 140, 29, 0.25);
-  --profile-border-cyan: rgba(67, 148, 202, 0.22);
-  --profile-text: rgba(14, 26, 44, 0.95);
-  --profile-muted: rgba(52, 77, 108, 0.80);
-  --profile-faint: rgba(69, 95, 128, 0.58);
-  --profile-shadow: 0 22px 70px rgba(34, 64, 104, 0.14);
-  --profile-shadow-soft: 0 16px 44px rgba(34, 64, 104, 0.12);
+  color-scheme: light;
+
+  --profile-bg: #e7edf6;
+  --profile-deep: #f4f8fc;
+  --profile-card: rgba(255, 255, 255, 0.82);
+  --profile-card-strong: rgba(255, 255, 255, 0.92);
+  --profile-glass: rgba(255, 255, 255, 0.72);
+
+  --profile-border: rgba(25, 52, 88, 0.10);
+  --profile-border-soft: rgba(25, 52, 88, 0.06);
+  --profile-border-gold: rgba(181, 132, 19, 0.18);
+  --profile-border-cyan: rgba(47, 144, 183, 0.18);
+
+  --profile-text: rgba(24, 40, 64, 0.95);
+  --profile-muted: rgba(67, 92, 121, 0.82);
+  --profile-faint: rgba(94, 112, 139, 0.56);
+
+  --profile-shadow: 0 22px 70px rgba(25, 43, 74, 0.14);
+  --profile-shadow-soft: 0 16px 44px rgba(25, 43, 74, 0.10);
+}
+
+body.profile-theme-light.profile-page {
+  background:
+    radial-gradient(circle at 14% 0%, rgba(84, 198, 238, 0.18), transparent 34%),
+    radial-gradient(circle at 86% 10%, rgba(240, 201, 106, 0.16), transparent 34%),
+    radial-gradient(circle at 50% 100%, rgba(143, 160, 255, 0.12), transparent 36%),
+    linear-gradient(180deg, #edf3fa 0%, #dce5f0 50%, #e8eef6 100%);
 }
 
 button,
@@ -142,7 +177,9 @@ img {
   display: none !important;
 }
 
-/* Background */
+/* ═══════════════════════════════════════════════════════════════════════════
+   BACKGROUND SYSTEM
+═══════════════════════════════════════════════════════════════════════════ */
 
 .profile-bg {
   position: fixed;
@@ -157,7 +194,10 @@ img {
 .profile-bg__stars {
   position: absolute;
   inset: 0;
-  transition: opacity 0.8s ease, background 0.8s ease, filter 0.8s ease;
+  transition:
+    opacity 0.8s ease,
+    background 0.8s ease,
+    filter 0.8s ease;
 }
 
 .profile-bg__sky {
@@ -178,14 +218,6 @@ img {
   opacity: 0.78;
 }
 
-body.profile-theme-light .profile-bg__image {
-  opacity: 0.72;
-}
-
-body.profile-theme-light .profile-bg__stars {
-  opacity: 0.34;
-}
-
 .profile-bg::after {
   content: "";
   position: absolute;
@@ -193,12 +225,6 @@ body.profile-theme-light .profile-bg__stars {
   background:
     linear-gradient(180deg, rgba(1, 3, 10, 0.16), rgba(1, 3, 10, 0.72)),
     radial-gradient(circle at center, transparent 0%, rgba(1, 3, 10, 0.36) 72%, rgba(1, 3, 10, 0.86) 100%);
-}
-
-body.profile-theme-light .profile-bg::after {
-  background:
-    linear-gradient(180deg, rgba(255,255,255,0.22), rgba(255,255,255,0.48)),
-    radial-gradient(circle at center, transparent 0%, rgba(220, 237, 255, 0.20) 70%, rgba(205, 226, 250, 0.48) 100%);
 }
 
 .profile-bg__nebula {
@@ -246,7 +272,30 @@ body.profile-theme-light .profile-bg::after {
   mask-image: radial-gradient(circle at center, black, transparent 72%);
 }
 
-/* Toast */
+body.profile-theme-light .profile-bg__image {
+  opacity: 0.72;
+}
+
+body.profile-theme-light .profile-bg__stars {
+  opacity: 0.34;
+}
+
+body.profile-theme-light .profile-bg::after {
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.10), rgba(233,240,248,0.48)),
+    radial-gradient(circle at center, transparent 0%, rgba(220,230,241,0.24) 70%, rgba(208,220,235,0.56) 100%);
+}
+
+body.profile-theme-light .profile-bg__grid {
+  opacity: 0.08;
+  background-image:
+    linear-gradient(rgba(44, 82, 122, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(44, 82, 122, 0.06) 1px, transparent 1px);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════════════════════════ */
 
 .profile-toast {
   position: fixed;
@@ -263,7 +312,9 @@ body.profile-theme-light .profile-bg::after {
   transform: translateY(16px);
   opacity: 0;
   pointer-events: none;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .profile-toast.is-visible {
@@ -271,7 +322,15 @@ body.profile-theme-light .profile-bg::after {
   opacity: 1;
 }
 
-/* Topbar */
+body.profile-theme-light .profile-toast {
+  background: rgba(255,255,255,0.92);
+  color: var(--profile-text);
+  border-color: rgba(181, 132, 19, 0.18);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════════════════════════════════════════ */
 
 .profile-topbar {
   position: sticky;
@@ -287,11 +346,6 @@ body.profile-theme-light .profile-bg::after {
   background: rgba(1, 3, 10, 0.86);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-}
-
-body.profile-theme-light .profile-topbar {
-  background: rgba(232, 242, 255, 0.76);
-  border-bottom-color: rgba(20, 48, 78, 0.10);
 }
 
 .profile-brand {
@@ -387,13 +441,6 @@ body.profile-theme-light .profile-topbar {
     color 0.18s ease;
 }
 
-body.profile-theme-light .profile-topbar__links a,
-body.profile-theme-light .profile-topbar__button {
-  background: rgba(255,255,255,0.64);
-  color: rgba(24, 43, 70, 0.90);
-  border-color: rgba(24, 43, 70, 0.10);
-}
-
 .profile-topbar__links a:hover,
 .profile-topbar__button:hover {
   transform: translateY(-1px);
@@ -402,17 +449,46 @@ body.profile-theme-light .profile-topbar__button {
   color: var(--profile-gold);
 }
 
+.profile-theme-toggle {
+  min-width: 120px;
+}
+
+body.profile-theme-light .profile-topbar {
+  background: rgba(232, 242, 255, 0.82);
+  border-bottom-color: rgba(20, 48, 78, 0.10);
+}
+
+body.profile-theme-light .profile-brand__logo-frame,
+body.profile-theme-light .profile-brand__sigil {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(181, 132, 19, 0.18);
+}
+
+body.profile-theme-light .profile-brand__text strong {
+  color: #8a6410;
+  text-shadow: none;
+}
+
+body.profile-theme-light .profile-brand__text small {
+  color: var(--profile-muted);
+}
+
+body.profile-theme-light .profile-topbar__links a,
+body.profile-theme-light .profile-topbar__button {
+  background: rgba(255,255,255,0.88);
+  color: #2f4f78;
+  border-color: rgba(45, 76, 112, 0.12);
+}
+
 body.profile-theme-light .profile-topbar__links a:hover,
 body.profile-theme-light .profile-topbar__button:hover {
-  background: rgba(240, 201, 106, 0.16);
+  border-color: rgba(181, 132, 19, 0.20);
   color: #8a6410;
 }
 
-.profile-theme-toggle {
-  min-width: 126px;
-}
-
-/* Shell */
+/* ═══════════════════════════════════════════════════════════════════════════
+   SHELL / HERO
+═══════════════════════════════════════════════════════════════════════════ */
 
 .profile-mobile-dock {
   display: none;
@@ -485,8 +561,9 @@ body.profile-theme-light .profile-topbar__button:hover {
 }
 
 .profile-hero__mark {
-  width: 138px;
-  height: 138px;
+  width: 116px;
+  height: 116px;
+  flex: 0 0 116px;
   display: grid;
   place-items: center;
   overflow: hidden;
@@ -506,6 +583,43 @@ body.profile-theme-light .profile-topbar__button:hover {
   border-radius: 50%;
   object-fit: cover;
 }
+
+body.profile-theme-light .profile-hero {
+  background:
+    radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.08), transparent 38%),
+    radial-gradient(circle at 100% 100%, rgba(84, 198, 238, 0.08), transparent 42%),
+    rgba(255, 255, 255, 0.76);
+  border-color: rgba(45, 76, 112, 0.10);
+  box-shadow: 0 14px 34px rgba(45, 76, 112, 0.08);
+}
+
+body.profile-theme-light .profile-hero h1,
+body.profile-theme-light .profile-card-head h2,
+body.profile-theme-light .profile-galaxy-panel__overlay h2,
+body.profile-theme-light .profile-passport-copy h2 {
+  color: #8a6410;
+  text-shadow: none;
+}
+
+body.profile-theme-light .profile-hero p,
+body.profile-theme-light .profile-card-head p,
+body.profile-theme-light .profile-galaxy-panel__overlay p,
+body.profile-theme-light .profile-note,
+body.profile-theme-light .lesson-row small,
+body.profile-theme-light .profile-passport-copy p {
+  color: var(--profile-muted);
+}
+
+body.profile-theme-light .profile-eyebrow,
+body.profile-theme-light .profile-role-chip {
+  background: rgba(240, 201, 106, 0.10);
+  color: #8a6410;
+  border-color: rgba(181, 132, 19, 0.18);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   SESSION STATE
+═══════════════════════════════════════════════════════════════════════════ */
 
 .profile-session-state {
   position: relative;
@@ -539,16 +653,30 @@ body.profile-theme-light .profile-topbar__button:hover {
   color: var(--profile-red);
 }
 
-.profile-layout {
-  transition: opacity 0.28s ease;
+body.profile-theme-light .profile-session-state {
+  background: rgba(255, 255, 255, 0.76);
+  border-color: rgba(45, 76, 112, 0.10);
+  box-shadow: 0 14px 34px rgba(45, 76, 112, 0.08);
 }
 
-body.profile-loading .profile-layout {
-  opacity: 0;
-  pointer-events: none;
+body.profile-theme-light .profile-session-state.is-good {
+  color: #137247;
+  background: rgba(60,179,113,0.12);
 }
 
-/* Layout */
+body.profile-theme-light .profile-session-state.is-warning {
+  color: #8a6410;
+  background: rgba(240,201,106,0.14);
+}
+
+body.profile-theme-light .profile-session-state.is-bad {
+  color: #9e3434;
+  background: rgba(255,118,118,0.12);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════════════════════════════════ */
 
 .profile-layout {
   position: relative;
@@ -557,6 +685,12 @@ body.profile-loading .profile-layout {
   grid-template-columns: minmax(300px, 0.42fr) minmax(0, 1fr);
   gap: 18px;
   align-items: start;
+  transition: opacity 0.28s ease;
+}
+
+body.profile-loading .profile-layout {
+  opacity: 0;
+  pointer-events: none;
 }
 
 body.profile-is-signed-in .profile-auth-card {
@@ -601,7 +735,9 @@ body.profile-is-signed-in #path {
   grid-column: 1 / -1;
 }
 
-/* Cards */
+/* ═══════════════════════════════════════════════════════════════════════════
+   CARDS
+═══════════════════════════════════════════════════════════════════════════ */
 
 .profile-card,
 .profile-auth-card {
@@ -681,7 +817,30 @@ body.profile-is-signed-in #path {
   line-height: 1.52;
 }
 
-/* Forms */
+body.profile-theme-light .profile-card,
+body.profile-theme-light .profile-auth-card {
+  background:
+    radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.08), transparent 38%),
+    radial-gradient(circle at 100% 100%, rgba(84, 198, 238, 0.08), transparent 42%),
+    rgba(255, 255, 255, 0.76);
+  color: var(--profile-text);
+  border-color: rgba(45, 76, 112, 0.10);
+  box-shadow: 0 14px 34px rgba(45, 76, 112, 0.08);
+}
+
+body.profile-theme-light .profile-card-head h2,
+body.profile-theme-light .profile-card h2,
+body.profile-theme-light .profile-auth-card h2 {
+  color: #8a6410;
+}
+
+body.profile-theme-light strong {
+  color: #7f5d10;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   FORMS / BUTTONS
+═══════════════════════════════════════════════════════════════════════════ */
 
 .profile-auth-form,
 .profile-edit-form {
@@ -715,17 +874,6 @@ body.profile-is-signed-in #path {
   background: rgba(1, 3, 10, 0.56);
   color: var(--profile-text);
   box-shadow: inset 0 0 16px rgba(0,0,0,0.18);
-}
-
-body.profile-theme-light .profile-auth-form input,
-body.profile-theme-light .profile-edit-form input,
-body.profile-theme-light .profile-edit-form textarea,
-body.profile-theme-light .profile-edit-form select,
-body.profile-theme-light .profile-filter-row input,
-body.profile-theme-light .profile-filter-row select {
-  background: rgba(255,255,255,0.68);
-  border-color: rgba(24, 43, 70, 0.12);
-  color: rgba(14, 26, 44, 0.95);
 }
 
 .profile-edit-form textarea {
@@ -782,7 +930,58 @@ body.profile-theme-light .profile-filter-row select {
   line-height: 1.52;
 }
 
-/* Passport */
+body.profile-theme-light .profile-auth-form label,
+body.profile-theme-light .profile-edit-form label {
+  color: rgba(24, 43, 70, 0.90);
+}
+
+body.profile-theme-light input,
+body.profile-theme-light select,
+body.profile-theme-light textarea,
+body.profile-theme-light .profile-auth-form input,
+body.profile-theme-light .profile-edit-form input,
+body.profile-theme-light .profile-edit-form textarea,
+body.profile-theme-light .profile-edit-form select,
+body.profile-theme-light .profile-filter-row input,
+body.profile-theme-light .profile-filter-row select {
+  background: rgba(255, 255, 255, 0.88) !important;
+  color: rgba(24, 40, 64, 0.95) !important;
+  border: 1px solid rgba(45, 76, 112, 0.12) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.55),
+    0 8px 18px rgba(35, 64, 99, 0.05);
+}
+
+body.profile-theme-light input::placeholder,
+body.profile-theme-light textarea::placeholder {
+  color: rgba(92, 110, 138, 0.78);
+}
+
+body.profile-theme-light .profile-main-btn,
+body.profile-theme-light .lesson-row__complete,
+body.profile-theme-light .lesson-row__open,
+body.profile-theme-light .profile-realm-wheel button {
+  background: rgba(255,255,255,0.88) !important;
+  color: #2f4f78 !important;
+  border-color: rgba(45, 76, 112, 0.12) !important;
+}
+
+body.profile-theme-light .profile-main-btn:hover,
+body.profile-theme-light .lesson-row__complete:hover,
+body.profile-theme-light .lesson-row__open:hover,
+body.profile-theme-light .profile-realm-wheel button:hover {
+  border-color: rgba(181, 132, 19, 0.20) !important;
+  color: #8a6410 !important;
+}
+
+body.profile-theme-light .profile-note {
+  background: rgba(255,255,255,0.72);
+  border-color: rgba(45, 76, 112, 0.10);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PASSPORT CARD
+═══════════════════════════════════════════════════════════════════════════ */
 
 .profile-passport-card {
   gap: 0;
@@ -964,72 +1163,6 @@ body.profile-theme-light .profile-filter-row select {
   font-weight: 900;
 }
 
-/* Galaxy */
-
-.profile-galaxy-panel {
-  min-height: 460px;
-  padding: 0;
-  border-color: rgba(84, 198, 238, 0.16);
-}
-
-.profile-galaxy-panel__inner {
-  position: relative;
-  width: 100%;
-  min-height: 460px;
-  height: 100%;
-  overflow: hidden;
-  border-radius: var(--profile-radius-lg);
-  background:
-    radial-gradient(circle at 18% 18%, rgba(84, 198, 238, 0.12), transparent 32%),
-    radial-gradient(circle at 80% 18%, rgba(240, 201, 106, 0.10), transparent 36%),
-    radial-gradient(circle at 50% 100%, rgba(143, 160, 255, 0.10), transparent 42%),
-    rgba(2, 7, 20, 0.84);
-}
-
-.profile-galaxy-panel__overlay {
-  position: absolute;
-  left: 20px;
-  right: 20px;
-  top: 18px;
-  z-index: 3;
-  pointer-events: none;
-}
-
-.profile-galaxy-panel__overlay .profile-eyebrow {
-  margin-bottom: 8px;
-}
-
-.profile-galaxy-panel__overlay h2 {
-  margin: 0;
-  color: var(--profile-gold);
-  font-family: var(--profile-font-title);
-  font-size: clamp(2rem, 3vw, 3rem);
-  font-weight: 400;
-  line-height: 0.95;
-}
-
-.profile-galaxy-panel__overlay p {
-  max-width: 620px;
-  margin: 10px 0 0;
-  color: var(--profile-muted);
-  font-family: var(--profile-font-serif);
-  font-size: 1rem;
-  line-height: 1.45;
-}
-
-.profile-galaxy-canvas {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  display: block;
-  opacity: 0.86;
-  pointer-events: auto;
-}
-
-/* Stats and rewards */
-
 .profile-stat-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1063,6 +1196,340 @@ body.profile-theme-light .profile-filter-row select {
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
+
+body.profile-theme-light .profile-passport-card {
+  background:
+    radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.08), transparent 38%),
+    radial-gradient(circle at 100% 100%, rgba(84, 198, 238, 0.08), transparent 42%),
+    rgba(255, 255, 255, 0.76);
+}
+
+body.profile-theme-light .profile-passport-card__banner {
+  background:
+    radial-gradient(circle at 20% 0%, rgba(84, 198, 238, 0.12), transparent 34%),
+    radial-gradient(circle at 78% 42%, rgba(240, 201, 106, 0.12), transparent 42%),
+    linear-gradient(135deg, rgba(255,255,255,0.70), rgba(235,243,252,0.72));
+}
+
+body.profile-theme-light .profile-badge {
+  color: #8a6410;
+  background: rgba(240, 201, 106, 0.10);
+  border-color: rgba(181, 132, 19, 0.18);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   KNOWLEDGE GALAXY
+═══════════════════════════════════════════════════════════════════════════ */
+
+.profile-galaxy-panel {
+  min-height: 540px;
+  padding: 0;
+  overflow: hidden;
+  border-color: rgba(84, 198, 238, 0.16);
+}
+
+.profile-galaxy-panel__inner {
+  position: relative;
+  width: 100%;
+  min-height: 540px;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--profile-radius-lg);
+  background:
+    radial-gradient(circle at 18% 18%, rgba(84, 198, 238, 0.12), transparent 32%),
+    radial-gradient(circle at 80% 18%, rgba(240, 201, 106, 0.10), transparent 36%),
+    radial-gradient(circle at 50% 100%, rgba(143, 160, 255, 0.10), transparent 42%),
+    rgba(2, 7, 20, 0.84);
+}
+
+.profile-galaxy-panel__inner::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(84, 198, 238, 0.12), transparent 24%),
+    radial-gradient(circle at 70% 26%, rgba(240, 201, 106, 0.12), transparent 26%),
+    radial-gradient(circle at 50% 75%, rgba(143, 160, 255, 0.12), transparent 26%);
+  pointer-events: none;
+}
+
+.profile-galaxy-panel__overlay {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  top: 18px;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.profile-galaxy-panel__overlay .profile-eyebrow {
+  margin-bottom: 8px;
+}
+
+.profile-galaxy-panel__overlay h2 {
+  margin: 0;
+  color: var(--profile-gold);
+  font-family: var(--profile-font-title);
+  font-size: clamp(2rem, 3vw, 3rem);
+  font-weight: 400;
+  line-height: 0.95;
+}
+
+.profile-galaxy-panel__overlay p {
+  max-width: 620px;
+  margin: 10px 0 0;
+  color: var(--profile-muted);
+  font-family: var(--profile-font-serif);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.profile-galaxy-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0.96;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+}
+
+.profile-galaxy-canvas:active {
+  cursor: grabbing;
+}
+
+.profile-galaxy-chipbar {
+  position: absolute;
+  right: 14px;
+  top: 14px;
+  z-index: 6;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  max-width: min(520px, calc(100% - 28px));
+}
+
+.profile-galaxy-chipbar button {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 11px;
+  border-radius: 999px;
+  border: 1px solid rgba(84, 198, 238, 0.24);
+  background: rgba(2, 8, 22, 0.72);
+  color: var(--profile-cyan);
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(0,0,0,0.22);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.profile-galaxy-chipbar button:hover {
+  transform: translateY(-1px);
+  border-color: rgba(240, 201, 106, 0.28);
+  color: var(--profile-gold);
+}
+
+.profile-galaxy-tooltip {
+  position: absolute;
+  z-index: 7;
+  min-width: 140px;
+  max-width: 230px;
+  padding: 9px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(240, 201, 106, 0.20);
+  background: rgba(2, 6, 16, 0.92);
+  color: rgba(238, 248, 255, 0.96);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.35;
+  transform: translate(-50%, -118%);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.14s ease,
+    transform 0.14s ease;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.profile-galaxy-tooltip.is-visible {
+  opacity: 1;
+  transform: translate(-50%, -132%);
+}
+
+.profile-galaxy-selection {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 8;
+  width: min(360px, calc(100% - 32px));
+  padding: 16px;
+  border-radius: 22px;
+  border: 1px solid rgba(240, 201, 106, 0.22);
+  background:
+    radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.08), transparent 42%),
+    radial-gradient(circle at 100% 100%, rgba(84, 198, 238, 0.08), transparent 44%),
+    rgba(2, 6, 16, 0.82);
+  box-shadow: 0 22px 58px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  opacity: 0;
+  transform: translateY(12px);
+  pointer-events: none;
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease,
+    border-color 0.16s ease;
+}
+
+.profile-galaxy-selection.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.profile-galaxy-selection__eyebrow {
+  color: var(--profile-gold);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.profile-galaxy-selection h3 {
+  margin: 8px 32px 6px 0;
+  color: var(--profile-gold);
+  font-family: var(--profile-font-title);
+  font-size: 2rem;
+  line-height: 0.95;
+  font-weight: 400;
+}
+
+.profile-galaxy-selection p {
+  margin: 0 0 12px;
+  color: var(--profile-muted);
+  line-height: 1.45;
+  font-size: 13px;
+}
+
+.profile-galaxy-selection__meta {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 15px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.04);
+  color: var(--profile-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.profile-galaxy-selection__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.profile-galaxy-selection__actions button,
+.profile-galaxy-selection__actions a {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(84, 198, 238, 0.24);
+  background: rgba(84, 198, 238, 0.08);
+  color: var(--profile-cyan);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.profile-galaxy-selection__actions a {
+  border-color: rgba(240, 201, 106, 0.24);
+  background: rgba(240, 201, 106, 0.08);
+  color: var(--profile-gold);
+}
+
+.profile-galaxy-selection__actions a:hover,
+.profile-galaxy-selection__actions button:hover {
+  transform: translateY(-1px);
+}
+
+.profile-galaxy-selection__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(255,255,255,0.04);
+  color: var(--profile-text);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.profile-galaxy-selection__close:hover {
+  color: var(--profile-gold);
+  border-color: rgba(240, 201, 106, 0.22);
+}
+
+body.profile-theme-light .profile-galaxy-panel__inner {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(84, 198, 238, 0.12), transparent 32%),
+    radial-gradient(circle at 80% 18%, rgba(240, 201, 106, 0.10), transparent 36%),
+    radial-gradient(circle at 50% 100%, rgba(143, 160, 255, 0.10), transparent 42%),
+    rgba(255, 255, 255, 0.76);
+  border-color: rgba(45, 76, 112, 0.10);
+}
+
+body.profile-theme-light .profile-galaxy-chipbar button {
+  background: rgba(255, 255, 255, 0.86);
+  color: #2f4f78;
+  border-color: rgba(45, 76, 112, 0.12);
+}
+
+body.profile-theme-light .profile-galaxy-tooltip,
+body.profile-theme-light .profile-galaxy-selection {
+  background:
+    radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.08), transparent 42%),
+    radial-gradient(circle at 100% 100%, rgba(84, 198, 238, 0.08), transparent 44%),
+    rgba(255, 255, 255, 0.88);
+  color: rgba(24, 40, 64, 0.95);
+  border-color: rgba(45, 76, 112, 0.12);
+}
+
+body.profile-theme-light .profile-galaxy-selection h3 {
+  color: #8a6410;
+}
+
+body.profile-theme-light .profile-galaxy-selection p,
+body.profile-theme-light .profile-galaxy-tooltip,
+body.profile-theme-light .profile-galaxy-selection__meta {
+  color: rgba(67, 92, 121, 0.88);
+}
+
+body.profile-theme-light .profile-galaxy-selection__meta {
+  background: rgba(255,255,255,0.62);
+  border-color: rgba(45, 76, 112, 0.10);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   REWARDS
+═══════════════════════════════════════════════════════════════════════════ */
 
 .profile-rewards-card {
   border-color: rgba(240, 201, 106, 0.22);
@@ -1242,7 +1709,29 @@ body.profile-theme-light .profile-filter-row select {
   font-size: 11px;
 }
 
-/* Realm, lessons, ecosystem, admin */
+body.profile-theme-light .profile-rewards-card,
+body.profile-theme-light .rewards-rank-panel,
+body.profile-theme-light .profile-stat-grid--rewards div,
+body.profile-theme-light .rewards-mini-grid div {
+  background:
+    radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.08), transparent 38%),
+    rgba(255,255,255,0.72);
+  border-color: rgba(45, 76, 112, 0.10);
+}
+
+body.profile-theme-light .rewards-rank-copy strong {
+  color: #8a6410;
+}
+
+body.profile-theme-light .rewards-badge {
+  color: #8a6410;
+  background: rgba(240, 201, 106, 0.10);
+  border-color: rgba(181, 132, 19, 0.18);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   ACCESS / REALMS / ECOSYSTEM / ADMIN
+═══════════════════════════════════════════════════════════════════════════ */
 
 .profile-realm-wheel {
   display: flex;
@@ -1278,85 +1767,6 @@ body.profile-theme-light .profile-filter-row select {
   background: rgba(255,255,255,0.035);
   color: var(--profile-muted);
   line-height: 1.65;
-}
-
-.profile-filter-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.profile-filter-row > * {
-  flex: 1 1 180px;
-}
-
-.profile-lesson-path {
-  display: grid;
-  gap: 10px;
-  max-height: 620px;
-  overflow: auto;
-  padding-right: 4px;
-}
-
-.lesson-row {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
-  gap: 10px;
-  align-items: center;
-  padding: 12px;
-  border-radius: 18px;
-  border: 1px solid rgba(255,255,255,0.075);
-  background:
-    linear-gradient(90deg, rgba(240, 201, 106, 0.06), transparent 48%),
-    rgba(255,255,255,0.035);
-  box-shadow: inset 3px 0 0 var(--lesson-color, var(--profile-cyan));
-}
-
-.lesson-row__num {
-  min-width: 66px;
-  color: var(--lesson-color, var(--profile-cyan));
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.lesson-row__body {
-  min-width: 0;
-  display: grid;
-  gap: 4px;
-}
-
-.lesson-row__body strong,
-.lesson-row__body small {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.lesson-row__body small {
-  color: var(--profile-muted);
-}
-
-.lesson-row__complete,
-.lesson-row__open {
-  min-height: 34px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 7px 10px;
-  border-radius: 999px;
-  border: 1px solid rgba(84, 198, 238, 0.20);
-  background: rgba(84, 198, 238, 0.07);
-  color: var(--profile-cyan);
-  font-weight: 900;
-  white-space: nowrap;
-}
-
-.lesson-row__complete.is-done {
-  border-color: rgba(60,179,113,0.28);
-  background: rgba(60,179,113,0.10);
-  color: #8fffc7;
 }
 
 .profile-ecosystem-grid {
@@ -1425,7 +1835,144 @@ body.profile-theme-light .profile-filter-row select {
     rgba(255,255,255,0.035);
 }
 
-/* Responsive */
+.profile-admin-card i {
+  color: var(--profile-gold);
+  font-size: 21px;
+}
+
+.profile-admin-card strong {
+  color: var(--profile-gold);
+}
+
+.profile-admin-card span {
+  color: var(--profile-muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+body.profile-theme-light .profile-realm-description,
+body.profile-theme-light .profile-ecosystem-card,
+body.profile-theme-light .ecosystem-card,
+body.profile-theme-light .profile-admin-card {
+  background:
+    radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.08), transparent 38%),
+    rgba(255,255,255,0.72);
+  border-color: rgba(45, 76, 112, 0.10);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LESSON PATH
+═══════════════════════════════════════════════════════════════════════════ */
+
+.profile-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.profile-filter-row > * {
+  flex: 1 1 180px;
+}
+
+.profile-lesson-path {
+  display: grid;
+  gap: 10px;
+  max-height: 620px;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.profile-lesson-path::-webkit-scrollbar {
+  width: 10px;
+}
+
+.profile-lesson-path::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.04);
+  border-radius: 999px;
+}
+
+.profile-lesson-path::-webkit-scrollbar-thumb {
+  background: rgba(240, 201, 106, 0.34);
+  border-radius: 999px;
+}
+
+.lesson-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.075);
+  background:
+    linear-gradient(90deg, rgba(240, 201, 106, 0.06), transparent 48%),
+    rgba(255,255,255,0.035);
+  box-shadow: inset 3px 0 0 var(--lesson-color, var(--profile-cyan));
+}
+
+.lesson-row__num {
+  min-width: 66px;
+  color: var(--lesson-color, var(--profile-cyan));
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.lesson-row__body {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.lesson-row__body strong,
+.lesson-row__body small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lesson-row__body small {
+  color: var(--profile-muted);
+}
+
+.lesson-row__complete,
+.lesson-row__open {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(84, 198, 238, 0.20);
+  background: rgba(84, 198, 238, 0.07);
+  color: var(--profile-cyan);
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.lesson-row__complete.is-done {
+  border-color: rgba(60,179,113,0.28);
+  background: rgba(60,179,113,0.10);
+  color: #8fffc7;
+}
+
+body.profile-theme-light .lesson-row {
+  background:
+    linear-gradient(90deg, rgba(240, 201, 106, 0.08), transparent 48%),
+    rgba(255,255,255,0.76);
+  border-color: rgba(45, 76, 112, 0.10);
+}
+
+body.profile-theme-light .lesson-row__complete.is-done {
+  color: #137247 !important;
+  border-color: rgba(60,179,113,0.22) !important;
+  background: rgba(60,179,113,0.12) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════════════════════════ */
 
 @media (max-width: 1320px) {
   body.profile-is-signed-in .profile-content,
@@ -1444,7 +1991,7 @@ body.profile-theme-light .profile-filter-row select {
 
   .profile-galaxy-panel,
   .profile-galaxy-panel__inner {
-    min-height: 380px;
+    min-height: 420px;
   }
 }
 
@@ -1472,6 +2019,18 @@ body.profile-theme-light .profile-filter-row select {
   .profile-ecosystem-grid,
   .profile-admin-grid {
     grid-template-columns: 1fr;
+  }
+
+  .profile-galaxy-chipbar {
+    top: auto;
+    right: 12px;
+    left: 12px;
+    bottom: 12px;
+    justify-content: center;
+  }
+
+  .profile-galaxy-selection {
+    bottom: 62px;
   }
 }
 
@@ -1553,10 +2112,26 @@ body.profile-theme-light .profile-filter-row select {
 
   .profile-galaxy-panel,
   .profile-galaxy-panel__inner {
-    min-height: 340px;
+    min-height: 360px;
   }
 
   .profile-galaxy-panel__overlay p {
+    display: none;
+  }
+
+  .profile-galaxy-selection {
+    left: 10px;
+    right: 10px;
+    bottom: 64px;
+    width: auto;
+    padding: 13px;
+  }
+
+  .profile-galaxy-selection h3 {
+    font-size: 1.74rem;
+  }
+
+  .profile-galaxy-tooltip {
     display: none;
   }
 
@@ -1585,6 +2160,15 @@ body.profile-theme-light .profile-filter-row select {
     color: rgba(230, 242, 255, 0.80);
     font-size: 11px;
     font-weight: 900;
+  }
+
+  body.profile-theme-light .profile-mobile-dock {
+    background: rgba(255,255,255,0.88);
+    border-color: rgba(45, 76, 112, 0.10);
+  }
+
+  body.profile-theme-light .profile-mobile-dock a {
+    color: #2f4f78;
   }
 }
 
@@ -1617,9 +2201,21 @@ body.profile-theme-light .profile-filter-row select {
   .profile-theme-toggle {
     min-width: auto;
   }
+
+  .profile-galaxy-chipbar {
+    gap: 5px;
+  }
+
+  .profile-galaxy-chipbar button {
+    min-height: 32px;
+    padding: 7px 9px;
+    font-size: 10px;
+  }
 }
 
-/* Motion */
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOTION
+═══════════════════════════════════════════════════════════════════════════ */
 
 @keyframes profile-nebula-float {
   from {
@@ -1662,228 +2258,5 @@ body.profile-theme-light .profile-filter-row select {
     animation: none !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   PATCH — Interactive Knowledge Galaxy Focus UI
-   Add this to the BOTTOM of LKP/css/profile.css
-═══════════════════════════════════════════════════════════════════════════ */
-
-/* Give the upgraded Three.js galaxy more room */
-.profile-galaxy-panel,
-.profile-galaxy-panel__inner {
-  min-height: 540px;
-}
-
-.profile-galaxy-canvas {
-  opacity: 0.92;
-  cursor: grab;
-}
-
-.profile-galaxy-canvas:active {
-  cursor: grabbing;
-}
-
-/* Floating hover tooltip for realm globes */
-.profile-galaxy-tooltip {
-  position: absolute;
-  z-index: 6;
-  min-width: 140px;
-  max-width: 230px;
-  padding: 9px 11px;
-  border-radius: 14px;
-  border: 1px solid rgba(240, 201, 106, 0.26);
-  background: rgba(1, 3, 10, 0.88);
-  color: rgba(238, 248, 255, 0.95);
-  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
-  opacity: 0;
-  transform: translate3d(-50%, -120%, 0) scale(0.96);
-  pointer-events: none;
-  transition:
-    opacity 0.14s ease,
-    transform 0.14s ease;
-  font-size: 12px;
-  font-weight: 800;
-  line-height: 1.35;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.profile-galaxy-tooltip.is-visible {
-  opacity: 1;
-  transform: translate3d(-50%, -132%, 0) scale(1);
-}
-
-/* Focused realm card */
-.profile-galaxy-selection {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  z-index: 5;
-  width: min(340px, calc(100% - 32px));
-  padding: 16px;
-  border-radius: 22px;
-  border: 1px solid rgba(240, 201, 106, 0.24);
-  background:
-    radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.10), transparent 48%),
-    radial-gradient(circle at 100% 100%, rgba(84, 198, 238, 0.08), transparent 46%),
-    rgba(1, 3, 10, 0.78);
-  box-shadow: 0 20px 56px rgba(0, 0, 0, 0.42);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  opacity: 0;
-  transform: translateY(10px);
-  pointer-events: none;
-  transition:
-    opacity 0.18s ease,
-    transform 0.18s ease,
-    border-color 0.18s ease;
-}
-
-.profile-galaxy-selection.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-
-.profile-galaxy-selection span {
-  color: var(--profile-gold);
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.profile-galaxy-selection h3 {
-  margin: 8px 34px 6px 0;
-  color: var(--profile-gold);
-  font-family: var(--profile-font-title);
-  font-size: 2.1rem;
-  line-height: 0.95;
-  font-weight: 400;
-}
-
-.profile-galaxy-selection p {
-  margin: 0 0 12px;
-  color: var(--profile-muted);
-  line-height: 1.45;
-  font-size: 13px;
-}
-
-.profile-galaxy-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 32px;
-  height: 32px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--profile-text);
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.profile-galaxy-close:hover {
-  border-color: rgba(240, 201, 106, 0.30);
-  color: var(--profile-gold);
-}
-
-.profile-galaxy-selection__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.profile-galaxy-selection__actions a,
-.profile-galaxy-selection__actions button {
-  min-height: 34px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 11px;
-  border-radius: 999px;
-  border: 1px solid rgba(84, 198, 238, 0.24);
-  background: rgba(84, 198, 238, 0.08);
-  color: var(--profile-cyan);
-  font-size: 12px;
-  font-weight: 900;
-  cursor: pointer;
-}
-
-.profile-galaxy-selection__actions a {
-  border-color: rgba(240, 201, 106, 0.26);
-  background: rgba(240, 201, 106, 0.09);
-  color: var(--profile-gold);
-}
-
-.profile-galaxy-selection__actions a:hover,
-.profile-galaxy-selection__actions button:hover {
-  transform: translateY(-1px);
-}
-
-/* Better light-mode contrast for the new focused galaxy UI */
-body.profile-theme-light strong {
-  color: rgba(95, 64, 10, 0.95);
-}
-
-body.profile-theme-light .profile-card-head h2,
-body.profile-theme-light .profile-card h2,
-body.profile-theme-light .profile-auth-card h2 {
-  color: #8a6410;
-}
-
-body.profile-theme-light .profile-hero {
-  background: rgba(255, 255, 255, 0.62);
-}
-
-body.profile-theme-light .profile-auth-form label,
-body.profile-theme-light .profile-edit-form label {
-  color: rgba(24, 43, 70, 0.90);
-}
-
-body.profile-theme-light .profile-realm-wheel button {
-  color: rgba(24, 43, 70, 0.86);
-  background: rgba(255, 255, 255, 0.58);
-}
-
-body.profile-theme-light .profile-galaxy-selection,
-body.profile-theme-light .profile-galaxy-tooltip {
-  background: rgba(241, 248, 255, 0.86);
-  color: rgba(16, 32, 54, 0.94);
-}
-
-/* Mobile galaxy focus card */
-@media (max-width: 1120px) {
-  .profile-galaxy-panel,
-  .profile-galaxy-panel__inner {
-    min-height: 420px;
-  }
-}
-
-@media (max-width: 760px) {
-  .profile-galaxy-panel,
-  .profile-galaxy-panel__inner {
-    min-height: 360px;
-  }
-
-  .profile-galaxy-selection {
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
-    width: auto;
-    padding: 13px;
-  }
-
-  .profile-galaxy-selection h3 {
-    font-size: 1.8rem;
-  }
-
-  .profile-galaxy-tooltip {
-    display: none;
   }
 }
