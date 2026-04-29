@@ -2,17 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  />
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>The Living Knowledge Platform | Wayfinder Passport</title>
-
-  <meta
-    name="description"
-    content="The Living Knowledge Platform Wayfinder Passport. Track lessons, Mana rewards, profile identity, badges, and future XRPL-ready learning records."
-  />
+  <meta name="description" content="The Living Knowledge Platform Wayfinder Passport. Track lessons, Mana rewards, profile identity, badges, and future XRPL-ready learning records." />
   <meta name="robots" content="noindex, follow" />
   <meta name="theme-color" content="#070b14" />
   <meta name="color-scheme" content="dark light" />
@@ -23,17 +15,11 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;700;900&display=swap"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="LKP/css/lkp-brand.css" />
   <link rel="stylesheet" href="LKP/css/profile.css" />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-  />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="LKP/js/lkp-data.js"></script>
@@ -41,7 +27,7 @@
   <script defer src="LKP/js/profile.js"></script>
 </head>
 
-<body class="profile-page profile-theme-dark" data-time-phase="night" data-bg-variant="0">
+<body class="profile-page profile-theme-dark profile-loading" data-time-phase="night" data-bg-variant="0">
   <div class="profile-bg" aria-hidden="true">
     <div class="profile-bg__sky"></div>
     <div class="profile-bg__image"></div>
@@ -57,16 +43,9 @@
   <header class="profile-topbar">
     <a href="index.html" class="profile-brand" aria-label="Return to The Living Knowledge Platform home">
       <span class="profile-brand__logo-frame">
-        <img
-          class="profile-brand__logo"
-          src="LKP/assets/images/LKP-2.png"
-          alt="The Living Knowledge Platform"
-          onerror="this.style.display='none';document.querySelector('.profile-brand__sigil').style.display='grid';"
-        />
+        <img class="profile-brand__logo" src="LKP/assets/images/LKP-2.png" alt="The Living Knowledge Platform" onerror="this.style.display='none';document.querySelector('.profile-brand__sigil').style.display='grid';" />
       </span>
-
       <span class="profile-brand__sigil" style="display:none;">◈</span>
-
       <span class="profile-brand__text">
         <strong>The Living Knowledge Platform</strong>
         <small>Wayfinder Passport</small>
@@ -78,12 +57,7 @@
       <a href="lessons.html"><i class="fas fa-book-open"></i> Lessons</a>
       <a href="admin.html"><i class="fas fa-user-shield"></i> Admin</a>
 
-      <button
-        id="profileThemeToggleBtn"
-        class="profile-topbar__button profile-theme-toggle"
-        type="button"
-        aria-label="Toggle light and dark mode"
-      >
+      <button id="profileThemeToggleBtn" class="profile-topbar__button profile-theme-toggle" type="button" aria-label="Toggle light and dark mode">
         <i class="fas fa-circle-half-stroke"></i>
         <span id="profileThemeToggleLabel">Light Mode</span>
       </button>
@@ -111,24 +85,14 @@
       <div>
         <span class="profile-eyebrow">Ka Paepae 'Ike Ola</span>
         <h1>The Wayfinder Passport</h1>
-        <p>
-          One living profile for The Living Knowledge Platform, lessons, rewards,
-          badges, future XRPL-ready records, and the wider Ikeverse ecosystem.
-        </p>
+        <p>One living profile for The Living Knowledge Platform, lessons, rewards, badges, future XRPL-ready records, and the wider Ikeverse ecosystem.</p>
       </div>
-
       <div class="profile-hero__mark">
-        <img
-          src="LKP/assets/images/LKP-1.png"
-          alt="Ka Paepae 'Ike Ola"
-          onerror="this.style.display='none';"
-        />
+        <img src="LKP/assets/images/LKP-1.png" alt="Ka Paepae 'Ike Ola" onerror="this.style.display='none';" />
       </div>
     </section>
 
-    <section id="profileSessionState" class="profile-session-state">
-      Loading profile session...
-    </section>
+    <section id="profileSessionState" class="profile-session-state">Loading profile session...</section>
 
     <div class="profile-layout">
       <aside class="profile-auth-card" id="authPanel">
@@ -142,56 +106,29 @@
 
         <form id="profileAuthForm" class="profile-auth-form">
           <label for="authDisplayName">Display Name</label>
-          <input
-            id="authDisplayName"
-            type="text"
-            autocomplete="name"
-            placeholder="Wayfinder name"
-          />
+          <input id="authDisplayName" type="text" autocomplete="name" placeholder="Wayfinder name" />
 
           <label for="authEmail">Email</label>
-          <input
-            id="authEmail"
-            type="email"
-            autocomplete="email"
-            placeholder="you@email.com"
-          />
+          <input id="authEmail" type="email" autocomplete="email" placeholder="you@email.com" />
 
           <label for="authPassword">Password</label>
-          <input
-            id="authPassword"
-            type="password"
-            autocomplete="current-password"
-            placeholder="Your password"
-          />
+          <input id="authPassword" type="password" autocomplete="current-password" placeholder="Your password" />
 
-          <button class="profile-main-btn" type="submit">
-            <i class="fas fa-user-astronaut"></i> Sign In
-          </button>
-
-          <button id="signUpBtn" class="profile-main-btn profile-main-btn--ghost" type="button">
-            <i class="fas fa-seedling"></i> Create Profile
-          </button>
+          <button class="profile-main-btn" type="submit"><i class="fas fa-user-astronaut"></i> Sign In</button>
+          <button id="signUpBtn" class="profile-main-btn profile-main-btn--ghost" type="button"><i class="fas fa-seedling"></i> Create Profile</button>
         </form>
 
-        <p class="profile-note">
-          After your account is created, your Supabase profile row can be upgraded to
-          <strong>owner</strong> or <strong>admin</strong> in the database.
-        </p>
+        <p class="profile-note">After your account is created, your Supabase profile row can be upgraded to <strong>owner</strong> or <strong>admin</strong> in the database.</p>
       </aside>
 
       <section class="profile-content">
         <section class="profile-stage" aria-label="Profile passport and knowledge galaxy">
           <article class="profile-card profile-passport-card" id="passport">
-            <div class="profile-passport-card__banner">
-              <div class="profile-passport-card__glow"></div>
-            </div>
+            <div class="profile-passport-card__banner"><div class="profile-passport-card__glow"></div></div>
 
             <div class="profile-passport-card__main">
               <div class="profile-avatar-wrap">
-                <div class="profile-avatar" id="profileAvatar">
-                  <span id="profileAvatarInitials">PW</span>
-                </div>
+                <div class="profile-avatar" id="profileAvatar"><span id="profileAvatarInitials">PW</span></div>
               </div>
 
               <div class="profile-passport-copy">
@@ -199,48 +136,26 @@
                   <span class="profile-eyebrow">Wayfinder Passport</span>
                   <span id="passportRoleChip" class="profile-role-chip">GUEST</span>
                 </div>
-
                 <h2 id="profileDisplayName">Guest Wayfinder</h2>
                 <p id="profileHandleLine">@guest</p>
                 <p id="profileRoleLine">Guest/local profile mode</p>
-
                 <div id="profileBadgeRow" class="profile-badge-row"></div>
               </div>
 
               <div class="profile-ring-wrap">
                 <svg class="profile-ring" viewBox="0 0 120 120" aria-hidden="true">
                   <circle cx="60" cy="60" r="50" class="profile-ring__track"></circle>
-                  <circle
-                    id="passportRingProgress"
-                    cx="60"
-                    cy="60"
-                    r="50"
-                    class="profile-ring__progress"
-                    stroke-dasharray="314"
-                    stroke-dashoffset="314"
-                  ></circle>
+                  <circle id="passportRingProgress" cx="60" cy="60" r="50" class="profile-ring__progress" stroke-dasharray="314" stroke-dashoffset="314"></circle>
                 </svg>
                 <span id="statProgress">0%</span>
               </div>
             </div>
 
             <div class="profile-stat-grid">
-              <div>
-                <strong id="statCompleted">0</strong>
-                <span>Completed</span>
-              </div>
-              <div>
-                <strong id="statMana">0</strong>
-                <span>Mana</span>
-              </div>
-              <div>
-                <strong id="statLessons">0</strong>
-                <span>Lessons</span>
-              </div>
-              <div>
-                <strong id="statProgressMirror">0%</strong>
-                <span>Progress</span>
-              </div>
+              <div><strong id="statCompleted">0</strong><span>Completed</span></div>
+              <div><strong id="statMana">0</strong><span>Mana</span></div>
+              <div><strong id="statLessons">0</strong><span>Lessons</span></div>
+              <div><strong id="statProgressMirror">0%</strong><span>Progress</span></div>
             </div>
           </article>
 
@@ -249,13 +164,23 @@
               <div class="profile-galaxy-panel__overlay">
                 <span class="profile-eyebrow">Knowledge Galaxy</span>
                 <h2>Connected Realms</h2>
-                <p>
-                  Each realm now moves through its own nebula field while the profile background
-                  shifts with the time of day.
-                </p>
+                <p>Click a realm globe to focus the camera, pause rotation, and open the realm details card.</p>
               </div>
 
               <canvas id="profileGalaxy" class="profile-galaxy-canvas" aria-hidden="true"></canvas>
+
+              <div id="profileGalaxyTooltip" class="profile-galaxy-tooltip" aria-hidden="true"></div>
+
+              <article id="profileGalaxySelection" class="profile-galaxy-selection" aria-hidden="true">
+                <button id="profileGalaxyCloseBtn" class="profile-galaxy-close" type="button" aria-label="Close focused realm">×</button>
+                <span id="profileGalaxySelectionKicker">Focused Realm</span>
+                <h3 id="profileGalaxySelectionTitle">Realm</h3>
+                <p id="profileGalaxySelectionDesc">Select a globe to view details.</p>
+                <div class="profile-galaxy-selection__actions">
+                  <a id="profileGalaxySelectionOpen" href="#">Open Realm →</a>
+                  <button id="profileGalaxyResetBtn" type="button">Return to Orbit</button>
+                </div>
+              </article>
             </div>
           </aside>
         </section>
@@ -264,17 +189,11 @@
           <section class="profile-card profile-rewards-card" id="rewards">
             <div class="profile-card-head">
               <span class="profile-card-icon">◈</span>
-              <div>
-                <h2>Mana Rewards</h2>
-                <p>Internal learning rewards now. XRPL-ready proof records later.</p>
-              </div>
+              <div><h2>Mana Rewards</h2><p>Internal learning rewards now. XRPL-ready proof records later.</p></div>
             </div>
 
             <div class="rewards-rank-panel">
-              <div class="rewards-rank-orb">
-                <span id="rewardRankIcon">🌱</span>
-              </div>
-
+              <div class="rewards-rank-orb"><span id="rewardRankIcon">🌱</span></div>
               <div class="rewards-rank-copy">
                 <span>Current Rank</span>
                 <strong id="rewardRankName">Initiate</strong>
@@ -283,69 +202,36 @@
             </div>
 
             <div class="rewards-progress-wrap">
-              <div class="rewards-progress-top">
-                <span id="rewardNextRank">Next rank loading...</span>
-                <strong id="rewardRankProgress">0%</strong>
-              </div>
-              <div class="rewards-progress-bar">
-                <span id="rewardRankBar"></span>
-              </div>
+              <div class="rewards-progress-top"><span id="rewardNextRank">Next rank loading...</span><strong id="rewardRankProgress">0%</strong></div>
+              <div class="rewards-progress-bar"><span id="rewardRankBar"></span></div>
             </div>
 
             <div class="profile-stat-grid profile-stat-grid--rewards">
-              <div>
-                <strong id="rewardMana">0</strong>
-                <span>Mana</span>
-              </div>
-              <div>
-                <strong id="rewardXP">0</strong>
-                <span>XP</span>
-              </div>
-              <div>
-                <strong id="rewardStreak">0</strong>
-                <span>Streak</span>
-              </div>
+              <div><strong id="rewardMana">0</strong><span>Mana</span></div>
+              <div><strong id="rewardXP">0</strong><span>XP</span></div>
+              <div><strong id="rewardStreak">0</strong><span>Streak</span></div>
             </div>
 
-            <button id="rewardCheckInBtn" class="profile-main-btn profile-main-btn--ghost" type="button">
-              Daily Learning Check-In
-            </button>
+            <button id="rewardCheckInBtn" class="profile-main-btn profile-main-btn--ghost" type="button">Daily Learning Check-In</button>
 
             <div class="rewards-mini-grid">
-              <div>
-                <strong id="rewardModules">0</strong>
-                <span>Modules Complete</span>
-              </div>
-              <div>
-                <strong id="rewardCultures">0</strong>
-                <span>Culture Paths</span>
-              </div>
-              <div>
-                <strong id="rewardClaims">0</strong>
-                <span>XRPL-Ready Records</span>
-              </div>
+              <div><strong id="rewardModules">0</strong><span>Modules Complete</span></div>
+              <div><strong id="rewardCultures">0</strong><span>Culture Paths</span></div>
+              <div><strong id="rewardClaims">0</strong><span>XRPL-Ready Records</span></div>
             </div>
 
             <div class="rewards-section-title">Badges</div>
-            <div id="rewardBadges" class="rewards-badge-grid">
-              <div class="profile-note">Complete your first lesson to earn your first badge.</div>
-            </div>
+            <div id="rewardBadges" class="rewards-badge-grid"><div class="profile-note">Complete your first lesson to earn your first badge.</div></div>
 
             <div class="rewards-section-title">Certificates</div>
-            <div id="rewardCertificates" class="rewards-certificate-list">
-              <div class="profile-note">Complete a full module to generate your first certificate record.</div>
-            </div>
+            <div id="rewardCertificates" class="rewards-certificate-list"><div class="profile-note">Complete a full module to generate your first certificate record.</div></div>
           </section>
 
           <section class="profile-card" id="ecosystem">
             <div class="profile-card-head">
               <span class="profile-card-icon">⬡</span>
-              <div>
-                <h2>Connected Knowledge Realms</h2>
-                <p>Move between the main learning platform and connected ecosystem sections.</p>
-              </div>
+              <div><h2>Connected Knowledge Realms</h2><p>Move between the main learning platform and connected ecosystem sections.</p></div>
             </div>
-
             <div id="ecosystemGrid" class="profile-ecosystem-grid"></div>
           </section>
         </div>
@@ -354,10 +240,7 @@
           <section class="profile-card" id="access">
             <div class="profile-card-head">
               <span class="profile-card-icon">✦</span>
-              <div>
-                <h2>Access Layer</h2>
-                <p>Choose your home realm and view the meaning of each connected platform.</p>
-              </div>
+              <div><h2>Access Layer</h2><p>Choose your home realm and view the meaning of each connected platform.</p></div>
             </div>
 
             <div id="realmWheel" class="profile-realm-wheel">
@@ -369,19 +252,13 @@
               <button type="button" data-realm="pikoverse">⬡ Pikoverse</button>
             </div>
 
-            <p id="realmDescription" class="profile-realm-description">
-              The Living Knowledge Platform turns lessons into constellations, using star maps,
-              galaxies, and shared learning paths.
-            </p>
+            <p id="realmDescription" class="profile-realm-description">The Living Knowledge Platform turns lessons into constellations, using star maps, galaxies, and shared learning paths.</p>
           </section>
 
           <section class="profile-card" id="edit">
             <div class="profile-card-head">
               <span class="profile-card-icon">✎</span>
-              <div>
-                <h2>Edit Profile</h2>
-                <p>Update your public Wayfinder identity.</p>
-              </div>
+              <div><h2>Edit Profile</h2><p>Update your public Wayfinder identity.</p></div>
             </div>
 
             <form id="profileEditForm" class="profile-edit-form">
@@ -405,40 +282,21 @@
               <input id="editAvatarUrl" type="url" placeholder="https://..." />
 
               <label for="editBio">Bio / Moʻolelo</label>
-              <textarea
-                id="editBio"
-                rows="4"
-                maxlength="500"
-                placeholder="Tell the story of your learning path..."
-              ></textarea>
+              <textarea id="editBio" rows="4" maxlength="500" placeholder="Tell the story of your learning path..."></textarea>
 
-              <button class="profile-main-btn" type="submit">
-                <i class="fas fa-floppy-disk"></i> Save Profile
-              </button>
+              <button class="profile-main-btn" type="submit"><i class="fas fa-floppy-disk"></i> Save Profile</button>
             </form>
           </section>
 
           <section class="profile-card profile-admin-panel is-hidden" id="adminPanel">
             <div class="profile-card-head">
               <span class="profile-card-icon">👑</span>
-              <div>
-                <h2>Admin Control Deck</h2>
-                <p>Visible only for users with owner/admin role.</p>
-              </div>
+              <div><h2>Admin Control Deck</h2><p>Visible only for users with owner/admin role.</p></div>
             </div>
 
             <div class="profile-admin-grid">
-              <a href="admin.html" class="profile-admin-card">
-                <i class="fas fa-screwdriver-wrench"></i>
-                <strong>Open Admin Dashboard</strong>
-                <span>Manage lessons, galaxies, cultures, modules, and sources.</span>
-              </a>
-
-              <a href="lessons.html" class="profile-admin-card">
-                <i class="fas fa-book-open"></i>
-                <strong>Review Lessons</strong>
-                <span>Inspect the public lesson experience.</span>
-              </a>
+              <a href="admin.html" class="profile-admin-card"><i class="fas fa-screwdriver-wrench"></i><strong>Open Admin Dashboard</strong><span>Manage lessons, galaxies, cultures, modules, and sources.</span></a>
+              <a href="lessons.html" class="profile-admin-card"><i class="fas fa-book-open"></i><strong>Review Lessons</strong><span>Inspect the public lesson experience.</span></a>
             </div>
           </section>
         </div>
@@ -446,17 +304,12 @@
         <section class="profile-card" id="path">
           <div class="profile-card-head">
             <span class="profile-card-icon">🌌</span>
-            <div>
-              <h2>Learning Path</h2>
-              <p>Filter, complete, and sync lessons across The Living Knowledge Platform.</p>
-            </div>
+            <div><h2>Learning Path</h2><p>Filter, complete, and sync lessons across The Living Knowledge Platform.</p></div>
           </div>
 
           <div class="profile-filter-row">
             <input id="lessonSearch" type="search" placeholder="Search lessons..." />
-            <select id="lessonCultureFilter">
-              <option value="all">All Cultures</option>
-            </select>
+            <select id="lessonCultureFilter"><option value="all">All Cultures</option></select>
             <select id="lessonStatusFilter">
               <option value="all">All Status</option>
               <option value="completed">Completed</option>
@@ -464,9 +317,7 @@
             </select>
           </div>
 
-          <div id="lessonPathList" class="profile-lesson-path">
-            <div class="profile-note">Loading lesson path...</div>
-          </div>
+          <div id="lessonPathList" class="profile-lesson-path"><div class="profile-note">Loading lesson path...</div></div>
         </section>
       </section>
     </div>

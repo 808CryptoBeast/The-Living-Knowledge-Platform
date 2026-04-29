@@ -1,6 +1,17 @@
 /* ═══════════════════════════════════════════════════════════════════════════
    THE LIVING KNOWLEDGE PLATFORM — Wayfinder Passport
    File: LKP/js/profile.js
+
+   Handles:
+   - Supabase auth/session
+   - Profile loading/saving
+   - Lesson progress
+   - Mana/reward UI
+   - Time-of-day cosmic background
+   - Dark / light mode
+   - Three.js Knowledge Galaxy
+   - Sun core, realm orbits, realm nebulae, moons/mini-planets
+   - Hover tooltip, click-to-focus realm card, return-to-orbit controls
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -12,12 +23,13 @@
 
   const SUPABASE_ANON_KEY =
     window.LKP_SUPABASE_ANON_KEY ||
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJIUzI1NiIsInJlZiI6ImZtcmpkdnNxZGZ5YXF0endiYnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTE2MzYsImV4cCI6MjA5MTE2NzYzNn0.UKyvX02bG4cNhb7U2TK96t8XFREHYYwHJIKbPK06nqs';
+    'PASTE_YOUR_CORRECT_SUPABASE_ANON_KEY_HERE';
 
   const PROFILE_CACHE_KEY = 'lkp_profile_v1';
   const LEGACY_PROFILE_CACHE_KEY = 'piko_profile_v1';
   const COMPLETED_KEY = 'cv_completed';
   const MANA_KEY = 'cv_mana';
+
   const THEME_KEY = 'lkp_profile_theme';
   const BACKGROUND_VARIANT_KEY = 'lkp_profile_bg_variant';
   const BACKGROUND_ROTATION_MS = 90000;
@@ -136,7 +148,7 @@
           'radial-gradient(circle at 50% 110%, rgba(255, 210, 155, 0.14), transparent 32%), radial-gradient(circle at 12% 78%, rgba(126, 100, 255, 0.12), transparent 26%)',
         stars:
           'radial-gradient(circle at 26% 36%, rgba(255,255,255,0.78) 0 1px, transparent 1.6px), radial-gradient(circle at 68% 18%, rgba(255,255,255,0.62) 0 1.1px, transparent 1.7px), radial-gradient(circle at 82% 58%, rgba(255,255,255,0.34) 0 1px, transparent 1.6px), radial-gradient(circle at 44% 74%, rgba(255,255,255,0.46) 0 1.1px, transparent 1.8px)',
-        glowOne: 'rgba(255, 196, 123, 0.2)',
+        glowOne: 'rgba(255, 196, 123, 0.20)',
         glowTwo: 'rgba(96, 183, 255, 0.16)',
         glowThree: 'rgba(126, 100, 255, 0.10)'
       }
@@ -226,22 +238,26 @@
     user: null,
     profile: null,
     isAdmin: false,
+
     completed: [],
     mana: 0,
     lessons: [],
     contentData: null,
     sessionReady: false,
+
     filters: {
       search: '',
       culture: 'all',
       status: 'all'
     },
+
     visuals: {
       theme: localStorage.getItem(THEME_KEY) || 'dark',
       timePhase: 'night',
       bgVariant: parseInt(localStorage.getItem(BACKGROUND_VARIANT_KEY) || '0', 10) || 0,
       bgTimer: null
     },
+
     three: {
       initialized: false,
       THREE: null,
@@ -251,7 +267,15 @@
       controls: null,
       nodes: [],
       frameId: null,
-      resizeObserver: null
+      resizeObserver: null,
+      raycaster: null,
+      pointer: null,
+      hoveredNode: null,
+      focusedNode: null,
+      targetCameraPosition: null,
+      targetControlTarget: null,
+      defaultCameraPosition: null,
+      defaultControlTarget: null
     }
   };
 
@@ -362,9 +386,10 @@
 
   function hexToRgba(hex, alpha) {
     const clean = String(hex || '#ffffff').replace('#', '');
-    const full = clean.length === 3
-      ? clean.split('').map(c => c + c).join('')
-      : clean;
+    const full =
+      clean.length === 3
+        ? clean.split('').map(c => c + c).join('')
+        : clean;
 
     const num = parseInt(full, 16);
 
@@ -392,9 +417,11 @@
 
   function getSafeAvatarUrl(value) {
     const url = String(value || '').trim();
+
     if (!url) return '';
     if (isDataImage(url)) return '';
     if (url.length > 2000) return '';
+
     return url;
   }
 
@@ -405,20 +432,24 @@
   function syncThemeToggleLabel() {
     const label = $('#profileThemeToggleLabel');
     if (!label) return;
+
     label.textContent = state.visuals.theme === 'dark' ? 'Light Mode' : 'Dark Mode';
   }
 
   function resolveTimePhase(date = new Date()) {
     const hour = date.getHours();
+
     if (hour >= 5 && hour < 10) return 'dawn';
     if (hour >= 10 && hour < 17) return 'day';
     if (hour >= 17 && hour < 20) return 'dusk';
+
     return 'night';
   }
 
   function getBackgroundPalette(phase, variantIndex) {
     const set = backgroundPhasePalettes[phase] || backgroundPhasePalettes.night;
     const safeIndex = Math.abs(variantIndex) % set.length;
+
     return set[safeIndex];
   }
 
@@ -452,8 +483,12 @@
     body.style.setProperty('--profile-nebula-three', palette.glowThree);
 
     const themeMeta = getThemeMeta();
+
     if (themeMeta) {
-      themeMeta.setAttribute('content', palette.themeColor || (nextTheme === 'light' ? '#dbe9ff' : '#070b14'));
+      themeMeta.setAttribute(
+        'content',
+        palette.themeColor || (nextTheme === 'light' ? '#dbe9ff' : '#070b14')
+      );
     }
 
     try {
@@ -470,6 +505,7 @@
     const phase = resolveTimePhase();
     const set = backgroundPhasePalettes[phase] || backgroundPhasePalettes.night;
     const nextVariant = (state.visuals.bgVariant + 1) % set.length;
+
     applyVisualEnvironment({
       theme: state.visuals.theme,
       phase,
@@ -604,7 +640,9 @@
 
     if (window.LKPRewards && typeof window.LKPRewards.init === 'function') {
       try {
-        window.LKPRewards.init({ data: state.contentData });
+        window.LKPRewards.init({
+          data: state.contentData
+        });
 
         if (typeof window.LKPRewards.setCompletedLessons === 'function') {
           window.LKPRewards.setCompletedLessons(state.completed);
@@ -630,6 +668,7 @@
 
     return new Promise(resolve => {
       let tries = 0;
+
       const timer = setInterval(() => {
         tries += 1;
 
@@ -745,6 +784,7 @@
   function bindUI() {
     $('#profileThemeToggleBtn')?.addEventListener('click', () => {
       const next = state.visuals.theme === 'dark' ? 'light' : 'dark';
+
       applyVisualEnvironment({
         theme: next,
         phase: state.visuals.timePhase,
@@ -792,6 +832,7 @@
     $('#lessonPathList')?.addEventListener('click', async event => {
       const btn = event.target.closest('[data-toggle-complete]');
       if (!btn) return;
+
       event.preventDefault();
       await toggleLessonComplete(btn.dataset.toggleComplete);
     });
@@ -805,6 +846,7 @@
       });
 
       const desc = $('#realmDescription');
+
       if (desc) {
         desc.textContent =
           realmDescriptions[btn.dataset.realm] ||
@@ -840,6 +882,15 @@
         showToast('Daily check-in complete. +5 Mana.');
       }
     });
+
+    $('#profileGalaxyCloseBtn')?.addEventListener('click', clearGalaxyFocus);
+    $('#profileGalaxyResetBtn')?.addEventListener('click', clearGalaxyFocus);
+
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') {
+        clearGalaxyFocus();
+      }
+    });
   }
 
   function setSessionState(message, tone = '') {
@@ -847,6 +898,7 @@
     if (!el) return;
 
     el.classList.remove('is-good', 'is-warning', 'is-bad');
+
     if (tone === 'good') el.classList.add('is-good');
     if (tone === 'warning') el.classList.add('is-warning');
     if (tone === 'bad') el.classList.add('is-bad');
@@ -1088,6 +1140,7 @@
           .single();
 
         if (insertError) throw insertError;
+
         profile = inserted;
       }
 
@@ -1138,7 +1191,10 @@
         typeof window.LKPRewards.setCompletedLessons === 'function'
       ) {
         window.LKPRewards.setCompletedLessons(merged);
-        const summary = window.LKPRewards.getProfileSummary?.({ recalculate: true });
+
+        const summary = window.LKPRewards.getProfileSummary?.({
+          recalculate: true
+        });
 
         if (summary && typeof summary.mana === 'number') {
           state.mana = summary.mana;
@@ -1283,7 +1339,9 @@
         window.LKPRewards.toggleLesson(lessonId, shouldComplete);
       }
 
-      rewardSummary = window.LKPRewards.getProfileSummary?.({ recalculate: true });
+      rewardSummary = window.LKPRewards.getProfileSummary?.({
+        recalculate: true
+      });
 
       if (rewardSummary && typeof rewardSummary.mana === 'number') {
         state.mana = rewardSummary.mana;
@@ -1305,7 +1363,11 @@
     renderRewardsPanel();
     renderLessonPath();
 
-    showToast(shouldComplete ? 'Lesson completed. + Mana.' : 'Lesson marked open.');
+    showToast(
+      shouldComplete
+        ? `Lesson completed. ${rewardSummary?.rank?.current?.name ? `Rank: ${rewardSummary.rank.current.name}.` : '+ Mana.'}`
+        : 'Lesson marked open.'
+    );
   }
 
   function renderProfileFromCache() {
@@ -1340,7 +1402,9 @@
           window.LKPRewards.setCompletedLessons(completed);
         }
 
-        const rewardSummary = window.LKPRewards.getProfileSummary?.({ recalculate: true });
+        const rewardSummary = window.LKPRewards.getProfileSummary?.({
+          recalculate: true
+        });
 
         if (rewardSummary && typeof rewardSummary.mana === 'number') {
           state.mana = rewardSummary.mana;
@@ -1409,6 +1473,7 @@
     setText('#statProgressMirror', `${progress}%`);
 
     const ring = $('#passportRingProgress');
+
     if (ring) {
       const circumference = 314;
       ring.style.strokeDashoffset = String(
@@ -1436,7 +1501,9 @@
     let summary;
 
     try {
-      summary = window.LKPRewards.getProfileSummary?.({ recalculate: true });
+      summary = window.LKPRewards.getProfileSummary?.({
+        recalculate: true
+      });
     } catch (err) {
       console.warn('[Profile] Rewards panel failed:', err.message);
       return;
@@ -1456,9 +1523,11 @@
     setText('#rewardRankIcon', rank.icon || '🌱');
     setText('#rewardRankName', rank.name || 'Initiate');
     setText('#rewardRankDesc', rank.desc || 'Beginning the path of living knowledge.');
+
     setText('#rewardMana', summary.mana || 0);
     setText('#rewardXP', summary.xp || 0);
     setText('#rewardStreak', summary.streak || 0);
+
     setText('#rewardModules', summary.completedModuleCount || 0);
     setText('#rewardCultures', summary.completedCultureCount || 0);
 
@@ -1470,15 +1539,21 @@
 
     setText(
       '#rewardNextRank',
-      next ? `Next: ${next.name} at ${next.minMana} Mana` : 'Highest rank reached'
+      next
+        ? `Next: ${next.name} at ${next.minMana} Mana`
+        : 'Highest rank reached'
     );
 
     setText('#rewardRankProgress', `${rankProgress}%`);
 
     const bar = $('#rewardRankBar');
-    if (bar) bar.style.width = `${rankProgress}%`;
+
+    if (bar) {
+      bar.style.width = `${rankProgress}%`;
+    }
 
     const checkBtn = $('#rewardCheckInBtn');
+
     if (checkBtn) {
       checkBtn.textContent = summary.checkedInToday
         ? 'Checked In Today'
@@ -1522,7 +1597,11 @@
     if (!row) return;
 
     const badges = [];
-    badges.push({ icon: '◈', label: state.user ? 'Synced Profile' : 'Guest Mode' });
+
+    badges.push({
+      icon: '◈',
+      label: state.user ? 'Synced Profile' : 'Guest Mode'
+    });
 
     if (progress >= 10) badges.push({ icon: '🌱', label: 'Path Starter' });
     if (progress >= 25) badges.push({ icon: '🌊', label: 'Current Rider' });
@@ -1632,7 +1711,11 @@
     }
 
     if (!lessons.length) {
-      list.innerHTML = `<div class="profile-note">No lessons match your current filter.</div>`;
+      list.innerHTML = `
+        <div class="profile-note">
+          No lessons match your current filter.
+        </div>
+      `;
       return;
     }
 
@@ -1675,12 +1758,14 @@
 
       state.three.THREE = THREE;
       state.three.initialized = true;
+      state.three.raycaster = new THREE.Raycaster();
+      state.three.pointer = new THREE.Vector2();
 
       const scene = new THREE.Scene();
-      scene.fog = new THREE.FogExp2(0x01030a, 0.026);
+      scene.fog = new THREE.FogExp2(0x01030a, 0.023);
 
-      const camera = new THREE.PerspectiveCamera(58, 1, 0.1, 260);
-      camera.position.set(0, 11, 44);
+      const camera = new THREE.PerspectiveCamera(58, 1, 0.1, 300);
+      camera.position.set(0, 13, 52);
 
       const renderer = new THREE.WebGLRenderer({
         canvas,
@@ -1696,14 +1781,18 @@
       controls.enablePan = false;
       controls.enableDamping = true;
       controls.dampingFactor = 0.075;
-      controls.rotateSpeed = 0.35;
-      controls.zoomSpeed = 0.55;
-      controls.minDistance = 22;
-      controls.maxDistance = 76;
+      controls.rotateSpeed = 0.32;
+      controls.zoomSpeed = 0.52;
+      controls.minDistance = 24;
+      controls.maxDistance = 88;
       controls.autoRotate = true;
-      controls.autoRotateSpeed = 0.28;
+      controls.autoRotateSpeed = 0.23;
 
       scene.add(new THREE.AmbientLight(0xffffff, 0.42));
+
+      const sunLight = new THREE.PointLight(0xffd36b, 3.2, 160);
+      sunLight.position.set(0, 0, 0);
+      scene.add(sunLight);
 
       const goldLight = new THREE.PointLight(0xffdd9a, 2.2, 150);
       goldLight.position.set(0, 34, 24);
@@ -1717,6 +1806,8 @@
       state.three.camera = camera;
       state.three.renderer = renderer;
       state.three.controls = controls;
+      state.three.defaultCameraPosition = camera.position.clone();
+      state.three.defaultControlTarget = controls.target.clone();
 
       buildIdentityGalaxy();
       resizeProfileGalaxy();
@@ -1731,6 +1822,11 @@
       }
 
       canvas.addEventListener('click', onProfileGalaxyClick);
+      canvas.addEventListener('pointermove', onProfileGalaxyPointerMove);
+      canvas.addEventListener('pointerleave', () => {
+        state.three.hoveredNode = null;
+        hideGalaxyTooltip();
+      });
 
       function animate() {
         state.three.frameId = requestAnimationFrame(animate);
@@ -1739,28 +1835,104 @@
         state.three.nodes.forEach((node, index) => {
           if (!node.mesh) return;
 
-          node.mesh.rotation.y += 0.006;
-          node.mesh.rotation.x = Math.sin(t + index * 0.41) * 0.08;
-          node.mesh.position.y = node.baseY + Math.sin(t + index * 0.55) * 0.12;
+          if (node.isSun) {
+            node.mesh.rotation.y += 0.0035;
+            node.mesh.rotation.z += 0.0012;
+
+            if (node.glow) {
+              node.glow.position.copy(node.mesh.position);
+              node.glow.material.opacity = 0.34 + Math.sin(t * 1.4) * 0.04;
+            }
+
+            if (node.extraObjects && node.extraObjects.length) {
+              node.extraObjects.forEach((obj, objIndex) => {
+                if (!obj) return;
+
+                obj.position.copy(node.mesh.position);
+
+                if (obj.type === 'Points') {
+                  obj.rotation.y += 0.0008 + objIndex * 0.0002;
+                  obj.rotation.x += 0.0003;
+                } else {
+                  obj.rotation.z += 0.001 + objIndex * 0.0004;
+                }
+              });
+            }
+
+            return;
+          }
+
+          const focusSlowdown = state.three.focusedNode ? 0.25 : 1;
+          const angle = node.baseAngle + t * node.orbitSpeed * focusSlowdown;
+
+          const pos = new THREE.Vector3(
+            Math.cos(angle) * node.orbitRadius,
+            0,
+            Math.sin(angle) * node.orbitRadius
+          );
+
+          pos.applyEuler(
+            new THREE.Euler(node.orbitTiltX || 0, 0, node.orbitTiltZ || 0)
+          );
+
+          pos.y += Math.sin(t * 1.15 + index * 0.7) * (node.verticalFloat || 0.12);
+
+          node.mesh.position.copy(pos);
+          node.mesh.rotation.y += node === state.three.focusedNode ? 0.009 : 0.005;
+          node.mesh.rotation.x = Math.sin(t + index * 0.41) * 0.07;
+
+          const selectedScale = node === state.three.focusedNode ? 1.32 : 1;
+          node.mesh.scale.lerp(new THREE.Vector3(selectedScale, selectedScale, selectedScale), 0.08);
 
           if (node.glow) {
-            node.glow.position.copy(node.mesh.position);
-            node.glow.material.opacity = 0.25 + Math.sin(t * 1.3 + index) * 0.08;
+            node.glow.position.copy(pos);
+            node.glow.material.opacity =
+              (node.glow.userData.baseOpacity || 0.24) +
+              Math.sin(t * 1.2 + index) * 0.05 +
+              (node === state.three.focusedNode ? 0.12 : 0);
           }
 
           if (node.nebula) {
-            node.nebula.position.copy(node.mesh.position);
-            node.nebula.rotation.z += 0.0025;
+            node.nebula.position.copy(pos);
+            node.nebula.rotation.z += 0.0014;
+            node.nebula.rotation.y += 0.0007;
 
             node.nebula.children.forEach((child, childIndex) => {
-              child.material.opacity =
-                0.12 +
-                ((Math.sin(t * 0.95 + index + childIndex + (node.nebulaDrift || 0)) + 1) * 0.06);
+              if (child.material && typeof child.material.opacity === 'number') {
+                child.material.opacity =
+                  (child.userData.baseOpacity || 0.12) +
+                  ((Math.sin(t * 0.9 + index + childIndex) + 1) * 0.04) +
+                  (node === state.three.focusedNode ? 0.03 : 0);
+              }
+
+              if (child.type === 'Points') {
+                child.rotation.y += 0.0009;
+                child.rotation.x += 0.0002;
+              } else {
+                child.rotation.z += 0.001;
+              }
             });
           }
 
-          if (node.label) node.label.position.y = node.mesh.position.y + 1.35;
+          if (node.satelliteSystem) {
+            node.satelliteSystem.position.copy(pos);
+          }
+
+          if (node.satellitePivots && node.satellitePivots.length) {
+            node.satellitePivots.forEach((pivot, pIndex) => {
+              pivot.rotation.y += pivot.userData.speed || (0.01 + pIndex * 0.002);
+              pivot.rotation.x += pivot.userData.wobble || 0.0006;
+            });
+          }
+
+          if (node.label) {
+            node.label.position.set(pos.x, pos.y + 1.45, pos.z);
+            const labelScale = node === state.three.focusedNode ? 5.2 : 4.4;
+            node.label.scale.lerp(new THREE.Vector3(labelScale, 1.15, 1), 0.08);
+          }
         });
+
+        updateFocusedCamera();
 
         controls.update();
         renderer.render(scene, camera);
@@ -1775,6 +1947,7 @@
   function getGalaxyHolder() {
     const canvas = $('#profileGalaxy');
     if (!canvas) return null;
+
     return canvas.closest('.profile-galaxy-panel__inner') || canvas.parentElement;
   }
 
@@ -1788,58 +1961,234 @@
     };
   }
 
-  function onProfileGalaxyClick(event) {
+  function setPointerFromEvent(event) {
     const THREE = state.three.THREE;
-    const camera = state.three.camera;
+    const canvas = $('#profileGalaxy');
+    const pointer = state.three.pointer;
 
-    if (!THREE || !camera) return;
+    if (!THREE || !canvas || !pointer) return false;
 
-    const canvas = event.currentTarget;
     const rect = canvas.getBoundingClientRect();
 
-    const pointer = new THREE.Vector2(
+    pointer.set(
       ((event.clientX - rect.left) / rect.width) * 2 - 1,
       -((event.clientY - rect.top) / rect.height) * 2 + 1
     );
 
-    const raycaster = new THREE.Raycaster();
+    return true;
+  }
+
+  function getRealmNodes() {
+    return state.three.nodes.filter(node => {
+      return node && node.mesh && node.item && node.mesh.userData?.href;
+    });
+  }
+
+  function getIntersectedRealmNode(event) {
+    const THREE = state.three.THREE;
+    const camera = state.three.camera;
+    const raycaster = state.three.raycaster;
+    const pointer = state.three.pointer;
+
+    if (!THREE || !camera || !raycaster || !pointer) return null;
+    if (!setPointerFromEvent(event)) return null;
+
     raycaster.setFromCamera(pointer, camera);
 
-    const meshes = state.three.nodes
-      .map(node => node.mesh)
-      .filter(mesh => mesh && mesh.userData?.href);
-
+    const nodes = getRealmNodes();
+    const meshes = nodes.map(node => node.mesh);
     const hits = raycaster.intersectObjects(meshes, false);
-    if (!hits.length) return;
 
-    const href = hits[0].object.userData.href;
-    if (!href) return;
+    if (!hits.length) return null;
 
-    if (href.startsWith('http')) {
-      window.open(href, '_blank', 'noopener');
-    } else {
-      window.location.href = href;
+    const hitMesh = hits[0].object;
+    return nodes.find(node => node.mesh === hitMesh) || null;
+  }
+
+  function onProfileGalaxyPointerMove(event) {
+    const node = getIntersectedRealmNode(event);
+
+    if (!node) {
+      state.three.hoveredNode = null;
+      hideGalaxyTooltip();
+      return;
+    }
+
+    state.three.hoveredNode = node;
+    showGalaxyTooltip(node, event);
+  }
+
+  function onProfileGalaxyClick(event) {
+    const node = getIntersectedRealmNode(event);
+
+    if (!node) {
+      clearGalaxyFocus();
+      return;
+    }
+
+    focusRealmNode(node);
+  }
+
+  function showGalaxyTooltip(node, event) {
+    const tooltip = $('#profileGalaxyTooltip');
+    const holder = getGalaxyHolder();
+
+    if (!tooltip || !holder || !node?.item) return;
+
+    const holderRect = holder.getBoundingClientRect();
+
+    tooltip.innerHTML = `
+      <strong style="color:${node.item.color};display:block;margin-bottom:3px;">
+        ${escapeHTML(node.item.name)}
+      </strong>
+      <span>${escapeHTML(node.item.desc)}</span>
+    `;
+
+    tooltip.style.left = `${event.clientX - holderRect.left}px`;
+    tooltip.style.top = `${event.clientY - holderRect.top}px`;
+    tooltip.classList.add('is-visible');
+    tooltip.setAttribute('aria-hidden', 'false');
+  }
+
+  function hideGalaxyTooltip() {
+    const tooltip = $('#profileGalaxyTooltip');
+    if (!tooltip) return;
+
+    tooltip.classList.remove('is-visible');
+    tooltip.setAttribute('aria-hidden', 'true');
+  }
+
+  function focusRealmNode(node) {
+    const THREE = state.three.THREE;
+    const camera = state.three.camera;
+    const controls = state.three.controls;
+
+    if (!THREE || !camera || !controls || !node?.item) return;
+
+    state.three.focusedNode = node;
+    controls.autoRotate = false;
+    hideGalaxyTooltip();
+
+    const nodePosition = new THREE.Vector3();
+    node.mesh.getWorldPosition(nodePosition);
+
+    const direction = nodePosition.clone().normalize();
+
+    if (direction.lengthSq() < 0.0001) {
+      direction.set(0, 0.22, 1).normalize();
+    }
+
+    const cameraDistance = 7.8;
+    const cameraLift = new THREE.Vector3(0, 2.5, 0);
+
+    state.three.targetControlTarget = nodePosition.clone();
+    state.three.targetCameraPosition = nodePosition
+      .clone()
+      .add(direction.multiplyScalar(cameraDistance))
+      .add(cameraLift);
+
+    showGalaxySelection(node);
+  }
+
+  function showGalaxySelection(node) {
+    const panel = $('#profileGalaxySelection');
+    if (!panel || !node?.item) return;
+
+    setText('#profileGalaxySelectionKicker', node.item.adminOnly ? 'Admin Realm' : 'Focused Realm');
+    setText('#profileGalaxySelectionTitle', node.item.name);
+    setText('#profileGalaxySelectionDesc', node.item.desc);
+
+    const openLink = $('#profileGalaxySelectionOpen');
+
+    if (openLink) {
+      openLink.href = node.item.href || '#';
+      openLink.style.setProperty('--realm-color', node.item.color);
+
+      if (node.item.href && node.item.href.startsWith('http')) {
+        openLink.target = '_blank';
+        openLink.rel = 'noopener';
+      } else {
+        openLink.removeAttribute('target');
+        openLink.removeAttribute('rel');
+      }
+    }
+
+    panel.style.borderColor = hexToRgba(node.item.color, 0.36);
+    panel.classList.add('is-visible');
+    panel.setAttribute('aria-hidden', 'false');
+  }
+
+  function clearGalaxyFocus() {
+    const controls = state.three.controls;
+
+    state.three.focusedNode = null;
+
+    if (controls) {
+      controls.autoRotate = true;
+    }
+
+    if (state.three.defaultCameraPosition) {
+      state.three.targetCameraPosition = state.three.defaultCameraPosition.clone();
+    }
+
+    if (state.three.defaultControlTarget) {
+      state.three.targetControlTarget = state.three.defaultControlTarget.clone();
+    }
+
+    const panel = $('#profileGalaxySelection');
+
+    if (panel) {
+      panel.classList.remove('is-visible');
+      panel.setAttribute('aria-hidden', 'true');
     }
   }
 
-  function clearIdentityGalaxy() {
-    const scene = state.three.scene;
-    if (!scene) return;
+  function updateFocusedCamera() {
+    const THREE = state.three.THREE;
+    const camera = state.three.camera;
+    const controls = state.three.controls;
 
-    state.three.nodes.forEach(node => {
-      if (node.mesh) scene.remove(node.mesh);
-      if (node.glow) scene.remove(node.glow);
-      if (node.nebula) scene.remove(node.nebula);
-      if (node.label) scene.remove(node.label);
-      if (node.line) scene.remove(node.line);
-    });
+    if (!THREE || !camera || !controls) return;
 
-    state.three.nodes = [];
+    if (state.three.focusedNode?.mesh) {
+      const nodePosition = new THREE.Vector3();
+      state.three.focusedNode.mesh.getWorldPosition(nodePosition);
 
-    const removable = scene.children.filter(child => child.userData?.profileGalaxyGenerated);
+      const direction = nodePosition.clone().normalize();
 
-    removable.forEach(child => {
-      scene.remove(child);
+      if (direction.lengthSq() < 0.0001) {
+        direction.set(0, 0.22, 1).normalize();
+      }
+
+      state.three.targetControlTarget = nodePosition.clone();
+      state.three.targetCameraPosition = nodePosition
+        .clone()
+        .add(direction.multiplyScalar(7.8))
+        .add(new THREE.Vector3(0, 2.5, 0));
+    }
+
+    if (state.three.targetCameraPosition) {
+      camera.position.lerp(state.three.targetCameraPosition, 0.055);
+    }
+
+    if (state.three.targetControlTarget) {
+      controls.target.lerp(state.three.targetControlTarget, 0.055);
+
+      if (
+        !state.three.focusedNode &&
+        camera.position.distanceTo(state.three.targetCameraPosition) < 0.08 &&
+        controls.target.distanceTo(state.three.targetControlTarget) < 0.08
+      ) {
+        state.three.targetCameraPosition = null;
+        state.three.targetControlTarget = null;
+      }
+    }
+  }
+
+  function disposeObject3D(object) {
+    if (!object) return;
+
+    object.traverse?.(child => {
       child.geometry?.dispose?.();
 
       if (child.material) {
@@ -1849,6 +2198,59 @@
           child.material.dispose?.();
         }
       }
+    });
+  }
+
+  function clearIdentityGalaxy() {
+    const scene = state.three.scene;
+    if (!scene) return;
+
+    hideGalaxyTooltip();
+
+    const panel = $('#profileGalaxySelection');
+    if (panel) {
+      panel.classList.remove('is-visible');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+
+    state.three.focusedNode = null;
+    state.three.hoveredNode = null;
+    state.three.targetCameraPosition = null;
+    state.three.targetControlTarget = null;
+
+    state.three.nodes.forEach(node => {
+      [
+        node.mesh,
+        node.glow,
+        node.nebula,
+        node.label,
+        node.line,
+        node.orbitLine,
+        node.satelliteSystem
+      ].forEach(obj => {
+        if (obj) {
+          scene.remove(obj);
+          disposeObject3D(obj);
+        }
+      });
+
+      if (node.extraObjects && Array.isArray(node.extraObjects)) {
+        node.extraObjects.forEach(obj => {
+          if (obj) {
+            scene.remove(obj);
+            disposeObject3D(obj);
+          }
+        });
+      }
+    });
+
+    state.three.nodes = [];
+
+    const removable = scene.children.filter(child => child.userData?.profileGalaxyGenerated);
+
+    removable.forEach(child => {
+      scene.remove(child);
+      disposeObject3D(child);
     });
   }
 
@@ -1866,11 +2268,11 @@
 
     if (!THREE || !scene) return;
 
-    const bgCount = 850;
+    const bgCount = 1100;
     const positions = new Float32Array(bgCount * 3);
 
     for (let i = 0; i < bgCount; i++) {
-      const r = 30 + Math.random() * 66;
+      const r = 34 + Math.random() * 78;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(Math.random() * 2 - 1);
 
@@ -1885,10 +2287,10 @@
     const bg = new THREE.Points(
       bgGeo,
       new THREE.PointsMaterial({
-        size: 0.10,
+        size: 0.09,
         color: 0xdbefff,
         transparent: true,
-        opacity: 0.52,
+        opacity: 0.56,
         depthWrite: false
       })
     );
@@ -1896,131 +2298,119 @@
     bg.userData.profileGalaxyGenerated = true;
     scene.add(bg);
 
-    const core = new THREE.Mesh(
-      new THREE.OctahedronGeometry(state.isAdmin ? 1.48 : 1.22, 1),
-      new THREE.MeshPhysicalMaterial({
-        color: state.isAdmin ? 0xffdf8a : 0xf0c96a,
-        emissive: state.isAdmin ? 0xffdf8a : 0xf0c96a,
-        emissiveIntensity: state.isAdmin ? 0.9 : 0.65,
-        metalness: 0.08,
-        roughness: 0.18,
-        transparent: true,
-        opacity: 0.95
-      })
-    );
+    const sun = makeSunCore();
+    sun.group.userData.profileGalaxyGenerated = true;
+    scene.add(sun.group);
 
-    core.userData.profileGalaxyGenerated = true;
-    scene.add(core);
-
-    const coreGlow = makeGlowSprite(
-      state.isAdmin ? '#ffdf8a' : '#f0c96a',
-      state.isAdmin ? 8 : 6,
-      state.isAdmin ? 0.42 : 0.32
-    );
-
-    coreGlow.userData.profileGalaxyGenerated = true;
-    scene.add(coreGlow);
-
-    state.three.nodes.push({ mesh: core, glow: coreGlow, baseY: 0 });
+    state.three.nodes.push({
+      mesh: sun.group,
+      glow: sun.primaryGlow,
+      extraObjects: sun.extras,
+      baseY: 0,
+      isSun: true
+    });
 
     const items = ecosystemItems.filter(item => !item.adminOnly || state.isAdmin);
-    const radius = state.isAdmin ? 12 : 10.5;
+    const baseRadius = state.isAdmin ? 10.8 : 9.2;
 
     items.forEach((item, index) => {
-      const angle = -Math.PI / 2 + (Math.PI * 2 * index) / items.length;
-      const x = Math.cos(angle) * radius;
-      const z = Math.sin(angle) * radius;
-      const y = Math.sin(angle * 2) * 1.35;
       const color = new THREE.Color(item.color);
 
+      const orbitRadius = baseRadius + (index % 4) * 2.15;
+      const orbitTiltX = -0.34 + (index % 5) * 0.16;
+      const orbitTiltZ = -0.22 + (index % 4) * 0.14;
+      const orbitSpeed = 0.10 + (index % 3) * 0.022;
+      const baseAngle = -Math.PI / 2 + (Math.PI * 2 * index) / items.length;
+
+      const orbitLine = makeOrbitRing(
+        orbitRadius,
+        item.color,
+        item.adminOnly ? 0.13 : 0.07,
+        orbitTiltX,
+        orbitTiltZ
+      );
+
+      orbitLine.userData.profileGalaxyGenerated = true;
+      scene.add(orbitLine);
+
       const mesh = new THREE.Mesh(
-        new THREE.SphereGeometry(item.adminOnly ? 0.52 : 0.38, 22, 22),
+        new THREE.SphereGeometry(item.adminOnly ? 0.62 : 0.48, 24, 24),
         new THREE.MeshPhysicalMaterial({
           color,
           emissive: color,
-          emissiveIntensity: item.adminOnly ? 0.95 : 0.55,
-          metalness: 0.08,
+          emissiveIntensity: item.adminOnly ? 0.95 : 0.58,
+          metalness: 0.07,
           roughness: 0.24,
           transparent: true,
-          opacity: item.adminOnly ? 0.98 : 0.9
+          opacity: 0.95
         })
       );
 
-      mesh.position.set(x, y, z);
       mesh.userData.profileGalaxyGenerated = true;
       mesh.userData.href = item.href;
       mesh.userData.name = item.name;
 
       const glow = makeGlowSprite(
         item.color,
-        item.adminOnly ? 3.1 : 2.0,
-        item.adminOnly ? 0.52 : 0.28
-      );
-
-      glow.position.copy(mesh.position);
-      glow.userData.profileGalaxyGenerated = true;
-
-      const nebula = makeNebulaCluster(
-        item.color,
-        item.adminOnly ? 3.8 : 2.9,
+        item.adminOnly ? 2.9 : 2.2,
         item.adminOnly ? 0.34 : 0.22
       );
 
-      nebula.position.copy(mesh.position);
+      glow.userData.profileGalaxyGenerated = true;
+      glow.userData.baseOpacity = item.adminOnly ? 0.34 : 0.22;
+
+      const nebula = makeNebulaCluster(
+        item.color,
+        item.adminOnly ? 3.2 : 2.55,
+        item.adminOnly ? 0.22 : 0.16
+      );
+
       nebula.userData.profileGalaxyGenerated = true;
 
+      const satellite = makeSatelliteSystem(item.color, item.adminOnly ? 2.2 : 1.7);
+      satellite.group.userData.profileGalaxyGenerated = true;
+
       const label = makeTextSprite(item.name, item.color);
-      label.position.set(x, y + 1.35, z);
-      label.scale.set(4.2, 1, 1);
+      label.scale.set(4.4, 1, 1);
       label.userData.profileGalaxyGenerated = true;
 
       scene.add(mesh);
       scene.add(glow);
       scene.add(nebula);
+      scene.add(satellite.group);
       scene.add(label);
-
-      const line = makeCurveLine(
-        new THREE.Vector3(0, 0, 0),
-        new THREE.Vector3(x * 0.45, y + 2.4, z * 0.45),
-        new THREE.Vector3(x, y, z),
-        item.color,
-        item.adminOnly ? 0.24 : 0.13
-      );
-
-      line.userData.profileGalaxyGenerated = true;
-      scene.add(line);
 
       state.three.nodes.push({
         mesh,
         glow,
         nebula,
         label,
-        line,
+        orbitLine,
+        satelliteSystem: satellite.group,
+        satellitePivots: satellite.pivots,
         item,
-        baseY: y,
-        nebulaDrift: Math.random() * Math.PI * 2
+        orbitRadius,
+        orbitTiltX,
+        orbitTiltZ,
+        orbitSpeed,
+        baseAngle,
+        verticalFloat: 0.1 + (index % 2) * 0.04,
+        baseY: 0
       });
     });
-
-    addOrbitLine(radius, '#f0c96a', 0.065);
-    addOrbitLine(radius * 0.62, '#54c6ee', 0.048);
   }
 
-  function addOrbitLine(radius, color, opacity) {
+  function makeOrbitRing(radius, color, opacity, tiltX = 0, tiltZ = 0) {
     const THREE = state.three.THREE;
-    const scene = state.three.scene;
+    const points = [];
 
-    if (!THREE || !scene) return;
-
-    const pts = [];
-
-    for (let i = 0; i <= 160; i++) {
-      const a = (i / 160) * Math.PI * 2;
-      pts.push(new THREE.Vector3(Math.cos(a) * radius, 0, Math.sin(a) * radius));
+    for (let i = 0; i <= 180; i++) {
+      const a = (i / 180) * Math.PI * 2;
+      points.push(new THREE.Vector3(Math.cos(a) * radius, 0, Math.sin(a) * radius));
     }
 
     const line = new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints(pts),
+      new THREE.BufferGeometry().setFromPoints(points),
       new THREE.LineBasicMaterial({
         color: new THREE.Color(color),
         transparent: true,
@@ -2029,51 +2419,216 @@
       })
     );
 
+    line.rotation.x = tiltX;
+    line.rotation.z = tiltZ;
     line.userData.profileGalaxyGenerated = true;
-    scene.add(line);
+
+    return line;
   }
 
-  function makeCurveLine(a, b, c, color, opacity) {
+  function makeDustCloud(color, radius, count = 140, opacity = 0.16) {
     const THREE = state.three.THREE;
-    const curve = new THREE.CatmullRomCurve3([a, b, c]);
+    const positions = new Float32Array(count * 3);
 
-    return new THREE.Line(
-      new THREE.BufferGeometry().setFromPoints(curve.getPoints(44)),
-      new THREE.LineBasicMaterial({
+    for (let i = 0; i < count; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const spread = radius * (0.2 + Math.random() * 0.9);
+      const y = (Math.random() - 0.5) * radius * 0.55;
+      const wobble = 0.75 + Math.random() * 0.6;
+
+      positions[i * 3] = Math.cos(angle) * spread * wobble;
+      positions[i * 3 + 1] = y;
+      positions[i * 3 + 2] = Math.sin(angle) * spread;
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+    const dust = new THREE.Points(
+      geo,
+      new THREE.PointsMaterial({
         color: new THREE.Color(color),
+        size: Math.max(0.045, radius * 0.03),
         transparent: true,
-        opacity
+        opacity,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
       })
     );
+
+    dust.userData.profileGalaxyGenerated = true;
+    dust.userData.baseOpacity = opacity;
+
+    return dust;
   }
 
   function makeNebulaCluster(color, scale, opacity) {
-    const THREE = state.three.THREE;
-    const group = new THREE.Group();
+    const group = new state.three.THREE.Group();
 
-    const offsets = [
-      { x: -0.4, y: 0.12, z: 0.14, size: scale * 1.05 },
-      { x: 0.46, y: -0.14, z: -0.08, size: scale * 0.88 },
-      { x: 0.08, y: 0.34, z: -0.16, size: scale * 0.72 }
+    const layers = [
+      { x: -0.55, y: 0.18, z: 0.16, size: scale * 1.5, alpha: opacity * 0.85 },
+      { x: 0.62, y: -0.12, z: -0.22, size: scale * 1.15, alpha: opacity * 0.72 },
+      { x: 0.12, y: 0.36, z: -0.18, size: scale * 0.95, alpha: opacity * 0.58 },
+      { x: -0.18, y: -0.38, z: 0.10, size: scale * 0.85, alpha: opacity * 0.50 }
     ];
 
-    offsets.forEach((offset, idx) => {
-      const sprite = makeGlowSprite(color, offset.size, opacity * (idx === 0 ? 1 : 0.82));
-      sprite.position.set(offset.x, offset.y, offset.z);
+    layers.forEach(layer => {
+      const sprite = makeGlowSprite(color, layer.size, layer.alpha);
+      sprite.position.set(layer.x, layer.y, layer.z);
+      sprite.userData.baseOpacity = layer.alpha;
       group.add(sprite);
     });
+
+    const dustA = makeDustCloud(color, scale * 1.2, 130, opacity * 0.65);
+    dustA.userData.baseOpacity = opacity * 0.65;
+    group.add(dustA);
+
+    const dustB = makeDustCloud(color, scale * 0.8, 90, opacity * 0.42);
+    dustB.rotation.x = Math.PI / 5;
+    dustB.userData.baseOpacity = opacity * 0.42;
+    group.add(dustB);
+
+    const ringA = makeOrbitRing(scale * 0.8, color, opacity * 0.22, Math.PI / 3, Math.PI / 9);
+    ringA.userData.baseOpacity = opacity * 0.22;
+    group.add(ringA);
+
+    const ringB = makeOrbitRing(scale * 1.05, color, opacity * 0.15, Math.PI / 6, -Math.PI / 5);
+    ringB.userData.baseOpacity = opacity * 0.15;
+    group.add(ringB);
+
+    group.userData.profileGalaxyGenerated = true;
 
     return group;
   }
 
+  function makeSatelliteSystem(color, radius = 1.8) {
+    const THREE = state.three.THREE;
+    const group = new THREE.Group();
+    const pivots = [];
+    const moonCount = 2 + Math.floor(Math.random() * 2);
+
+    for (let i = 0; i < moonCount; i++) {
+      const orbitRadius = radius * (0.62 + i * 0.34);
+      const orbitTiltX = (Math.PI / 10) * (i % 2 === 0 ? 1 : -1);
+      const orbitTiltZ = (Math.PI / 8) * (i % 3 === 0 ? -1 : 1);
+
+      const orbitRing = makeOrbitRing(
+        orbitRadius,
+        color,
+        0.16,
+        orbitTiltX,
+        orbitTiltZ
+      );
+
+      group.add(orbitRing);
+
+      const pivot = new THREE.Object3D();
+      pivot.rotation.x = orbitTiltX;
+      pivot.rotation.z = orbitTiltZ;
+      pivot.userData.speed = 0.008 + i * 0.0025;
+      pivot.userData.wobble = 0.0004 + i * 0.0002;
+
+      const moonSize = 0.08 + i * 0.035;
+
+      const moon = new THREE.Mesh(
+        new THREE.SphereGeometry(moonSize, 14, 14),
+        new THREE.MeshPhysicalMaterial({
+          color: new THREE.Color(color).offsetHSL(0.03 * i, 0.03, 0.08),
+          emissive: new THREE.Color(color),
+          emissiveIntensity: 0.28 + i * 0.06,
+          roughness: 0.35,
+          metalness: 0.06
+        })
+      );
+
+      moon.position.set(orbitRadius, 0, 0);
+      moon.userData.profileGalaxyGenerated = true;
+
+      const moonGlow = makeGlowSprite(color, 0.55 + i * 0.22, 0.12 + i * 0.03);
+      moonGlow.position.copy(moon.position);
+
+      pivot.add(moon);
+      pivot.add(moonGlow);
+      group.add(pivot);
+      pivots.push(pivot);
+    }
+
+    group.userData.profileGalaxyGenerated = true;
+
+    return { group, pivots };
+  }
+
+  function makeSunCore() {
+    const THREE = state.three.THREE;
+    const group = new THREE.Group();
+
+    const core = new THREE.Mesh(
+      new THREE.SphereGeometry(1.9, 30, 30),
+      new THREE.MeshPhysicalMaterial({
+        color: 0xffd36b,
+        emissive: 0xffc247,
+        emissiveIntensity: 1.25,
+        roughness: 0.18,
+        metalness: 0.04,
+        transparent: true,
+        opacity: 0.98
+      })
+    );
+
+    core.userData.profileGalaxyGenerated = true;
+
+    const outer = new THREE.Mesh(
+      new THREE.SphereGeometry(2.45, 26, 26),
+      new THREE.MeshBasicMaterial({
+        color: 0xffd36b,
+        transparent: true,
+        opacity: 0.08
+      })
+    );
+
+    outer.userData.profileGalaxyGenerated = true;
+
+    const innerGlow = makeGlowSprite('#ffd76d', 6.5, 0.44);
+    innerGlow.userData.baseOpacity = 0.44;
+
+    const outerGlow = makeGlowSprite('#ffb347', 10.5, 0.22);
+    outerGlow.userData.baseOpacity = 0.22;
+
+    const coronaDust = makeDustCloud('#ffd76d', 3.6, 220, 0.22);
+    const coronaDust2 = makeDustCloud('#ffb347', 4.4, 170, 0.14);
+    coronaDust2.rotation.x = Math.PI / 5;
+
+    const coronaRingA = makeOrbitRing(3.0, '#ffd76d', 0.12, Math.PI / 6, Math.PI / 8);
+    const coronaRingB = makeOrbitRing(3.8, '#ffb347', 0.08, -Math.PI / 5, Math.PI / 10);
+
+    group.add(core);
+    group.add(outer);
+    group.add(innerGlow);
+    group.add(outerGlow);
+    group.add(coronaDust);
+    group.add(coronaDust2);
+    group.add(coronaRingA);
+    group.add(coronaRingB);
+
+    group.userData.profileGalaxyGenerated = true;
+
+    return {
+      group,
+      primaryGlow: innerGlow,
+      extras: [outerGlow, coronaDust, coronaDust2, coronaRingA, coronaRingB]
+    };
+  }
+
   function makeGlowSprite(color, size, opacity) {
     const THREE = state.three.THREE;
+
     const c = document.createElement('canvas');
     c.width = 96;
     c.height = 96;
 
     const ctx = c.getContext('2d');
     const col = new THREE.Color(color);
+
     const r = Math.round(col.r * 255);
     const g = Math.round(col.g * 255);
     const b = Math.round(col.b * 255);
@@ -2100,16 +2655,21 @@
     );
 
     sprite.scale.setScalar(size);
+    sprite.userData.profileGalaxyGenerated = true;
+    sprite.userData.baseOpacity = opacity;
+
     return sprite;
   }
 
   function makeTextSprite(text, color) {
     const THREE = state.three.THREE;
+
     const c = document.createElement('canvas');
     c.width = 512;
     c.height = 128;
 
     const ctx = c.getContext('2d');
+
     ctx.clearRect(0, 0, c.width, c.height);
     ctx.font = "800 34px 'DM Sans', system-ui, sans-serif";
     ctx.textAlign = 'center';
@@ -2122,13 +2682,17 @@
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
 
-    return new THREE.Sprite(
+    const sprite = new THREE.Sprite(
       new THREE.SpriteMaterial({
         map: tex,
         transparent: true,
         depthWrite: false
       })
     );
+
+    sprite.userData.profileGalaxyGenerated = true;
+
+    return sprite;
   }
 
   function resizeProfileGalaxy() {
