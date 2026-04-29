@@ -475,13 +475,15 @@
     renderRewardsPanel();
     renderEcosystem();
     renderLessonPath();
-    await initProfileGalaxy();
 
+    await initProfileGalaxy();
     await setupSupabaseClient();
 
     if (!supabaseClient) {
       setSessionState(
-        'Supabase is not configured yet. Guest/local profile mode is active.',
+        isSupabaseConfigured
+          ? 'Supabase library is not ready. Guest/local profile mode is active.'
+          : 'Supabase is not configured yet. Guest/local profile mode is active.',
         'warning'
       );
       return;
@@ -617,6 +619,7 @@
     if (tone === 'good') el.classList.add('is-good');
     if (tone === 'warning') el.classList.add('is-warning');
     if (tone === 'bad') el.classList.add('is-bad');
+
     el.textContent = message;
   }
 
@@ -710,6 +713,7 @@
 
     try {
       setSessionState('Creating profile...');
+
       const baseName = displayName || email.split('@')[0];
 
       const { data, error } = await supabaseClient.auth.signUp({
@@ -760,12 +764,14 @@
       state.isAdmin = false;
 
       setSessionState('Signed out. Guest/local profile mode is active.', 'warning');
+
       renderProfileFromCache();
       renderDashboard();
       renderRewardsPanel();
       renderEcosystem();
       renderLessonPath();
       rebuildProfileGalaxyForRole();
+
       showToast('Signed out.');
     } catch (err) {
       console.error(err);
@@ -783,11 +789,13 @@
       await loadOrCreateProfile();
       await loadManagedContent();
       await loadRemoteProgress();
+
       renderDashboard();
       renderRewardsPanel();
       renderEcosystem();
       renderLessonPath();
       rebuildProfileGalaxyForRole();
+
       showToast('Profile synced.');
     } catch (err) {
       console.error(err);
@@ -816,6 +824,7 @@
           'Wayfinder';
 
         const baseHandle = normalizeHandle(user.user_metadata?.handle || displayName);
+
         const safeHandle = baseHandle
           ? `${baseHandle}_${String(user.id).slice(0, 8)}`
           : `wayfinder_${String(user.id).slice(0, 8)}`;
@@ -846,13 +855,17 @@
         profile = inserted;
       }
 
-      if (profile && isDataImage(profile.avatar_url)) profile.avatar_url = null;
+      if (profile && isDataImage(profile.avatar_url)) {
+        profile.avatar_url = null;
+      }
+
       if (profile && (!profile.home_realm || profile.home_realm === 'pikoverse')) {
         profile.home_realm = 'lkp';
       }
 
       state.profile = profile;
       state.isAdmin = ['admin', 'owner'].includes(profile.role);
+
       writeJSON(PROFILE_CACHE_KEY, profile);
 
       setSessionState(
@@ -896,7 +909,9 @@
           localStorage.setItem(MANA_KEY, String(state.mana));
         }
       } else {
-        const remoteMana = (data || []).reduce((sum, row) => sum + (row.mana || 0), 0);
+        const remoteMana = (data || []).reduce((sum, row) => {
+          return sum + (row.mana || 0);
+        }, 0);
 
         if (remoteMana > state.mana) {
           state.mana = remoteMana;
@@ -913,6 +928,7 @@
 
     try {
       const lesson = state.lessons.find(item => item.id === lessonId);
+
       const payload = {
         user_id: state.user.id,
         lesson_id: lessonId,
@@ -923,7 +939,9 @@
 
       const { error } = await supabaseClient
         .from('user_progress')
-        .upsert(payload, { onConflict: 'user_id,lesson_id,ecosystem' });
+        .upsert(payload, {
+          onConflict: 'user_id,lesson_id,ecosystem'
+        });
 
       if (error) throw error;
     } catch (err) {
@@ -961,9 +979,11 @@
     if (!state.user || !supabaseClient) {
       state.profile = localProfile;
       writeJSON(PROFILE_CACHE_KEY, localProfile);
+
       renderDashboard();
       renderRewardsPanel();
       rebuildProfileGalaxyForRole();
+
       showToast('Saved locally. Sign in with Supabase to sync.');
       return;
     }
@@ -986,16 +1006,21 @@
         .single();
 
       if (error) throw error;
-      if (data && isDataImage(data.avatar_url)) data.avatar_url = null;
+
+      if (data && isDataImage(data.avatar_url)) {
+        data.avatar_url = null;
+      }
 
       state.profile = data;
       state.isAdmin = ['admin', 'owner'].includes(data.role);
+
       writeJSON(PROFILE_CACHE_KEY, data);
 
       renderDashboard();
       renderRewardsPanel();
       renderEcosystem();
       rebuildProfileGalaxyForRole();
+
       showToast('Profile saved.');
     } catch (err) {
       console.error(err);
@@ -1023,14 +1048,21 @@
       }
 
       rewardSummary = window.LKPRewards.getProfileSummary?.({ recalculate: true });
-      if (rewardSummary && typeof rewardSummary.mana === 'number') state.mana = rewardSummary.mana;
+
+      if (rewardSummary && typeof rewardSummary.mana === 'number') {
+        state.mana = rewardSummary.mana;
+      }
     } else {
       const lesson = state.lessons.find(item => item.id === lessonId);
       const manaValue = lesson?.mana || 10;
-      state.mana = shouldComplete ? state.mana + manaValue : Math.max(0, state.mana - manaValue);
+
+      state.mana = shouldComplete
+        ? state.mana + manaValue
+        : Math.max(0, state.mana - manaValue);
     }
 
     localStorage.setItem(MANA_KEY, String(state.mana));
+
     await saveRemoteProgress(lessonId, shouldComplete);
 
     renderDashboard();
@@ -1050,11 +1082,17 @@
       readJSON(LEGACY_PROFILE_CACHE_KEY, null);
 
     if (cached && !state.profile) {
-      if (isDataImage(cached.avatar_url)) cached.avatar_url = null;
-      if (!cached.home_realm || cached.home_realm === 'pikoverse') cached.home_realm = 'lkp';
+      if (isDataImage(cached.avatar_url)) {
+        cached.avatar_url = null;
+      }
+
+      if (!cached.home_realm || cached.home_realm === 'pikoverse') {
+        cached.home_realm = 'lkp';
+      }
 
       state.profile = cached;
       state.isAdmin = ['admin', 'owner'].includes(cached.role);
+
       writeJSON(PROFILE_CACHE_KEY, cached);
     }
   }
@@ -1071,6 +1109,7 @@
         }
 
         const rewardSummary = window.LKPRewards.getProfileSummary?.({ recalculate: true });
+
         if (rewardSummary && typeof rewardSummary.mana === 'number') {
           state.mana = rewardSummary.mana;
           localStorage.setItem(MANA_KEY, String(state.mana));
@@ -1102,6 +1141,7 @@
 
     setText('#profileDisplayName', displayName);
     setText('#profileHandleLine', `@${handle}`);
+
     setText(
       '#profileRoleLine',
       isAdmin
@@ -1110,6 +1150,7 @@
           ? 'Signed-in wayfinder profile'
           : 'Guest/local profile mode'
     );
+
     setText('#passportRoleChip', isAdmin ? role.toUpperCase() : state.user ? 'USER' : 'GUEST');
     setText('#profileAvatarInitials', initialsFromName(displayName));
 
@@ -1189,9 +1230,17 @@
     setText('#rewardModules', summary.completedModuleCount || 0);
     setText('#rewardCultures', summary.completedCultureCount || 0);
 
-    const xrplReadyCount = (summary.claimRecords || []).filter(record => record.xrpl?.eligible).length;
+    const xrplReadyCount = (summary.claimRecords || []).filter(record => {
+      return record.xrpl?.eligible;
+    }).length;
+
     setText('#rewardClaims', xrplReadyCount);
-    setText('#rewardNextRank', next ? `Next: ${next.name} at ${next.minMana} Mana` : 'Highest rank reached');
+
+    setText(
+      '#rewardNextRank',
+      next ? `Next: ${next.name} at ${next.minMana} Mana` : 'Highest rank reached'
+    );
+
     setText('#rewardRankProgress', `${rankProgress}%`);
 
     const bar = $('#rewardRankBar');
@@ -1199,12 +1248,16 @@
 
     const checkBtn = $('#rewardCheckInBtn');
     if (checkBtn) {
-      checkBtn.textContent = summary.checkedInToday ? 'Checked In Today' : 'Daily Learning Check-In';
+      checkBtn.textContent = summary.checkedInToday
+        ? 'Checked In Today'
+        : 'Daily Learning Check-In';
+
       checkBtn.disabled = Boolean(summary.checkedInToday);
       checkBtn.classList.toggle('is-disabled', Boolean(summary.checkedInToday));
     }
 
     const badges = summary.badges || [];
+
     setHTML(
       '#rewardBadges',
       badges.length
@@ -1218,6 +1271,7 @@
     );
 
     const certificates = summary.certificates || [];
+
     setHTML(
       '#rewardCertificates',
       certificates.length
@@ -1237,6 +1291,7 @@
 
     const badges = [];
     badges.push({ icon: '◈', label: state.user ? 'Synced Profile' : 'Guest Mode' });
+
     if (progress >= 10) badges.push({ icon: '🌱', label: 'Path Starter' });
     if (progress >= 25) badges.push({ icon: '🌊', label: 'Current Rider' });
     if (progress >= 50) badges.push({ icon: '⭐', label: 'Star Reader' });
@@ -1257,12 +1312,17 @@
     if (!select) return;
 
     const cultures = new Map();
+
     state.lessons.forEach(lesson => {
-      if (lesson.cultureId && lesson.cultureName) cultures.set(lesson.cultureId, lesson.cultureName);
+      if (lesson.cultureId && lesson.cultureName) {
+        cultures.set(lesson.cultureId, lesson.cultureName);
+      }
     });
 
     const options = [...cultures.entries()]
-      .map(([id, name]) => `<option value="${escapeHTML(id)}">${escapeHTML(name)}</option>`)
+      .map(([id, name]) => {
+        return `<option value="${escapeHTML(id)}">${escapeHTML(name)}</option>`;
+      })
       .join('');
 
     select.innerHTML = `<option value="all">All Cultures</option>${options}`;
@@ -1300,6 +1360,7 @@
 
     if (state.filters.search) {
       const q = state.filters.search;
+
       lessons = lessons.filter(lesson => {
         return [
           lesson.title,
@@ -1310,7 +1371,10 @@
           lesson.content,
           lesson.leadText,
           lesson.excerpt
-        ].join(' ').toLowerCase().includes(q);
+        ]
+          .join(' ')
+          .toLowerCase()
+          .includes(q);
       });
     }
 
@@ -1473,6 +1537,7 @@
   function getGalaxySize() {
     const holder = getGalaxyHolder();
     const rect = holder?.getBoundingClientRect();
+
     return {
       width: Math.max(320, Math.round(rect?.width || 640)),
       height: Math.max(320, Math.round(rect?.height || 420))
@@ -1488,6 +1553,7 @@
 
     const canvas = event.currentTarget;
     const rect = canvas.getBoundingClientRect();
+
     const pointer = new THREE.Vector2(
       ((event.clientX - rect.left) / rect.width) * 2 - 1,
       -((event.clientY - rect.top) / rect.height) * 2 + 1
@@ -1527,12 +1593,17 @@
     state.three.nodes = [];
 
     const removable = scene.children.filter(child => child.userData?.profileGalaxyGenerated);
+
     removable.forEach(child => {
       scene.remove(child);
       child.geometry?.dispose?.();
+
       if (child.material) {
-        if (Array.isArray(child.material)) child.material.forEach(mat => mat.dispose?.());
-        else child.material.dispose?.();
+        if (Array.isArray(child.material)) {
+          child.material.forEach(mat => mat.dispose?.());
+        } else {
+          child.material.dispose?.();
+        }
       }
     });
   }
@@ -1634,7 +1705,12 @@
       mesh.userData.href = item.href;
       mesh.userData.name = item.name;
 
-      const glow = makeGlowSprite(item.color, item.adminOnly ? 3.1 : 2.0, item.adminOnly ? 0.52 : 0.28);
+      const glow = makeGlowSprite(
+        item.color,
+        item.adminOnly ? 3.1 : 2.0,
+        item.adminOnly ? 0.52 : 0.28
+      );
+
       glow.position.copy(mesh.position);
       glow.userData.profileGalaxyGenerated = true;
 
@@ -1774,8 +1850,10 @@
     if (!renderer || !camera) return;
 
     const { width, height } = getGalaxySize();
+
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.7));
     renderer.setSize(width, height, false);
   }

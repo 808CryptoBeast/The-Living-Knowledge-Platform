@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
 
   <title>The Living Knowledge Platform | Wayfinder Passport</title>
 
@@ -27,7 +30,10 @@
 
   <link rel="stylesheet" href="LKP/css/lkp-brand.css" />
   <link rel="stylesheet" href="LKP/css/profile.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
 
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script defer src="LKP/js/lkp-data.js"></script>
@@ -51,7 +57,7 @@
           class="profile-brand__logo"
           src="LKP/assets/images/LKP-2.png"
           alt="The Living Knowledge Platform"
-          onerror="this.style.display='none';this.parentElement.nextElementSibling.style.display='grid';"
+          onerror="this.style.display='none';document.querySelector('.profile-brand__sigil').style.display='grid';"
         />
       </span>
 
@@ -98,7 +104,11 @@
       </div>
 
       <div class="profile-hero__mark">
-        <img src="LKP/assets/images/LKP-1.png" alt="Ka Paepae 'Ike Ola" onerror="this.style.display='none';" />
+        <img
+          src="LKP/assets/images/LKP-1.png"
+          alt="Ka Paepae 'Ike Ola"
+          onerror="this.style.display='none';"
+        />
       </div>
     </section>
 
@@ -118,13 +128,28 @@
 
         <form id="profileAuthForm" class="profile-auth-form">
           <label for="authDisplayName">Display Name</label>
-          <input id="authDisplayName" type="text" autocomplete="name" placeholder="Wayfinder name" />
+          <input
+            id="authDisplayName"
+            type="text"
+            autocomplete="name"
+            placeholder="Wayfinder name"
+          />
 
           <label for="authEmail">Email</label>
-          <input id="authEmail" type="email" autocomplete="email" placeholder="you@email.com" />
+          <input
+            id="authEmail"
+            type="email"
+            autocomplete="email"
+            placeholder="you@email.com"
+          />
 
           <label for="authPassword">Password</label>
-          <input id="authPassword" type="password" autocomplete="current-password" placeholder="Your password" />
+          <input
+            id="authPassword"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Your password"
+          />
 
           <button class="profile-main-btn" type="submit">
             <i class="fas fa-user-astronaut"></i> Sign In
@@ -211,8 +236,8 @@
                 <span class="profile-eyebrow">Knowledge Galaxy</span>
                 <h2>Connected Realms</h2>
                 <p>
-                  The ecosystem map now lives in its own container, so the galaxy supports the dashboard
-                  without breaking the desktop layout.
+                  Your ecosystem map lives in this contained galaxy panel so the
+                  Three.js scene supports the dashboard without breaking desktop layout.
                 </p>
               </div>
 
@@ -231,7 +256,10 @@
           </div>
 
           <div class="rewards-rank-panel">
-            <div class="rewards-rank-orb"><span id="rewardRankIcon">🌱</span></div>
+            <div class="rewards-rank-orb">
+              <span id="rewardRankIcon">🌱</span>
+            </div>
+
             <div class="rewards-rank-copy">
               <span>Current Rank</span>
               <strong id="rewardRankName">Initiate</strong>
@@ -244,13 +272,24 @@
               <span id="rewardNextRank">Next rank loading...</span>
               <strong id="rewardRankProgress">0%</strong>
             </div>
-            <div class="rewards-progress-bar"><span id="rewardRankBar"></span></div>
+            <div class="rewards-progress-bar">
+              <span id="rewardRankBar"></span>
+            </div>
           </div>
 
           <div class="profile-stat-grid profile-stat-grid--rewards">
-            <div><strong id="rewardMana">0</strong><span>Mana</span></div>
-            <div><strong id="rewardXP">0</strong><span>XP</span></div>
-            <div><strong id="rewardStreak">0</strong><span>Streak</span></div>
+            <div>
+              <strong id="rewardMana">0</strong>
+              <span>Mana</span>
+            </div>
+            <div>
+              <strong id="rewardXP">0</strong>
+              <span>XP</span>
+            </div>
+            <div>
+              <strong id="rewardStreak">0</strong>
+              <span>Streak</span>
+            </div>
           </div>
 
           <button id="rewardCheckInBtn" class="profile-main-btn profile-main-btn--ghost" type="button">
@@ -258,9 +297,18 @@
           </button>
 
           <div class="rewards-mini-grid">
-            <div><strong id="rewardModules">0</strong><span>Modules Complete</span></div>
-            <div><strong id="rewardCultures">0</strong><span>Culture Paths</span></div>
-            <div><strong id="rewardClaims">0</strong><span>XRPL-Ready Records</span></div>
+            <div>
+              <strong id="rewardModules">0</strong>
+              <span>Modules Complete</span>
+            </div>
+            <div>
+              <strong id="rewardCultures">0</strong>
+              <span>Culture Paths</span>
+            </div>
+            <div>
+              <strong id="rewardClaims">0</strong>
+              <span>XRPL-Ready Records</span>
+            </div>
           </div>
 
           <div class="rewards-section-title">Badges</div>
@@ -328,7 +376,12 @@
             <input id="editAvatarUrl" type="url" placeholder="https://..." />
 
             <label for="editBio">Bio / Moʻolelo</label>
-            <textarea id="editBio" rows="4" maxlength="500" placeholder="Tell the story of your learning path..."></textarea>
+            <textarea
+              id="editBio"
+              rows="4"
+              maxlength="500"
+              placeholder="Tell the story of your learning path..."
+            ></textarea>
 
             <button class="profile-main-btn" type="submit">
               <i class="fas fa-floppy-disk"></i> Save Profile
@@ -347,7 +400,9 @@
 
           <div class="profile-filter-row">
             <input id="lessonSearch" type="search" placeholder="Search lessons..." />
-            <select id="lessonCultureFilter"><option value="all">All Cultures</option></select>
+            <select id="lessonCultureFilter">
+              <option value="all">All Cultures</option>
+            </select>
             <select id="lessonStatusFilter">
               <option value="all">All Status</option>
               <option value="completed">Completed</option>
@@ -398,17 +453,5 @@
       </section>
     </div>
   </main>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var mirror = document.getElementById("statProgressMirror");
-      var main = document.getElementById("statProgress");
-      if (!mirror || !main) return;
-      var sync = function () { mirror.textContent = main.textContent || "0%"; };
-      sync();
-      var obs = new MutationObserver(sync);
-      obs.observe(main, { childList: true, characterData: true, subtree: true });
-    });
-  </script>
 </body>
 </html>
