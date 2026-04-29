@@ -117,6 +117,8 @@
     </section>
 
     <div class="profile-layout">
+
+      <!-- ── Auth sidebar (guest only) ──────────────────────────────────── -->
       <aside class="profile-auth-card" id="authPanel">
         <div class="profile-card-head">
           <span class="profile-card-icon">◈</span>
@@ -166,7 +168,10 @@
         </p>
       </aside>
 
+      <!-- ── Main content ───────────────────────────────────────────────── -->
       <section class="profile-content">
+
+        <!-- Passport + Galaxy — always full width inside content -->
         <section class="profile-stage" aria-label="Profile passport and knowledge galaxy">
           <article class="profile-card profile-passport-card" id="passport">
             <div class="profile-passport-card__banner">
@@ -246,149 +251,192 @@
           </aside>
         </section>
 
-        <section class="profile-card profile-rewards-card" id="rewards">
-          <div class="profile-card-head">
-            <span class="profile-card-icon">◈</span>
-            <div>
-              <h2>Mana Rewards</h2>
-              <p>Internal learning rewards now. XRPL-ready proof records later.</p>
-            </div>
-          </div>
-
-          <div class="rewards-rank-panel">
-            <div class="rewards-rank-orb">
-              <span id="rewardRankIcon">🌱</span>
+        <!-- LEFT column — stacks its children with no row-height gaps -->
+        <div class="profile-col profile-col--left">
+          <section class="profile-card profile-rewards-card" id="rewards">
+            <div class="profile-card-head">
+              <span class="profile-card-icon">◈</span>
+              <div>
+                <h2>Mana Rewards</h2>
+                <p>Internal learning rewards now. XRPL-ready proof records later.</p>
+              </div>
             </div>
 
-            <div class="rewards-rank-copy">
-              <span>Current Rank</span>
-              <strong id="rewardRankName">Initiate</strong>
-              <p id="rewardRankDesc">Beginning the path of living knowledge.</p>
+            <div class="rewards-rank-panel">
+              <div class="rewards-rank-orb">
+                <span id="rewardRankIcon">🌱</span>
+              </div>
+
+              <div class="rewards-rank-copy">
+                <span>Current Rank</span>
+                <strong id="rewardRankName">Initiate</strong>
+                <p id="rewardRankDesc">Beginning the path of living knowledge.</p>
+              </div>
             </div>
-          </div>
 
-          <div class="rewards-progress-wrap">
-            <div class="rewards-progress-top">
-              <span id="rewardNextRank">Next rank loading...</span>
-              <strong id="rewardRankProgress">0%</strong>
+            <div class="rewards-progress-wrap">
+              <div class="rewards-progress-top">
+                <span id="rewardNextRank">Next rank loading...</span>
+                <strong id="rewardRankProgress">0%</strong>
+              </div>
+              <div class="rewards-progress-bar">
+                <span id="rewardRankBar"></span>
+              </div>
             </div>
-            <div class="rewards-progress-bar">
-              <span id="rewardRankBar"></span>
+
+            <div class="profile-stat-grid profile-stat-grid--rewards">
+              <div>
+                <strong id="rewardMana">0</strong>
+                <span>Mana</span>
+              </div>
+              <div>
+                <strong id="rewardXP">0</strong>
+                <span>XP</span>
+              </div>
+              <div>
+                <strong id="rewardStreak">0</strong>
+                <span>Streak</span>
+              </div>
             </div>
-          </div>
 
-          <div class="profile-stat-grid profile-stat-grid--rewards">
-            <div>
-              <strong id="rewardMana">0</strong>
-              <span>Mana</span>
-            </div>
-            <div>
-              <strong id="rewardXP">0</strong>
-              <span>XP</span>
-            </div>
-            <div>
-              <strong id="rewardStreak">0</strong>
-              <span>Streak</span>
-            </div>
-          </div>
-
-          <button id="rewardCheckInBtn" class="profile-main-btn profile-main-btn--ghost" type="button">
-            Daily Learning Check-In
-          </button>
-
-          <div class="rewards-mini-grid">
-            <div>
-              <strong id="rewardModules">0</strong>
-              <span>Modules Complete</span>
-            </div>
-            <div>
-              <strong id="rewardCultures">0</strong>
-              <span>Culture Paths</span>
-            </div>
-            <div>
-              <strong id="rewardClaims">0</strong>
-              <span>XRPL-Ready Records</span>
-            </div>
-          </div>
-
-          <div class="rewards-section-title">Badges</div>
-          <div id="rewardBadges" class="rewards-badge-grid">
-            <div class="profile-note">Complete your first lesson to earn your first badge.</div>
-          </div>
-
-          <div class="rewards-section-title">Certificates</div>
-          <div id="rewardCertificates" class="rewards-certificate-list">
-            <div class="profile-note">Complete a full module to generate your first certificate record.</div>
-          </div>
-        </section>
-
-        <section class="profile-card" id="access">
-          <div class="profile-card-head">
-            <span class="profile-card-icon">✦</span>
-            <div>
-              <h2>Access Layer</h2>
-              <p>Choose your home realm and view the meaning of each connected platform.</p>
-            </div>
-          </div>
-
-          <div id="realmWheel" class="profile-realm-wheel">
-            <button type="button" data-realm="lkp" class="is-active">◈ LKP</button>
-            <button type="button" data-realm="ikeverse">🌌 Ikeverse</button>
-            <button type="button" data-realm="digitalverse">⚡ Digitalverse</button>
-            <button type="button" data-realm="culturalverse">🌿 Culturalverse</button>
-            <button type="button" data-realm="ikestar">⭐ IkeStar</button>
-            <button type="button" data-realm="pikoverse">⬡ Pikoverse</button>
-          </div>
-
-          <p id="realmDescription" class="profile-realm-description">
-            The Living Knowledge Platform turns lessons into constellations, using star maps,
-            galaxies, and shared learning paths.
-          </p>
-        </section>
-
-        <section class="profile-card" id="edit">
-          <div class="profile-card-head">
-            <span class="profile-card-icon">✎</span>
-            <div>
-              <h2>Edit Profile</h2>
-              <p>Update your public Wayfinder identity.</p>
-            </div>
-          </div>
-
-          <form id="profileEditForm" class="profile-edit-form">
-            <label for="editDisplayName">Display Name</label>
-            <input id="editDisplayName" type="text" maxlength="80" placeholder="Your display name" />
-
-            <label for="editHandle">Handle</label>
-            <input id="editHandle" type="text" maxlength="40" placeholder="your-handle" />
-
-            <label for="editHomeRealm">Home Realm</label>
-            <select id="editHomeRealm">
-              <option value="lkp">The Living Knowledge Platform</option>
-              <option value="ikeverse">Ikeverse</option>
-              <option value="digitalverse">Digitalverse</option>
-              <option value="culturalverse">Culturalverse</option>
-              <option value="ikestar">IkeStar</option>
-              <option value="pikoverse">Pikoverse</option>
-            </select>
-
-            <label for="editAvatarUrl">Avatar URL</label>
-            <input id="editAvatarUrl" type="url" placeholder="https://..." />
-
-            <label for="editBio">Bio / Moʻolelo</label>
-            <textarea
-              id="editBio"
-              rows="4"
-              maxlength="500"
-              placeholder="Tell the story of your learning path..."
-            ></textarea>
-
-            <button class="profile-main-btn" type="submit">
-              <i class="fas fa-floppy-disk"></i> Save Profile
+            <button id="rewardCheckInBtn" class="profile-main-btn profile-main-btn--ghost" type="button">
+              Daily Learning Check-In
             </button>
-          </form>
-        </section>
 
+            <div class="rewards-mini-grid">
+              <div>
+                <strong id="rewardModules">0</strong>
+                <span>Modules Complete</span>
+              </div>
+              <div>
+                <strong id="rewardCultures">0</strong>
+                <span>Culture Paths</span>
+              </div>
+              <div>
+                <strong id="rewardClaims">0</strong>
+                <span>XRPL-Ready Records</span>
+              </div>
+            </div>
+
+            <div class="rewards-section-title">Badges</div>
+            <div id="rewardBadges" class="rewards-badge-grid">
+              <div class="profile-note">Complete your first lesson to earn your first badge.</div>
+            </div>
+
+            <div class="rewards-section-title">Certificates</div>
+            <div id="rewardCertificates" class="rewards-certificate-list">
+              <div class="profile-note">Complete a full module to generate your first certificate record.</div>
+            </div>
+          </section>
+
+          <section class="profile-card" id="ecosystem">
+            <div class="profile-card-head">
+              <span class="profile-card-icon">⬡</span>
+              <div>
+                <h2>Connected Knowledge Realms</h2>
+                <p>Move between the main learning platform and connected ecosystem sections.</p>
+              </div>
+            </div>
+
+            <div id="ecosystemGrid" class="profile-ecosystem-grid"></div>
+          </section>
+        </div>
+
+        <!-- RIGHT column — stacks its children with no row-height gaps -->
+        <div class="profile-col profile-col--right">
+          <section class="profile-card" id="access">
+            <div class="profile-card-head">
+              <span class="profile-card-icon">✦</span>
+              <div>
+                <h2>Access Layer</h2>
+                <p>Choose your home realm and view the meaning of each connected platform.</p>
+              </div>
+            </div>
+
+            <div id="realmWheel" class="profile-realm-wheel">
+              <button type="button" data-realm="lkp" class="is-active">◈ LKP</button>
+              <button type="button" data-realm="ikeverse">🌌 Ikeverse</button>
+              <button type="button" data-realm="digitalverse">⚡ Digitalverse</button>
+              <button type="button" data-realm="culturalverse">🌿 Culturalverse</button>
+              <button type="button" data-realm="ikestar">⭐ IkeStar</button>
+              <button type="button" data-realm="pikoverse">⬡ Pikoverse</button>
+            </div>
+
+            <p id="realmDescription" class="profile-realm-description">
+              The Living Knowledge Platform turns lessons into constellations, using star maps,
+              galaxies, and shared learning paths.
+            </p>
+          </section>
+
+          <section class="profile-card" id="edit">
+            <div class="profile-card-head">
+              <span class="profile-card-icon">✎</span>
+              <div>
+                <h2>Edit Profile</h2>
+                <p>Update your public Wayfinder identity.</p>
+              </div>
+            </div>
+
+            <form id="profileEditForm" class="profile-edit-form">
+              <label for="editDisplayName">Display Name</label>
+              <input id="editDisplayName" type="text" maxlength="80" placeholder="Your display name" />
+
+              <label for="editHandle">Handle</label>
+              <input id="editHandle" type="text" maxlength="40" placeholder="your-handle" />
+
+              <label for="editHomeRealm">Home Realm</label>
+              <select id="editHomeRealm">
+                <option value="lkp">The Living Knowledge Platform</option>
+                <option value="ikeverse">Ikeverse</option>
+                <option value="digitalverse">Digitalverse</option>
+                <option value="culturalverse">Culturalverse</option>
+                <option value="ikestar">IkeStar</option>
+                <option value="pikoverse">Pikoverse</option>
+              </select>
+
+              <label for="editAvatarUrl">Avatar URL</label>
+              <input id="editAvatarUrl" type="url" placeholder="https://..." />
+
+              <label for="editBio">Bio / Moʻolelo</label>
+              <textarea
+                id="editBio"
+                rows="4"
+                maxlength="500"
+                placeholder="Tell the story of your learning path..."
+              ></textarea>
+
+              <button class="profile-main-btn" type="submit">
+                <i class="fas fa-floppy-disk"></i> Save Profile
+              </button>
+            </form>
+          </section>
+
+          <section class="profile-card profile-admin-panel is-hidden" id="adminPanel">
+            <div class="profile-card-head">
+              <span class="profile-card-icon">👑</span>
+              <div>
+                <h2>Admin Control Deck</h2>
+                <p>Visible only for users with owner/admin role.</p>
+              </div>
+            </div>
+
+            <div class="profile-admin-grid">
+              <a href="admin.html" class="profile-admin-card">
+                <i class="fas fa-screwdriver-wrench"></i>
+                <strong>Open Admin Dashboard</strong>
+                <span>Manage lessons, galaxies, cultures, modules, and sources.</span>
+              </a>
+
+              <a href="lessons.html" class="profile-admin-card">
+                <i class="fas fa-book-open"></i>
+                <strong>Review Lessons</strong>
+                <span>Inspect the public lesson experience.</span>
+              </a>
+            </div>
+          </section>
+        </div>
+
+        <!-- Learning Path — always full width -->
         <section class="profile-card" id="path">
           <div class="profile-card-head">
             <span class="profile-card-icon">🌌</span>
@@ -415,41 +463,6 @@
           </div>
         </section>
 
-        <section class="profile-card" id="ecosystem">
-          <div class="profile-card-head">
-            <span class="profile-card-icon">⬡</span>
-            <div>
-              <h2>Connected Knowledge Realms</h2>
-              <p>Move between the main learning platform and connected ecosystem sections.</p>
-            </div>
-          </div>
-
-          <div id="ecosystemGrid" class="profile-ecosystem-grid"></div>
-        </section>
-
-        <section class="profile-card profile-admin-panel is-hidden" id="adminPanel">
-          <div class="profile-card-head">
-            <span class="profile-card-icon">👑</span>
-            <div>
-              <h2>Admin Control Deck</h2>
-              <p>Visible only for users with owner/admin role.</p>
-            </div>
-          </div>
-
-          <div class="profile-admin-grid">
-            <a href="admin.html" class="profile-admin-card">
-              <i class="fas fa-screwdriver-wrench"></i>
-              <strong>Open Admin Dashboard</strong>
-              <span>Manage lessons, galaxies, cultures, modules, and sources.</span>
-            </a>
-
-            <a href="lessons.html" class="profile-admin-card">
-              <i class="fas fa-book-open"></i>
-              <strong>Review Lessons</strong>
-              <span>Inspect the public lesson experience.</span>
-            </a>
-          </div>
-        </section>
       </section>
     </div>
   </main>

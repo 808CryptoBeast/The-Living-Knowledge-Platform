@@ -120,6 +120,8 @@
     mana: 0,
     lessons: [],
     contentData: null,
+    /* ── NEW: tracks whether the Supabase session check has fully resolved ── */
+    sessionReady: false,
     filters: {
       search: '',
       culture: 'all',
@@ -462,7 +464,16 @@
     return false;
   }
 
+  /* ── INIT ──────────────────────────────────────────────────────────────────
+     FIX: body gets 'profile-loading' immediately so the layout is hidden while
+     the async Supabase session check runs. This prevents the layout from
+     rendering in guest mode and then snapping to signed-in mode (or vice versa).
+     'profile-loading' is removed inside loadSession() via a finally block.
+  ──────────────────────────────────────────────────────────────────────────── */
   async function init() {
+    /* Hide the layout immediately — we reveal it once session is confirmed */
+    document.body.classList.add('profile-loading');
+
     state.completed = readJSON(COMPLETED_KEY, []);
     state.mana = parseInt(localStorage.getItem(MANA_KEY) || '0', 10) || 0;
 
@@ -471,7 +482,9 @@
     bindUI();
     populateCultureFilter();
     renderProfileFromCache();
-    renderDashboard();
+
+    /* Render non-layout UI (stats, lesson list, ecosystem links) without
+       committing layout-altering body classes yet */
     renderRewardsPanel();
     renderEcosystem();
     renderLessonPath();
@@ -480,6 +493,11 @@
     await setupSupabaseClient();
 
     if (!supabaseClient) {
+      /* No Supabase — reveal layout in guest mode immediately */
+      document.body.classList.remove('profile-loading');
+      state.sessionReady = true;
+      renderDashboard();
+
       setSessionState(
         isSupabaseConfigured
           ? 'Supabase library is not ready. Guest/local profile mode is active.'
@@ -489,6 +507,7 @@
       return;
     }
 
+    /* loadSession() removes 'profile-loading' in its finally block */
     await loadSession();
 
     supabaseClient.auth.onAuthStateChange(async (_event, session) => {
@@ -623,6 +642,11 @@
     el.textContent = message;
   }
 
+  /* ── loadSession ───────────────────────────────────────────────────────────
+     FIX: 'profile-loading' is always removed here via finally{}, regardless
+     of whether the session check succeeds or fails. The layout then fades in
+     with the correct classes already applied — no visible snap.
+  ──────────────────────────────────────────────────────────────────────────── */
   async function loadSession() {
     try {
       const { data, error } = await supabaseClient.auth.getSession();
@@ -640,6 +664,7 @@
         await loadManagedContent();
       }
 
+      state.sessionReady = true;
       renderDashboard();
       renderRewardsPanel();
       renderEcosystem();
@@ -647,7 +672,12 @@
       rebuildProfileGalaxyForRole();
     } catch (err) {
       console.error(err);
+      state.sessionReady = true;
+      renderDashboard();
       setSessionState('Could not load Supabase session. Guest mode active.', 'warning');
+    } finally {
+      /* Always reveal the layout once session state is known */
+      document.body.classList.remove('profile-loading');
     }
   }
 
