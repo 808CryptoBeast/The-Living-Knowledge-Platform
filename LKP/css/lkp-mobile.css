@@ -1806,3 +1806,77 @@ code {
     transition-duration: 0.12s !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE NAV PATCH — Six Button Bottom Nav
+   Home / Lessons / Galaxy / Data / About / Profile
+═══════════════════════════════════════════════════════════════════════════ */
+
+.lkp-m-nav {
+  height: calc(70px + var(--m-safe-b));
+}
+
+.lkp-m-panels {
+  padding-bottom: calc(70px + var(--m-safe-b));
+}
+
+.lkp-m-panel {
+  padding-bottom: calc(70px + var(--m-safe-b) + 26px);
+}
+
+.lkp-m-nav__btn {
+  min-width: 0;
+  flex: 1 1 0;
+  gap: 3px;
+  padding: 7px 2px 4px;
+}
+
+.lkp-m-nav__icon {
+  font-size: 16px;
+  line-height: 1;
+}
+
+.lkp-m-nav__label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 8.6px;
+  font-weight: 800;
+  letter-spacing: 0.015em;
+  white-space: nowrap;
+}
+
+.lkp-m-nav__btn[data-tab="about"] {
+  color: rgba(240, 201, 106, 0.72);
+}
+
+.lkp-m-nav__btn[data-tab="profile"] {
+  color: rgba(84, 198, 238, 0.72);
+}
+
+.lkp-m-nav__btn[data-tab="about"]:active,
+.lkp-m-nav__btn[data-tab="profile"]:active {
+  transform: scale(0.94);
+}
+
+/* Very small phones: keep all six icons visible and simplify labels */
+@media (max-width: 380px) {
+  .lkp-m-nav__icon {
+    font-size: 15px;
+  }
+
+  .lkp-m-nav__label {
+    font-size: 7.7px;
+    letter-spacing: 0;
+  }
+}
+
+@media (max-width: 340px) {
+  .lkp-m-nav__label {
+    display: none;
+  }
+
+  .lkp-m-nav__icon {
+    font-size: 17px;
+  }
+}

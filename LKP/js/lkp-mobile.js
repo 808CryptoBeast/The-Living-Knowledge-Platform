@@ -2146,87 +2146,171 @@
     sheet.setAttribute('aria-hidden', 'true');
   }
 
-  /* ────────────────────────────────────────────────────────────────────────
-     NAV + TABS
-  ──────────────────────────────────────────────────────────────────────── */
+  /* ─────────────────────────────────────────────────────────────────────────
+   BOTTOM NAV
+   Mobile app shell navigation.
+   Tabs stay inside the mobile app.
+   Links open real pages like about.html and profile.html.
+───────────────────────────────────────────────────────────────────────── */
 
-  function buildBottomNav() {
-    const nav = document.getElementById('lkp-m-nav');
+const NAV_TABS = [
+  {
+    id: 'home',
+    icon: 'fa-house',
+    glyph: '◈',
+    label: 'Home',
+    type: 'tab'
+  },
+  {
+    id: 'galaxies',
+    icon: 'fa-circle-nodes',
+    glyph: '✦',
+    label: 'Lessons',
+    type: 'tab'
+  },
+  {
+    id: 'chart',
+    icon: 'fa-star',
+    glyph: '✧',
+    label: 'Galaxy',
+    type: 'tab'
+  },
+  {
+    id: 'ecosystem',
+    icon: 'fa-database',
+    glyph: '☷',
+    label: 'Data',
+    type: 'tab'
+  },
+  {
+    id: 'about',
+    icon: 'fa-circle-info',
+    glyph: 'ⓘ',
+    label: 'About',
+    type: 'link',
+    href: 'about.html'
+  },
+  {
+    id: 'profile',
+    icon: 'fa-user-astronaut',
+    glyph: '👤',
+    label: 'Profile',
+    type: 'link',
+    href: 'profile.html'
+  }
+];
 
-    const items = [
-      { id: 'home', label: 'Home', icon: '◈' },
-      { id: 'galaxies', label: 'Lessons', icon: '✦' },
-      { id: 'chart', label: 'Galaxy', icon: '✧' },
-      { id: 'ecosystem', label: 'Data', icon: '☷' },
-      { id: 'profile', label: 'Profile', icon: '👤' }
-    ];
+function buildBottomNav() {
+  const nav = document.getElementById('lkp-m-nav');
+  if (!nav) return;
 
-    nav.innerHTML = items.map(item => `
-      <button class="lkp-m-nav__btn" data-tab="${item.id}" aria-label="${item.label}">
-        <span class="lkp-m-nav__icon">${item.icon}</span>
+  nav.innerHTML = NAV_TABS.map(item => {
+    const activeClass = item.type === 'tab' && item.id === activeTab ? 'is-active' : '';
+    const hrefAttr = item.href ? `data-href="${item.href}"` : '';
+
+    return `
+      <button
+        class="lkp-m-nav__btn ${activeClass}"
+        data-tab="${item.id}"
+        data-type="${item.type}"
+        ${hrefAttr}
+        aria-label="${item.label}"
+        type="button"
+      >
+        <i class="fas ${item.icon} lkp-m-nav__icon" aria-hidden="true"></i>
         <span class="lkp-m-nav__label">${item.label}</span>
-      </button>`).join('');
+      </button>
+    `;
+  }).join('');
 
-    bindTabButtons(nav);
+  nav.querySelectorAll('.lkp-m-nav__btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const href = btn.dataset.href;
+      const type = btn.dataset.type;
+      const tab = btn.dataset.tab;
+
+      if (type === 'link' && href) {
+        window.location.href = href;
+        return;
+      }
+
+      switchTab(tab);
+    });
+  });
+}
+
+function switchTab(tabId) {
+  const panel = document.querySelector(`.lkp-m-panel[data-panel="${tabId}"]`);
+
+  /*
+    Safety fallback:
+    If a future nav item is clicked but no matching panel exists,
+    route to the correct page instead of leaving the app blank.
+  */
+  if (!panel) {
+    if (tabId === 'about') {
+      window.location.href = 'about.html';
+      return;
+    }
+
+    if (tabId === 'profile') {
+      window.location.href = 'profile.html';
+      return;
+    }
+
+    if (tabId === 'lessons') {
+      window.location.href = 'lessons.html';
+      return;
+    }
+
+    return;
   }
 
-  function switchTab(tab) {
-    activeTab = tab;
-    closeSheet();
+  activeTab = tabId;
+  closeSheet();
 
-    document.querySelectorAll('.lkp-m-panel').forEach(panel => {
-      panel.classList.toggle('is-active', panel.dataset.panel === tab);
-    });
+  document.querySelectorAll('.lkp-m-panel').forEach(p => {
+    p.classList.toggle('is-active', p.dataset.panel === tabId);
+  });
 
-    document.querySelectorAll('.lkp-m-nav__btn').forEach(btn => {
-      btn.classList.toggle('is-active', btn.dataset.tab === tab);
-    });
+  document.querySelectorAll('.lkp-m-nav__btn').forEach(btn => {
+    const isTab = btn.dataset.type === 'tab';
+    btn.classList.toggle('is-active', isTab && btn.dataset.tab === tabId);
+  });
 
-    if (tab === 'galaxies') {
-      requestAnimationFrame(() => {
-        const scroller = document.getElementById('lkp-m-galaxy-scroll');
-        const card = scroller?.querySelector(`[data-galaxy-card="${activeGalaxy}"]`);
+  if (tabId === 'galaxies') {
+    requestAnimationFrame(() => {
+      if (typeof scrollToGalaxy === 'function') {
+        scrollToGalaxy(activeGalaxy);
+      }
 
-        card?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      const scroller = document.getElementById('lkp-m-galaxy-scroll');
+      const card = scroller?.querySelector(`[data-galaxy-card="${activeGalaxy}"]`);
+
+      card?.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest'
+      });
+
+      if (typeof updateDotsFromScroll === 'function') {
         updateDotsFromScroll();
-      });
-    }
-
-    if (tab === 'chart') {
-      requestAnimationFrame(() => {
-        initMobileThreeLessonGalaxy();
-        resizeMobileThreeGalaxy();
-      });
-    }
-
-    if (tab === 'profile') {
-      buildProfilePanel();
-    }
-  }
-
-  function initSwipe() {
-    const scroller = document.getElementById('lkp-m-galaxy-scroll');
-
-    if (scroller) {
-      let ticking = false;
-
-      scroller.addEventListener('scroll', () => {
-        if (ticking) return;
-
-        ticking = true;
-
-        requestAnimationFrame(() => {
-          updateDotsFromScroll();
-          ticking = false;
-        });
-      }, { passive: true });
-    }
-
-    window.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && sheetOpen) closeSheet();
+      }
     });
   }
 
+  if (tabId === 'chart') {
+    requestAnimationFrame(() => {
+      if (typeof initMobileThreeLessonGalaxy === 'function') {
+        initMobileThreeLessonGalaxy();
+      }
+
+      if (typeof resizeMobileThreeGalaxy === 'function') {
+        resizeMobileThreeGalaxy();
+      }
+    });
+  }
+}
   /* ────────────────────────────────────────────────────────────────────────
      INIT
   ──────────────────────────────────────────────────────────────────────── */
