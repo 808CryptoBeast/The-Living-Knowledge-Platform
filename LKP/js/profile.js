@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   THE LIVING KNOWLEDGE PLATFORM — WAYFINDER PASSPORT
+   THE LIVING KNOWLEDGE PLATFORM — Wayfinder Passport
    File: LKP/js/profile.js
 
    Includes:
@@ -14,6 +14,13 @@
    - Distant galaxies, dust/gas, mini orbiting planets
    - Click-to-focus realm preview
    - Reset View / Center Sun / Open Realm chips
+
+   FIXES:
+   - Galaxy: updateGalaxyCamera now only lerps during active transitions,
+     so the user can freely zoom, rotate, and pan without the camera
+     fighting back every frame.
+   - Lessons: added lkp:data-ready fallback so lesson data loads even if
+     CULTURALVERSE_DATA isn't on window at the exact moment init() runs.
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -21,7 +28,6 @@
 
   /* ═══════════════════════════════════════════════════════════════════════
      SUPABASE CONFIG
-     Replace the anon key below if needed.
   ═══════════════════════════════════════════════════════════════════════ */
 
   const SUPABASE_URL =
@@ -345,7 +351,11 @@
       defaultCameraPos: null,
       defaultTarget: null,
       focusCameraPos: null,
-      focusTarget: null
+      focusTarget: null,
+
+      /* ── FIX: flag so camera only lerps during explicit transitions,
+         not every frame — this is what was blocking free zoom/pan ── */
+      isTransitioning: false
     }
   };
 
@@ -497,10 +507,6 @@
     if (url.length > 2000) return '';
 
     return url;
-  }
-
-  function clamp(num, min, max) {
-    return Math.max(min, Math.min(max, num));
   }
 
   function getThemeMeta() {
@@ -1856,14 +1862,14 @@
       renderer.outputColorSpace = THREE.SRGBColorSpace;
 
       const controls = new OrbitControls(camera, canvas);
-      controls.enablePan = false;
+      controls.enablePan = true;          // allow full pan
+      controls.enableZoom = true;         // allow zoom
       controls.enableDamping = true;
       controls.dampingFactor = 0.065;
       controls.rotateSpeed = 0.42;
       controls.zoomSpeed = 0.85;
-      controls.enableZoom = true;
-      controls.minDistance = 16;
-      controls.maxDistance = 92;
+      controls.minDistance = 6;           // closer zoom-in
+      controls.maxDistance = 120;         // further zoom-out
       controls.autoRotate = true;
       controls.autoRotateSpeed = 0.22;
       controls.target.set(0, 0, 0);
@@ -1917,9 +1923,11 @@
         hideGalaxyTooltip();
       });
 
+      // Prevent wheel events from scrolling the page while inside the galaxy
       canvas.addEventListener(
         'wheel',
         event => {
+          event.preventDefault();
           event.stopPropagation();
         },
         { passive: false }
@@ -2083,6 +2091,16 @@
     }
   }
 
+  /* ── FIX: updateGalaxyCamera now only lerps during explicit transitions.
+     Previously it ran every frame, lerping toward defaultCameraPos with
+     factor 0.032 — which directly opposed any zoom or pan the user did,
+     making free navigation impossible.
+
+     Now: isTransitioning is set to true only when focusGalaxyNode(),
+     clearGalaxySelection(), or centerGalaxySun() are called. Once the
+     camera reaches its target (within 0.12 units), isTransitioning is
+     cleared and OrbitControls takes full control again.
+  ──────────────────────────────────────────────────────────────────── */
   function updateGalaxyCamera() {
     const THREE = state.three.THREE;
     const camera = state.three.camera;
@@ -2092,6 +2110,13 @@
 
     const activeNode = state.three.activeNode;
 
+    // Always sync autoRotate — stop it when a node is focused
+    controls.autoRotate = !activeNode;
+
+    // Only move the camera when we're in an active transition
+    if (!state.three.isTransitioning) return;
+
+    // Compute the target camera position and look-at point
     if (activeNode?.mesh) {
       const nodePosition = new THREE.Vector3();
       activeNode.mesh.getWorldPosition(nodePosition);
@@ -2110,21 +2135,28 @@
         .clone()
         .add(direction.multiplyScalar(cameraDistance))
         .add(lift);
-
-      controls.autoRotate = false;
     } else {
-      controls.autoRotate = true;
-      state.three.focusTarget = state.three.defaultTarget?.clone() || new THREE.Vector3(0, 0, 0);
+      state.three.focusTarget =
+        state.three.defaultTarget?.clone() || new THREE.Vector3(0, 0, 0);
       state.three.focusCameraPos =
         state.three.defaultCameraPos?.clone() || new THREE.Vector3(0, 13, 52);
     }
 
+    const lerpFactor = activeNode ? 0.055 : 0.032;
+    const targetFactor = activeNode ? 0.075 : 0.046;
+
     if (state.three.focusCameraPos) {
-      camera.position.lerp(state.three.focusCameraPos, activeNode ? 0.055 : 0.032);
+      camera.position.lerp(state.three.focusCameraPos, lerpFactor);
+
+      // Stop transitioning once we've arrived
+      if (camera.position.distanceTo(state.three.focusCameraPos) < 0.12) {
+        camera.position.copy(state.three.focusCameraPos);
+        state.three.isTransitioning = false;
+      }
     }
 
     if (state.three.focusTarget) {
-      controls.target.lerp(state.three.focusTarget, activeNode ? 0.075 : 0.046);
+      controls.target.lerp(state.three.focusTarget, targetFactor);
     }
   }
 
@@ -2254,6 +2286,7 @@
     if (!node?.item) return;
 
     state.three.activeNode = node;
+    state.three.isTransitioning = true; // ← trigger camera transition
     hideGalaxyTooltip();
 
     showGalaxySelection(node);
@@ -2265,6 +2298,7 @@
 
   function centerGalaxySun() {
     state.three.activeNode = null;
+    state.three.isTransitioning = true; // ← trigger camera return
 
     const panel = state.three.selectionEl || $('#profileGalaxySelection');
     if (panel) {
@@ -2277,6 +2311,7 @@
 
   function clearGalaxySelection() {
     state.three.activeNode = null;
+    state.three.isTransitioning = true; // ← trigger camera return
 
     const panel = state.three.selectionEl || $('#profileGalaxySelection');
 
@@ -2416,6 +2451,7 @@
     state.three.sunGroup = null;
     state.three.activeNode = null;
     state.three.hoveredNode = null;
+    state.three.isTransitioning = false;
 
     const removable = scene.children.filter(child => child.userData?.profileGalaxyGenerated);
 
@@ -2993,13 +3029,32 @@
   ═══════════════════════════════════════════════════════════════════════ */
 
   async function init() {
+    /* Hide layout until session resolves — prevents snap */
     document.body.classList.add('profile-loading');
 
     state.completed = readJSON(COMPLETED_KEY, []);
     state.mana = parseInt(localStorage.getItem(MANA_KEY) || '0', 10) || 0;
 
     startBackgroundClock();
-    hydrateLessonsFromData(getStaticContentData());
+
+    /* ── FIX: Load lesson data, with a fallback for timing edge cases.
+       With `defer` scripts, lkp-data.js always runs before profile.js,
+       so getStaticContentData() should find the data. But if for any
+       reason the data isn't on window yet, we also listen for the
+       lkp:data-ready event that lkp-data.js dispatches when done.    */
+    const staticData = getStaticContentData();
+    hydrateLessonsFromData(staticData);
+
+    if (!state.lessons.length) {
+      /* Data not ready yet — subscribe to event fired by lkp-data.js */
+      window.addEventListener('lkp:data-ready', function onDataReady(event) {
+        window.removeEventListener('lkp:data-ready', onDataReady);
+        hydrateLessonsFromData(event.detail?.data || getStaticContentData());
+        populateCultureFilter();
+        renderLessonPath();
+        renderRewardsPanel();
+      }, { once: true });
+    }
 
     bindUI();
     populateCultureFilter();
