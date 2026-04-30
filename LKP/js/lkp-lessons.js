@@ -1,603 +1,656 @@
-/* ═══════════════════════════════════════════════════════════════════
-   culturalverse-lessons.js
-   Rendering engine — reads CULTURALVERSE_DATA, builds everything.
-   No content lives here. All content is in culturalverse-data.js
+/* ═══════════════════════════════════════════════════════════════════════════
+   KA PAEPAE ʻIKE OLA — DEEP LESSONS PAGE
+   File: LKP/js/lkp-lessons.js
 
-   Supabase integration:
-   On init, attempts to fetch from cv_lessons table and merges any
-   DB content into CULTURALVERSE_DATA in memory before rendering.
-   Falls back to static file seamlessly if Supabase is unavailable.
-═══════════════════════════════════════════════════════════════════ */
+   Requires:
+   - LKP/js/lkp-data.js loaded before this file
+   - window.CULTURALVERSE_DATA or window.LKP_DATA
+═══════════════════════════════════════════════════════════════════════════ */
+
 (function () {
   'use strict';
 
-  /* ── State ── */
   const state = {
-    activeCultureId:  null,
-    activeModuleId:   null,
-    activeLessonId:   null,
-    filterCulture:    'all',
-    completed:        JSON.parse(localStorage.getItem('cv_completed') || '[]'),
-    mana:             parseInt(localStorage.getItem('cv_mana') || '0'),
-    dbLoaded:         false,   // true once Supabase fetch has run (success or fail)
+    data: null,
+    cultures: [],
+    lessons: [],
+    activeCulture: 'all',
+    activeLessonId: null
   };
 
-  /* ── DOM refs ── */
-  const lessonTree    = document.getElementById('lessonTree');
-  const lessonWelcome = document.getElementById('lessonWelcome');
-  const lessonArticle = document.getElementById('lessonArticle');
-  const lessonHeader  = document.getElementById('lessonHeader');
-  const lessonBody    = document.getElementById('lessonBody');
-  const lessonNav     = document.getElementById('lessonNav');
-  const filterWrap    = document.getElementById('cultureFilters');
-  const welcomeCults  = document.getElementById('welcomeCultures');
-  const sidebarFab    = document.getElementById('cvSidebarFab');
-  const sidebar       = document.getElementById('cvSidebar');
-  const completedCnt  = document.getElementById('completedCount');
-  const manaDisplay   = document.getElementById('manaDisplay');
-  const manaFill      = document.getElementById('manaFill');
-
-  /* ═══════════════════════════════════════════════════════════════
-     LOCAL ADMIN MERGE
-     Merges any lessons saved locally from the admin panel
-     (localStorage key: cv_admin_lessons) into CULTURALVERSE_DATA.
-     This runs first — Supabase merge runs after and overrides if it
-     has newer/fuller content.
-  ═══════════════════════════════════════════════════════════════ */
-  function mergeLocalAdminLessons() {
-    try {
-      const saved = JSON.parse(localStorage.getItem('cv_admin_lessons') || '{}');
-      if (!Object.keys(saved).length) return;
-
-      for (const [id, row] of Object.entries(saved)) {
-        if (row.status === 'draft') continue; // skip drafts — only live lessons show
-        if (!row.content && !row.title) continue;
-
-        // Find the lesson in CULTURALVERSE_DATA
-        let found = false;
-        for (const culture of CULTURALVERSE_DATA.cultures) {
-          for (const mod of culture.modules || []) {
-            const lesson = (mod.lessons || []).find(l => l.id === id);
-            if (lesson) {
-              if (row.title)    lesson.title    = row.title;
-              if (row.num)      lesson.num      = row.num;
-              if (row.readTime) lesson.readTime = row.readTime;
-              if (row.content) {
-                const leadBlock = row.lead ? `<p class="lead">${row.lead}</p>\n\n` : '';
-                lesson.content  = leadBlock + row.content;
-              }
-              found = true;
-              break;
-            }
-          }
-          if (found) break;
-        }
-
-        // New lesson not in static data — add it
-        if (!found && row.content && row.module) {
-          const culture = CULTURALVERSE_DATA.cultures.find(c => c.id === row.module);
-          if (culture && culture.modules[0]) {
-            const leadBlock = row.lead ? `<p class="lead">${row.lead}</p>\n\n` : '';
-            culture.modules[0].lessons.push({
-              id:       id,
-              num:      row.num || '',
-              title:    row.title || id,
-              readTime: row.readTime || '',
-              content:  leadBlock + row.content,
-            });
-          }
-        }
-      }
-
-      const count = Object.keys(saved).length;
-      console.info(`[Culturalverse] Merged ${count} local admin lesson(s) from localStorage`);
-    } catch (e) {
-      console.warn('[Culturalverse] Local admin merge failed:', e.message);
-    }
+  function $(selector) {
+    return document.querySelector(selector);
   }
-  /* ═══════════════════════════════════════════════════════════════
-     SUPABASE MERGE
-     Fetches live lessons from cv_lessons table and merges content
-     into the in-memory CULTURALVERSE_DATA before rendering.
-     Runs once. If it fails, static data is used as-is.
-  ═══════════════════════════════════════════════════════════════ */
-  async function mergeSupabaseLessons(supa) {
-    try {
-      const { data, error } = await supa
-        .from('cv_lessons')
-        .select('id, module, lesson_num, title, read_time, lead_text, content, sources, mana, sort_order, status')
-        .eq('status', 'live')
-        .order('module')
-        .order('sort_order');
 
-      if (error || !data?.length) return;
+  function $all(selector) {
+    return Array.from(document.querySelectorAll(selector));
+  }
 
-      // Build a quick lookup map by lesson id
-      const dbMap = {};
-      data.forEach(row => { dbMap[row.id] = row; });
+  function escapeHTML(value) {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
 
-      // Walk CULTURALVERSE_DATA and overlay DB fields where they exist
-      for (const culture of CULTURALVERSE_DATA.cultures) {
-        for (const mod of culture.modules || []) {
-          for (const lesson of mod.lessons || []) {
-            const db = dbMap[lesson.id];
-            if (!db) continue;
+  function stripHTML(value) {
+    return String(value || '')
+      .replace(/<[^>]*>/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
 
-            // Override fields that exist in DB (DB is source of truth)
-            if (db.title)     lesson.title    = db.title;
-            if (db.lesson_num)lesson.num      = db.lesson_num;
-            if (db.read_time) lesson.readTime = db.read_time;
+  function getData() {
+    const candidates = [
+      window.CULTURALVERSE_DATA,
+      window.LKP_DATA,
+      window.IKEVERSE_DATA
+    ];
 
-            // Merge content: if DB has a lead_text, prepend it as the lead paragraph
-            if (db.content) {
-              const leadBlock = db.lead_text
-                ? `<p class="lead">${db.lead_text}</p>\n\n`
-                : '';
-              lesson.content = leadBlock + db.content;
-            }
-          }
-        }
-      }
+    const data = candidates.find(item => {
+      return item && Array.isArray(item.cultures);
+    });
 
-      // Also handle lessons that exist in DB but NOT in static data
-      // (new lessons added via admin panel)
-      data.forEach(row => {
-        if (!row.content) return; // skip metadata-only rows
-        const culture = CULTURALVERSE_DATA.cultures.find(c => c.id === row.module);
-        if (!culture || culture.status !== 'live') return;
+    if (data) {
+      window.CULTURALVERSE_DATA = data;
+      window.LKP_DATA = data;
+      window.IKEVERSE_DATA = data;
+      return data;
+    }
 
-        // Check if this lesson already exists in any module
-        let found = false;
-        for (const mod of culture.modules) {
-          if (mod.lessons.find(l => l.id === row.id)) { found = true; break; }
-        }
-        if (found) return;
+    console.warn(
+      '[LKP Lessons] No lesson data found. Make sure LKP/js/lkp-data.js loads before LKP/js/lkp-lessons.js.'
+    );
 
-        // New lesson — add to the first module of the culture for now
-        // Admin should set module_id properly; fallback to first module
-        const targetMod = culture.modules[0];
-        if (!targetMod) return;
+    return { cultures: [] };
+  }
 
-        const leadBlock = row.lead_text ? `<p class="lead">${row.lead_text}</p>\n\n` : '';
-        targetMod.lessons.push({
-          id:       row.id,
-          num:      row.lesson_num || '',
-          title:    row.title,
-          readTime: row.read_time || '',
-          content:  leadBlock + (row.content || ''),
+  function normalizeData(data) {
+    const cultures = Array.isArray(data?.cultures) ? data.cultures : [];
+
+    return cultures.map(culture => ({
+      id: culture.id || '',
+      name: culture.name || 'Untitled Culture',
+      emoji: culture.emoji || '✦',
+      tagline: culture.tagline || '',
+      theme: culture.theme || 'default',
+      status: culture.status || 'live',
+      intro: culture.intro || '',
+      modules: Array.isArray(culture.modules)
+        ? culture.modules.map(module => ({
+            id: module.id || '',
+            title: module.title || 'Untitled Module',
+            emoji: module.emoji || culture.emoji || '✦',
+            desc: module.desc || '',
+            lessons: Array.isArray(module.lessons)
+              ? module.lessons.map(lesson => ({
+                  id: lesson.id || '',
+                  num: lesson.num || '',
+                  title: lesson.title || 'Untitled Lesson',
+                  readTime: lesson.readTime || '',
+                  content: lesson.content || '',
+                  cultureId: culture.id || '',
+                  cultureName: culture.name || 'Untitled Culture',
+                  cultureEmoji: culture.emoji || '✦',
+                  cultureTheme: culture.theme || 'default',
+                  moduleId: module.id || '',
+                  moduleTitle: module.title || 'Untitled Module',
+                  moduleEmoji: module.emoji || culture.emoji || '✦'
+                }))
+              : []
+          }))
+        : []
+    }));
+  }
+
+  function flattenLessons(cultures) {
+    const lessons = [];
+
+    cultures.forEach(culture => {
+      culture.modules.forEach(module => {
+        module.lessons.forEach(lesson => {
+          lessons.push({
+            ...lesson,
+            cultureId: culture.id,
+            cultureName: culture.name,
+            cultureEmoji: culture.emoji,
+            cultureTheme: culture.theme,
+            moduleId: module.id,
+            moduleTitle: module.title,
+            moduleEmoji: module.emoji
+          });
         });
       });
+    });
 
-      console.info(`[Culturalverse] Merged ${data.length} lesson(s) from Supabase`);
+    return lessons;
+  }
 
-    } catch (err) {
-      // Supabase unavailable or table doesn't exist — static data used as-is
-      console.info('[Culturalverse] Supabase not available, using static data:', err.message);
+  function getCultureColor(theme) {
+    const colors = {
+      emerald: '#3cb371',
+      gold: '#f0c96a',
+      bridge: '#8fa0ff',
+      rust: '#d98545',
+      amber: '#e4ad48',
+      saffron: '#ffb347',
+      cyan: '#54c6ee',
+      violet: '#8fa0ff',
+      default: '#54c6ee'
+    };
+
+    return colors[theme] || colors.default;
+  }
+
+  function getVisibleCultures() {
+    if (state.activeCulture === 'all') {
+      return state.cultures;
+    }
+
+    return state.cultures.filter(culture => culture.id === state.activeCulture);
+  }
+
+  function renderCultureFilters() {
+    const holder = $('#cultureFilters');
+    const welcome = $('#welcomeCultures');
+
+    if (!holder) return;
+
+    const liveCultures = state.cultures.filter(culture => {
+      return culture.modules.some(module => module.lessons.length);
+    });
+
+    holder.innerHTML = `
+      <button class="cv-filter-btn is-active" type="button" data-culture-filter="all">
+        All
+      </button>
+      ${state.cultures.map(culture => {
+        const disabled = culture.modules.every(module => !module.lessons.length);
+        return `
+          <button
+            class="cv-culture-filter ${disabled ? 'is-disabled' : ''}"
+            type="button"
+            data-culture-filter="${escapeHTML(culture.id)}"
+            ${disabled ? 'disabled' : ''}
+            style="--culture-color:${getCultureColor(culture.theme)}"
+          >
+            <span>${escapeHTML(culture.emoji)}</span>
+            ${escapeHTML(culture.name)}
+          </button>
+        `;
+      }).join('')}
+    `;
+
+    if (welcome) {
+      welcome.innerHTML = liveCultures.map(culture => `
+        <button
+          class="cv-culture-filter"
+          type="button"
+          data-culture-filter="${escapeHTML(culture.id)}"
+          style="--culture-color:${getCultureColor(culture.theme)}"
+        >
+          <span>${escapeHTML(culture.emoji)}</span>
+          ${escapeHTML(culture.name)}
+        </button>
+      `).join('');
     }
   }
 
-  /* ─────────────────────────────────────────────
-     FLAT LESSON LIST (for prev/next navigation)
-  ───────────────────────────────────────────── */
-  function getFlatLessons(filterCulture) {
-    const flat = [];
-    for (const culture of CULTURALVERSE_DATA.cultures) {
-      if (culture.status !== 'live') continue;
-      if (filterCulture !== 'all' && culture.id !== filterCulture) continue;
-      for (const mod of culture.modules) {
-        for (const lesson of mod.lessons) {
-          flat.push({ cultureId: culture.id, moduleId: mod.id, lessonId: lesson.id, lesson, culture, mod });
-        }
+  function renderLessonTree() {
+    const tree = $('#lessonTree');
+    if (!tree) return;
+
+    const visibleCultures = getVisibleCultures();
+
+    if (!state.cultures.length) {
+      tree.innerHTML = `
+        <div class="cv-tree-empty">
+          <strong>No lesson data found.</strong>
+          <span>Check that <code>LKP/js/lkp-data.js</code> loads before <code>LKP/js/lkp-lessons.js</code>.</span>
+        </div>
+      `;
+      return;
+    }
+
+    const html = visibleCultures.map(culture => {
+      const modulesWithLessons = culture.modules.filter(module => module.lessons.length);
+
+      if (!modulesWithLessons.length) {
+        return `
+          <section class="cv-tree-culture">
+            <div class="cv-tree-culture__title">
+              <span>${escapeHTML(culture.emoji)}</span>
+              ${escapeHTML(culture.name)}
+            </div>
+            <div class="cv-tree-module">
+              <div class="cv-tree-module__title">Coming Soon</div>
+              <button class="cv-tree-lesson" type="button" disabled>
+                <strong>${escapeHTML(culture.tagline || 'Lessons are being prepared.')}</strong>
+                <small>${escapeHTML(culture.status || 'soon')}</small>
+              </button>
+            </div>
+          </section>
+        `;
       }
-    }
-    return flat;
+
+      return `
+        <section class="cv-tree-culture">
+          <div class="cv-tree-culture__title" style="--culture-color:${getCultureColor(culture.theme)}">
+            <span>${escapeHTML(culture.emoji)}</span>
+            ${escapeHTML(culture.name)}
+          </div>
+
+          ${modulesWithLessons.map(module => `
+            <div class="cv-tree-module">
+              <div class="cv-tree-module__title">
+                <span>${escapeHTML(module.emoji)}</span>
+                ${escapeHTML(module.title)}
+              </div>
+
+              ${module.lessons.map(lesson => `
+                <button
+                  class="cv-tree-lesson ${lesson.id === state.activeLessonId ? 'is-active' : ''}"
+                  type="button"
+                  data-lesson-id="${escapeHTML(lesson.id)}"
+                >
+                  <strong>${escapeHTML(lesson.num || 'LESSON')} · ${escapeHTML(lesson.title)}</strong>
+                  <small>${escapeHTML(culture.name)} · ${escapeHTML(lesson.readTime || 'Lesson')}</small>
+                </button>
+              `).join('')}
+            </div>
+          `).join('')}
+        </section>
+      `;
+    }).join('');
+
+    tree.innerHTML = html || `
+      <div class="cv-tree-empty">
+        <strong>No lessons found.</strong>
+        <span>Choose a different culture filter.</span>
+      </div>
+    `;
   }
 
-  /* ─────────────────────────────────────────────
-     CONTENT PARSER
-     Converts tagged content strings → HTML
-  ───────────────────────────────────────────── */
-  function parseContent(raw) {
-    let html = raw.trim();
+  function findLesson(id) {
+    return state.lessons.find(lesson => lesson.id === id) || null;
+  }
 
-    /* <facts>val::key | val::key</facts> */
-    html = html.replace(/<facts>([\s\S]*?)<\/facts>/g, (_, inner) => {
-      const items = inner.split('|').map(s => s.trim()).filter(Boolean);
-      const cells = items.map(item => {
-        const [val, key] = item.split('::').map(s => s.trim());
-        return `<div class="cv-fact-item"><span class="cv-fact-item__val">${val}</span><span class="cv-fact-item__key">${key || ''}</span></div>`;
-      }).join('');
-      return `<div class="cv-facts-block">${cells}</div>`;
-    });
+  function getLessonIndex(id) {
+    return state.lessons.findIndex(lesson => lesson.id === id);
+  }
 
-    /* <callout type="gold">...</callout> */
-    html = html.replace(/<callout type="(\w+)">([\s\S]*?)<\/callout>/g, (_, type, inner) =>
-      `<div class="cv-callout-box ${type}">${inner.trim()}</div>`
+  function renderLesson(id, options = {}) {
+    const lesson = findLesson(id);
+
+    if (!lesson) {
+      renderWelcome();
+      return;
+    }
+
+    state.activeLessonId = lesson.id;
+
+    const welcome = $('#lessonWelcome');
+    const article = $('#lessonArticle');
+    const header = $('#lessonHeader');
+    const body = $('#lessonBody');
+    const nav = $('#lessonNav');
+
+    if (welcome) welcome.hidden = true;
+    if (article) article.hidden = false;
+
+    if (header) {
+      header.innerHTML = `
+        <div class="cv-lesson-kicker">
+          <span>${escapeHTML(lesson.cultureEmoji)}</span>
+          ${escapeHTML(lesson.cultureName)} · ${escapeHTML(lesson.moduleTitle)}
+        </div>
+
+        <h1 class="cv-lesson-title">${escapeHTML(lesson.title)}</h1>
+
+        <div class="cv-lesson-meta">
+          <span>${escapeHTML(lesson.num || 'Lesson')}</span>
+          <span>${escapeHTML(lesson.readTime || 'Deep Reading')}</span>
+          <span>${escapeHTML(lesson.moduleEmoji)} ${escapeHTML(lesson.moduleTitle)}</span>
+        </div>
+      `;
+    }
+
+    if (body) {
+      body.innerHTML = transformLessonContent(lesson.content);
+    }
+
+    renderLessonNav();
+
+    renderLessonTree();
+    updateUrlHash(lesson.id);
+
+    if (!options.noScroll) {
+      requestAnimationFrame(() => {
+        $('#lessonMain')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      });
+    }
+
+    closeSidebarOnMobile();
+  }
+
+  function renderWelcome() {
+    const welcome = $('#lessonWelcome');
+    const article = $('#lessonArticle');
+
+    if (welcome) welcome.hidden = false;
+    if (article) article.hidden = true;
+
+    state.activeLessonId = null;
+    renderLessonTree();
+  }
+
+  function renderLessonNav() {
+    const nav = $('#lessonNav');
+    if (!nav || !state.activeLessonId) return;
+
+    const index = getLessonIndex(state.activeLessonId);
+    const previous = index > 0 ? state.lessons[index - 1] : null;
+    const next = index >= 0 && index < state.lessons.length - 1 ? state.lessons[index + 1] : null;
+
+    nav.innerHTML = `
+      <button
+        class="cv-lesson-nav-btn"
+        type="button"
+        data-nav-lesson="${previous ? escapeHTML(previous.id) : ''}"
+        ${previous ? '' : 'disabled'}
+      >
+        ← ${previous ? escapeHTML(previous.title) : 'Previous'}
+      </button>
+
+      <button
+        class="cv-lesson-nav-btn"
+        type="button"
+        data-nav-lesson="${next ? escapeHTML(next.id) : ''}"
+        ${next ? '' : 'disabled'}
+      >
+        ${next ? escapeHTML(next.title) : 'Next'} →
+      </button>
+    `;
+  }
+
+  function transformLessonContent(content) {
+    let html = String(content || '');
+
+    html = html.replace(
+      /<callout(?:\s+type="([^"]+)")?>([\s\S]*?)<\/callout>/gi,
+      function (_match, type, inner) {
+        const modifier = type ? ` cv-callout--${escapeHTML(type)}` : '';
+        return `<div class="cv-callout${modifier}">${inner}</div>`;
+      }
     );
 
-    /* <callout>...</callout> (default emerald) */
-    html = html.replace(/<callout>([\s\S]*?)<\/callout>/g, (_, inner) =>
-      `<div class="cv-callout-box emerald">${inner.trim()}</div>`
+    html = html.replace(
+      /<facts>([\s\S]*?)<\/facts>/gi,
+      function (_match, inner) {
+        const items = String(inner)
+          .split('|')
+          .map(item => item.trim())
+          .filter(Boolean);
+
+        return `
+          <div class="cv-facts">
+            ${items.map(item => {
+              const [value, label] = item.split('::').map(part => part?.trim() || '');
+              return `
+                <div class="cv-fact">
+                  <strong>${escapeHTML(value || item)}</strong>
+                  <span>${escapeHTML(label || '')}</span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        `;
+      }
     );
 
-    /* <twocol left="L" right="R">left text || right text</twocol> */
-    html = html.replace(/<twocol left="([^"]*)" right="([^"]*)">([\s\S]*?)<\/twocol>/g, (_, left, right, inner) => {
-      const [leftText, rightText] = inner.split('||');
-      return `<div class="cv-twocol">
-        <div class="cv-twocol__col"><span class="cv-twocol__label">${left}</span><p>${(leftText||'').trim()}</p></div>
-        <div class="cv-twocol__col"><span class="cv-twocol__label">${right}</span><p>${(rightText||'').trim()}</p></div>
-      </div>`;
-    });
+    html = html.replace(
+      /<twocol\s+left="([^"]*)"\s+right="([^"]*)">([\s\S]*?)<\/twocol>/gi,
+      function (_match, left, right, inner) {
+        const parts = String(inner).split('||');
+        const leftBody = parts[0] || '';
+        const rightBody = parts[1] || '';
 
-    /* <quote cite="Source">Text</quote> */
-    html = html.replace(/<quote cite="([^"]*)">([\s\S]*?)<\/quote>/g, (_, cite, text) =>
-      `<div class="cv-quote-block"><blockquote>${text.trim()}</blockquote><cite>— ${cite}</cite></div>`
+        return `
+          <div class="cv-twocol">
+            <div class="cv-twocol__side">
+              <strong>${escapeHTML(left)}</strong>
+              <p>${leftBody.trim()}</p>
+            </div>
+            <div class="cv-twocol__side">
+              <strong>${escapeHTML(right)}</strong>
+              <p>${rightBody.trim()}</p>
+            </div>
+          </div>
+        `;
+      }
     );
 
-    /* <concepts>A · B · C</concepts> */
-    html = html.replace(/<concepts>([\s\S]*?)<\/concepts>/g, (_, inner) => {
-      const tags = inner.split('·').map(s => s.trim()).filter(Boolean)
-        .map(t => `<span class="cv-concept-tag">${t}</span>`).join('');
-      return `<div class="cv-concepts-block">${tags}</div>`;
-    });
+    html = html.replace(
+      /<concepts>([\s\S]*?)<\/concepts>/gi,
+      function (_match, inner) {
+        const items = String(inner)
+          .split('·')
+          .map(item => item.trim())
+          .filter(Boolean);
 
-    /* Pass-through plant grid and card grid HTML (from admin panel) */
-    /* These are already valid HTML — parseContent doesn't need to touch them */
+        return `
+          <div class="cv-concepts">
+            ${items.map(item => `<span class="cv-concept">${escapeHTML(item)}</span>`).join('')}
+          </div>
+        `;
+      }
+    );
 
-    /* Wrap orphan <p> lead class */
-    html = html.replace(/<p class="lead">/g, '<p class="lead">');
+    html = html.replace(
+      /<quote(?:\s+cite="([^"]+)")?>([\s\S]*?)<\/quote>/gi,
+      function (_match, cite, inner) {
+        return `
+          <blockquote class="cv-quote">
+            <p>${inner.trim()}</p>
+            ${cite ? `<cite>${escapeHTML(cite)}</cite>` : ''}
+          </blockquote>
+        `;
+      }
+    );
 
     return html;
   }
 
-  /* ─────────────────────────────────────────────
-     BUILD SIDEBAR FILTERS
-  ───────────────────────────────────────────── */
-  function buildFilters() {
-    if (!filterWrap) return;
-    const chips = [{ id: 'all', label: 'All', emoji: '✦' }];
-    for (const c of CULTURALVERSE_DATA.cultures) {
-      if (c.status === 'live') chips.push({ id: c.id, label: c.name, emoji: c.emoji });
-    }
-    filterWrap.innerHTML = chips.map(c =>
-      `<button class="cv-filter-chip ${state.filterCulture === c.id ? 'is-active' : ''}"
-         data-culture="${c.id}">${c.emoji} ${c.label}</button>`
-    ).join('');
+  function updateUrlHash(id) {
+    if (!id) return;
 
-    filterWrap.addEventListener('click', e => {
-      const btn = e.target.closest('[data-culture]');
-      if (!btn) return;
-      state.filterCulture = btn.dataset.culture;
-      buildFilters();
-      buildTree();
-    });
+    const nextHash = `#${encodeURIComponent(id)}`;
+
+    if (window.location.hash !== nextHash) {
+      history.replaceState(null, '', nextHash);
+    }
   }
 
-  /* ─────────────────────────────────────────────
-     BUILD SIDEBAR TREE
-  ───────────────────────────────────────────── */
-  function buildTree() {
-    if (!lessonTree) return;
-    lessonTree.innerHTML = '';
+  function bindEvents() {
+    document.addEventListener('click', event => {
+      const cultureBtn = event.target.closest('[data-culture-filter]');
+      if (cultureBtn) {
+        const culture = cultureBtn.dataset.cultureFilter || 'all';
 
-    for (const culture of CULTURALVERSE_DATA.cultures) {
-      if (state.filterCulture !== 'all' && culture.id !== state.filterCulture) continue;
+        state.activeCulture = culture;
 
-      const cultureEl = document.createElement('div');
-      cultureEl.className = `cv-tree-culture ${culture.status === 'live' ? '' : 'cv-tree-culture--soon'}`;
-      cultureEl.dataset.theme = culture.theme || 'emerald';
-      cultureEl.dataset.id    = culture.id;
-
-      if (culture.status !== 'live') {
-        cultureEl.innerHTML = `<div class="cv-tree-coming">
-          <span>${culture.emoji}</span> ${culture.name}
-          <span class="cv-tree-coming__badge">Soon</span>
-        </div>`;
-        lessonTree.appendChild(cultureEl);
-        continue;
-      }
-
-      const isOpenC = state.activeCultureId === culture.id;
-      cultureEl.classList.toggle('is-open', isOpenC);
-
-      cultureEl.innerHTML = `
-        <button class="cv-tree-culture__header ${isOpenC ? 'is-active' : ''}">
-          <span>${culture.emoji}</span>
-          <span>${culture.name}</span>
-          <span class="cv-tree-culture__caret">▾</span>
-        </button>
-        <div class="cv-tree-modules">
-          ${culture.modules.map(mod => buildModuleHTML(culture, mod)).join('')}
-        </div>`;
-
-      /* Toggle culture open/close */
-      cultureEl.querySelector('.cv-tree-culture__header').addEventListener('click', () => {
-        const wasOpen = cultureEl.classList.contains('is-open');
-        cultureEl.classList.toggle('is-open', !wasOpen);
-        if (!wasOpen) state.activeCultureId = culture.id;
-      });
-
-      /* Wire module toggles */
-      cultureEl.querySelectorAll('.cv-tree-module__header').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const modEl = btn.closest('.cv-tree-module');
-          modEl.classList.toggle('is-open');
+        $all('[data-culture-filter]').forEach(btn => {
+          btn.classList.toggle('is-active', btn.dataset.cultureFilter === culture);
         });
-      });
 
-      /* Wire lesson clicks */
-      cultureEl.querySelectorAll('.cv-tree-lesson').forEach(btn => {
-        btn.addEventListener('click', () => {
-          loadLesson(culture.id, btn.dataset.moduleId, btn.dataset.lessonId);
-          if (window.innerWidth <= 900) closeSidebar();
-        });
-      });
+        renderLessonTree();
+        return;
+      }
 
-      lessonTree.appendChild(cultureEl);
-    }
-  }
+      const lessonBtn = event.target.closest('[data-lesson-id]');
+      if (lessonBtn) {
+        renderLesson(lessonBtn.dataset.lessonId);
+        return;
+      }
 
-  function buildModuleHTML(culture, mod) {
-    const isOpenM = state.activeModuleId === mod.id;
-    const lessons = mod.lessons.map(lesson => {
-      const done   = state.completed.includes(lesson.id);
-      const active = state.activeLessonId === lesson.id;
-      return `<button class="cv-tree-lesson ${active ? 'is-active' : ''} ${done ? 'is-complete' : ''}"
-        data-module-id="${mod.id}" data-lesson-id="${lesson.id}">
-        <span class="cv-tree-lesson__num">${lesson.num}</span>
-        <span class="cv-tree-lesson__title">${lesson.title}</span>
-        <span class="cv-tree-lesson__check">${done ? '✓' : ''}</span>
-      </button>`;
-    }).join('');
+      const navBtn = event.target.closest('[data-nav-lesson]');
+      if (navBtn) {
+        const id = navBtn.dataset.navLesson;
+        if (id) renderLesson(id);
+      }
+    });
 
-    return `<div class="cv-tree-module ${isOpenM ? 'is-open' : ''}" data-id="${mod.id}">
-      <button class="cv-tree-module__header">
-        <span>${mod.emoji}</span>
-        <span>${mod.title}</span>
-        <span class="cv-tree-module__caret">▾</span>
-      </button>
-      <div class="cv-tree-lessons">${lessons}</div>
-    </div>`;
-  }
+    window.addEventListener('hashchange', () => {
+      openLessonFromHash({ noScroll: true });
+    });
 
-  /* ─────────────────────────────────────────────
-     BUILD WELCOME SCREEN
-  ───────────────────────────────────────────── */
-  function buildWelcome() {
-    if (!welcomeCults) return;
-    welcomeCults.innerHTML = CULTURALVERSE_DATA.cultures
-      .filter(c => c.status === 'live')
-      .map(c => {
-        const first = c.modules[0]?.lessons[0];
-        return `<button class="cv-welcome-culture-btn" data-culture="${c.id}"
-          data-module="${c.modules[0]?.id}" data-lesson="${first?.id}">
-          <span>${c.emoji}</span> ${c.name}
-        </button>`;
-      }).join('');
+    document.addEventListener('keydown', event => {
+      if (!state.activeLessonId) return;
 
-    welcomeCults.addEventListener('click', e => {
-      const btn = e.target.closest('[data-culture]');
-      if (!btn || !btn.dataset.lesson) return;
-      loadLesson(btn.dataset.culture, btn.dataset.module, btn.dataset.lesson);
+      const index = getLessonIndex(state.activeLessonId);
+
+      if (event.key === 'ArrowLeft' && index > 0) {
+        renderLesson(state.lessons[index - 1].id);
+      }
+
+      if (event.key === 'ArrowRight' && index < state.lessons.length - 1) {
+        renderLesson(state.lessons[index + 1].id);
+      }
     });
   }
 
-  /* ─────────────────────────────────────────────
-     LOAD A LESSON
-  ───────────────────────────────────────────── */
-  function loadLesson(cultureId, moduleId, lessonId) {
-    const culture = CULTURALVERSE_DATA.cultures.find(c => c.id === cultureId);
-    if (!culture) return;
-    const mod = culture.modules.find(m => m.id === moduleId);
-    if (!mod) return;
-    const lesson = mod.lessons.find(l => l.id === lessonId);
-    if (!lesson) return;
+  function openLessonFromHash(options = {}) {
+    const hash = decodeURIComponent(window.location.hash.replace(/^#/, ''));
 
-    state.activeCultureId = cultureId;
-    state.activeModuleId  = moduleId;
-    state.activeLessonId  = lessonId;
+    if (!hash) return false;
 
-    /* Rebuild tree to reflect active state */
-    buildTree();
+    const lesson = findLesson(hash);
 
-    /* Show article */
-    lessonWelcome.hidden = true;
-    lessonArticle.hidden = false;
+    if (!lesson) return false;
 
-    /* Build header */
-    const theme  = culture.theme || 'emerald';
-    const isDone = state.completed.includes(lessonId);
-
-    lessonHeader.innerHTML = `
-      <span class="cv-lesson-article__badge cv-lesson-article__badge--${theme}">
-        ${culture.emoji} ${culture.name} · ${mod.title}
-      </span>
-      <span class="cv-lesson-article__num">${lesson.num}</span>
-      <h1 class="cv-lesson-article__title">${lesson.title}</h1>
-      <div class="cv-lesson-article__meta">
-        <span class="cv-lesson-article__readtime">⏱ ${lesson.readTime}</span>
-        <button class="cv-lesson-article__complete-btn ${isDone ? 'is-done' : ''}"
-          id="completeBtn" data-lesson="${lessonId}">
-          ${isDone ? '✓ Completed' : '○ Mark Complete'}
-        </button>
-      </div>`;
-
-    document.getElementById('completeBtn')?.addEventListener('click', toggleComplete);
-
-    /* Build body */
-    lessonBody.innerHTML = `<div class="cv-lesson-content theme-${theme}">${parseContent(lesson.content)}</div>`;
-
-    /* Build prev/next nav */
-    const flat = getFlatLessons('all');
-    const idx  = flat.findIndex(f => f.lessonId === lessonId);
-    const prev = flat[idx - 1];
-    const next = flat[idx + 1];
-
-    lessonNav.innerHTML = `
-      ${prev ? `<button class="cv-lesson-nav-btn" data-culture="${prev.cultureId}" data-module="${prev.moduleId}" data-lesson="${prev.lessonId}">
-        <i class="fas fa-chevron-left"></i>
-        <div><span class="cv-lesson-nav-btn__label">Previous</span>
-        <span class="cv-lesson-nav-btn__title">${prev.lesson.title}</span></div>
-      </button>` : '<div></div>'}
-      ${next ? `<button class="cv-lesson-nav-btn cv-lesson-nav-btn--next" data-culture="${next.cultureId}" data-module="${next.moduleId}" data-lesson="${next.lessonId}">
-        <div><span class="cv-lesson-nav-btn__label">Next</span>
-        <span class="cv-lesson-nav-btn__title">${next.lesson.title}</span></div>
-        <i class="fas fa-chevron-right"></i>
-      </button>` : '<div></div>'}`;
-
-    lessonNav.querySelectorAll('[data-lesson]').forEach(btn => {
-      btn.addEventListener('click', () => loadLesson(btn.dataset.culture, btn.dataset.module, btn.dataset.lesson));
-    });
-
-    /* Scroll to top of content */
-    document.querySelector('.cv-lesson-main')?.scrollTo({ top: 0, behavior: 'smooth' });
-
-    /* Update URL hash for bookmarking */
-    window.location.hash = `#${lessonId}`;
-
-    /* Dispatch event for culturalverse-profile.js */
-    document.dispatchEvent(new CustomEvent('cv:lessonToggle', {
-      detail: { lessonId, completed: state.completed, mana: state.mana }
-    }));
-
-    updateProfileStats();
+    state.activeCulture = 'all';
+    renderLesson(lesson.id, options);
+    return true;
   }
 
-  /* ─────────────────────────────────────────────
-     MARK COMPLETE
-  ───────────────────────────────────────────── */
-  function toggleComplete(e) {
-    const lessonId = e.target.dataset.lesson;
-    const btn = e.target;
-    const alreadyDone = state.completed.includes(lessonId);
+  function closeSidebarOnMobile() {
+    const sidebar = $('#cvSidebar');
 
-    if (alreadyDone) {
-      state.completed = state.completed.filter(id => id !== lessonId);
-      state.mana = Math.max(0, state.mana - 10);
-      btn.classList.remove('is-done');
-      btn.textContent = '○ Mark Complete';
-    } else {
-      state.completed.push(lessonId);
-      state.mana = Math.min(state.mana + 10, 999);
-      btn.classList.add('is-done');
-      btn.textContent = '✓ Completed';
-      btn.animate([{transform:'scale(1)'},{transform:'scale(1.08)'},{transform:'scale(1)'}], {duration:300});
-    }
-
-    localStorage.setItem('cv_completed', JSON.stringify(state.completed));
-    localStorage.setItem('cv_mana', state.mana.toString());
-
-    /* Notify profile.js of completion change */
-    document.dispatchEvent(new CustomEvent('cv:lessonToggle', {
-      detail: { lessonId, completed: state.completed, mana: state.mana }
-    }));
-
-    buildTree();
-    updateProfileStats();
-  }
-
-  /* ─────────────────────────────────────────────
-     PROFILE STATS
-  ───────────────────────────────────────────── */
-  function updateProfileStats() {
-    if (completedCnt) completedCnt.textContent = state.completed.length;
-    const pct = Math.min((state.mana % 100) || (state.mana > 0 ? 100 : 0), 100);
-    if (manaDisplay) manaDisplay.textContent = `${state.mana} Mana`;
-    if (manaFill)    manaFill.style.width = pct + '%';
-  }
-
-  /* ─────────────────────────────────────────────
-     MOBILE SIDEBAR TOGGLE
-  ───────────────────────────────────────────── */
-  function openSidebar()  { sidebar?.classList.add('is-open'); }
-  function closeSidebar() { sidebar?.classList.remove('is-open'); }
-
-  sidebarFab?.addEventListener('click', () => {
-    sidebar?.classList.contains('is-open') ? closeSidebar() : openSidebar();
-  });
-
-  document.addEventListener('click', e => {
-    if (window.innerWidth <= 900 &&
-        !e.target.closest('#cvSidebar') &&
-        !e.target.closest('#cvSidebarFab')) {
-      closeSidebar();
-    }
-  });
-
-  /* ─────────────────────────────────────────────
-     HASH ROUTING — restore lesson from URL
-  ───────────────────────────────────────────── */
-  function routeFromHash() {
-    const hash = window.location.hash.slice(1);
-    if (!hash) return;
-    for (const culture of CULTURALVERSE_DATA.cultures) {
-      for (const mod of culture.modules) {
-        const lesson = mod.lessons.find(l => l.id === hash);
-        if (lesson) {
-          loadLesson(culture.id, mod.id, lesson.id);
-          return;
-        }
-      }
+    if (window.matchMedia('(max-width: 980px)').matches) {
+      sidebar?.classList.remove('is-open');
     }
   }
 
-  /* ─────────────────────────────────────────────
-     INIT — with Supabase merge
-  ───────────────────────────────────────────── */
-  function initRender() {
-    mergeLocalAdminLessons(); // apply any locally-saved admin edits first
-    buildFilters();
-    buildTree();
-    buildWelcome();
-    updateProfileStats();
-    routeFromHash();
+  function initStarfield() {
+    const canvas = $('#starfield');
+    if (!canvas) return;
 
-    if (!state.activeLessonId) {
-      const first = CULTURALVERSE_DATA.cultures.find(c => c.status === 'live');
-      if (first) {
-        state.activeCultureId = first.id;
-        state.activeModuleId  = first.modules[0]?.id;
-        buildTree();
-      }
-    }
-  }
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    // Try to get or initialize Supabase directly
-    let supa = window.piko_supa;
+    let width = 0;
+    let height = 0;
+    let stars = [];
 
-    if (!supa && typeof supabase !== 'undefined') {
-      try {
-        const SUPA_URL = 'https://fmrjdvsqdfyaqtzwbbqi.supabase.co';
-        const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtcmpkdnNxZGZ5YXF0endiYnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTE2MzYsImV4cCI6MjA5MTE2NzYzNn0.UKyvX02bG4cNhb7U2TK96t8XFREHYYwHJIKbPK06nqs';
-        window.piko_supa = supabase.createClient(SUPA_URL, SUPA_KEY);
-        supa = window.piko_supa;
-      } catch (e) {
-        console.warn('[Culturalverse] Supabase init failed:', e.message);
-      }
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+
+      const count = Math.min(220, Math.floor((width * height) / 9000));
+
+      stars = Array.from({ length: count }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 1.35 + 0.25,
+        a: Math.random() * 0.7 + 0.15,
+        s: Math.random() * 0.015 + 0.005
+      }));
     }
 
-    if (supa) {
-      // Supabase ready — merge DB content then render
-      await mergeSupabaseLessons(supa).catch(() => {});
-    } else {
-      // No Supabase — listen briefly then fall back to static
-      await new Promise(resolve => {
-        let done = false;
-        const onReady = async (e) => {
-          if (done) return; done = true;
-          const sb = e.detail?.offline ? null : window.piko_supa;
-          if (sb) await mergeSupabaseLessons(sb).catch(() => {});
-          resolve();
-        };
-        window.addEventListener('piko:supa:ready', onReady, { once: true });
-        setTimeout(() => { if (!done) { done = true; resolve(); } }, 1500);
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+
+      stars.forEach(star => {
+        star.a += star.s;
+
+        const opacity = 0.25 + Math.abs(Math.sin(star.a)) * 0.65;
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${opacity})`;
+        ctx.fill();
       });
+
+      requestAnimationFrame(draw);
     }
 
-    initRender();
-  });
+    resize();
+    draw();
 
-  window.addEventListener('hashchange', routeFromHash);
+    window.addEventListener('resize', resize, { passive: true });
+  }
 
+  function build() {
+    state.data = getData();
+    state.cultures = normalizeData(state.data);
+    state.lessons = flattenLessons(state.cultures);
+
+    console.info(
+      '[LKP Lessons] Loaded:',
+      state.cultures.length,
+      'cultures,',
+      state.lessons.length,
+      'lessons'
+    );
+
+    renderCultureFilters();
+    renderLessonTree();
+
+    const opened = openLessonFromHash({ noScroll: true });
+
+    if (!opened && state.lessons.length) {
+      const firstLiveLesson = state.lessons[0];
+
+      if (firstLiveLesson) {
+        renderLesson(firstLiveLesson.id, { noScroll: true });
+      }
+    }
+
+    bindEvents();
+    initStarfield();
+  }
+
+  function waitForDataAndBuild() {
+    const existing = getData();
+
+    if (
+      existing &&
+      Array.isArray(existing.cultures) &&
+      existing.cultures.length
+    ) {
+      build();
+      return;
+    }
+
+    window.addEventListener(
+      'lkp:data-ready',
+      () => {
+        build();
+      },
+      { once: true }
+    );
+
+    setTimeout(() => {
+      if (!state.data) {
+        build();
+      }
+    }, 400);
+  }
+
+  document.addEventListener('DOMContentLoaded', waitForDataAndBuild);
 })();
