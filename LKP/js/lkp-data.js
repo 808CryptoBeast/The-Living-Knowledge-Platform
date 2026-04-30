@@ -359,7 +359,7 @@ const CULTURALVERSE_DATA = {
         }
 
       ] // end kanaka modules
-    },
+    },    
 
     /* ══════════════════════════════════════════════════════════
        KEMET
@@ -587,7 +587,7 @@ const CULTURALVERSE_DATA = {
         }
 
       ] // end kemet modules
-    },
+    },   
 
     /* ══════════════════════════════════════════════════════════
        THE BRIDGE
@@ -609,48 +609,34 @@ const CULTURALVERSE_DATA = {
           desc:  'The deep connections between Kānaka Maoli and Kemetic wisdom traditions.',
           lessons: [
             {
-              id:       'bridge-darkness',
+              id:       'br-darkness',
               num:      'BR·01',
-              title:    'Both Begin in Primordial Darkness and Water',
-              readTime: '6 min',
-              content: `
-<p class="lead">The Kumulipo opens in the deepest <strong>pō</strong> — darkness. Kemetic creation begins with <strong>Nun</strong> — the infinite, dark, primordial waters. Two civilizations on opposite ends of the Earth, with no contact, independently encoded the same cosmic insight: existence does not begin with light. It begins with darkness. And within that darkness is everything that will become.</p>
-
-<twocol left="🌺 Kumulipo" right="☥ Kemet">The opening line: "O ke au i kahuli wela ka honua" — at the time when the earth became hot, in primordial conditions before form, life emerges from darkness and the sea. The ocean is the womb. The first life is the coral polyp — a marine creature — and from there all life unfolds in the deep pō before the light of the ao (day) eventually arrives.||Before all gods, before all things, there was Nun — not empty space, but dark water. Potential without form. From within Nun, Atum arose from himself, and the first mound of earth emerged from the flood. The Ogdoad of Hermopolis floated within Nun until creation began. Even after creation, Nun still exists at the margins of the world — the annual Nile flood is Nun returning.</twocol>
-
-<callout type="bridge"><strong>The Pattern:</strong> Both traditions understood that existence did not begin with light — it began with darkness. Not absence, but pregnant potential. The deep ocean and the primordial flood are the same metaphor: formless, dark, filled with the possibility of everything. This may be one of the deepest perceptions available to the human mind about the nature of reality — and two ancient peoples arrived at it independently.</callout>
-`
-            },
-            {
-              id:       'bridge-pairs',
-              num:      'BR·02',
-              title:    'Creation Through Paired Complementary Forces',
-              readTime: '6 min',
-              content: `
-<p class="lead">Throughout all 16 wā of the Kumulipo, creation proceeds through pairs — every living thing introduced in a male/female counterpart. The Kemetic Ogdoad consists entirely of four male/female pairs. The Ennead unfolds through paired productions. Two traditions, independently, understood that creation requires complementary forces — that neither alone is complete.</p>
-
-<twocol left="🌺 Kumulipo — Pairing" right="☥ Kemet — Pairing">Every wā of the Kumulipo creates through pairs — the male and female principles of each life form introduced together. This is not merely biological. It is cosmological: existence requires complementary forces in dynamic relationship. The male and female principles are not opposites in conflict — they are the two poles of a unified creative reality.||The Ogdoad: four male/female pairs (Nun/Naunet, Heh/Hauhet, Kek/Kauket, Amun/Amaunet). The Ennead: Shu and Tefnut, Geb and Nut, then two further pairs. Even the fundamental forces of the universe — earth and sky, air and moisture — are paired complementaries. Balance between poles is the condition of existence.</twocol>
-
-<callout type="bridge"><strong>The Pattern:</strong> Both traditions encode the same understanding: duality is the generative principle of reality. Creation requires two forces in dynamic relationship. This understanding, independently arrived at on opposite ends of the Earth, appears in virtually every profound wisdom tradition: yin/yang in Taoism, Shiva/Shakti in Vedic thought, ida/pingala in yoga. It may be one of the deepest structural insights available to the human mind about the nature of reality.</callout>
-`
-            },
-            {
-              /* ── RENAMED: bridge-pono-maat → bridge-aloha-maat ── */
-              /* ── CORRECTED: Aloha is the overarching philosophy;   ── */
-              /* ── Pono flows FROM Aloha. Maʻat aligns with Aloha.  ── */
-              id:       'bridge-aloha-maat',
-              num:      'BR·03',
-              title:    'Aloha and Maʻat — Two Complete Philosophies of Cosmic Alignment',
+              title:    'Kumulipo & Nun — Creation from Primordial Darkness',
               readTime: '10 min',
               content: `
-<p class="lead">Both the Hawaiian tradition and the Kemetic tradition arrived at the same profound insight: cosmic order, personal ethics, social justice, and ecological responsibility are not separate domains — they are all expressions of the same underlying principle. Whether you call it Aloha or Maʻat, the understanding is identical in its scope and depth.</p>
+<p class="lead">Both the Hawaiian Kumulipo and Kemetic cosmology begin in the same place: deep, dark, primordial waters. Not empty nothingness. Not a void. A fertile darkness full of potential. The Hawaiian word <strong>Lipo</strong> and the Kemetic concept <strong>Nun</strong> point to the same cosmic intuition: before light, before form, before distinction, there was a deep dark source from which everything emerged.</p>
 
-<twocol left="🌺 Aloha — The Hawaiian Philosophy" right="☥ Maʻat — The Kemetic Philosophy">Aloha is one of the most profoundly misunderstood words in the Hawaiian language. In the context of tourism, it has been reduced to a greeting — "hello" and "goodbye." But Aloha is a complete philosophical system, a way of being in the world, a cosmic orientation. The word itself reveals everything: Alo means presence, face, to share. Hā means breath — the breath of life, the divine breath. Aloha therefore means: the presence of the divine breath, shared. Pono (righteousness, balance) is one of the most important expressions of living Aloha — but Pono is the branch, Aloha is the root. Aloha is the soil from which Pono, Mālama (care), Haʻahaʻa (humility), Lokahi (unity), and ʻOluʻolu (gentleness) all grow.||Maʻat is the Kemetic principle of cosmic order, truth, justice, harmony, and balance. It is not merely a legal or ethical concept — it is the organizing principle of the universe itself. The stars move in Maʻat. The Nile floods in Maʻat. The sun rises in Maʻat. Its opposite, Isfet — chaos, untruth, injustice — was not merely morally wrong. It was cosmically dangerous. A pharaoh who ruled in Isfet did not merely harm his people — he threatened the order of creation itself. Maʻat encompasses truth, justice, righteousness, harmony, order, and reciprocity — all facets of a single orientation toward life.</twocol>
+<twocol left="Kumulipo — The Deep Darkness" right="Nun — The Primordial Waters">The Kumulipo begins: "O ke au i kahuli wela ka honua" — at the time when the earth became hot. Creation begins in Pō, the sacred darkness. The first beings are marine: coral polyps, sea creatures, the life of the ocean depths. The source is dark, wet, fertile, and generative.||Nun is the infinite dark primordial ocean that existed before creation. From Nun rose the first mound, the benben, and upon it the first god, Atum. Nun is not chaos as disorder — it is unformed potential, the cosmic womb from which order emerges.</twocol>
 
-<h4>The Deep Pattern</h4>
-<p>Aloha and Maʻat are not surface-level parallels. They are structurally identical philosophical frameworks — developed independently, on opposite ends of the Earth, by peoples who never met, thousands of years apart.</p>
-<p>Both understand that <strong>life operates within a cosmic order</strong> that is not made by humans but must be aligned with. Both understand that <strong>individual ethics, community relationships, and ecological responsibility are not separate concerns</strong> — they are all expressions of the same underlying alignment. Both see <strong>love, care, and respect as the proper orientation</strong> of a human being toward all life. Both see <strong>imbalance — Isfet / the absence of Aloha — as dangerous</strong>, not just to individuals but to the whole community and even the cosmic order.</p>
-<p>The Hawaiian teacher Pilahi Paki identified five qualities within Aloha: <em>Akahai</em> (kindness), <em>Lōkahi</em> (unity), <em>ʻOluʻolu</em> (agreeableness), <em>Haʻahaʻa</em> (humility), <em>Ahonui</em> (patience). Read this against the 42 Declarations of Innocence of Maʻat — they are two expressions of the same ancient understanding: that the human being's highest task is to be a keeper of cosmic order, through the quality of every relationship, every action, every word.</p>
+<h4>The Shared Pattern</h4>
+<p>The pattern is striking: creation begins not with a command from above, but from below — from depth, darkness, water, and heat. Both traditions reject the idea that darkness is evil or empty. Darkness is the womb. Darkness is where life begins. The light emerges from the dark; it does not conquer it.</p>
+
+<callout type="bridge">Modern cosmology tells us the universe began in conditions of extreme heat and density, before light could travel freely — a dark, hot, undifferentiated state. The Kumulipo's "earth became hot" and Nun's primordial waters are not scientific statements in the modern sense, but they preserve a profound intuition: reality emerges from a dark, dense, generative beginning. Ancient cosmology and modern cosmology are asking the same question with different instruments.</callout>
+`
+            },
+            {
+              id:       'br-aloha-maat',
+              num:      'BR·02',
+              title:    'Aloha & Maʻat — The Ethics of Right Relationship',
+              readTime: '12 min',
+              content: `
+<p class="lead"><strong>Aloha</strong> and <strong>Maʻat</strong> are not identical words — they arise from different languages, lands, and traditions — but they occupy structurally similar positions in their respective civilizations. Both are ethical, spiritual, ecological, and cosmic principles. Both govern right relationship. Both insist that the health of the individual, the community, the land, and the cosmos are inseparable.</p>
+
+<h4>Aloha — Presence, Breath, Love, Responsibility</h4>
+<p>Aloha is commonly translated as "love" or "hello/goodbye," but this is a severe reduction. <strong>Alo</strong> means presence, face, front; <strong>hā</strong> means breath, the breath of life. Aloha is the act of meeting another being in the fullness of shared breath and presence. It is love, yes — but also compassion, mercy, kindness, patience, respect, and the recognition of interdependence.</p>
+
+<h4>Maʻat — Truth, Balance, Justice, Cosmic Order</h4>
+<p>Maʻat is usually translated as truth or justice, but it too is much larger. Maʻat is the principle that keeps the universe in balance: stars in their courses, the Nile flooding on time, the pharaoh ruling justly, people speaking truth, the poor protected, the water unpolluted. To live Maʻat is to align your actions with the order that sustains life.</p>
 
 <div class="cv-bridge-quote">
   <div class="cv-bridge-quote__hawaii">
@@ -708,3 +694,45 @@ const CULTURALVERSE_DATA = {
 
   ] // end cultures
 }; // end CULTURALVERSE_DATA
+
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   LKP DATA EXPORT BRIDGE
+   Lets profile.js, lessons.js, mobile.js, and admin tools all read the same data.
+   Keep this at the VERY BOTTOM of LKP/js/lkp-data.js
+═══════════════════════════════════════════════════════════════════════════ */
+
+(function exposeLKPDataForAllPages() {
+  try {
+    if (
+      typeof CULTURALVERSE_DATA !== 'undefined' &&
+      CULTURALVERSE_DATA &&
+      Array.isArray(CULTURALVERSE_DATA.cultures)
+    ) {
+      window.CULTURALVERSE_DATA = CULTURALVERSE_DATA;
+      window.LKP_DATA = CULTURALVERSE_DATA;
+      window.IKEVERSE_DATA = CULTURALVERSE_DATA;
+
+      window.dispatchEvent(
+        new CustomEvent('lkp:data-ready', {
+          detail: {
+            cultures: CULTURALVERSE_DATA.cultures.length,
+            data: CULTURALVERSE_DATA
+          }
+        })
+      );
+
+      console.info(
+        '[LKP Data] CULTURALVERSE_DATA exposed globally:',
+        CULTURALVERSE_DATA.cultures.length,
+        'cultures'
+      );
+    } else {
+      console.warn(
+        '[LKP Data] CULTURALVERSE_DATA exists but does not contain a cultures array.'
+      );
+    }
+  } catch (err) {
+    console.warn('[LKP Data] Export bridge failed:', err);
+  }
+})();
