@@ -2,31 +2,837 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Deep Lessons — Culturalverse | Ikeverse</title>
-  <meta name="description" content="Deep reading lessons for Kānaka Maoli, Kemet, and the cross-cultural bridges between them." />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link rel="stylesheet" href="culturalverse/css/culturalverse.css" />
-  <link rel="stylesheet" href="culturalverse/css/culturalverse-lessons.css" />
-  <link rel="stylesheet" href="culturalverse/css/culturalverse-additions.css" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
+
+  <title>Deep Lessons | Ka Paepae ʻIke Ola</title>
+
+  <meta
+    name="description"
+    content="Deep reading lessons for Kānaka Maoli, Kemet, and cross-cultural bridges within Ka Paepae ʻIke Ola — The Living Knowledge Platform."
+  />
+
+  <meta name="theme-color" content="#070b14" />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:title" content="Deep Lessons | Ka Paepae ʻIke Ola" />
+  <meta
+    property="og:description"
+    content="Explore deep cultural lessons, living knowledge systems, and cross-cultural bridges through The Living Knowledge Platform."
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="LKP/assets/images/LKP-2.png" />
+
+  <link rel="icon" type="image/png" href="LKP/assets/images/LKP-2.png" />
+  <link rel="apple-touch-icon" href="LKP/assets/images/LKP-2.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+  />
+
+  <!-- Corrected LKP paths -->
+  <link rel="stylesheet" href="LKP/css/lkp-brand.css" />
+  <link rel="stylesheet" href="LKP/css/lkp-lessons.css" />
+  <link rel="stylesheet" href="LKP/css/culturalverse-additions.css" />
 
   <style>
     /* ═══════════════════════════════════════════════════
-       NEW COMPONENT STYLES — Laʻau Lapaʻau + Aloha/Maʻat
-       Added for: km-laau, ke-medicine, bridge-aloha-maat
+       LESSON COMPONENT STYLES
+       Laʻau Lapaʻau + Kemet Medicine + Aloha/Maʻat
     ═══════════════════════════════════════════════════ */
 
-    /* ── Plant grid (Laʻau Lapaʻau lesson) ── */
+    :root {
+      --emerald: #3cb371;
+      --gold: #f0c96a;
+      --cyan: #54c6ee;
+      --violet: #8fa0ff;
+      --rust: #d98545;
+      --bg: #01030a;
+      --text-1: rgba(235, 245, 255, 0.96);
+      --text-2: rgba(190, 210, 235, 0.75);
+      --text-3: rgba(170, 190, 220, 0.58);
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text-1);
+      font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 18% 0%, rgba(84, 198, 238, 0.16), transparent 34%),
+        radial-gradient(circle at 86% 10%, rgba(240, 201, 106, 0.14), transparent 36%),
+        radial-gradient(circle at 50% 110%, rgba(143, 160, 255, 0.12), transparent 38%),
+        linear-gradient(180deg, #01030a 0%, #030817 48%, #01030a 100%);
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    button {
+      font: inherit;
+    }
+
+    #starfield {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.65;
+    }
+
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      z-index: 80;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .progress-bar__fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--gold));
+      box-shadow: 0 0 16px rgba(240, 201, 106, 0.42);
+      transition: width 0.16s ease;
+    }
+
+    /* NAV */
+
+    .lkp-nav {
+      position: sticky;
+      top: 0;
+      z-index: 60;
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 12px clamp(14px, 3vw, 30px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(1, 3, 10, 0.86);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .lkp-nav__brand {
+      min-width: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .lkp-nav__brand-logo,
+    .lkp-nav__brand-glyph-fallback {
+      width: 52px;
+      height: 52px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 50%;
+      border: 1px solid rgba(240, 201, 106, 0.25);
+      background: rgba(1, 3, 10, 0.46);
+      box-shadow:
+        0 0 16px rgba(240, 201, 106, 0.18),
+        0 0 24px rgba(84, 198, 238, 0.10);
+      object-fit: cover;
+    }
+
+    .lkp-nav__brand-text {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .lkp-nav__brand-title {
+      color: var(--gold);
+      font-family: "Pirata One", "Cormorant Garamond", serif;
+      font-size: clamp(1.35rem, 2.4vw, 2.05rem);
+      line-height: 0.95;
+      letter-spacing: 0.035em;
+      white-space: nowrap;
+    }
+
+    .lkp-nav__brand-sub {
+      color: var(--text-2);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 0.92rem;
+      letter-spacing: 0.06em;
+    }
+
+    .lkp-nav__links {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .lkp-nav__link,
+    .lkp-nav__profile-btn,
+    .lkp-nav__cta {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: rgba(230, 242, 255, 0.86);
+      font-size: 12px;
+      font-weight: 900;
+      transition:
+        transform 0.18s ease,
+        border-color 0.18s ease,
+        background 0.18s ease,
+        color 0.18s ease;
+    }
+
+    .lkp-nav__link:hover,
+    .lkp-nav__profile-btn:hover,
+    .lkp-nav__cta:hover,
+    .lkp-nav__link.is-active {
+      transform: translateY(-1px);
+      border-color: rgba(240, 201, 106, 0.30);
+      background: rgba(240, 201, 106, 0.08);
+      color: var(--gold);
+    }
+
+    .lkp-nav__right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lkp-nav__cta {
+      border-color: rgba(240, 201, 106, 0.28);
+      background: rgba(240, 201, 106, 0.10);
+      color: var(--gold);
+    }
+
+    .lkp-nav__mobile-btn {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      color: var(--text-1);
+      cursor: pointer;
+    }
+
+    .lkp-nav__mobile-btn span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      margin: 4px auto;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .lkp-nav__about-btn {
+      display: inline-flex;
+    }
+
+    @media (min-width: 921px) {
+      .lkp-nav__about-btn {
+        display: none;
+      }
+    }
+
+    @media (max-width: 920px) {
+      .lkp-nav {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .lkp-nav__links {
+        width: 100%;
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 2px;
+      }
+
+      .lkp-nav__right {
+        width: 100%;
+        justify-content: flex-start;
+        overflow-x: auto;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .lkp-nav {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .lkp-nav__links {
+        position: fixed;
+        top: 76px;
+        left: 10px;
+        right: 10px;
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: 10px;
+        border-radius: 22px;
+        border: 1px solid rgba(255,255,255,0.10);
+        background: rgba(1, 3, 10, 0.94);
+        box-shadow: 0 18px 60px rgba(0,0,0,0.38);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+      }
+
+      .lkp-nav__links.is-open {
+        display: grid;
+      }
+
+      .lkp-nav__mobile-btn {
+        display: inline-grid;
+        place-items: center;
+      }
+
+      .lkp-nav__cta {
+        display: none;
+      }
+
+      .lkp-nav__right {
+        width: auto;
+        margin-left: auto;
+      }
+
+      .lkp-nav__profile-btn,
+      .lkp-nav__about-btn {
+        min-width: 42px;
+        min-height: 42px;
+        padding: 8px 10px;
+      }
+
+      .lkp-nav__profile-btn span,
+      .lkp-nav__about-btn span {
+        display: none;
+      }
+
+      .lkp-nav__profile-btn i,
+      .lkp-nav__about-btn i {
+        font-size: 15px;
+      }
+
+      .lkp-nav__brand-logo,
+      .lkp-nav__brand-glyph-fallback {
+        width: 44px;
+        height: 44px;
+      }
+
+      .lkp-nav__brand-title {
+        max-width: calc(100vw - 210px);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 1.32rem;
+      }
+
+      .lkp-nav__brand-sub {
+        font-size: 0.75rem;
+      }
+    }
+
+    /* LESSON LAYOUT */
+
+    .cv-lessons-layout {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+      min-height: calc(100vh - 76px);
+    }
+
+    .cv-sidebar {
+      position: sticky;
+      top: 76px;
+      align-self: start;
+      height: calc(100vh - 76px);
+      overflow: auto;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      background:
+        radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.08), transparent 40%),
+        rgba(3, 9, 24, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .cv-sidebar__header {
+      padding: 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .cv-sidebar__back {
+      display: inline-flex;
+      margin-bottom: 12px;
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .cv-sidebar__title {
+      margin: 0 0 14px;
+      color: var(--gold);
+      font-family: "Pirata One", "Cormorant Garamond", serif;
+      font-size: 2.55rem;
+      line-height: 0.9;
+      font-weight: 400;
+      letter-spacing: 0.035em;
+    }
+
+    .cv-sidebar__filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .cv-filter-btn,
+    .cv-culture-filter {
+      min-height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.09);
+      background: rgba(255,255,255,0.04);
+      color: var(--text-2);
+      font-size: 11px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .cv-filter-btn.is-active,
+    .cv-culture-filter.is-active {
+      color: var(--gold);
+      border-color: rgba(240, 201, 106, 0.32);
+      background: rgba(240, 201, 106, 0.08);
+    }
+
+    .cv-sidebar__tree {
+      display: grid;
+      gap: 14px;
+      padding: 18px;
+    }
+
+    .cv-tree-culture {
+      display: grid;
+      gap: 10px;
+    }
+
+    .cv-tree-culture__title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .cv-tree-module {
+      display: grid;
+      gap: 7px;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.035);
+    }
+
+    .cv-tree-module__title {
+      color: rgba(255, 239, 198, 0.94);
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.25;
+    }
+
+    .cv-tree-lesson {
+      width: 100%;
+      display: grid;
+      gap: 3px;
+      padding: 9px 10px;
+      border: 1px solid transparent;
+      border-radius: 14px;
+      background: transparent;
+      color: var(--text-2);
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .cv-tree-lesson:hover,
+    .cv-tree-lesson.is-active {
+      border-color: rgba(84, 198, 238, 0.24);
+      background: rgba(84, 198, 238, 0.07);
+      color: var(--cyan);
+    }
+
+    .cv-tree-lesson strong {
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .cv-tree-lesson small {
+      color: var(--text-3);
+      font-size: 10px;
+      line-height: 1.25;
+    }
+
+    .cv-lesson-main {
+      min-width: 0;
+      padding: clamp(18px, 3vw, 42px);
+    }
+
+    .cv-lesson-welcome {
+      min-height: calc(100vh - 160px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .cv-lesson-welcome__inner {
+      width: min(760px, 100%);
+      padding: clamp(24px, 5vw, 52px);
+      border-radius: 34px;
+      border: 1px solid rgba(240, 201, 106, 0.18);
+      background:
+        radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.12), transparent 42%),
+        radial-gradient(circle at 100% 100%, rgba(84, 198, 238, 0.10), transparent 44%),
+        rgba(5, 12, 32, 0.74);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.32);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .cv-lesson-welcome__glyph {
+      display: block;
+      margin-bottom: 14px;
+      font-size: 3rem;
+    }
+
+    .cv-lesson-welcome h2 {
+      margin: 0;
+      color: var(--gold);
+      font-family: "Pirata One", "Cormorant Garamond", serif;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      line-height: 0.88;
+      font-weight: 400;
+      letter-spacing: 0.035em;
+    }
+
+    .cv-lesson-welcome p {
+      margin: 18px 0 0;
+      color: var(--text-2);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.18rem;
+      line-height: 1.6;
+    }
+
+    .cv-lesson-welcome__cultures {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .cv-lesson-article {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      padding: clamp(20px, 4vw, 44px);
+      border-radius: 34px;
+      border: 1px solid rgba(255,255,255,0.09);
+      background:
+        radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.08), transparent 40%),
+        radial-gradient(circle at 100% 100%, rgba(84, 198, 238, 0.08), transparent 44%),
+        rgba(5, 12, 32, 0.78);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.32);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+
+    .cv-lesson-article__header {
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .cv-lesson-kicker {
+      display: inline-flex;
+      width: fit-content;
+      align-items: center;
+      gap: 8px;
+      min-height: 30px;
+      margin: 0 0 14px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(240, 201, 106, 0.26);
+      background: rgba(240, 201, 106, 0.08);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .cv-lesson-title {
+      margin: 0;
+      color: var(--gold);
+      font-family: "Pirata One", "Cormorant Garamond", serif;
+      font-size: clamp(3rem, 7vw, 5.3rem);
+      line-height: 0.88;
+      font-weight: 400;
+      letter-spacing: 0.035em;
+    }
+
+    .cv-lesson-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+      color: var(--text-3);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .cv-lesson-meta span {
+      padding: 6px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.035);
+    }
+
+    .cv-lesson-article__body {
+      color: var(--text-2);
+      font-family: "Cormorant Garamond", Georgia, serif;
+      font-size: 1.14rem;
+      line-height: 1.75;
+    }
+
+    .cv-lesson-article__body .lead {
+      color: rgba(235, 245, 255, 0.94);
+      font-size: 1.28rem;
+      line-height: 1.68;
+    }
+
+    .cv-lesson-article__body h4,
+    .cv-heading {
+      margin: 2rem 0 0.8rem;
+      padding-left: 12px;
+      border-left: 3px solid var(--emerald);
+      color: rgba(255, 239, 198, 0.98);
+      font-family: "DM Sans", system-ui, sans-serif;
+      font-size: 1.1rem;
+      line-height: 1.35;
+    }
+
+    .cv-lesson-article__body ul {
+      padding-left: 1.25rem;
+    }
+
+    .cv-lesson-article__body li {
+      margin: 0.55rem 0;
+    }
+
+    .cv-callout,
+    callout {
+      display: block;
+      margin: 1.6rem 0;
+      padding: 1.15rem 1.25rem;
+      border-left: 3px solid var(--emerald);
+      border-radius: 14px;
+      background: rgba(60, 179, 113, 0.06);
+      color: rgba(235, 245, 255, 0.9);
+    }
+
+    .cv-callout--gold,
+    callout[type="gold"] {
+      border-left-color: var(--gold);
+      background: rgba(240, 201, 106, 0.06);
+    }
+
+    .cv-callout--bridge,
+    callout[type="bridge"] {
+      border-left-color: var(--violet);
+      background: rgba(143, 160, 255, 0.06);
+    }
+
+    .cv-facts,
+    facts {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin: 1.6rem 0;
+      font-family: "DM Sans", system-ui, sans-serif;
+    }
+
+    .cv-fact {
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid rgba(240, 201, 106, 0.18);
+      background: rgba(240, 201, 106, 0.06);
+      text-align: center;
+    }
+
+    .cv-fact strong {
+      display: block;
+      color: var(--gold);
+      font-size: 1rem;
+    }
+
+    .cv-fact span {
+      color: var(--text-3);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .cv-twocol,
+    twocol {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 1.6rem 0;
+    }
+
+    .cv-twocol__side {
+      padding: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.035);
+    }
+
+    .cv-twocol__side strong {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--gold);
+      font-family: "DM Sans", system-ui, sans-serif;
+      font-size: 0.9rem;
+    }
+
+    .cv-concepts,
+    concepts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 1.4rem 0;
+      font-family: "DM Sans", system-ui, sans-serif;
+    }
+
+    .cv-concept {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(84, 198, 238, 0.22);
+      background: rgba(84, 198, 238, 0.07);
+      color: var(--cyan);
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+
+    .cv-lesson-article__nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 28px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .cv-lesson-nav-btn {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(84, 198, 238, 0.22);
+      background: rgba(84, 198, 238, 0.07);
+      color: var(--cyan);
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .cv-lesson-nav-btn:hover {
+      border-color: rgba(240, 201, 106, 0.30);
+      background: rgba(240, 201, 106, 0.08);
+      color: var(--gold);
+    }
+
+    .cv-sidebar-fab {
+      position: fixed;
+      right: 16px;
+      bottom: 18px;
+      z-index: 70;
+      width: 48px;
+      height: 48px;
+      display: none;
+      place-items: center;
+      border-radius: 50%;
+      border: 1px solid rgba(240, 201, 106, 0.28);
+      background: rgba(1, 3, 10, 0.88);
+      color: var(--gold);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.4);
+    }
+
+    .cv-footer {
+      position: relative;
+      z-index: 2;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      background: rgba(1, 3, 10, 0.66);
+    }
+
+    .cv-container {
+      width: min(1240px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .cv-footer__bottom {
+      padding: 20px 0;
+      color: var(--text-3);
+      font-size: 12px;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    /* Plant grid */
+
     .cv-plant-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1.5rem;
       margin: 1.5rem 0;
-    }
-
-    @media (max-width: 768px) {
-      .cv-plant-grid { grid-template-columns: 1fr; }
     }
 
     .cv-plant-card {
@@ -44,7 +850,7 @@
     .cv-plant-name {
       font-size: 1rem;
       font-weight: 600;
-      color: var(--emerald, #3cb371);
+      color: var(--emerald);
       margin-bottom: 0.5rem;
       line-height: 1.3;
     }
@@ -61,20 +867,15 @@
     .cv-plant-body p {
       font-size: 0.88rem;
       line-height: 1.75;
-      color: var(--text-2, rgba(255,255,255,0.72));
+      color: var(--text-2);
       margin: 0;
     }
 
-    /* ── Card grid (Kemet medicine papyri) ── */
     .cv-card-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1.25rem;
       margin: 1.5rem 0;
-    }
-
-    @media (max-width: 768px) {
-      .cv-card-grid { grid-template-columns: 1fr; }
     }
 
     .cv-info-card {
@@ -92,7 +893,7 @@
     .cv-info-card__title {
       font-size: 0.95rem;
       font-weight: 700;
-      color: var(--gold, #f0c96a);
+      color: var(--gold);
       margin-bottom: 4px;
     }
 
@@ -106,11 +907,10 @@
     .cv-info-card p {
       font-size: 0.87rem;
       line-height: 1.75;
-      color: var(--text-2, rgba(255,255,255,0.72));
+      color: var(--text-2);
       margin: 0;
     }
 
-    /* ── Bridge quote block (Aloha & Maʻat) ── */
     .cv-bridge-quote {
       display: flex;
       align-items: flex-start;
@@ -131,7 +931,7 @@
       line-height: 1.8;
       font-size: 0.92rem;
       opacity: 0.85;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: "Cormorant Garamond", serif;
     }
 
     .cv-bridge-quote__attr {
@@ -140,7 +940,7 @@
       opacity: 0.55;
       margin-top: 0.5rem;
       display: block;
-      font-family: 'Space Mono', monospace;
+      font-family: "Space Mono", monospace;
       letter-spacing: 0.02em;
     }
 
@@ -151,273 +951,151 @@
       padding-top: 0.25rem;
     }
 
-    /* ── Gold heading variant (Kemet lessons) ── */
-    .cv-heading--gold {
-      color: var(--gold, #f0c96a);
-      border-left-color: var(--gold, #f0c96a);
+    @media (max-width: 980px) {
+      .cv-lessons-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .cv-sidebar {
+        position: fixed;
+        top: 76px;
+        left: 0;
+        bottom: 0;
+        width: min(360px, calc(100vw - 42px));
+        height: auto;
+        z-index: 65;
+        transform: translateX(-105%);
+        transition: transform 0.22s ease;
+        box-shadow: 0 24px 80px rgba(0,0,0,0.44);
+      }
+
+      .cv-sidebar.is-open {
+        transform: translateX(0);
+      }
+
+      .cv-sidebar-fab {
+        display: grid;
+      }
     }
 
-    /* ── Gold callout variant ── */
-    .cv-callout--gold {
-      border-left-color: var(--gold, #f0c96a);
-      background: rgba(240, 201, 106, 0.05);
+    @media (max-width: 768px) {
+      .cv-plant-grid,
+      .cv-card-grid,
+      .cv-twocol,
+      twocol {
+        grid-template-columns: 1fr;
+      }
+
+      .cv-facts,
+      facts {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .cv-lesson-main {
+        padding: 14px;
+      }
+
+      .cv-lesson-article {
+        padding: 18px;
+        border-radius: 24px;
+      }
+
+      .cv-lesson-title {
+        font-size: clamp(2.75rem, 15vw, 4.4rem);
+      }
+
+      .cv-lesson-article__nav {
+        flex-direction: column;
+      }
+
+      .cv-lesson-nav-btn {
+        width: 100%;
+      }
     }
 
-    /* ── Sources block ── */
-    .cv-sources {
-      margin-top: 2rem;
-      padding: 1.25rem;
-      border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.07);
-      background: rgba(255,255,255,0.02);
-    }
-
-    .cv-sources__label {
-      font-family: 'Space Mono', monospace;
-      font-size: 0.68rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      opacity: 0.45;
-      margin-bottom: 0.75rem;
-    }
-
-    .cv-sources ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    .cv-sources li {
-      font-size: 0.82rem;
-      line-height: 1.6;
-      color: var(--text-2, rgba(255,255,255,0.65));
-    }
-
-    .cv-sources a {
-      color: var(--emerald, #3cb371);
-      text-decoration: none;
-    }
-
-    .cv-sources a:hover {
-      text-decoration: underline;
-    }
-
-    /* ── cv-list (shared) ── */
-    .cv-list {
-      padding-left: 1.25rem;
-      margin: 0.75rem 0 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .cv-list li {
-      font-size: 0.9rem;
-      line-height: 1.7;
-      color: var(--text-2, rgba(255,255,255,0.75));
+    @media (max-width: 460px) {
+      .cv-facts,
+      facts {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
-<body>
 
+<body>
   <canvas id="starfield" aria-hidden="true"></canvas>
+
   <div class="progress-bar" aria-hidden="true">
     <div class="progress-bar__fill" id="progressFill"></div>
   </div>
 
   <!-- NAVBAR -->
-  <nav class="cv-nav" id="cvNav">
-    <div class="cv-nav__inner">
-      <a class="cv-nav__brand" href="culturalverse.html">
-        <span>🌿</span>
-        <span class="cv-nav__brand-text">Culturalverse</span>
-      </a>
-      <ul class="cv-nav__links" id="cvNavLinks">
-        <li class="cv-nav__item has-dropdown">
-          <button class="cv-nav__btn" type="button">Cultures <span class="cv-caret">▾</span></button>
-          <div class="cv-dropdown">
-            <div class="cv-dropdown__col">
-              <span class="cv-dropdown__heading">Available Now</span>
-              <a href="#" data-filter="kanaka" class="cv-dd-link cv-filter-btn"><span>🌺</span><div><strong>Kānaka Maoli</strong><small>Hawaiian Indigenous Knowledge</small></div></a>
-              <a href="#" data-filter="kemet" class="cv-dd-link cv-filter-btn"><span>☥</span><div><strong>Kemet</strong><small>Ancient Egyptian Wisdom</small></div></a>
-              <a href="#" data-filter="bridge" class="cv-dd-link cv-filter-btn"><span>🌐</span><div><strong>The Bridge</strong><small>Cross-Cultural Connections</small></div></a>
-            </div>
-            <div class="cv-dropdown__col cv-dropdown__col--soon">
-              <span class="cv-dropdown__heading">Coming Soon</span>
-              <a href="#" class="cv-dd-link cv-dd-link--soon"><span>🌏</span><div><strong>Dreamtime</strong><small>Aboriginal Australia</small></div></a>
-              <a href="#" class="cv-dd-link cv-dd-link--soon"><span>🪘</span><div><strong>Dogon</strong><small>West Africa · Mali</small></div></a>
-              <a href="#" class="cv-dd-link cv-dd-link--soon"><span>🕉️</span><div><strong>Vedic</strong><small>Ancient India</small></div></a>
-            </div>
-          </div>
-        </li>
-        <li class="cv-nav__item has-dropdown">
-          <button class="cv-nav__btn" type="button">Learn <span class="cv-caret">▾</span></button>
-          <div class="cv-dropdown cv-dropdown--narrow">
-            <span class="cv-dropdown__heading">Learning Tools</span>
-            <a href="index.html" class="cv-dd-link"><span>🕸️</span><div><strong>Living Knowledge Matrix</strong><small>Interconnected map</small></div></a>
-            <a href="culturalverse-lessons.html" class="cv-dd-link"><span>📖</span><div><strong>Deep Lessons</strong><small>You are here</small></div></a>
-            <a href="culturalverse-bridge.html" class="cv-dd-link"><span>🌐</span><div><strong>The Bridge</strong><small>Cross-cultural connections</small></div></a>
-          </div>
-        </li>
-        <li class="cv-nav__item has-dropdown">
-          <button class="cv-nav__btn" type="button">Ecosystem <span class="cv-caret">▾</span></button>
-          <div class="cv-dropdown cv-dropdown--narrow">
-            <span class="cv-dropdown__heading">Pikoverse Platforms</span>
-            <a href="https://pikoverse.xyz" target="_blank" rel="noopener" class="cv-dd-link"><span>🌐</span><div><strong>Pikoverse</strong><small>The gateway ecosystem</small></div></a>
-            <a href="digitalverse/index.html" class="cv-dd-link"><span>💎</span><div><strong>DigitalVerse</strong><small>Blockchain learning</small></div></a>
-            <a href="https://808cryptobeast.github.io/NaluLF/" target="_blank" rel="noopener" class="cv-dd-link"><span>🔍</span><div><strong>NaluLF</strong><small>Ledger forensics</small></div></a>
-            <a href="https://pikoverse.xyz/marketplace/index.html" target="_blank" rel="noopener" class="cv-dd-link"><span>🛍️</span><div><strong>AMP Marketplace</strong></div></a>
-          </div>
-        </li>
-      </ul>
-      <div class="cv-nav__actions">
-        <a href="index.html" class="cv-nav__matrix-btn" title="Living Knowledge Matrix">
-          <i class="fas fa-network-wired"></i><span>Matrix</span>
-        </a>
-        <button class="cv-nav__profile-btn" id="cvProfileToggle" title="Your Pikoverse Journey">
-          <img id="cvNavAvatarSmall" src="" alt="" style="display:none;width:20px;height:20px;border-radius:50%;object-fit:cover;border:1.5px solid rgba(60,179,113,.5);">
-          <i class="fas fa-circle-user" id="cvNavProfileIcon"></i>
-          <span id="cvNavProfileName">Profile</span>
-        </button>
-        <button class="cv-nav__mobile-btn" id="cvMobileToggle" aria-label="Toggle menu" aria-expanded="false">
-          <span></span><span></span><span></span>
-        </button>
+  <nav class="lkp-nav" id="lkpNav">
+    <a class="lkp-nav__brand" href="index.html" aria-label="Ka Paepae ʻIke Ola - The Knowledge Platform">
+      <img
+        class="lkp-nav__brand-logo"
+        src="LKP/assets/images/LKP-1.png"
+        alt="Ka Paepae ʻIke Ola"
+        onerror="this.style.display='none'; var f=document.querySelector('.lkp-nav__brand-glyph-fallback'); if(f) f.style.display='grid';"
+      />
+
+      <div class="lkp-nav__brand-glyph-fallback" style="display:none;">✦</div>
+
+      <div class="lkp-nav__brand-text">
+        <span class="lkp-nav__brand-title">Ka Paepae ʻIke Ola</span>
+        <span class="lkp-nav__brand-sub">The Knowledge Platform</span>
       </div>
+    </a>
+
+    <ul class="lkp-nav__links" id="lkpNavLinks">
+      <li><a class="lkp-nav__link" href="index.html#cultures">Cultures</a></li>
+      <li><a class="lkp-nav__link" href="index.html#navigate">Navigate</a></li>
+      <li><a class="lkp-nav__link is-active" href="lessons.html">Deep Lessons</a></li>
+      <li><a class="lkp-nav__link" href="index.html#ecosystem">Ecosystem</a></li>
+      <li><a class="lkp-nav__link" href="about.html">About</a></li>
+      <li><a class="lkp-nav__link lkp-nav__link--profile" href="profile.html">Profile</a></li>
+    </ul>
+
+    <div class="lkp-nav__right">
+      <a class="lkp-nav__profile-btn lkp-nav__about-btn" href="about.html" aria-label="Open about page">
+        <i class="fas fa-circle-info"></i>
+        <span>About</span>
+      </a>
+
+      <a class="lkp-nav__profile-btn" href="profile.html" aria-label="Open profile">
+        <i class="fas fa-user-astronaut"></i>
+        <span>Profile</span>
+      </a>
+
+      <a class="lkp-nav__cta" href="profile.html">Open Passport →</a>
+
+      <button class="lkp-nav__mobile-btn" id="lkpMobileToggle" aria-label="Toggle menu" aria-expanded="false" type="button">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </nav>
 
-  <!-- PROFILE PANEL -->
-  <div class="cv-profile-bg" id="cvProfileBg"></div>
-  <aside class="cv-profile" id="cvProfile" aria-hidden="true">
-
-    <div class="cv-profile__header">
-      <h3>Your Journey</h3>
-      <button id="cvProfileClose" aria-label="Close"><i class="fas fa-times"></i></button>
-    </div>
-
-    <div class="cv-profile__user">
-      <div class="cv-profile__avatar" id="cvProfileAvatar">
-        <i class="fas fa-circle-user"></i>
-      </div>
-      <div>
-        <span class="cv-profile__name" id="cvProfileName">Aloha, Explorer</span>
-        <span class="cv-profile__level" id="cvProfileLevel">Cultural Learner</span>
-      </div>
-    </div>
-
-    <!-- Sync banner -->
-    <div class="cv-sync-banner" id="cvSyncBanner">
-      <span class="cv-sync-dot"></span>
-      <span id="cvSyncMsg">Sign in at Pikoverse to sync progress</span>
-    </div>
-
-    <!-- Mana bar -->
-    <div class="cv-profile__mana">
-      <div class="cv-profile__mana-row">
-        <span>Mana</span>
-        <span id="manaDisplay">0 Mana</span>
-      </div>
-      <div class="cv-profile__mana-track">
-        <div class="cv-profile__mana-fill" id="manaFill" style="width:0%"></div>
-      </div>
-    </div>
-
-    <!-- Learning stats -->
-    <div class="cv-profile__group">
-      <span class="cv-profile__group-label">My Learning</span>
-      <div class="cv-profile__link">
-        <i class="fas fa-book-open"></i>Lessons Completed
-        <span class="cv-profile__badge" id="completedCount">0</span>
-      </div>
-      <div class="cv-profile__link">
-        <i class="fas fa-globe"></i>Cultures Studied
-        <span class="cv-profile__badge" id="culturesCount">0</span>
-      </div>
-      <a href="index.html" class="cv-profile__link">
-        <i class="fas fa-network-wired"></i>Living Knowledge Matrix
-      </a>
-    </div>
-
-    <!-- Achievements -->
-    <div class="cv-profile__group">
-      <span class="cv-profile__group-label">Achievements</span>
-      <div class="cv-achievements-list" id="cvAchievementsList">
-        <div class="cv-ach-item"><span class="cv-ach-icon">🌱</span><div><strong>First Step</strong><small>Complete your first lesson</small></div></div>
-        <div class="cv-ach-item"><span class="cv-ach-icon">🌺</span><div><strong>Kānaka Scholar</strong><small>Complete all Kānaka Maoli lessons</small></div></div>
-        <div class="cv-ach-item"><span class="cv-ach-icon">☥</span><div><strong>Kemetic Scholar</strong><small>Complete all Kemet lessons</small></div></div>
-        <div class="cv-ach-item"><span class="cv-ach-icon">🌐</span><div><strong>Bridge Walker</strong><small>Complete all Bridge lessons</small></div></div>
-        <div class="cv-ach-item"><span class="cv-ach-icon">✦</span><div><strong>Knowledge Weaver</strong><small>Complete all lessons</small></div></div>
-      </div>
-    </div>
-
-    <!-- Pikoverse connected state (hidden until signed in) -->
-    <div class="cv-profile__group" id="cvSyncInfo" style="display:none">
-      <span class="cv-profile__group-label">Pikoverse Connected</span>
-      <a href="https://pikoverse.xyz/profile.html" target="_blank" rel="noopener"
-         class="cv-profile__link cv-profile__link--gold" id="cvPikoProfileLink">
-        <i class="fas fa-user-astronaut"></i>
-        <span id="cvPikoLinkLabel">My Pikoverse Profile</span>
-        <i class="fas fa-arrow-up-right-from-square" style="font-size:9px;margin-left:auto;opacity:.5"></i>
-      </a>
-      <div class="cv-profile__link" style="font-size:11px;opacity:.6">
-        <i class="fas fa-rotate" style="font-size:10px"></i>
-        <span id="cvSyncStatus">Synced with Pikoverse ✓</span>
-      </div>
-    </div>
-
-    <!-- Sign-in prompt (shown when not logged in) -->
-    <div class="cv-profile__group" id="cvProfileSignIn">
-      <span class="cv-profile__group-label">Sync Your Progress</span>
-      <p style="font-size:12px;color:var(--text-3);line-height:1.6;padding:0 10px 10px;margin:0">
-        Sign in through Pikoverse to keep your completed lessons and mana synced across all devices.
-      </p>
-      <a href="https://pikoverse.xyz/profile.html" target="_blank" rel="noopener"
-         class="cv-profile__link" style="color:var(--emerald);font-weight:700">
-        <i class="fas fa-user-astronaut"></i>Sign In via Pikoverse →
-      </a>
-    </div>
-
-    <!-- Ecosystem links -->
-    <div class="cv-profile__group">
-      <span class="cv-profile__group-label">Connected Platforms</span>
-      <a href="digitalverse/index.html" class="cv-profile__link cv-profile__link--cyan">
-        <i class="fas fa-cube"></i>DigitalVerse<span class="cv-profile__dot cv-profile__dot--cyan"></span>
-      </a>
-      <a href="https://pikoverse.xyz/marketplace/index.html" target="_blank" rel="noopener"
-         class="cv-profile__link cv-profile__link--gold">
-        <i class="fas fa-store"></i>AMP Marketplace<span class="cv-profile__dot cv-profile__dot--gold"></span>
-      </a>
-      <a href="https://808cryptobeast.github.io/NaluLF/" target="_blank" rel="noopener"
-         class="cv-profile__link cv-profile__link--blue">
-        <i class="fas fa-shield-halved"></i>NaluLF<span class="cv-profile__dot cv-profile__dot--blue"></span>
-      </a>
-    </div>
-
-  </aside>
-
   <!-- MAIN LAYOUT -->
   <div class="cv-lessons-layout">
-
     <aside class="cv-sidebar" id="cvSidebar">
       <div class="cv-sidebar__header">
-        <a href="culturalverse.html" class="cv-sidebar__back">← Culturalverse</a>
+        <a href="index.html" class="cv-sidebar__back">← The Living Knowledge Platform</a>
         <h2 class="cv-sidebar__title">Deep Lessons</h2>
         <div class="cv-sidebar__filters" id="cultureFilters"></div>
       </div>
+
       <div class="cv-sidebar__tree" id="lessonTree"></div>
     </aside>
 
     <main class="cv-lesson-main" id="lessonMain">
-
       <div class="cv-lesson-welcome" id="lessonWelcome">
         <div class="cv-lesson-welcome__inner">
           <span class="cv-lesson-welcome__glyph">📖</span>
           <h2>Select a Lesson</h2>
-          <p>Choose a culture and lesson from the sidebar to begin reading.<br>
-             Each lesson is a deep, factual exploration of indigenous knowledge.</p>
+          <p>
+            Choose a culture and lesson from the sidebar to begin reading.<br />
+            Each lesson is a deep exploration of living knowledge systems.
+          </p>
           <div class="cv-lesson-welcome__cultures" id="welcomeCultures"></div>
         </div>
       </div>
@@ -427,31 +1105,85 @@
         <div class="cv-lesson-article__body" id="lessonBody"></div>
         <div class="cv-lesson-article__nav" id="lessonNav"></div>
       </article>
-
     </main>
   </div>
 
-  <button class="cv-sidebar-fab" id="cvSidebarFab" aria-label="Open lesson list">
+  <button class="cv-sidebar-fab" id="cvSidebarFab" aria-label="Open lesson list" type="button">
     <i class="fas fa-list"></i>
   </button>
 
   <footer class="cv-footer" style="margin-top:0;">
     <div class="cv-container">
       <div class="cv-footer__bottom">
-        <p>© <span id="year"></span> Ikeverse (Proprietary).
-           Cultural knowledge presented with respect for source communities.
-           These traditions belong to living peoples — approach with Aloha.</p>
+        <p>
+          © <span id="year"></span> Ka Paepae ʻIke Ola — The Living Knowledge Platform.
+          Cultural knowledge presented with respect for source communities.
+          These traditions belong to living peoples — approach with Aloha.
+        </p>
       </div>
     </div>
   </footer>
 
   <!-- Scripts — order matters -->
-  <script src="culturalverse/js/culturalverse-data.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://pikoverse.xyz/js/supabase-client.js"></script>
-  <script src="culturalverse/js/culturalverse.js"></script>
-  <script src="culturalverse/js/culturalverse-lessons.js"></script>
-  <script src="culturalverse/js/culturalverse-profile.js"></script>
+  <script src="LKP/js/lkp-data.js"></script>
+  <script src="LKP/js/lkp-rewards.js"></script>
+  <script src="LKP/js/lkp-lessons.js"></script>
 
+  <script>
+    /* Mobile nav toggle */
+    const mobileToggle = document.getElementById('lkpMobileToggle');
+    const navLinks = document.getElementById('lkpNavLinks');
+
+    if (mobileToggle && navLinks) {
+      mobileToggle.addEventListener('click', () => {
+        const isOpen = navLinks.classList.toggle('is-open');
+        mobileToggle.setAttribute('aria-expanded', String(isOpen));
+      });
+    }
+
+    /* Sidebar mobile toggle */
+    const sidebarFab = document.getElementById('cvSidebarFab');
+    const sidebar = document.getElementById('cvSidebar');
+
+    if (sidebarFab && sidebar) {
+      sidebarFab.addEventListener('click', () => {
+        sidebar.classList.toggle('is-open');
+      });
+    }
+
+    document.addEventListener('click', event => {
+      if (!sidebar || !sidebar.classList.contains('is-open')) return;
+
+      const clickedInside = sidebar.contains(event.target);
+      const clickedFab = sidebarFab && sidebarFab.contains(event.target);
+
+      if (!clickedInside && !clickedFab) {
+        sidebar.classList.remove('is-open');
+      }
+    });
+
+    /* Footer year */
+    const year = document.getElementById('year');
+    if (year) year.textContent = new Date().getFullYear();
+
+    /* Scroll progress */
+    const progressFill = document.getElementById('progressFill');
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!progressFill) return;
+
+        const max =
+          document.documentElement.scrollHeight -
+          document.documentElement.clientHeight;
+
+        const pct = max > 0 ? (window.scrollY / max) * 100 : 0;
+        progressFill.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+      },
+      { passive: true }
+    );
+  </script>
 </body>
 </html>
