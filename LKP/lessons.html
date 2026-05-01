@@ -2,1188 +2,758 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
   <title>Deep Lessons | Ka Paepae ʻIke Ola</title>
 
-  <meta
-    name="description"
-    content="Deep reading lessons for Kānaka Maoli, Kemet, and cross-cultural bridges within Ka Paepae ʻIke Ola — The Living Knowledge Platform."
-  />
-
+  <meta name="description" content="Deep reading lessons for Kānaka Maoli, Kemet, and cross-cultural bridges within Ka Paepae ʻIke Ola — The Living Knowledge Platform." />
   <meta name="theme-color" content="#070b14" />
   <meta name="robots" content="index, follow" />
 
   <meta property="og:title" content="Deep Lessons | Ka Paepae ʻIke Ola" />
-  <meta
-    property="og:description"
-    content="Explore deep cultural lessons, living knowledge systems, and cross-cultural bridges through The Living Knowledge Platform."
-  />
+  <meta property="og:description" content="Explore deep cultural lessons, living knowledge systems, and cross-cultural bridges through The Living Knowledge Platform." />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="LKP/assets/images/LKP-2.png" />
+  <meta property="og:image" content="assets/images/LKP-2.png" />
 
-  <link rel="icon" type="image/png" href="LKP/assets/images/LKP-2.png" />
-  <link rel="apple-touch-icon" href="LKP/assets/images/LKP-2.png" />
+  <link rel="icon" type="image/png" href="assets/images/LKP-2.png" />
+  <link rel="apple-touch-icon" href="assets/images/LKP-2.png" />
+  <link rel="manifest" href="../site.webmanifest" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap"
-    rel="stylesheet"
-  />
-
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-  />
-
-  <!-- Corrected LKP paths -->
-  <link rel="stylesheet" href="LKP/css/lkp-brand.css" />
-  <link rel="stylesheet" href="LKP/css/lkp-lessons.css" />
-  <link rel="stylesheet" href="LKP/css/culturalverse-additions.css" />
-
-  <style>
-    /* ═══════════════════════════════════════════════════
-       LESSON COMPONENT STYLES
-       Laʻau Lapaʻau + Kemet Medicine + Aloha/Maʻat
-    ═══════════════════════════════════════════════════ */
-
-    :root {
-      --emerald: #3cb371;
-      --gold: #f0c96a;
-      --cyan: #54c6ee;
-      --violet: #8fa0ff;
-      --rust: #d98545;
-      --bg: #01030a;
-      --text-1: rgba(235, 245, 255, 0.96);
-      --text-2: rgba(190, 210, 235, 0.75);
-      --text-3: rgba(170, 190, 220, 0.58);
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      color: var(--text-1);
-      font-family: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(circle at 18% 0%, rgba(84, 198, 238, 0.16), transparent 34%),
-        radial-gradient(circle at 86% 10%, rgba(240, 201, 106, 0.14), transparent 36%),
-        radial-gradient(circle at 50% 110%, rgba(143, 160, 255, 0.12), transparent 38%),
-        linear-gradient(180deg, #01030a 0%, #030817 48%, #01030a 100%);
-      overflow-x: hidden;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    button {
-      font: inherit;
-    }
-
-    #starfield {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      opacity: 0.65;
-    }
-
-    .progress-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 3px;
-      z-index: 80;
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .progress-bar__fill {
-      width: 0%;
-      height: 100%;
-      background: linear-gradient(90deg, var(--cyan), var(--gold));
-      box-shadow: 0 0 16px rgba(240, 201, 106, 0.42);
-      transition: width 0.16s ease;
-    }
-
-    /* NAV */
-
-    .lkp-nav {
-      position: sticky;
-      top: 0;
-      z-index: 60;
-      min-height: 76px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 18px;
-      padding: 12px clamp(14px, 3vw, 30px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      background: rgba(1, 3, 10, 0.86);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-    }
-
-    .lkp-nav__brand {
-      min-width: 0;
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .lkp-nav__brand-logo,
-    .lkp-nav__brand-glyph-fallback {
-      width: 52px;
-      height: 52px;
-      flex: 0 0 auto;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      border-radius: 50%;
-      border: 1px solid rgba(240, 201, 106, 0.25);
-      background: rgba(1, 3, 10, 0.46);
-      box-shadow:
-        0 0 16px rgba(240, 201, 106, 0.18),
-        0 0 24px rgba(84, 198, 238, 0.10);
-      object-fit: cover;
-    }
-
-    .lkp-nav__brand-text {
-      display: grid;
-      gap: 2px;
-      min-width: 0;
-    }
-
-    .lkp-nav__brand-title {
-      color: var(--gold);
-      font-family: "Pirata One", "Cormorant Garamond", serif;
-      font-size: clamp(1.35rem, 2.4vw, 2.05rem);
-      line-height: 0.95;
-      letter-spacing: 0.035em;
-      white-space: nowrap;
-    }
-
-    .lkp-nav__brand-sub {
-      color: var(--text-2);
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 0.92rem;
-      letter-spacing: 0.06em;
-    }
-
-    .lkp-nav__links {
-      list-style: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin: 0;
-      padding: 0;
-    }
-
-    .lkp-nav__link,
-    .lkp-nav__profile-btn,
-    .lkp-nav__cta {
-      min-height: 38px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.04);
-      color: rgba(230, 242, 255, 0.86);
-      font-size: 12px;
-      font-weight: 900;
-      transition:
-        transform 0.18s ease,
-        border-color 0.18s ease,
-        background 0.18s ease,
-        color 0.18s ease;
-    }
-
-    .lkp-nav__link:hover,
-    .lkp-nav__profile-btn:hover,
-    .lkp-nav__cta:hover,
-    .lkp-nav__link.is-active {
-      transform: translateY(-1px);
-      border-color: rgba(240, 201, 106, 0.30);
-      background: rgba(240, 201, 106, 0.08);
-      color: var(--gold);
-    }
-
-    .lkp-nav__right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .lkp-nav__cta {
-      border-color: rgba(240, 201, 106, 0.28);
-      background: rgba(240, 201, 106, 0.10);
-      color: var(--gold);
-    }
-
-    .lkp-nav__mobile-btn {
-      display: none;
-      width: 42px;
-      height: 42px;
-      border: 1px solid rgba(255,255,255,0.10);
-      border-radius: 14px;
-      background: rgba(255,255,255,0.04);
-      color: var(--text-1);
-      cursor: pointer;
-    }
-
-    .lkp-nav__mobile-btn span {
-      display: block;
-      width: 18px;
-      height: 2px;
-      margin: 4px auto;
-      border-radius: 999px;
-      background: currentColor;
-    }
-
-    .lkp-nav__about-btn {
-      display: inline-flex;
-    }
-
-    @media (min-width: 921px) {
-      .lkp-nav__about-btn {
-        display: none;
-      }
-    }
-
-    @media (max-width: 920px) {
-      .lkp-nav {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .lkp-nav__links {
-        width: 100%;
-        justify-content: flex-start;
-        overflow-x: auto;
-        padding-bottom: 2px;
-      }
-
-      .lkp-nav__right {
-        width: 100%;
-        justify-content: flex-start;
-        overflow-x: auto;
-      }
-    }
-
-    @media (max-width: 720px) {
-      .lkp-nav {
-        flex-direction: row;
-        align-items: center;
-      }
-
-      .lkp-nav__links {
-        position: fixed;
-        top: 76px;
-        left: 10px;
-        right: 10px;
-        display: none;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        padding: 10px;
-        border-radius: 22px;
-        border: 1px solid rgba(255,255,255,0.10);
-        background: rgba(1, 3, 10, 0.94);
-        box-shadow: 0 18px 60px rgba(0,0,0,0.38);
-        backdrop-filter: blur(18px);
-        -webkit-backdrop-filter: blur(18px);
-      }
-
-      .lkp-nav__links.is-open {
-        display: grid;
-      }
-
-      .lkp-nav__mobile-btn {
-        display: inline-grid;
-        place-items: center;
-      }
-
-      .lkp-nav__cta {
-        display: none;
-      }
-
-      .lkp-nav__right {
-        width: auto;
-        margin-left: auto;
-      }
-
-      .lkp-nav__profile-btn,
-      .lkp-nav__about-btn {
-        min-width: 42px;
-        min-height: 42px;
-        padding: 8px 10px;
-      }
-
-      .lkp-nav__profile-btn span,
-      .lkp-nav__about-btn span {
-        display: none;
-      }
-
-      .lkp-nav__profile-btn i,
-      .lkp-nav__about-btn i {
-        font-size: 15px;
-      }
-
-      .lkp-nav__brand-logo,
-      .lkp-nav__brand-glyph-fallback {
-        width: 44px;
-        height: 44px;
-      }
-
-      .lkp-nav__brand-title {
-        max-width: calc(100vw - 210px);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        font-size: 1.32rem;
-      }
-
-      .lkp-nav__brand-sub {
-        font-size: 0.75rem;
-      }
-    }
-
-    /* LESSON LAYOUT */
-
-    .cv-lessons-layout {
-      position: relative;
-      z-index: 2;
-      display: grid;
-      grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
-      min-height: calc(100vh - 76px);
-    }
-
-    .cv-sidebar {
-      position: sticky;
-      top: 76px;
-      align-self: start;
-      height: calc(100vh - 76px);
-      overflow: auto;
-      border-right: 1px solid rgba(255,255,255,0.08);
-      background:
-        radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.08), transparent 40%),
-        rgba(3, 9, 24, 0.78);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-    }
-
-    .cv-sidebar__header {
-      padding: 22px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .cv-sidebar__back {
-      display: inline-flex;
-      margin-bottom: 12px;
-      color: var(--cyan);
-      font-size: 12px;
-      font-weight: 900;
-    }
-
-    .cv-sidebar__title {
-      margin: 0 0 14px;
-      color: var(--gold);
-      font-family: "Pirata One", "Cormorant Garamond", serif;
-      font-size: 2.55rem;
-      line-height: 0.9;
-      font-weight: 400;
-      letter-spacing: 0.035em;
-    }
-
-    .cv-sidebar__filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-    }
-
-    .cv-filter-btn,
-    .cv-culture-filter {
-      min-height: 34px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.09);
-      background: rgba(255,255,255,0.04);
-      color: var(--text-2);
-      font-size: 11px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .cv-filter-btn.is-active,
-    .cv-culture-filter.is-active {
-      color: var(--gold);
-      border-color: rgba(240, 201, 106, 0.32);
-      background: rgba(240, 201, 106, 0.08);
-    }
-
-    .cv-sidebar__tree {
-      display: grid;
-      gap: 14px;
-      padding: 18px;
-    }
-
-    .cv-tree-culture {
-      display: grid;
-      gap: 10px;
-    }
-
-    .cv-tree-culture__title {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--gold);
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .cv-tree-module {
-      display: grid;
-      gap: 7px;
-      padding: 12px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.035);
-    }
-
-    .cv-tree-module__title {
-      color: rgba(255, 239, 198, 0.94);
-      font-size: 13px;
-      font-weight: 900;
-      line-height: 1.25;
-    }
-
-    .cv-tree-lesson {
-      width: 100%;
-      display: grid;
-      gap: 3px;
-      padding: 9px 10px;
-      border: 1px solid transparent;
-      border-radius: 14px;
-      background: transparent;
-      color: var(--text-2);
-      text-align: left;
-      cursor: pointer;
-    }
-
-    .cv-tree-lesson:hover,
-    .cv-tree-lesson.is-active {
-      border-color: rgba(84, 198, 238, 0.24);
-      background: rgba(84, 198, 238, 0.07);
-      color: var(--cyan);
-    }
-
-    .cv-tree-lesson strong {
-      font-size: 12px;
-      line-height: 1.25;
-    }
-
-    .cv-tree-lesson small {
-      color: var(--text-3);
-      font-size: 10px;
-      line-height: 1.25;
-    }
-
-    .cv-lesson-main {
-      min-width: 0;
-      padding: clamp(18px, 3vw, 42px);
-    }
-
-    .cv-lesson-welcome {
-      min-height: calc(100vh - 160px);
-      display: grid;
-      place-items: center;
-      text-align: center;
-    }
-
-    .cv-lesson-welcome__inner {
-      width: min(760px, 100%);
-      padding: clamp(24px, 5vw, 52px);
-      border-radius: 34px;
-      border: 1px solid rgba(240, 201, 106, 0.18);
-      background:
-        radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.12), transparent 42%),
-        radial-gradient(circle at 100% 100%, rgba(84, 198, 238, 0.10), transparent 44%),
-        rgba(5, 12, 32, 0.74);
-      box-shadow: 0 24px 80px rgba(0,0,0,0.32);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-    }
-
-    .cv-lesson-welcome__glyph {
-      display: block;
-      margin-bottom: 14px;
-      font-size: 3rem;
-    }
-
-    .cv-lesson-welcome h2 {
-      margin: 0;
-      color: var(--gold);
-      font-family: "Pirata One", "Cormorant Garamond", serif;
-      font-size: clamp(3rem, 7vw, 5.5rem);
-      line-height: 0.88;
-      font-weight: 400;
-      letter-spacing: 0.035em;
-    }
-
-    .cv-lesson-welcome p {
-      margin: 18px 0 0;
-      color: var(--text-2);
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 1.18rem;
-      line-height: 1.6;
-    }
-
-    .cv-lesson-welcome__cultures {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 24px;
-    }
-
-    .cv-lesson-article {
-      width: min(980px, 100%);
-      margin: 0 auto;
-      padding: clamp(20px, 4vw, 44px);
-      border-radius: 34px;
-      border: 1px solid rgba(255,255,255,0.09);
-      background:
-        radial-gradient(circle at 0 0, rgba(240, 201, 106, 0.08), transparent 40%),
-        radial-gradient(circle at 100% 100%, rgba(84, 198, 238, 0.08), transparent 44%),
-        rgba(5, 12, 32, 0.78);
-      box-shadow: 0 24px 80px rgba(0,0,0,0.32);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-    }
-
-    .cv-lesson-article__header {
-      margin-bottom: 24px;
-      padding-bottom: 18px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .cv-lesson-kicker {
-      display: inline-flex;
-      width: fit-content;
-      align-items: center;
-      gap: 8px;
-      min-height: 30px;
-      margin: 0 0 14px;
-      padding: 6px 12px;
-      border-radius: 999px;
-      border: 1px solid rgba(240, 201, 106, 0.26);
-      background: rgba(240, 201, 106, 0.08);
-      color: var(--gold);
-      font-size: 11px;
-      font-weight: 900;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    .cv-lesson-title {
-      margin: 0;
-      color: var(--gold);
-      font-family: "Pirata One", "Cormorant Garamond", serif;
-      font-size: clamp(3rem, 7vw, 5.3rem);
-      line-height: 0.88;
-      font-weight: 400;
-      letter-spacing: 0.035em;
-    }
-
-    .cv-lesson-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 16px;
-      color: var(--text-3);
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .cv-lesson-meta span {
-      padding: 6px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.035);
-    }
-
-    .cv-lesson-article__body {
-      color: var(--text-2);
-      font-family: "Cormorant Garamond", Georgia, serif;
-      font-size: 1.14rem;
-      line-height: 1.75;
-    }
-
-    .cv-lesson-article__body .lead {
-      color: rgba(235, 245, 255, 0.94);
-      font-size: 1.28rem;
-      line-height: 1.68;
-    }
-
-    .cv-lesson-article__body h4,
-    .cv-heading {
-      margin: 2rem 0 0.8rem;
-      padding-left: 12px;
-      border-left: 3px solid var(--emerald);
-      color: rgba(255, 239, 198, 0.98);
-      font-family: "DM Sans", system-ui, sans-serif;
-      font-size: 1.1rem;
-      line-height: 1.35;
-    }
-
-    .cv-lesson-article__body ul {
-      padding-left: 1.25rem;
-    }
-
-    .cv-lesson-article__body li {
-      margin: 0.55rem 0;
-    }
-
-    .cv-callout,
-    callout {
-      display: block;
-      margin: 1.6rem 0;
-      padding: 1.15rem 1.25rem;
-      border-left: 3px solid var(--emerald);
-      border-radius: 14px;
-      background: rgba(60, 179, 113, 0.06);
-      color: rgba(235, 245, 255, 0.9);
-    }
-
-    .cv-callout--gold,
-    callout[type="gold"] {
-      border-left-color: var(--gold);
-      background: rgba(240, 201, 106, 0.06);
-    }
-
-    .cv-callout--bridge,
-    callout[type="bridge"] {
-      border-left-color: var(--violet);
-      background: rgba(143, 160, 255, 0.06);
-    }
-
-    .cv-facts,
-    facts {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 10px;
-      margin: 1.6rem 0;
-      font-family: "DM Sans", system-ui, sans-serif;
-    }
-
-    .cv-fact {
-      padding: 12px;
-      border-radius: 16px;
-      border: 1px solid rgba(240, 201, 106, 0.18);
-      background: rgba(240, 201, 106, 0.06);
-      text-align: center;
-    }
-
-    .cv-fact strong {
-      display: block;
-      color: var(--gold);
-      font-size: 1rem;
-    }
-
-    .cv-fact span {
-      color: var(--text-3);
-      font-size: 0.72rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .cv-twocol,
-    twocol {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin: 1.6rem 0;
-    }
-
-    .cv-twocol__side {
-      padding: 16px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.035);
-    }
-
-    .cv-twocol__side strong {
-      display: block;
-      margin-bottom: 7px;
-      color: var(--gold);
-      font-family: "DM Sans", system-ui, sans-serif;
-      font-size: 0.9rem;
-    }
-
-    .cv-concepts,
-    concepts {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 1.4rem 0;
-      font-family: "DM Sans", system-ui, sans-serif;
-    }
-
-    .cv-concept {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(84, 198, 238, 0.22);
-      background: rgba(84, 198, 238, 0.07);
-      color: var(--cyan);
-      font-size: 0.76rem;
-      font-weight: 900;
-    }
-
-    .cv-lesson-article__nav {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      margin-top: 28px;
-      padding-top: 20px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-    }
-
-    .cv-lesson-nav-btn {
-      min-height: 42px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 9px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(84, 198, 238, 0.22);
-      background: rgba(84, 198, 238, 0.07);
-      color: var(--cyan);
-      font-size: 12px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .cv-lesson-nav-btn:hover {
-      border-color: rgba(240, 201, 106, 0.30);
-      background: rgba(240, 201, 106, 0.08);
-      color: var(--gold);
-    }
-
-    .cv-sidebar-fab {
-      position: fixed;
-      right: 16px;
-      bottom: 18px;
-      z-index: 70;
-      width: 48px;
-      height: 48px;
-      display: none;
-      place-items: center;
-      border-radius: 50%;
-      border: 1px solid rgba(240, 201, 106, 0.28);
-      background: rgba(1, 3, 10, 0.88);
-      color: var(--gold);
-      box-shadow: 0 18px 60px rgba(0,0,0,0.4);
-    }
-
-    .cv-footer {
-      position: relative;
-      z-index: 2;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      background: rgba(1, 3, 10, 0.66);
-    }
-
-    .cv-container {
-      width: min(1240px, calc(100% - 32px));
-      margin: 0 auto;
-    }
-
-    .cv-footer__bottom {
-      padding: 20px 0;
-      color: var(--text-3);
-      font-size: 12px;
-      line-height: 1.5;
-      text-align: center;
-    }
-
-    /* Plant grid */
-
-    .cv-plant-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin: 1.5rem 0;
-    }
-
-    .cv-plant-card {
-      border: 1px solid rgba(60, 179, 113, 0.22);
-      border-radius: 12px;
-      padding: 1.25rem;
-      background: rgba(60, 179, 113, 0.04);
-      transition: border-color 0.2s;
-    }
-
-    .cv-plant-card:hover {
-      border-color: rgba(60, 179, 113, 0.4);
-    }
-
-    .cv-plant-name {
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--emerald);
-      margin-bottom: 0.5rem;
-      line-height: 1.3;
-    }
-
-    .cv-plant-latin {
-      font-size: 0.78rem;
-      font-style: italic;
-      font-weight: 400;
-      opacity: 0.65;
-      display: block;
-      margin-top: 3px;
-    }
-
-    .cv-plant-body p {
-      font-size: 0.88rem;
-      line-height: 1.75;
-      color: var(--text-2);
-      margin: 0;
-    }
-
-    .cv-card-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.25rem;
-      margin: 1.5rem 0;
-    }
-
-    .cv-info-card {
-      border-radius: 12px;
-      padding: 1.25rem;
-      border: 1px solid rgba(255,255,255,0.08);
-      background: rgba(255,255,255,0.03);
-    }
-
-    .cv-info-card--gold {
-      border-color: rgba(240, 201, 106, 0.25);
-      background: rgba(240, 201, 106, 0.04);
-    }
-
-    .cv-info-card__title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: var(--gold);
-      margin-bottom: 4px;
-    }
-
-    .cv-info-card__subtitle {
-      font-size: 0.75rem;
-      color: rgba(240, 201, 106, 0.55);
-      font-style: italic;
-      margin-bottom: 0.75rem;
-    }
-
-    .cv-info-card p {
-      font-size: 0.87rem;
-      line-height: 1.75;
-      color: var(--text-2);
-      margin: 0;
-    }
-
-    .cv-bridge-quote {
-      display: flex;
-      align-items: flex-start;
-      gap: 2rem;
-      margin-top: 2rem;
-      padding: 1.5rem;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      flex-wrap: wrap;
-    }
-
-    .cv-bridge-quote__hawaii,
-    .cv-bridge-quote__kemet {
-      flex: 1;
-      min-width: 200px;
-      font-style: italic;
-      line-height: 1.8;
-      font-size: 0.92rem;
-      opacity: 0.85;
-      font-family: "Cormorant Garamond", serif;
-    }
-
-    .cv-bridge-quote__attr {
-      font-style: normal;
-      font-size: 0.75rem;
-      opacity: 0.55;
-      margin-top: 0.5rem;
-      display: block;
-      font-family: "Space Mono", monospace;
-      letter-spacing: 0.02em;
-    }
-
-    .cv-bridge-quote__divider {
-      font-size: 1.5rem;
-      opacity: 0.25;
-      flex-shrink: 0;
-      padding-top: 0.25rem;
-    }
-
-    @media (max-width: 980px) {
-      .cv-lessons-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .cv-sidebar {
-        position: fixed;
-        top: 76px;
-        left: 0;
-        bottom: 0;
-        width: min(360px, calc(100vw - 42px));
-        height: auto;
-        z-index: 65;
-        transform: translateX(-105%);
-        transition: transform 0.22s ease;
-        box-shadow: 0 24px 80px rgba(0,0,0,0.44);
-      }
-
-      .cv-sidebar.is-open {
-        transform: translateX(0);
-      }
-
-      .cv-sidebar-fab {
-        display: grid;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .cv-plant-grid,
-      .cv-card-grid,
-      .cv-twocol,
-      twocol {
-        grid-template-columns: 1fr;
-      }
-
-      .cv-facts,
-      facts {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .cv-lesson-main {
-        padding: 14px;
-      }
-
-      .cv-lesson-article {
-        padding: 18px;
-        border-radius: 24px;
-      }
-
-      .cv-lesson-title {
-        font-size: clamp(2.75rem, 15vw, 4.4rem);
-      }
-
-      .cv-lesson-article__nav {
-        flex-direction: column;
-      }
-
-      .cv-lesson-nav-btn {
-        width: 100%;
-      }
-    }
-
-    @media (max-width: 460px) {
-      .cv-facts,
-      facts {
-        grid-template-columns: 1fr;
-      }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="stylesheet" href="css/lkp-brand.css" />
+  <link rel="stylesheet" href="css/lkp-lessons.css" />
+  <link rel="stylesheet" href="css/culturalverse-additions.css" />
 </head>
 
-<body>
-  <canvas id="starfield" aria-hidden="true"></canvas>
+<body data-culture="kemet">
 
-  <div class="progress-bar" aria-hidden="true">
-    <div class="progress-bar__fill" id="progressFill"></div>
+  <!-- ── Three.js background canvas ─────────────────────────────────── -->
+  <canvas id="lkp-galaxy-bg" aria-hidden="true"></canvas>
+
+  <!-- ── Progress bar ────────────────────────────────────────────────── -->
+  <div class="lkp-progress" aria-hidden="true">
+    <div class="lkp-progress__fill" id="progressFill"></div>
   </div>
 
-  <!-- NAVBAR -->
+  <!-- ── Nav ─────────────────────────────────────────────────────────── -->
   <nav class="lkp-nav" id="lkpNav">
-    <a class="lkp-nav__brand" href="index.html" aria-label="Ka Paepae ʻIke Ola - The Knowledge Platform">
-      <img
-        class="lkp-nav__brand-logo"
-        src="LKP/assets/images/LKP-1.png"
-        alt="Ka Paepae ʻIke Ola"
-        onerror="this.style.display='none'; var f=document.querySelector('.lkp-nav__brand-glyph-fallback'); if(f) f.style.display='grid';"
-      />
-
-      <div class="lkp-nav__brand-glyph-fallback" style="display:none;">✦</div>
-
+    <a class="lkp-nav__brand" href="../index.html" aria-label="Ka Paepae ʻIke Ola — home">
+      <img class="lkp-nav__logo" src="assets/images/LKP-1.png" alt="Ka Paepae ʻIke Ola"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='grid';" />
+      <span class="lkp-nav__glyph" style="display:none">◈</span>
       <div class="lkp-nav__brand-text">
-        <span class="lkp-nav__brand-title">Ka Paepae ʻIke Ola</span>
-        <span class="lkp-nav__brand-sub">The Knowledge Platform</span>
+        <span class="lkp-nav__title">Ka Paepae ʻIke Ola</span>
+        <span class="lkp-nav__sub">The Knowledge Platform</span>
       </div>
     </a>
 
     <ul class="lkp-nav__links" id="lkpNavLinks">
-      <li><a class="lkp-nav__link" href="index.html#cultures">Cultures</a></li>
-      <li><a class="lkp-nav__link" href="index.html#navigate">Navigate</a></li>
-      <li><a class="lkp-nav__link is-active" href="lessons.html">Deep Lessons</a></li>
-      <li><a class="lkp-nav__link" href="index.html#ecosystem">Ecosystem</a></li>
-      <li><a class="lkp-nav__link" href="about.html">About</a></li>
-      <li><a class="lkp-nav__link lkp-nav__link--profile" href="profile.html">Profile</a></li>
+      <li><a class="lkp-nav__link" href="../index.html"><i class="fas fa-house"></i> Home</a></li>
+      <li><a class="lkp-nav__link" href="../index.html#cultures"><i class="fas fa-globe"></i> Cultures</a></li>
+      <li><a class="lkp-nav__link is-active" href="lessons.html"><i class="fas fa-book-open"></i> Deep Lessons</a></li>
+      <li><a class="lkp-nav__link" href="../index.html#ecosystem"><i class="fas fa-circle-nodes"></i> Ecosystem</a></li>
+      <li><a class="lkp-nav__link" href="../about.html"><i class="fas fa-circle-info"></i> About</a></li>
     </ul>
 
     <div class="lkp-nav__right">
-      <a class="lkp-nav__profile-btn lkp-nav__about-btn" href="about.html" aria-label="Open about page">
-        <i class="fas fa-circle-info"></i>
-        <span>About</span>
-      </a>
-
-      <a class="lkp-nav__profile-btn" href="profile.html" aria-label="Open profile">
+      <a class="lkp-nav__btn" href="../profile.html" aria-label="Open profile">
         <i class="fas fa-user-astronaut"></i>
         <span>Profile</span>
       </a>
-
-      <a class="lkp-nav__cta" href="profile.html">Open Passport →</a>
-
-      <button class="lkp-nav__mobile-btn" id="lkpMobileToggle" aria-label="Toggle menu" aria-expanded="false" type="button">
+      <a class="lkp-nav__cta" href="../profile.html">Open Passport →</a>
+      <button class="lkp-nav__hamburger" id="lkpMobileToggle" aria-label="Toggle menu" aria-expanded="false" type="button">
         <span></span><span></span><span></span>
       </button>
     </div>
   </nav>
 
-  <!-- MAIN LAYOUT -->
-  <div class="cv-lessons-layout">
-    <aside class="cv-sidebar" id="cvSidebar">
-      <div class="cv-sidebar__header">
-        <a href="index.html" class="cv-sidebar__back">← The Living Knowledge Platform</a>
-        <h2 class="cv-sidebar__title">Deep Lessons</h2>
-        <div class="cv-sidebar__filters" id="cultureFilters"></div>
-      </div>
+  <!-- ── Main layout ──────────────────────────────────────────────────── -->
+  <div class="lkp-lessons-layout">
 
-      <div class="cv-sidebar__tree" id="lessonTree"></div>
+    <!-- ── Sidebar ──────────────────────────────────────────────────── -->
+    <aside class="lkp-sidebar" id="cvSidebar">
+      <!-- Three.js mini-constellation behind tree -->
+      <canvas id="lkp-sidebar-constellation" aria-hidden="true"></canvas>
+
+      <div class="lkp-sidebar__inner">
+        <div class="lkp-sidebar__header">
+          <a href="../index.html" class="lkp-sidebar__back">
+            <i class="fas fa-arrow-left"></i> Back to Platform
+          </a>
+          <h2 class="lkp-sidebar__title">Deep Lessons</h2>
+          <div class="lkp-sidebar__filters" id="cultureFilters"></div>
+        </div>
+        <div class="cv-sidebar__tree" id="lessonTree"></div>
+      </div>
     </aside>
 
-    <main class="cv-lesson-main" id="lessonMain">
+    <!-- ── Lesson content ────────────────────────────────────────────── -->
+    <main class="lkp-lesson-main" id="lessonMain">
+
+      <!-- Welcome state -->
       <div class="cv-lesson-welcome" id="lessonWelcome">
         <div class="cv-lesson-welcome__inner">
-          <span class="cv-lesson-welcome__glyph">📖</span>
-          <h2>Select a Lesson</h2>
-          <p>
-            Choose a culture and lesson from the sidebar to begin reading.<br />
-            Each lesson is a deep exploration of living knowledge systems.
-          </p>
+          <span class="cv-lesson-welcome__glyph">◈</span>
+          <h2>Ka ʻIke Ola</h2>
+          <p>Select a culture and lesson from the sidebar to begin reading.<br />
+          Every lesson is a deep exploration of living knowledge — grounded in primary sources and living traditions.</p>
           <div class="cv-lesson-welcome__cultures" id="welcomeCultures"></div>
         </div>
       </div>
 
+      <!-- Active lesson -->
       <article class="cv-lesson-article" id="lessonArticle" hidden>
+
+        <!-- Culture hero canvas -->
+        <div class="cv-lesson-culture-hero" id="cultureHero">
+          <canvas id="cv-culture-hero-canvas"></canvas>
+          <div class="cv-culture-hero-label" id="cultureHeroLabel">
+            <span id="cultureHeroEmoji">✦</span>
+            <span id="cultureHeroName">Culture</span>
+          </div>
+        </div>
+
         <div class="cv-lesson-article__header" id="lessonHeader"></div>
         <div class="cv-lesson-article__body" id="lessonBody"></div>
+        <div id="lessonSources"></div>
         <div class="cv-lesson-article__nav" id="lessonNav"></div>
       </article>
+
     </main>
   </div>
 
+  <!-- ── Sidebar FAB (mobile) ──────────────────────────────────────────── -->
   <button class="cv-sidebar-fab" id="cvSidebarFab" aria-label="Open lesson list" type="button">
     <i class="fas fa-list"></i>
   </button>
 
-  <footer class="cv-footer" style="margin-top:0;">
-    <div class="cv-container">
-      <div class="cv-footer__bottom">
-        <p>
-          © <span id="year"></span> Ka Paepae ʻIke Ola — The Living Knowledge Platform.
-          Cultural knowledge presented with respect for source communities.
-          These traditions belong to living peoples — approach with Aloha.
-        </p>
-      </div>
+  <!-- ── Footer ───────────────────────────────────────────────────────── -->
+  <footer class="lkp-footer">
+    <div class="lkp-footer__inner">
+      <p>© <span id="footerYear"></span> Ka Paepae ʻIke Ola — The Living Knowledge Platform.
+      Cultural knowledge presented with respect for source communities.
+      These traditions belong to living peoples — approach with Aloha.</p>
+      <nav class="lkp-footer__links">
+        <a href="../index.html">Home</a>
+        <a href="../profile.html">Profile</a>
+        <a href="../about.html">About</a>
+        <a href="admin.html">Admin</a>
+      </nav>
     </div>
   </footer>
 
-  <!-- Scripts — order matters -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="LKP/js/lkp-data.js"></script>
-  <script src="LKP/js/lkp-rewards.js"></script>
-  <script src="LKP/js/lkp-lessons.js"></script>
+  <!-- ── Scripts ──────────────────────────────────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="js/lkp-data.js" defer></script>
+  <script src="js/lkp-rewards.js" defer></script>
+  <script src="js/lkp-lessons.js" defer></script>
 
-  <script>
-    /* Mobile nav toggle */
-    const mobileToggle = document.getElementById('lkpMobileToggle');
-    const navLinks = document.getElementById('lkpNavLinks');
+  <script type="module">
+  /* ═══════════════════════════════════════════════════════════════════════
+     THREE.JS — DUAL GALAXY SYSTEM
+     1. Full-page background nebula that shifts per active culture
+     2. Sidebar mini-constellation — lesson stars with connecting lines
+     3. Lesson culture-hero canvas — culture-specific 3D art
+  ═══════════════════════════════════════════════════════════════════════ */
 
-    if (mobileToggle && navLinks) {
-      mobileToggle.addEventListener('click', () => {
-        const isOpen = navLinks.classList.toggle('is-open');
-        mobileToggle.setAttribute('aria-expanded', String(isOpen));
-      });
+  const THREE = await import('https://esm.sh/three@0.160.0');
+
+  /* ── Culture palettes for Three.js ─────────────────────────────────── */
+  const CULTURE_THEMES = {
+    kanaka:    { primary: '#3cb371', secondary: '#54c6ee', tertiary: '#8fffc7', fog: 0x030d0a },
+    kemet:     { primary: '#f0c96a', secondary: '#d98545', tertiary: '#ffeab0', fog: 0x0a0800 },
+    bridge:    { primary: '#8fa0ff', secondary: '#54c6ee', tertiary: '#c4ceff', fog: 0x04070f },
+    dreamtime: { primary: '#d98545', secondary: '#f0c96a', tertiary: '#ffcf8a', fog: 0x0a0500 },
+    dogon:     { primary: '#e4ad48', secondary: '#d98545', tertiary: '#ffd980', fog: 0x080700 },
+    vedic:     { primary: '#ffb347', secondary: '#f0c96a', tertiary: '#ffe4b0', fog: 0x080500 },
+    default:   { primary: '#54c6ee', secondary: '#8fa0ff', tertiary: '#dbefff', fog: 0x01030a }
+  };
+
+  function getTheme(cultureId) {
+    return CULTURE_THEMES[cultureId] || CULTURE_THEMES.default;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     1. FULL-PAGE BACKGROUND
+  ═══════════════════════════════════════════════════════════════════════ */
+
+  (function initBackground() {
+    const canvas = document.getElementById('lkp-galaxy-bg');
+    if (!canvas) return;
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x01030a, 0.012);
+
+    const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 200);
+    camera.position.set(0, 0, 28);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.4));
+    renderer.setSize(innerWidth, innerHeight);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+    /* Star field */
+    const stCount = 1400;
+    const stPos = new Float32Array(stCount * 3);
+    const stCol = new Float32Array(stCount * 3);
+    const palette = [new THREE.Color('#dbefff'), new THREE.Color('#f0c96a'), new THREE.Color('#54c6ee'), new THREE.Color('#8fa0ff')];
+
+    for (let i = 0; i < stCount; i++) {
+      const r = 30 + Math.random() * 80;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(Math.random() * 2 - 1);
+      stPos[i*3] = r * Math.sin(phi) * Math.cos(theta);
+      stPos[i*3+1] = r * Math.cos(phi) * 0.6;
+      stPos[i*3+2] = r * Math.sin(phi) * Math.sin(theta);
+      const c = palette[Math.floor(Math.random() * palette.length)];
+      stCol[i*3]=c.r; stCol[i*3+1]=c.g; stCol[i*3+2]=c.b;
     }
 
-    /* Sidebar mobile toggle */
-    const sidebarFab = document.getElementById('cvSidebarFab');
-    const sidebar = document.getElementById('cvSidebar');
+    const stGeo = new THREE.BufferGeometry();
+    stGeo.setAttribute('position', new THREE.BufferAttribute(stPos, 3));
+    stGeo.setAttribute('color', new THREE.BufferAttribute(stCol, 3));
+    const stars = new THREE.Points(stGeo, new THREE.PointsMaterial({ size: 0.09, vertexColors: true, transparent: true, opacity: 0.72, depthWrite: false }));
+    scene.add(stars);
 
-    if (sidebarFab && sidebar) {
-      sidebarFab.addEventListener('click', () => {
-        sidebar.classList.toggle('is-open');
-      });
+    /* Two culture nebulae */
+    function makeNebula(color, size, opacity) {
+      const c = document.createElement('canvas'); c.width = 128; c.height = 128;
+      const ctx = c.getContext('2d');
+      const col = new THREE.Color(color);
+      const r = Math.round(col.r*255), g = Math.round(col.g*255), b = Math.round(col.b*255);
+      const grd = ctx.createRadialGradient(64,64,0,64,64,64);
+      grd.addColorStop(0, `rgba(${r},${g},${b},0.9)`);
+      grd.addColorStop(0.4, `rgba(${r},${g},${b},0.22)`);
+      grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
+      ctx.fillStyle = grd; ctx.fillRect(0,0,128,128);
+      const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending }));
+      sprite.scale.setScalar(size);
+      return sprite;
     }
 
-    document.addEventListener('click', event => {
-      if (!sidebar || !sidebar.classList.contains('is-open')) return;
+    const neb1 = makeNebula('#f0c96a', 28, 0.18);
+    neb1.position.set(-12, 4, -18);
+    scene.add(neb1);
 
-      const clickedInside = sidebar.contains(event.target);
-      const clickedFab = sidebarFab && sidebarFab.contains(event.target);
+    const neb2 = makeNebula('#54c6ee', 22, 0.14);
+    neb2.position.set(14, -6, -14);
+    scene.add(neb2);
 
-      if (!clickedInside && !clickedFab) {
-        sidebar.classList.remove('is-open');
-      }
+    /* Current culture state */
+    let currentCultureId = document.body.dataset.culture || 'default';
+    let targetPrimary = new THREE.Color(getTheme(currentCultureId).primary);
+    let currentPrimary = targetPrimary.clone();
+
+    /* Listen for culture changes */
+    window.addEventListener('lkp:culture-changed', e => {
+      currentCultureId = e.detail.cultureId;
+      const theme = getTheme(currentCultureId);
+      targetPrimary = new THREE.Color(theme.primary);
+      document.body.dataset.culture = currentCultureId;
     });
 
-    /* Footer year */
-    const year = document.getElementById('year');
-    if (year) year.textContent = new Date().getFullYear();
+    window.addEventListener('resize', () => {
+      camera.aspect = innerWidth / innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(innerWidth, innerHeight);
+    }, { passive: true });
 
-    /* Scroll progress */
-    const progressFill = document.getElementById('progressFill');
+    function animate() {
+      requestAnimationFrame(animate);
+      const t = performance.now() * 0.001;
 
-    window.addEventListener(
-      'scroll',
-      () => {
-        if (!progressFill) return;
+      currentPrimary.lerp(targetPrimary, 0.012);
 
-        const max =
-          document.documentElement.scrollHeight -
-          document.documentElement.clientHeight;
+      stars.rotation.y += 0.00022;
+      neb1.position.x = -12 + Math.sin(t * 0.24) * 1.2;
+      neb1.position.y = 4 + Math.cos(t * 0.18) * 0.8;
+      neb2.position.x = 14 + Math.cos(t * 0.20) * 1.0;
+      neb2.position.y = -6 + Math.sin(t * 0.22) * 0.6;
 
-        const pct = max > 0 ? (window.scrollY / max) * 100 : 0;
-        progressFill.style.width = `${Math.max(0, Math.min(100, pct))}%`;
-      },
-      { passive: true }
-    );
+      neb1.material.color.set(currentPrimary);
+      neb1.material.needsUpdate = true;
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  })();
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     2. SIDEBAR MINI-CONSTELLATION
+  ═══════════════════════════════════════════════════════════════════════ */
+
+  (function initSidebarConstellation() {
+    const canvas = document.getElementById('lkp-sidebar-constellation');
+    const sidebar = document.getElementById('cvSidebar');
+    if (!canvas || !sidebar) return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+    camera.position.z = 5;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+
+    const nodes = [];
+    const lineMeshes = [];
+
+    function resize() {
+      const w = sidebar.clientWidth;
+      const h = sidebar.clientHeight;
+      camera.left = 0; camera.right = w;
+      camera.top = h; camera.bottom = 0;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
+    }
+
+    resize();
+    new ResizeObserver(resize).observe(sidebar);
+
+    let currentColor = new THREE.Color('#f0c96a');
+    let targetColor = currentColor.clone();
+
+    function rebuild() {
+      nodes.forEach(n => { scene.remove(n.mesh); n.mesh.geometry.dispose(); n.mesh.material.dispose(); });
+      lineMeshes.forEach(l => { scene.remove(l); l.geometry.dispose(); l.material.dispose(); });
+      nodes.length = 0;
+      lineMeshes.length = 0;
+
+      const w = sidebar.clientWidth;
+      const buttons = sidebar.querySelectorAll('.cv-tree-lesson');
+
+      buttons.forEach(btn => {
+        const rect = btn.getBoundingClientRect();
+        const sRect = sidebar.getBoundingClientRect();
+        const x = rect.left - sRect.left + 8;
+        const y = rect.top - sRect.top + rect.height / 2 + sidebar.querySelector('.lkp-sidebar__inner').scrollTop;
+
+        const geo = new THREE.CircleGeometry(3.5, 12);
+        const mat = new THREE.MeshBasicMaterial({ color: currentColor, transparent: true, opacity: 0.5, depthWrite: false });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(x, h - y, 0);
+        scene.add(mesh);
+        nodes.push({ mesh, btn });
+      });
+
+      /* Connect lessons in same module */
+      const modules = sidebar.querySelectorAll('.cv-tree-module');
+      modules.forEach(mod => {
+        const modBtns = [...mod.querySelectorAll('.cv-tree-lesson')];
+        const modNodes = nodes.filter(n => modBtns.includes(n.btn));
+
+        for (let i = 0; i < modNodes.length - 1; i++) {
+          const a = modNodes[i].mesh.position;
+          const b = modNodes[i+1].mesh.position;
+          const pts = [new THREE.Vector3(a.x, a.y, 0), new THREE.Vector3(b.x, b.y, 0)];
+          const line = new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints(pts),
+            new THREE.LineBasicMaterial({ color: currentColor, transparent: true, opacity: 0.15, depthWrite: false })
+          );
+          scene.add(line);
+          lineMeshes.push(line);
+        }
+      });
+    }
+
+    window.addEventListener('lkp:tree-built', () => {
+      requestAnimationFrame(() => { resize(); rebuild(); });
+    });
+
+    window.addEventListener('lkp:culture-changed', e => {
+      const theme = getTheme(e.detail.cultureId);
+      targetColor = new THREE.Color(theme.primary);
+    });
+
+    window.addEventListener('lkp:lesson-changed', e => {
+      const lessonId = e.detail.lessonId;
+      nodes.forEach(n => {
+        const isActive = n.btn.dataset.lessonId === lessonId;
+        n.mesh.material.opacity = isActive ? 1.0 : 0.5;
+        n.mesh.scale.setScalar(isActive ? 1.6 : 1);
+      });
+    });
+
+    const h = sidebar.clientHeight;
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const t = performance.now() * 0.001;
+      currentColor.lerp(targetColor, 0.04);
+
+      nodes.forEach((n, i) => {
+        if (!n.mesh.material.opacity) return;
+        const pulse = 1 + Math.sin(t * 1.4 + i * 0.8) * 0.08;
+        n.mesh.scale.setScalar((n.mesh.scale.x > 1.4 ? 1.6 : 1) * pulse);
+        n.mesh.material.color.set(currentColor);
+        n.mesh.material.needsUpdate = true;
+      });
+
+      lineMeshes.forEach(l => {
+        l.material.color.set(currentColor);
+        l.material.needsUpdate = true;
+      });
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+
+    sidebar.querySelector('.lkp-sidebar__inner')?.addEventListener('scroll', () => {
+      requestAnimationFrame(rebuild);
+    }, { passive: true });
+  })();
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     3. CULTURE HERO CANVAS (per-lesson header art)
+  ═══════════════════════════════════════════════════════════════════════ */
+
+  (function initCultureHero() {
+    const canvas = document.getElementById('cv-culture-hero-canvas');
+    const wrap = document.getElementById('cultureHero');
+    if (!canvas || !wrap) return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(65, 1, 0.1, 100);
+    camera.position.set(0, 0, 14);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 1.5));
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const light = new THREE.PointLight(0xffd36b, 2.5, 80);
+    light.position.set(0, 6, 8);
+    scene.add(light);
+
+    function resize() {
+      const w = wrap.clientWidth;
+      const h = wrap.clientHeight;
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+      renderer.setSize(w, h, false);
+    }
+    resize();
+    new ResizeObserver(resize).observe(wrap);
+
+    /* Culture-specific geometry objects */
+    const objects = [];
+
+    function makeGlowSprite(color, size, opacity) {
+      const c = document.createElement('canvas'); c.width = 96; c.height = 96;
+      const ctx = c.getContext('2d');
+      const col = new THREE.Color(color);
+      const r = Math.round(col.r*255), g = Math.round(col.g*255), b = Math.round(col.b*255);
+      const grd = ctx.createRadialGradient(48,48,0,48,48,48);
+      grd.addColorStop(0, `rgba(${r},${g},${b},0.9)`);
+      grd.addColorStop(0.5, `rgba(${r},${g},${b},0.22)`);
+      grd.addColorStop(1, `rgba(${r},${g},${b},0)`);
+      ctx.fillStyle = grd; ctx.fillRect(0,0,96,96);
+      const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
+      const sprite = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, opacity, depthWrite: false, blending: THREE.AdditiveBlending }));
+      sprite.scale.setScalar(size);
+      return sprite;
+    }
+
+    function buildCultureScene(cultureId) {
+      objects.forEach(o => { scene.remove(o); o.geometry?.dispose?.(); o.material?.dispose?.(); });
+      objects.length = 0;
+      scene.children = scene.children.filter(c => c.isLight);
+
+      const theme = getTheme(cultureId);
+      const col1 = new THREE.Color(theme.primary);
+      const col2 = new THREE.Color(theme.secondary);
+
+      /* Central glow */
+      const glow = makeGlowSprite(theme.primary, 10, 0.44);
+      scene.add(glow); objects.push(glow);
+
+      const glow2 = makeGlowSprite(theme.secondary, 6, 0.22);
+      glow2.position.set(3, 1, 0);
+      scene.add(glow2); objects.push(glow2);
+
+      /* Culture-specific geometry */
+      if (cultureId === 'kanaka') {
+        /* Star compass: ring with 8 star points */
+        const ring = new THREE.Mesh(
+          new THREE.TorusGeometry(4, 0.06, 8, 64),
+          new THREE.MeshPhysicalMaterial({ color: col1, emissive: col1, emissiveIntensity: 0.6, transparent: true, opacity: 0.7 })
+        );
+        scene.add(ring); objects.push(ring);
+
+        for (let i = 0; i < 8; i++) {
+          const a = (i / 8) * Math.PI * 2;
+          const star = new THREE.Mesh(
+            new THREE.OctahedronGeometry(0.28, 0),
+            new THREE.MeshPhysicalMaterial({ color: col1, emissive: col1, emissiveIntensity: 0.9 })
+          );
+          star.position.set(Math.cos(a) * 4, Math.sin(a) * 4, 0);
+          scene.add(star); objects.push(star);
+        }
+
+        /* Wave particles — ocean swells */
+        const waveCount = 200;
+        const wPos = new Float32Array(waveCount * 3);
+        for (let i = 0; i < waveCount; i++) {
+          wPos[i*3] = (Math.random() - 0.5) * 22;
+          wPos[i*3+1] = (Math.random() - 0.5) * 6;
+          wPos[i*3+2] = (Math.random() - 0.5) * 4;
+        }
+        const wGeo = new THREE.BufferGeometry();
+        wGeo.setAttribute('position', new THREE.BufferAttribute(wPos, 3));
+        const waves = new THREE.Points(wGeo, new THREE.PointsMaterial({ size: 0.09, color: col2, transparent: true, opacity: 0.55, depthWrite: false }));
+        scene.add(waves); objects.push(waves);
+
+      } else if (cultureId === 'kemet') {
+        /* Pyramidal geometry */
+        const pyramid = new THREE.Mesh(
+          new THREE.ConeGeometry(2.8, 4.2, 4),
+          new THREE.MeshPhysicalMaterial({ color: col1, emissive: col1, emissiveIntensity: 0.42, wireframe: true, transparent: true, opacity: 0.55 })
+        );
+        pyramid.rotation.y = Math.PI / 4;
+        scene.add(pyramid); objects.push(pyramid);
+
+        const solid = new THREE.Mesh(
+          new THREE.ConeGeometry(2.4, 3.6, 4),
+          new THREE.MeshPhysicalMaterial({ color: col2, emissive: col2, emissiveIntensity: 0.22, transparent: true, opacity: 0.15 })
+        );
+        solid.rotation.y = Math.PI / 4;
+        scene.add(solid); objects.push(solid);
+
+        /* Ankh-like cross */
+        const bar = new THREE.Mesh(
+          new THREE.BoxGeometry(2.8, 0.12, 0.12),
+          new THREE.MeshPhysicalMaterial({ color: col1, emissive: col1, emissiveIntensity: 0.7, transparent: true, opacity: 0.7 })
+        );
+        bar.position.set(0, 0.6, 0);
+        scene.add(bar); objects.push(bar);
+
+        const torus = new THREE.Mesh(
+          new THREE.TorusGeometry(0.72, 0.09, 8, 32),
+          new THREE.MeshPhysicalMaterial({ color: col1, emissive: col1, emissiveIntensity: 0.7, transparent: true, opacity: 0.7 })
+        );
+        torus.position.set(0, 1.7, 0);
+        scene.add(torus); objects.push(torus);
+
+      } else if (cultureId === 'bridge') {
+        /* Two orbiting spheres connected by arc */
+        const s1 = new THREE.Mesh(new THREE.SphereGeometry(0.7, 24, 24), new THREE.MeshPhysicalMaterial({ color: new THREE.Color('#3cb371'), emissive: new THREE.Color('#3cb371'), emissiveIntensity: 0.7 }));
+        s1.position.set(-3, 0, 0);
+        scene.add(s1); objects.push(s1);
+
+        const s2 = new THREE.Mesh(new THREE.SphereGeometry(0.7, 24, 24), new THREE.MeshPhysicalMaterial({ color: new THREE.Color('#f0c96a'), emissive: new THREE.Color('#f0c96a'), emissiveIntensity: 0.7 }));
+        s2.position.set(3, 0, 0);
+        scene.add(s2); objects.push(s2);
+
+        const curve = new THREE.CatmullRomCurve3([
+          new THREE.Vector3(-3, 0, 0),
+          new THREE.Vector3(0, 2.4, 0),
+          new THREE.Vector3(3, 0, 0)
+        ]);
+        const arc = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(curve.getPoints(64)),
+          new THREE.LineBasicMaterial({ color: col1, transparent: true, opacity: 0.48 })
+        );
+        scene.add(arc); objects.push(arc);
+
+        const arcMir = new THREE.Line(
+          new THREE.BufferGeometry().setFromPoints(curve.getPoints(64).map(p => new THREE.Vector3(p.x, -p.y, p.z))),
+          new THREE.LineBasicMaterial({ color: col2, transparent: true, opacity: 0.32 })
+        );
+        scene.add(arcMir); objects.push(arcMir);
+
+      } else {
+        /* Generic: orbit rings */
+        for (let i = 0; i < 3; i++) {
+          const ring = new THREE.Mesh(
+            new THREE.TorusGeometry(2.5 + i * 1.2, 0.05, 8, 64),
+            new THREE.MeshPhysicalMaterial({ color: col1, emissive: col1, emissiveIntensity: 0.5, transparent: true, opacity: 0.5 - i * 0.12 })
+          );
+          ring.rotation.x = Math.PI / (3 + i);
+          ring.rotation.z = i * 0.7;
+          scene.add(ring); objects.push(ring);
+        }
+      }
+
+      light.color.set(new THREE.Color(theme.primary));
+    }
+
+    buildCultureScene(document.body.dataset.culture || 'default');
+
+    window.addEventListener('lkp:culture-changed', e => {
+      buildCultureScene(e.detail.cultureId);
+    });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      const t = performance.now() * 0.001;
+
+      objects.forEach((obj, i) => {
+        if (!obj.isSprite) {
+          obj.rotation.y += 0.004 + i * 0.001;
+          obj.rotation.x = Math.sin(t * 0.5 + i) * 0.06;
+        }
+      });
+
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  })();
+
+  </script>
+
+  <script>
+  /* ─── Nav & sidebar utilities ────────────────────────────────────────── */
+
+  document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+  /* Mobile nav */
+  const toggle = document.getElementById('lkpMobileToggle');
+  const navLinks = document.getElementById('lkpNavLinks');
+  toggle?.addEventListener('click', () => {
+    const open = navLinks.classList.toggle('is-open');
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+
+  /* Sidebar FAB */
+  const fab = document.getElementById('cvSidebarFab');
+  const sidebar = document.getElementById('cvSidebar');
+  fab?.addEventListener('click', () => sidebar?.classList.toggle('is-open'));
+  document.addEventListener('click', e => {
+    if (!sidebar?.classList.contains('is-open')) return;
+    if (!sidebar.contains(e.target) && e.target !== fab) sidebar.classList.remove('is-open');
+  });
+
+  /* Scroll progress */
+  const fill = document.getElementById('progressFill');
+  window.addEventListener('scroll', () => {
+    if (!fill) return;
+    const max = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    fill.style.width = `${max > 0 ? (scrollY / max) * 100 : 0}%`;
+  }, { passive: true });
+
+  /* ─── Patch lkp-lessons.js to emit events for Three.js ──────────────── */
+  /* We hook into the DOM after lkp-lessons.js runs via MutationObserver   */
+
+  let lastCulture = null;
+  let lastLesson = null;
+
+  const CULTURE_NAMES = {
+    kanaka: { name: 'Kānaka Maoli', emoji: '🌺' },
+    kemet:  { name: 'Kemet',        emoji: '☥'  },
+    bridge: { name: 'The Bridge',   emoji: '🌐'  },
+    dreamtime: { name: 'Dreamtime', emoji: '🌏' },
+    dogon:  { name: 'Dogon',        emoji: '🪘'  },
+    vedic:  { name: 'Vedic',        emoji: '🕉️'  }
+  };
+
+  /* Source map — credible primary / secondary sources per culture */
+  const SOURCES = {
+    kanaka: [
+      { author: 'David Malo', title: 'Hawaiian Antiquities (Moʻolelo Hawaiʻi)', year: '1898' },
+      { author: 'Samuel M. Kamakau', title: 'Ka Poʻe Kahiko — The People of Old', year: '1964' },
+      { author: 'Mary Kawena Pukui & Samuel H. Elbert', title: 'Hawaiian Dictionary', year: '1986' },
+      { author: 'Mary Kawena Pukui, E.W. Haertig, C.A. Lee', title: 'Nana I Ke Kumu — Look to the Source', year: '1972' },
+      { author: 'Martha Beckwith', title: 'The Kumulipo: A Hawaiian Creation Chant', year: '1951' },
+      { author: 'E.S. Craighill Handy & Elizabeth Green Handy', title: 'Native Planters in Old Hawaii', year: '1972' },
+      { author: 'Nainoa Thompson & the Polynesian Voyaging Society', title: 'Hōkūleʻa: The Way to Tahiti', year: '1976+' }
+    ],
+    kemet: [
+      { author: 'E.A. Wallis Budge', title: 'The Book of the Dead (The Papyrus of Ani)', year: '1895' },
+      { author: 'John Henry Breasted', title: 'Development of Religion and Thought in Ancient Egypt', year: '1912' },
+      { author: 'Cheikh Anta Diop', title: 'Civilization or Barbarism', year: '1991' },
+      { author: 'R.A. Schwaller de Lubicz', title: 'Sacred Science: The King of Pharaonic Theocracy', year: '1982' },
+      { author: 'Miriam Lichtheim', title: 'Ancient Egyptian Literature (3 vols)', year: '1973–1980' },
+      { author: 'James Henry Breasted (trans.)', title: 'Edwin Smith Surgical Papyrus', year: '1930' },
+      { author: 'Wolfhart Westendorf (ed.)', title: 'Ebers Papyrus — complete facsimile edition', year: '1999' }
+    ],
+    bridge: [
+      { author: 'David Malo', title: 'Hawaiian Antiquities', year: '1898' },
+      { author: 'E.A. Wallis Budge', title: 'The Book of the Dead', year: '1895' },
+      { author: 'Manly P. Hall', title: 'The Secret Teachings of All Ages', year: '1928' },
+      { author: 'Graham Hancock', title: 'Fingerprints of the Gods', year: '1995' },
+      { author: 'Mary Kawena Pukui', title: 'ʻŌlelo Noʻeau: Hawaiian Proverbs and Poetical Sayings', year: '1983' }
+    ]
+  };
+
+  function renderSourceBlock(cultureId) {
+    const sources = SOURCES[cultureId];
+    const container = document.getElementById('lessonSources');
+    if (!container) return;
+    if (!sources?.length) { container.innerHTML = ''; return; }
+
+    container.innerHTML = `
+      <div class="cv-sources">
+        <div class="cv-sources__title">Primary & Secondary Sources</div>
+        ${sources.map(s => `
+          <span class="cv-source">
+            <em>${escapeHTML(s.author)}</em> — ${escapeHTML(s.title)} (${escapeHTML(s.year)})
+          </span>
+        `).join('')}
+      </div>`;
+  }
+
+  function escapeHTML(str) {
+    return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  /* Watch for lesson content changes */
+  const lessonBody = document.getElementById('lessonBody');
+  const lessonHeader = document.getElementById('lessonHeader');
+  const heroLabel = document.getElementById('cultureHeroLabel');
+  const heroEmoji = document.getElementById('cultureHeroEmoji');
+  const heroName  = document.getElementById('cultureHeroName');
+
+  const observer = new MutationObserver(() => {
+    const activeBtn = document.querySelector('.cv-tree-lesson.is-active');
+    if (!activeBtn) return;
+
+    const lessonId  = activeBtn.dataset.lessonId || '';
+    const moduleEl  = activeBtn.closest('.cv-tree-module');
+    const cultureEl = activeBtn.closest('.cv-tree-culture');
+    const cultureTitle = cultureEl?.querySelector('.cv-tree-culture__title')?.textContent?.trim() || '';
+
+    /* Detect culture from tree */
+    let cultureId = 'default';
+    if (cultureTitle.includes('Kānaka') || cultureTitle.includes('kanaka') || lessonId.startsWith('km-')) cultureId = 'kanaka';
+    else if (cultureTitle.includes('Kemet') || lessonId.startsWith('ke-')) cultureId = 'kemet';
+    else if (cultureTitle.includes('Bridge') || lessonId.startsWith('br-')) cultureId = 'bridge';
+    else if (cultureTitle.includes('Dreamtime')) cultureId = 'dreamtime';
+    else if (cultureTitle.includes('Dogon')) cultureId = 'dogon';
+    else if (cultureTitle.includes('Vedic')) cultureId = 'vedic';
+
+    if (cultureId !== lastCulture) {
+      lastCulture = cultureId;
+      window.dispatchEvent(new CustomEvent('lkp:culture-changed', { detail: { cultureId } }));
+
+      const info = CULTURE_NAMES[cultureId] || { name: cultureTitle, emoji: '✦' };
+      heroEmoji.textContent = info.emoji;
+      heroName.textContent  = info.name;
+      renderSourceBlock(cultureId);
+    }
+
+    if (lessonId !== lastLesson) {
+      lastLesson = lessonId;
+      window.dispatchEvent(new CustomEvent('lkp:lesson-changed', { detail: { lessonId } }));
+    }
+  });
+
+  observer.observe(document.getElementById('lessonHeader') || document.body, { childList: true, subtree: true });
+
+  /* Fire tree-built event after lkp-lessons.js renders */
+  const treeObserver = new MutationObserver(() => {
+    window.dispatchEvent(new Event('lkp:tree-built'));
+  });
+  treeObserver.observe(document.getElementById('lessonTree') || document.body, { childList: true });
+
   </script>
 </body>
 </html>

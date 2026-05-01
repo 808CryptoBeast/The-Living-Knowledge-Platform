@@ -2297,28 +2297,21 @@
   }
 
   function centerGalaxySun() {
+    /* The ONLY function that moves the camera back to default position.
+       Explicitly triggered by the "Center Sun" button only. */
     state.three.activeNode = null;
-    state.three.isTransitioning = true; // ← trigger camera return
-
-    const panel = state.three.selectionEl || $('#profileGalaxySelection');
-    if (panel) {
-      panel.classList.remove('is-visible');
-      panel.setAttribute('aria-hidden', 'true');
-    }
-
+    state.three.isTransitioning = true; // ← intentional: user asked to go home
+    _clearSelectionUIOnly();
     showToast('Centered on the IkeStar core.');
   }
 
   function clearGalaxySelection() {
+    /* Clears the active node and hides the selection panel.
+       Does NOT move the camera — the user's zoom/pan position is preserved.
+       Only centerGalaxySun() should return the camera to default. */
     state.three.activeNode = null;
-    state.three.isTransitioning = true; // ← trigger camera return
-
-    const panel = state.three.selectionEl || $('#profileGalaxySelection');
-
-    if (panel) {
-      panel.classList.remove('is-visible');
-      panel.setAttribute('aria-hidden', 'true');
-    }
+    state.three.isTransitioning = false; // camera stays exactly where user left it
+    _clearSelectionUIOnly();
   }
 
   function openActiveGalaxyNode() {
