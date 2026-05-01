@@ -2110,8 +2110,8 @@
 
     const activeNode = state.three.activeNode;
 
-    // Always sync autoRotate — stop it when a node is focused
-    controls.autoRotate = !activeNode;
+    // Stop autoRotate when a node is focused OR during a camera transition
+    controls.autoRotate = !activeNode && !state.three.isTransitioning;
 
     // Only move the camera when we're in an active transition
     if (!state.three.isTransitioning) return;
@@ -2412,12 +2412,29 @@
     });
   }
 
+  /* Internal: hide the selection panel UI without touching camera state.
+     Called by clearIdentityGalaxy() so scene rebuilds never trigger a
+     camera snap back to defaultCameraPos. */
+  function _clearSelectionUIOnly() {
+    hideGalaxyTooltip();
+    const panel = state.three.selectionEl || $('#profileGalaxySelection');
+    if (panel) {
+      panel.classList.remove('is-visible');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+  }
+
   function clearIdentityGalaxy() {
     const scene = state.three.scene;
     if (!scene) return;
 
-    hideGalaxyTooltip();
-    clearGalaxySelection();
+    /* Use internal UI-only clear — NOT clearGalaxySelection() which would
+       set isTransitioning = true and snap the camera back to default. */
+    _clearSelectionUIOnly();
+
+    state.three.activeNode = null;
+    state.three.hoveredNode = null;
+    state.three.isTransitioning = false; // ← stays false so camera stays where user left it
 
     state.three.nodes.forEach(node => {
       [
@@ -2449,9 +2466,6 @@
     state.three.nodes = [];
     state.three.distantGalaxies = [];
     state.three.sunGroup = null;
-    state.three.activeNode = null;
-    state.three.hoveredNode = null;
-    state.three.isTransitioning = false;
 
     const removable = scene.children.filter(child => child.userData?.profileGalaxyGenerated);
 
