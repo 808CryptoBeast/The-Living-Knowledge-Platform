@@ -903,3 +903,32 @@ strong {
     transform: translate3d(3%, 2%, 0) scale(1.06);
   }
 }
+/* ══════════════════════════════════════════════════════════════════
+   PATCH — add these 3 rules at the very bottom of lkp-admin.css
+   This fixes the modal overlay appearing on page load because
+   display:grid was overriding the HTML [hidden] attribute.
+══════════════════════════════════════════════════════════════════ */
+
+/* PRIMARY FIX: force the overlay hidden when the attribute is set */
+.admin-modal-overlay[hidden] {
+  display: none !important;
+}
+
+/* Belt-and-suspenders: cover all elements that use [hidden] */
+[hidden] {
+  display: none !important;
+}
+
+/* Make the close button easier to tap on mobile */
+.admin-modal__close {
+  min-width: 44px;
+  min-height: 44px;
+  font-size: 22px;
+  position: sticky;
+  top: 4px;
+  float: right;
+  z-index: 2;
+  background: rgba(7, 15, 36, 0.92);
+  border-color: rgba(240, 201, 106, 0.35);
+  color: var(--admin-gold);
+}
