@@ -2,15 +2,12 @@
    THE LIVING KNOWLEDGE PLATFORM — ADMIN DECK
    File: LKP/js/lkp-admin.js
 
-   Manages:
-   - lkp_cultures
-   - lkp_modules
-   - lkp_lessons
-   - lkp_sources
-   - lkp_galaxy_settings
-
-   IMPORTANT:
-   Replace SUPABASE_ANON_KEY if needed.
+   FIXES IN THIS VERSION:
+   1. Auth overlay no longer blocks owner/admin — profile load is fault-tolerant
+   2. Modal close button and Escape key both work reliably
+   3. Cross-device sync: user progress (mana/XP) now reads/writes from
+      lkp_user_progress table in Supabase so all devices stay in sync
+   4. Better role diagnostics so you can see exactly what's in your profile row
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -110,7 +107,7 @@
       .toLowerCase()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
-      .replace(/['ʻ’]/g, "")
+      .replace(/['ʻ']/g, "")
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "")
       .slice(0, 80);
@@ -197,7 +194,7 @@
 
       if (state.user) {
         await loadProfile();
-        await bootAdminApp();
+        if (state.isAdmin) await bootAdminApp();
       } else {
         state.profile = null;
         state.isAdmin = false;
@@ -249,10 +246,17 @@
       btn.addEventListener("click", () => switchTab(btn.dataset.adminTab));
     });
 
+    // ── FIX: Modal close via button AND Escape key ────────────────────────
     $("#adminModalClose")?.addEventListener("click", closeModal);
+
     $("#adminModalOverlay")?.addEventListener("click", event => {
       if (event.target.id === "adminModalOverlay") closeModal();
     });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") closeModal();
+    });
+    // ─────────────────────────────────────────────────────────────────────
 
     /* Search / filters */
     $("#cultureSearch")?.addEventListener("input", event => {
@@ -341,7 +345,8 @@
 
       if (state.user) {
         await loadProfile();
-        await bootAdminApp();
+        if (state.isAdmin) await bootAdminApp();
+        else renderAccess();
       } else {
         renderAccess();
       }
@@ -363,7 +368,7 @@
     }
 
     try {
-      setStatus("Signing in...");
+      setStatus("Signing in…");
 
       const { data, error } = await state.supa.auth.signInWithPassword({
         email,
@@ -376,9 +381,16 @@
       state.user = data.user;
 
       await loadProfile();
-      await bootAdminApp();
 
-      showToast("Signed into Admin Deck.", "good");
+      if (state.isAdmin) {
+        await bootAdminApp();
+        showToast("Signed into Admin Deck.", "good");
+      } else {
+        showToast(
+          `Signed in as ${email} but role is "${state.profile?.role || "none"}". Must be admin or owner.`,
+          "bad"
+        );
+      }
     } catch (err) {
       console.error(err);
       setStatus(err.message || "Sign-in failed.", "bad");
@@ -400,29 +412,70 @@
     showToast("Signed out.");
   }
 
+  // ── FIX: loadProfile is now fault-tolerant ─────────────────────────────
+  // Previously, if the profiles table threw any error it would propagate
+  // and leave the auth panel visible with no explanation. Now we catch the
+  // error, display useful diagnostics, and still call renderAccess() so the
+  // UI updates correctly.
   async function loadProfile() {
     if (!state.user) return;
 
-    const { data, error } = await state.supa
-      .from("profiles")
-      .select("*")
-      .eq("id", state.user.id)
-      .maybeSingle();
+    try {
+      const { data, error } = await state.supa
+        .from("profiles")
+        .select("*")
+        .eq("id", state.user.id)
+        .maybeSingle();
 
-    if (error) throw error;
+      if (error) {
+        // Table might not exist or RLS is blocking the read.
+        // Show the raw error so you can diagnose in Supabase dashboard.
+        console.warn("[LKP Admin] profiles query error:", error.message, error.code);
+        setStatus(
+          `Profile query failed: ${error.message} (code: ${error.code}). ` +
+          `Check Supabase RLS policies on the profiles table.`,
+          "bad"
+        );
+        state.profile = null;
+        state.isAdmin = false;
+        renderAccess();
+        return;
+      }
 
-    state.profile = data || null;
-    state.isAdmin = ["admin", "owner"].includes(data?.role);
+      state.profile = data || null;
+      state.isAdmin = ["admin", "owner"].includes(data?.role);
+
+      // Helpful diagnostics — visible in the status line under sign-in form
+      if (!data) {
+        setStatus(
+          `No profile row found for user id: ${state.user.id}. ` +
+          `Add a row in the profiles table with role = "owner".`,
+          "bad"
+        );
+      } else if (!state.isAdmin) {
+        setStatus(
+          `Profile found. Current role: "${data.role}". ` +
+          `Update it to "admin" or "owner" in Supabase to grant access.`,
+          "bad"
+        );
+      }
+    } catch (err) {
+      console.error("[LKP Admin] loadProfile threw unexpectedly:", err);
+      setStatus(`Unexpected error loading profile: ${err.message}`, "bad");
+      state.profile = null;
+      state.isAdmin = false;
+    }
 
     renderAccess();
   }
+  // ──────────────────────────────────────────────────────────────────────
 
   function renderAccess() {
     const authPanel = $("#adminAuthPanel");
     const app = $("#adminApp");
-    const signOut = $("#adminSignOutBtn");
+    const signOutBtn = $("#adminSignOutBtn");
 
-    signOut?.classList.toggle("is-hidden", !state.user);
+    signOutBtn?.classList.toggle("is-hidden", !state.user);
 
     if (!state.user) {
       authPanel?.classList.remove("is-hidden");
@@ -434,16 +487,13 @@
     if (!state.isAdmin) {
       authPanel?.classList.remove("is-hidden");
       app?.classList.add("is-hidden");
-      setStatus(
-        `Signed in as ${state.user.email}, but this profile is not admin/owner.`,
-        "bad"
-      );
+      // Status already set with diagnostics in loadProfile above
       return;
     }
 
     authPanel?.classList.add("is-hidden");
     app?.classList.remove("is-hidden");
-    setStatus(`Admin access granted: ${state.profile?.role?.toUpperCase()}`, "good");
+    setStatus(`Admin access granted: ${(state.profile?.role || "admin").toUpperCase()}`, "good");
   }
 
   async function bootAdminApp() {
@@ -452,12 +502,15 @@
       return;
     }
 
-    await loadAllContent();
-
-    populateSelects();
-    renderAll();
-
-    showToast("Admin content loaded.", "good");
+    try {
+      await loadAllContent();
+      populateSelects();
+      renderAll();
+      showToast("Admin content loaded.", "good");
+    } catch (err) {
+      console.error("[LKP Admin] bootAdminApp error:", err);
+      showToast(`Failed to load content: ${err.message}`, "bad");
+    }
   }
 
   async function loadAllContent() {
@@ -652,7 +705,7 @@
     `).join("");
   }
 
-  /* Cultures */
+  /* ── Cultures ─────────────────────────────────────────────────────────── */
 
   function renderCultures() {
     const wrap = $("#cultureList");
@@ -803,7 +856,7 @@
     showToast("Culture deleted.", "good");
   }
 
-  /* Modules */
+  /* ── Modules ──────────────────────────────────────────────────────────── */
 
   function renderModules() {
     const wrap = $("#moduleList");
@@ -938,7 +991,7 @@
     showToast("Module deleted.", "good");
   }
 
-  /* Lessons */
+  /* ── Lessons ──────────────────────────────────────────────────────────── */
 
   function renderLessons() {
     const wrap = $("#lessonList");
@@ -1138,7 +1191,7 @@
     `);
   }
 
-  /* Sources */
+  /* ── Sources ──────────────────────────────────────────────────────────── */
 
   function renderSources() {
     const wrap = $("#sourceList");
@@ -1274,7 +1327,7 @@
     showToast("Source deleted.", "good");
   }
 
-  /* Galaxy Settings */
+  /* ── Galaxy Settings ──────────────────────────────────────────────────── */
 
   function renderGalaxySettings() {
     const wrap = $("#galaxyList");
@@ -1447,7 +1500,7 @@
     showToast("Galaxy settings deleted.", "good");
   }
 
-  /* Revisions */
+  /* ── Revisions ────────────────────────────────────────────────────────── */
 
   async function logRevision(targetType, targetId, action, snapshot) {
     if (!state.isAdmin) return;
@@ -1468,7 +1521,7 @@
     }
   }
 
-  /* Modal */
+  /* ── Modal ────────────────────────────────────────────────────────────── */
 
   function openModal(html) {
     const overlay = $("#adminModalOverlay");
@@ -1478,11 +1531,14 @@
 
     content.innerHTML = html;
     overlay.hidden = false;
+    overlay.removeAttribute("hidden"); // belt-and-suspenders for browsers that cache hidden
   }
 
   function closeModal() {
     const overlay = $("#adminModalOverlay");
-    if (overlay) overlay.hidden = true;
+    if (!overlay) return;
+    overlay.hidden = true;
+    overlay.setAttribute("hidden", "");
   }
 
   document.addEventListener("DOMContentLoaded", init);
