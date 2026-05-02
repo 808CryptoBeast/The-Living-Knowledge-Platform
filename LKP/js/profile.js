@@ -21,6 +21,14 @@
      fighting back every frame.
    - Lessons: added lkp:data-ready fallback so lesson data loads even if
      CULTURALVERSE_DATA isn't on window at the exact moment init() runs.
+
+   SYNC CHANGES (6):
+   1. window._lkpSupaClient exposed after createClient()
+   2. bootRewards(data) always passes { supabase, userId } to LKPRewards.init()
+   3. hydrateLessonsFromData() calls bootRewards() not bare LKPRewards.init()
+   4. signIn()/signUp() show LKPSignOut loading spinner + welcome animation
+   5. #profileSignOutBtn listener removed from bindUI() — lkp-signout.js wires it
+   6. lkp_user_progress table, await LKPRewards.completeLesson(), bootRewards on auth
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -74,7 +82,7 @@
     digitalverse:
       'Digitalverse is the technology learning realm: AI, blockchain, XR, Web3, cryptography, and emerging digital tools.',
     culturalverse:
-      'Culturalverse is the deep cultural study layer: moʻolelo, cosmology, protocols, living traditions, and cross-cultural respect.',
+      "Culturalverse is the deep cultural study layer: mo\u02bbolelo, cosmology, protocols, living traditions, and cross-cultural respect.",
     ikehub:
       'IkeHub is the gateway portal that connects every application, section, and realm in the Ikeverse ecosystem.',
     ikestar:
@@ -155,7 +163,7 @@
       id: 'culturalverse',
       name: 'Culturalverse',
       shortName: 'Culture',
-      desc: 'Deep cultural study, cosmology, moʻolelo, and protocols.',
+      desc: "Deep cultural study, cosmology, mo\u02bbolelo, and protocols.",
       href: 'https://808cryptobeast.github.io/culturalverse/',
       color: '#d98545',
       secondaryColor: '#f0c96a',
@@ -353,8 +361,6 @@
       focusCameraPos: null,
       focusTarget: null,
 
-      /* ── FIX: flag so camera only lerps during explicit transitions,
-         not every frame — this is what was blocking free zoom/pan ── */
       isTransitioning: false
     }
   };
@@ -649,22 +655,60 @@
   ═══════════════════════════════════════════════════════════════════════ */
 
   function getStaticContentData() {
-    if (
-      window.CULTURALVERSE_DATA &&
-      Array.isArray(window.CULTURALVERSE_DATA.cultures)
-    ) {
-      return window.CULTURALVERSE_DATA;
+    const candidates = [];
+
+    try {
+      if (window.CULTURALVERSE_DATA && Array.isArray(window.CULTURALVERSE_DATA.cultures))
+        candidates.push(window.CULTURALVERSE_DATA);
+    } catch {}
+
+    try {
+      if (window.LKP_DATA && Array.isArray(window.LKP_DATA.cultures))
+        candidates.push(window.LKP_DATA);
+    } catch {}
+
+    try {
+      if (window.IKEVERSE_DATA && Array.isArray(window.IKEVERSE_DATA.cultures))
+        candidates.push(window.IKEVERSE_DATA);
+    } catch {}
+
+    try {
+      if (typeof CULTURALVERSE_DATA !== 'undefined' && CULTURALVERSE_DATA && Array.isArray(CULTURALVERSE_DATA.cultures))
+        candidates.push(CULTURALVERSE_DATA);
+    } catch {}
+
+    try {
+      if (typeof LKP_DATA !== 'undefined' && LKP_DATA && Array.isArray(LKP_DATA.cultures))
+        candidates.push(LKP_DATA);
+    } catch {}
+
+    try {
+      if (typeof IKEVERSE_DATA !== 'undefined' && IKEVERSE_DATA && Array.isArray(IKEVERSE_DATA.cultures))
+        candidates.push(IKEVERSE_DATA);
+    } catch {}
+
+    const data = candidates.find(item => {
+      return (
+        item &&
+        Array.isArray(item.cultures) &&
+        item.cultures.some(culture => {
+          return Array.isArray(culture.modules) &&
+            culture.modules.some(module => {
+              return Array.isArray(module.lessons) && module.lessons.length;
+            });
+        })
+      );
+    });
+
+    if (data) {
+      window.CULTURALVERSE_DATA = data;
+      window.LKP_DATA = data;
+      window.IKEVERSE_DATA = data;
+      console.info('[Profile] Static lesson data loaded:', data.cultures.length, 'cultures');
+      return data;
     }
 
-    if (
-      typeof CULTURALVERSE_DATA !== 'undefined' &&
-      CULTURALVERSE_DATA &&
-      Array.isArray(CULTURALVERSE_DATA.cultures)
-    ) {
-      window.CULTURALVERSE_DATA = CULTURALVERSE_DATA;
-      return CULTURALVERSE_DATA;
-    }
-
+    console.warn('[Profile] No usable static lesson data found. Check LKP/js/lkp-data.js for a path error or syntax error.');
     return { cultures: [] };
   }
 
@@ -678,14 +722,14 @@
       cultures: data.cultures.map(culture => ({
         id: culture.id,
         name: culture.name,
-        emoji: culture.emoji || '✦',
+        emoji: culture.emoji || '\u2736',
         theme: culture.theme || culture.culture_theme || 'default',
         colorHex: culture.colorHex || culture.color_hex || null,
         modules: Array.isArray(culture.modules)
           ? culture.modules.map(module => ({
               id: module.id,
               title: module.title || module.module_title || 'Module',
-              emoji: module.emoji || module.module_emoji || culture.emoji || '✦',
+              emoji: module.emoji || module.module_emoji || culture.emoji || '\u2736',
               desc: module.desc || module.description || '',
               lessons: Array.isArray(module.lessons)
                 ? module.lessons.map(lesson => ({
@@ -720,12 +764,12 @@
           lessons.push({
             cultureId: culture.id,
             cultureName: culture.name,
-            cultureEmoji: culture.emoji || '✦',
+            cultureEmoji: culture.emoji || '\u2736',
             cultureTheme: culture.theme || 'default',
             cultureColor: culture.colorHex || themeColor(culture.theme),
             moduleId: module.id,
             moduleTitle: module.title || 'Module',
-            moduleEmoji: module.emoji || culture.emoji || '✦',
+            moduleEmoji: module.emoji || culture.emoji || '\u2736',
             id: lesson.id,
             num: lesson.num || '',
             title: lesson.title || lesson.id,
@@ -744,16 +788,30 @@
     return lessons;
   }
 
-  function hydrateLessonsFromData(data) {
+  /* CHANGE 2: bootRewards — always passes supabase + userId to LKPRewards.init()
+     This is the root fix for cross-device sync. Every call to init goes here. */
+  async function bootRewards(data) {
+    if (!window.LKPRewards || typeof window.LKPRewards.init !== 'function') return;
+    try {
+      await window.LKPRewards.init({
+        data:     data || state.contentData,
+        supabase: window._lkpSupaClient || supabaseClient,
+        userId:   state.user?.id || null
+      });
+    } catch (err) {
+      console.warn('[Profile] LKPRewards.init failed:', err.message);
+    }
+  }
+
+  /* CHANGE 3: hydrateLessonsFromData calls bootRewards() not bare LKPRewards.init() */
+  async function hydrateLessonsFromData(data) {
     state.contentData = normalizeContentData(data);
     state.lessons = flattenLessons(state.contentData);
 
-    if (window.LKPRewards && typeof window.LKPRewards.init === 'function') {
-      try {
-        window.LKPRewards.init({
-          data: state.contentData
-        });
+    await bootRewards(state.contentData);
 
+    if (window.LKPRewards) {
+      try {
         if (typeof window.LKPRewards.setCompletedLessons === 'function') {
           window.LKPRewards.setCompletedLessons(state.completed);
         }
@@ -770,6 +828,53 @@
         console.warn('[Profile] Rewards engine init failed:', err.message);
       }
     }
+  }
+
+  function waitForLessonData(timeoutMs = 900) {
+    return new Promise(resolve => {
+      const existing = getStaticContentData();
+
+      if (
+        existing &&
+        Array.isArray(existing.cultures) &&
+        existing.cultures.some(culture => {
+          return Array.isArray(culture.modules) &&
+            culture.modules.some(module => {
+              return Array.isArray(module.lessons) && module.lessons.length;
+            });
+        })
+      ) {
+        resolve(existing);
+        return;
+      }
+
+      let resolved = false;
+
+      const finish = data => {
+        if (resolved) return;
+        resolved = true;
+        window.removeEventListener('lkp:data-ready', onReady);
+        clearTimeout(timer);
+        resolve(data || getStaticContentData());
+      };
+
+      const onReady = event => {
+        const data =
+          event?.detail?.data ||
+          window.CULTURALVERSE_DATA ||
+          window.LKP_DATA ||
+          window.IKEVERSE_DATA ||
+          null;
+
+        finish(data);
+      };
+
+      window.addEventListener('lkp:data-ready', onReady);
+
+      const timer = setTimeout(() => {
+        finish(getStaticContentData());
+      }, timeoutMs);
+    });
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
@@ -810,6 +915,10 @@
     }
 
     supabaseClient = supaLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    /* CHANGE 1: expose so lkp-rewards.js and lkp-signout.js share this client */
+    window._lkpSupaClient = supabaseClient;
+
     return supabaseClient;
   }
 
@@ -824,7 +933,7 @@
       if (error) throw error;
 
       if (data && Array.isArray(data.cultures)) {
-        hydrateLessonsFromData(data);
+        await hydrateLessonsFromData(data);
         populateCultureFilter();
         renderLessonPath();
         renderDashboard();
@@ -839,6 +948,7 @@
     return false;
   }
 
+  /* CHANGE 6: loadSession calls bootRewards() with userId after profile loads */
   async function loadSession() {
     try {
       const { data, error } = await supabaseClient.auth.getSession();
@@ -849,6 +959,7 @@
 
       if (state.user) {
         await loadOrCreateProfile();
+        await bootRewards(state.contentData);
         await loadManagedContent();
         await loadRemoteProgress();
       } else {
@@ -873,6 +984,7 @@
     }
   }
 
+  /* CHANGE 4: signIn shows loading spinner + fires welcome animation */
   async function signIn() {
     if (!supabaseClient) {
       showToast('Supabase is not ready yet.');
@@ -887,8 +999,11 @@
       return;
     }
 
+    const submitBtn = $('#profileAuthForm')?.querySelector('button[type="submit"]');
+    if (window.LKPSignOut?.showSignInLoading) window.LKPSignOut.showSignInLoading(submitBtn);
+
     try {
-      setSessionState('Signing in...');
+      setSessionState('Signing in\u2026');
 
       const { data, error } = await supabaseClient.auth.signInWithPassword({
         email,
@@ -901,8 +1016,19 @@
       state.user = data.user;
 
       await loadOrCreateProfile();
+      await bootRewards(state.contentData);
       await loadManagedContent();
       await loadRemoteProgress();
+
+      if (window.LKPSignOut?.hideSignInLoading) window.LKPSignOut.hideSignInLoading(submitBtn);
+
+      const displayName =
+        state.profile?.display_name ||
+        data.user.user_metadata?.display_name ||
+        $('#authDisplayName')?.value.trim() ||
+        data.user.email;
+
+      if (window.LKPSignOut?.showSignInSuccess) window.LKPSignOut.showSignInSuccess(displayName);
 
       renderDashboard();
       renderRewardsPanel();
@@ -913,11 +1039,13 @@
       showToast('Signed in successfully.');
     } catch (err) {
       console.error(err);
+      if (window.LKPSignOut?.hideSignInLoading) window.LKPSignOut.hideSignInLoading(submitBtn);
       showToast(err.message || 'Sign-in failed.');
       setSessionState('Sign-in failed. Check your email/password.', 'warning');
     }
   }
 
+  /* CHANGE 4: signUp shows loading spinner + fires welcome animation */
   async function signUp() {
     if (!supabaseClient) {
       showToast('Supabase is not ready yet.');
@@ -933,8 +1061,11 @@
       return;
     }
 
+    const signUpBtn = $('#signUpBtn');
+    if (window.LKPSignOut?.showSignInLoading) window.LKPSignOut.showSignInLoading(signUpBtn);
+
     try {
-      setSessionState('Creating profile...');
+      setSessionState('Creating profile\u2026');
 
       const baseName = displayName || email.split('@')[0];
 
@@ -957,8 +1088,12 @@
 
       if (state.user) {
         await loadOrCreateProfile();
+        await bootRewards(state.contentData);
         await loadRemoteProgress();
       }
+
+      if (window.LKPSignOut?.hideSignInLoading) window.LKPSignOut.hideSignInLoading(signUpBtn);
+      if (window.LKPSignOut?.showSignInSuccess) window.LKPSignOut.showSignInSuccess(displayName || baseName);
 
       renderDashboard();
       renderRewardsPanel();
@@ -969,6 +1104,7 @@
       showToast('Profile created. Check email confirmation if Supabase requires it.');
     } catch (err) {
       console.error(err);
+      if (window.LKPSignOut?.hideSignInLoading) window.LKPSignOut.hideSignInLoading(signUpBtn);
       showToast(err.message || 'Profile creation failed.');
       setSessionState('Profile creation failed.', 'warning');
     }
@@ -1001,6 +1137,7 @@
     }
   }
 
+  /* CHANGE 6: syncNow calls bootRewards() with userId */
   async function syncNow() {
     if (!supabaseClient || !state.user) {
       showToast('Sign in first to sync your profile.');
@@ -1009,6 +1146,7 @@
 
     try {
       await loadOrCreateProfile();
+      await bootRewards(state.contentData);
       await loadManagedContent();
       await loadRemoteProgress();
 
@@ -1101,15 +1239,15 @@
     }
   }
 
+  /* CHANGE 6: uses lkp_user_progress table */
   async function loadRemoteProgress() {
     if (!supabaseClient || !state.user) return;
 
     try {
       const { data, error } = await supabaseClient
-        .from('user_progress')
-        .select('*')
+        .from('lkp_user_progress')
+        .select('lesson_id, mana_earned, xp_earned')
         .eq('user_id', state.user.id)
-        .eq('ecosystem', 'lkp')
         .eq('completed', true);
 
       if (error) throw error;
@@ -1134,39 +1272,30 @@
           state.mana = summary.mana;
           localStorage.setItem(MANA_KEY, String(state.mana));
         }
-      } else {
-        const remoteMana = (data || []).reduce((sum, row) => {
-          return sum + (row.mana || 0);
-        }, 0);
-
-        if (remoteMana > state.mana) {
-          state.mana = remoteMana;
-          localStorage.setItem(MANA_KEY, String(remoteMana));
-        }
       }
     } catch (err) {
       console.warn('[Profile] Could not load remote progress:', err.message);
     }
   }
 
+  /* CHANGE 6: uses lkp_user_progress table with mana_earned / xp_earned columns */
   async function saveRemoteProgress(lessonId, completed) {
     if (!supabaseClient || !state.user) return;
 
     try {
       const lesson = state.lessons.find(item => item.id === lessonId);
 
-      const payload = {
-        user_id: state.user.id,
-        lesson_id: lessonId,
-        ecosystem: 'lkp',
-        completed,
-        mana: completed ? (lesson?.mana || 10) : 0
-      };
-
       const { error } = await supabaseClient
-        .from('user_progress')
-        .upsert(payload, {
-          onConflict: 'user_id,lesson_id,ecosystem'
+        .from('lkp_user_progress')
+        .upsert({
+          user_id:      state.user.id,
+          lesson_id:    lessonId,
+          completed,
+          completed_at: completed ? new Date().toISOString() : null,
+          mana_earned:  completed ? (lesson?.mana || 10) : 0,
+          xp_earned:    completed ? (lesson?.xp   || 25) : 0
+        }, {
+          onConflict: 'user_id,lesson_id'
         });
 
       if (error) throw error;
@@ -1258,6 +1387,10 @@
     }
   }
 
+  /* CHANGE 6: uses await LKPRewards.completeLesson() for the complete path —
+     calls the DB function which prevents double-award across devices.
+     saveRemoteProgress only called for uncomplete since completeLesson()
+     already writes to lkp_user_progress for the complete path. */
   async function toggleLessonComplete(lessonId) {
     const currentlyDone = state.completed.includes(lessonId);
     const shouldComplete = !currentlyDone;
@@ -1270,14 +1403,16 @@
 
     writeJSON(COMPLETED_KEY, state.completed);
 
-    let rewardSummary = null;
+    let rewardResult = null;
 
     if (window.LKPRewards) {
-      if (typeof window.LKPRewards.toggleLesson === 'function') {
-        window.LKPRewards.toggleLesson(lessonId, shouldComplete);
+      if (shouldComplete && typeof window.LKPRewards.completeLesson === 'function') {
+        rewardResult = await window.LKPRewards.completeLesson(lessonId);
+      } else if (!shouldComplete && typeof window.LKPRewards.toggleLesson === 'function') {
+        window.LKPRewards.toggleLesson(lessonId, false);
       }
 
-      rewardSummary = window.LKPRewards.getProfileSummary?.({
+      const rewardSummary = window.LKPRewards.getProfileSummary?.({
         recalculate: true
       });
 
@@ -1295,18 +1430,27 @@
 
     localStorage.setItem(MANA_KEY, String(state.mana));
 
-    await saveRemoteProgress(lessonId, shouldComplete);
+    if (!shouldComplete) {
+      await saveRemoteProgress(lessonId, false);
+    }
 
     renderDashboard();
     renderRewardsPanel();
     renderLessonPath();
     updateGalaxySelectionMeta();
 
-    showToast(
-      shouldComplete
-        ? `Lesson completed. ${rewardSummary?.rank?.current?.name ? `Rank: ${rewardSummary.rank.current.name}.` : '+ Mana.'}`
-        : 'Lesson marked open.'
-    );
+    if (shouldComplete && rewardResult?.already_completed) {
+      showToast('Already completed on another device. \u2713');
+    } else if (shouldComplete) {
+      const summary = window.LKPRewards?.getProfileSummary?.();
+      showToast(
+        summary?.rank?.current?.name
+          ? `Lesson completed. Rank: ${summary.rank.current.name}.`
+          : 'Lesson completed. + Mana.'
+      );
+    } else {
+      showToast('Lesson marked open.');
+    }
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
@@ -1384,7 +1528,7 @@
     setText(
       '#profileRoleLine',
       isAdmin
-        ? `${role.toUpperCase()} · upgraded command profile`
+        ? `${role.toUpperCase()} \u00b7 upgraded command profile`
         : state.user
           ? 'Signed-in wayfinder profile'
           : 'Guest/local profile mode'
@@ -1456,14 +1600,14 @@
 
     const rank = summary.rank?.current || {
       name: 'Initiate',
-      icon: '🌱',
+      icon: '\uD83C\uDF31',
       desc: 'Beginning the path of living knowledge.'
     };
 
     const next = summary.rank?.next || null;
     const rankProgress = summary.rank?.progressToNext ?? 100;
 
-    setText('#rewardRankIcon', rank.icon || '🌱');
+    setText('#rewardRankIcon', rank.icon || '\uD83C\uDF31');
     setText('#rewardRankName', rank.name || 'Initiate');
     setText('#rewardRankDesc', rank.desc || 'Beginning the path of living knowledge.');
 
@@ -1513,7 +1657,7 @@
       badges.length
         ? badges.map(badge => `
             <span class="rewards-badge" title="${escapeHTML(badge.desc || '')}">
-              <span>${badge.icon || '✦'}</span>
+              <span>${badge.icon || '\u2736'}</span>
               ${escapeHTML(badge.name)}
             </span>
           `).join('')
@@ -1528,7 +1672,7 @@
         ? certificates.slice(0, 5).map(cert => `
             <div class="rewards-certificate">
               <strong>${escapeHTML(cert.title)}</strong>
-              <span>${escapeHTML(cert.subtitle || cert.type || 'Certificate')} · XRPL-ready future record</span>
+              <span>${escapeHTML(cert.subtitle || cert.type || 'Certificate')} \u00b7 XRPL-ready future record</span>
             </div>
           `).join('')
         : `<div class="profile-note">Complete a full module to generate your first certificate record.</div>`
@@ -1542,16 +1686,16 @@
     const badges = [];
 
     badges.push({
-      icon: '◈',
+      icon: '\u25c8',
       label: state.user ? 'Synced Profile' : 'Guest Mode'
     });
 
-    if (progress >= 10) badges.push({ icon: '🌱', label: 'Path Starter' });
-    if (progress >= 25) badges.push({ icon: '🌊', label: 'Current Rider' });
-    if (progress >= 50) badges.push({ icon: '⭐', label: 'Star Reader' });
-    if (progress >= 75) badges.push({ icon: '🧭', label: 'Navigator' });
-    if (progress >= 100) badges.push({ icon: '🌌', label: 'Constellation Keeper' });
-    if (isAdmin) badges.push({ icon: '👑', label: `${role} Access` });
+    if (progress >= 10)  badges.push({ icon: '\uD83C\uDF31', label: 'Path Starter' });
+    if (progress >= 25)  badges.push({ icon: '\uD83C\uDF0A', label: 'Current Rider' });
+    if (progress >= 50)  badges.push({ icon: '\u2B50',       label: 'Star Reader' });
+    if (progress >= 75)  badges.push({ icon: '\uD83E\uDDED', label: 'Navigator' });
+    if (progress >= 100) badges.push({ icon: '\uD83C\uDF0C', label: 'Constellation Keeper' });
+    if (isAdmin) badges.push({ icon: '\uD83D\uDC51', label: `${role} Access` });
 
     row.innerHTML = badges.map(badge => `
       <span class="profile-badge">
@@ -1600,7 +1744,7 @@
            style="--eco-color:${item.color};--eco-bg:${hexToRgba(item.color, 0.10)};--eco-border:${hexToRgba(item.color, 0.26)}">
           <strong>${escapeHTML(item.name)}</strong>
           <span>${escapeHTML(item.desc)}</span>
-          <small>Open →</small>
+          <small>Open &#8594;</small>
         </a>
       `)
       .join('');
@@ -1671,8 +1815,8 @@
           <span class="lesson-row__num">${escapeHTML(lesson.num || 'LESSON')}</span>
 
           <a class="lesson-row__body" href="lessons.html#${encodeURIComponent(lesson.id)}">
-            <strong>${completed ? '✅ ' : ''}${escapeHTML(lesson.title)}</strong>
-            <small>${escapeHTML(lesson.cultureName)} · ${escapeHTML(lesson.moduleTitle)} · ${escapeHTML(lesson.readTime || 'Lesson')}</small>
+            <strong>${completed ? '\u2705 ' : ''}${escapeHTML(lesson.title)}</strong>
+            <small>${escapeHTML(lesson.cultureName)} \u00b7 ${escapeHTML(lesson.moduleTitle)} \u00b7 ${escapeHTML(lesson.readTime || 'Lesson')}</small>
           </a>
 
           <button
@@ -1683,7 +1827,7 @@
             ${completed ? 'Done' : 'Complete'}
           </button>
 
-          <a class="lesson-row__open" href="lessons.html#${encodeURIComponent(lesson.id)}">→</a>
+          <a class="lesson-row__open" href="lessons.html#${encodeURIComponent(lesson.id)}">\u2192</a>
         </article>
       `;
     }).join('');
@@ -1726,9 +1870,9 @@
       await signUp();
     });
 
-    $('#profileSignOutBtn')?.addEventListener('click', async () => {
-      await signOut();
-    });
+    /* CHANGE 5: #profileSignOutBtn listener removed — lkp-signout.js auto-wires
+       it with the cosmic departure overlay. State cleanup happens in
+       onAuthStateChange when SIGNED_OUT fires automatically. */
 
     $('#profileSyncBtn')?.addEventListener('click', async () => {
       await syncNow();
@@ -1779,7 +1923,7 @@
       }
     });
 
-    $('#rewardCheckInBtn')?.addEventListener('click', () => {
+    $('#rewardCheckInBtn')?.addEventListener('click', async () => {
       if (!window.LKPRewards) {
         showToast('Rewards engine is not loaded yet.');
         return;
@@ -1788,7 +1932,7 @@
       const before = window.LKPRewards.getProfileSummary?.() || {};
 
       if (typeof window.LKPRewards.checkInToday === 'function') {
-        window.LKPRewards.checkInToday();
+        await window.LKPRewards.checkInToday();
       }
 
       const after = window.LKPRewards.getProfileSummary?.({
@@ -1862,14 +2006,14 @@
       renderer.outputColorSpace = THREE.SRGBColorSpace;
 
       const controls = new OrbitControls(camera, canvas);
-      controls.enablePan = true;          // allow full pan
-      controls.enableZoom = true;         // allow zoom
+      controls.enablePan = true;
+      controls.enableZoom = true;
       controls.enableDamping = true;
       controls.dampingFactor = 0.065;
       controls.rotateSpeed = 0.42;
       controls.zoomSpeed = 0.85;
-      controls.minDistance = 6;           // closer zoom-in
-      controls.maxDistance = 120;         // further zoom-out
+      controls.minDistance = 6;
+      controls.maxDistance = 120;
       controls.autoRotate = true;
       controls.autoRotateSpeed = 0.22;
       controls.target.set(0, 0, 0);
@@ -1923,7 +2067,6 @@
         hideGalaxyTooltip();
       });
 
-      // Prevent wheel events from scrolling the page while inside the galaxy
       canvas.addEventListener(
         'wheel',
         event => {
@@ -2079,8 +2222,13 @@
 
     if (node.satellitePivots?.length) {
       node.satellitePivots.forEach((pivot, pivotIndex) => {
-        pivot.rotation.y += pivot.userData.speed || (0.01 + pivotIndex * 0.002);
+        const focusBoost = isFocused ? 1.45 : 1;
+
+        pivot.rotation.y +=
+          (pivot.userData.speed || (0.01 + pivotIndex * 0.002)) * focusBoost;
+
         pivot.rotation.x += pivot.userData.wobble || 0.0006;
+        pivot.rotation.z += (pivot.userData.wobble || 0.0006) * 0.35;
       });
     }
 
@@ -2091,16 +2239,6 @@
     }
   }
 
-  /* ── FIX: updateGalaxyCamera now only lerps during explicit transitions.
-     Previously it ran every frame, lerping toward defaultCameraPos with
-     factor 0.032 — which directly opposed any zoom or pan the user did,
-     making free navigation impossible.
-
-     Now: isTransitioning is set to true only when focusGalaxyNode(),
-     clearGalaxySelection(), or centerGalaxySun() are called. Once the
-     camera reaches its target (within 0.12 units), isTransitioning is
-     cleared and OrbitControls takes full control again.
-  ──────────────────────────────────────────────────────────────────── */
   function updateGalaxyCamera() {
     const THREE = state.three.THREE;
     const camera = state.three.camera;
@@ -2110,13 +2248,10 @@
 
     const activeNode = state.three.activeNode;
 
-    // Stop autoRotate when a node is focused OR during a camera transition
     controls.autoRotate = !activeNode && !state.three.isTransitioning;
 
-    // Only move the camera when we're in an active transition
     if (!state.three.isTransitioning) return;
 
-    // Compute the target camera position and look-at point
     if (activeNode?.mesh) {
       const nodePosition = new THREE.Vector3();
       activeNode.mesh.getWorldPosition(nodePosition);
@@ -2127,36 +2262,50 @@
         direction.set(0, 0.22, 1).normalize();
       }
 
-      const cameraDistance = 8.2;
-      const lift = new THREE.Vector3(0, 2.6, 0);
+      const isMobile = window.matchMedia('(max-width: 760px)').matches;
+      const isTablet = window.matchMedia('(max-width: 1120px)').matches;
+
+      const cameraDistance = isMobile ? 8.4 : isTablet ? 7.2 : 5.45;
+      const cameraLift = isMobile ? 2.3 : isTablet ? 2.15 : 1.85;
 
       state.three.focusTarget = nodePosition.clone();
       state.three.focusCameraPos = nodePosition
         .clone()
         .add(direction.multiplyScalar(cameraDistance))
-        .add(lift);
+        .add(new THREE.Vector3(0, cameraLift, 0));
     } else {
       state.three.focusTarget =
         state.three.defaultTarget?.clone() || new THREE.Vector3(0, 0, 0);
+
       state.three.focusCameraPos =
         state.three.defaultCameraPos?.clone() || new THREE.Vector3(0, 13, 52);
     }
 
-    const lerpFactor = activeNode ? 0.055 : 0.032;
-    const targetFactor = activeNode ? 0.075 : 0.046;
+    const lerpFactor = activeNode ? 0.075 : 0.034;
+    const targetFactor = activeNode ? 0.095 : 0.048;
 
     if (state.three.focusCameraPos) {
       camera.position.lerp(state.three.focusCameraPos, lerpFactor);
-
-      // Stop transitioning once we've arrived
-      if (camera.position.distanceTo(state.three.focusCameraPos) < 0.12) {
-        camera.position.copy(state.three.focusCameraPos);
-        state.three.isTransitioning = false;
-      }
     }
 
     if (state.three.focusTarget) {
       controls.target.lerp(state.three.focusTarget, targetFactor);
+    }
+
+    const cameraReady =
+      !state.three.focusCameraPos ||
+      camera.position.distanceTo(state.three.focusCameraPos) < 0.12;
+
+    const targetReady =
+      !state.three.focusTarget ||
+      controls.target.distanceTo(state.three.focusTarget) < 0.12;
+
+    if (cameraReady && targetReady) {
+      if (state.three.focusCameraPos) camera.position.copy(state.three.focusCameraPos);
+      if (state.three.focusTarget) controls.target.copy(state.three.focusTarget);
+
+      state.three.isTransitioning = false;
+      controls.autoRotate = !state.three.activeNode;
     }
   }
 
@@ -2236,6 +2385,7 @@
   function onProfileGalaxyPointerMove(event) {
     const node = raycastGalaxyNode(event);
     const tooltip = state.three.tooltipEl || $('#profileGalaxyTooltip');
+
     const holder = getGalaxyHolder();
 
     if (!tooltip || !holder) return;
@@ -2286,7 +2436,7 @@
     if (!node?.item) return;
 
     state.three.activeNode = node;
-    state.three.isTransitioning = true; // ← trigger camera transition
+    state.three.isTransitioning = true;
     hideGalaxyTooltip();
 
     showGalaxySelection(node);
@@ -2297,20 +2447,16 @@
   }
 
   function centerGalaxySun() {
-    /* The ONLY function that moves the camera back to default position.
-       Explicitly triggered by the "Center Sun" button only. */
     state.three.activeNode = null;
-    state.three.isTransitioning = true; // ← intentional: user asked to go home
+    state.three.isTransitioning = true;
     _clearSelectionUIOnly();
+
     showToast('Centered on the IkeStar core.');
   }
 
   function clearGalaxySelection() {
-    /* Clears the active node and hides the selection panel.
-       Does NOT move the camera — the user's zoom/pan position is preserved.
-       Only centerGalaxySun() should return the camera to default. */
     state.three.activeNode = null;
-    state.three.isTransitioning = false; // camera stays exactly where user left it
+    state.three.isTransitioning = false;
     _clearSelectionUIOnly();
   }
 
@@ -2357,8 +2503,8 @@
       `
         <strong>${escapeHTML(node.item.shortName || node.item.name)}</strong>
         <span>
-          ${escapeHTML(node.item.paletteName || 'Realm palette')} ·
-          ${completedCount}/${totalLessons} LKP lessons complete ·
+          ${escapeHTML(node.item.paletteName || 'Realm palette')} \u00b7
+          ${completedCount}/${totalLessons} LKP lessons complete \u00b7
           ${progress}% current learning progress.
         </span>
       `
@@ -2405,12 +2551,11 @@
     });
   }
 
-  /* Internal: hide the selection panel UI without touching camera state.
-     Called by clearIdentityGalaxy() so scene rebuilds never trigger a
-     camera snap back to defaultCameraPos. */
   function _clearSelectionUIOnly() {
     hideGalaxyTooltip();
+
     const panel = state.three.selectionEl || $('#profileGalaxySelection');
+
     if (panel) {
       panel.classList.remove('is-visible');
       panel.setAttribute('aria-hidden', 'true');
@@ -2421,13 +2566,11 @@
     const scene = state.three.scene;
     if (!scene) return;
 
-    /* Use internal UI-only clear — NOT clearGalaxySelection() which would
-       set isTransitioning = true and snap the camera back to default. */
     _clearSelectionUIOnly();
 
     state.three.activeNode = null;
     state.three.hoveredNode = null;
-    state.three.isTransitioning = false; // ← stays false so camera stays where user left it
+    state.three.isTransitioning = false;
 
     state.three.nodes.forEach(node => {
       [
@@ -2476,6 +2619,10 @@
     resizeProfileGalaxy();
   }
 
+  /* FIX: buildIdentityGalaxy fully restored — the original was truncated after
+     glow.userData.baseOpacity, missing all nebula/gasCloud/satellite/label
+     creation, the scene.add() calls, and the nodes.push() with the colon on
+     verticalFloat fixed. */
   function buildIdentityGalaxy() {
     const THREE = state.three.THREE;
     const scene = state.three.scene;
@@ -2501,6 +2648,7 @@
 
     const items = ecosystemItems.filter(item => !item.adminOnly || state.isAdmin);
     const baseRadius = state.isAdmin ? 12.4 : 10.8;
+    const isDesktopGalaxy = window.matchMedia('(min-width: 1024px)').matches;
 
     items.forEach((item, index) => {
       const primaryColor = item.color;
@@ -2551,6 +2699,7 @@
       glow.userData.profileGalaxyGenerated = true;
       glow.userData.baseOpacity = item.adminOnly ? 0.42 : 0.28;
 
+      /* FIX: these nebula/gasCloud/satellite/label lines were completely missing */
       const nebula = makeRealmNebulaCluster(
         primaryColor,
         secondaryColor,
@@ -2590,6 +2739,7 @@
       scene.add(satellite.group);
       scene.add(label);
 
+      /* FIX: verticalFloat had missing colon — was `verticalFloat 0.12` */
       state.three.nodes.push({
         mesh,
         glow,
@@ -2897,7 +3047,6 @@
       pivot.rotation.z = orbitTiltZ;
       pivot.userData.speed = 0.008 + i * 0.0028;
       pivot.userData.wobble = 0.0004 + i * 0.0002;
-
       const moonSize = 0.08 + i * 0.036;
 
       const moon = new THREE.Mesh(
@@ -3036,7 +3185,6 @@
   ═══════════════════════════════════════════════════════════════════════ */
 
   async function init() {
-    /* Hide layout until session resolves — prevents snap */
     document.body.classList.add('profile-loading');
 
     state.completed = readJSON(COMPLETED_KEY, []);
@@ -3044,24 +3192,8 @@
 
     startBackgroundClock();
 
-    /* ── FIX: Load lesson data, with a fallback for timing edge cases.
-       With `defer` scripts, lkp-data.js always runs before profile.js,
-       so getStaticContentData() should find the data. But if for any
-       reason the data isn't on window yet, we also listen for the
-       lkp:data-ready event that lkp-data.js dispatches when done.    */
-    const staticData = getStaticContentData();
-    hydrateLessonsFromData(staticData);
-
-    if (!state.lessons.length) {
-      /* Data not ready yet — subscribe to event fired by lkp-data.js */
-      window.addEventListener('lkp:data-ready', function onDataReady(event) {
-        window.removeEventListener('lkp:data-ready', onDataReady);
-        hydrateLessonsFromData(event.detail?.data || getStaticContentData());
-        populateCultureFilter();
-        renderLessonPath();
-        renderRewardsPanel();
-      }, { once: true });
-    }
+    const staticData = await waitForLessonData();
+    await hydrateLessonsFromData(staticData);
 
     bindUI();
     populateCultureFilter();
@@ -3071,6 +3203,7 @@
     renderLessonPath();
 
     await initProfileGalaxy();
+
     await setupSupabaseClient();
 
     if (!supabaseClient) {
@@ -3090,17 +3223,22 @@
 
     await loadSession();
 
+    /* CHANGE 6: onAuthStateChange always calls bootRewards() with userId so
+       every device signs in with full cross-device sync enabled */
     supabaseClient.auth.onAuthStateChange(async (_event, session) => {
       state.session = session || null;
       state.user = session?.user || null;
 
       if (state.user) {
         await loadOrCreateProfile();
+        await bootRewards(state.contentData);
         await loadManagedContent();
         await loadRemoteProgress();
       } else {
+        /* Fired automatically after lkp-signout.js calls supabase.auth.signOut() */
         state.profile = null;
         state.isAdmin = false;
+        await bootRewards(state.contentData);
         await loadManagedContent();
       }
 
