@@ -17,6 +17,10 @@
            (currentUser can be null even with an active session). Removed.
            userId MUST be passed explicitly from your auth state change callback.
            Example: await LKPRewards.init({ supabase, userId: session.user.id, data })
+
+   FIX 4 (new): userId warning now only fires when Supabase IS configured but
+           userId IS missing — intentional guest-mode calls (no Supabase) no
+           longer spam the console.
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -464,6 +468,10 @@
    *       renderProfile();
    *     }
    *   });
+   *
+   * Guest-mode (no user signed in) should pass userId: null and supabase: null.
+   * profile.js bootRewards() handles this automatically — it only passes
+   * the Supabase client and userId when state.user is non-null.
    */
   async function init(options = {}) {
     _cachedData = normalizeData(options.data);
@@ -473,8 +481,13 @@
     // FIX 3: Do not use _supabase?.auth?.currentUser — unreliable in v2.
     _userId = options.userId || null;
 
-    if (!_userId) {
-      console.warn("[LKPRewards] init() called without userId. Pass session.user.id explicitly.");
+    // FIX 4: Only warn when Supabase IS configured but userId IS missing.
+    // Guest-mode calls (supabase: null, userId: null) are intentional — no warning.
+    if (_supabase && !_userId) {
+      console.warn(
+        "[LKPRewards] init() called with a Supabase client but no userId. " +
+        "Pass session.user.id explicitly. Falling back to local cache."
+      );
     }
 
     if (_supabase && _userId) {
@@ -484,7 +497,7 @@
         loadProfileTotalsFromSupabase()
       ]);
     } else {
-      // Offline / signed out — read from local cache
+      // Offline / signed out — read from local cache. This is normal in guest mode.
       _cache.completedIds = new Set(readLocal(STORAGE.completed, []));
       _cache.dailyDates   = readLocal(STORAGE.daily, []);
     }

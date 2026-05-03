@@ -509,7 +509,9 @@
     const url = String(value || '').trim();
 
     if (!url) return '';
-    if (isDataImage(url)) return '';
+    // Allow data URLs for in-session preview — they won't be persisted to Supabase
+    // (saveProfile() guards against saving them).
+    if (isDataImage(url)) return url;
     if (url.length > 2000) return '';
 
     return url;
@@ -793,10 +795,15 @@
   async function bootRewards(data) {
     if (!window.LKPRewards || typeof window.LKPRewards.init !== 'function') return;
     try {
+      // Only pass supabase+userId when the user is signed in.
+      // Guest mode intentionally has no userId — lkp-rewards.js will use local cache.
+      const userId   = state.user?.id || null;
+      const sbClient = userId ? (window._lkpSupaClient || supabaseClient) : null;
+
       await window.LKPRewards.init({
         data:     data || state.contentData,
-        supabase: window._lkpSupaClient || supabaseClient,
-        userId:   state.user?.id || null
+        supabase: sbClient,
+        userId:   userId
       });
     } catch (err) {
       console.warn('[Profile] LKPRewards.init failed:', err.message);
@@ -1847,6 +1854,211 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
+     AVATAR IMAGE UPLOAD — drag, drop, paste
+  ═══════════════════════════════════════════════════════════════════════ */
+
+  // Resize and compress an image file to a canvas data URL.
+  // Max 512×512, quality 0.82 JPEG — keeps it small for session preview.
+  function resizeImageFile(file, maxPx = 512, quality = 0.82) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = evt => {
+        const img = new window.Image();
+
+        img.onload = () => {
+          const scale = Math.min(1, maxPx / Math.max(img.width, img.height));
+          const w     = Math.round(img.width  * scale);
+          const h     = Math.round(img.height * scale);
+
+          const canvas = document.createElement('canvas');
+          canvas.width  = w;
+          canvas.height = h;
+
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        };
+
+        img.onerror = () => reject(new Error('Image failed to load'));
+        img.src = evt.target.result;
+      };
+
+      reader.onerror = () => reject(new Error('File read failed'));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // Try to upload a data URL to Supabase Storage (bucket: avatars).
+  // Returns the public URL string on success, null on failure.
+  async function uploadAvatarToStorage(dataUrl) {
+    if (!supabaseClient || !state.user) return null;
+
+    try {
+      // Convert data URL → Blob
+      const res   = await fetch(dataUrl);
+      const blob  = await res.blob();
+      const ext   = blob.type.includes('png') ? 'png' : 'jpg';
+      const path  = `${state.user.id}/avatar.${ext}`;
+
+      const { error } = await supabaseClient
+        .storage
+        .from('avatars')
+        .upload(path, blob, { upsert: true, contentType: blob.type });
+
+      if (error) {
+        console.warn('[Profile] Storage upload error:', error.message);
+        return null;
+      }
+
+      const { data } = supabaseClient
+        .storage
+        .from('avatars')
+        .getPublicUrl(path);
+
+      return data?.publicUrl || null;
+    } catch (err) {
+      console.warn('[Profile] Avatar upload failed:', err.message);
+      return null;
+    }
+  }
+
+  // Central handler: takes a File object, resizes, previews, then tries to persist.
+  async function handleAvatarImageFile(file) {
+    if (!file || !file.type.startsWith('image/')) {
+      showToast('Please drop or paste an image file.');
+      return;
+    }
+
+    if (file.size > 8 * 1024 * 1024) {
+      showToast('Image is too large (max 8 MB). Try a smaller file.');
+      return;
+    }
+
+    try {
+      showToast('Processing image…');
+
+      const dataUrl = await resizeImageFile(file);
+
+      // Immediate preview — update the avatar element directly
+      const avatar = $('#profileAvatar');
+      if (avatar) {
+        avatar.style.backgroundImage = `
+          linear-gradient(rgba(1,3,10,0.12), rgba(1,3,10,0.12)),
+          url("${dataUrl}")
+        `;
+        avatar.style.backgroundSize     = 'cover';
+        avatar.style.backgroundPosition = 'center';
+      }
+
+      // Also populate the URL field so the user can see something changed
+      const urlInput = $('#editAvatarUrl');
+      if (urlInput) urlInput.value = '(uploading…)';
+
+      // Try Supabase Storage upload
+      const publicUrl = await uploadAvatarToStorage(dataUrl);
+
+      if (publicUrl) {
+        // Persist to profile
+        if (state.profile) state.profile.avatar_url = publicUrl;
+        if (urlInput) urlInput.value = publicUrl;
+
+        await saveProfile();
+        showToast('Avatar uploaded and saved.');
+      } else {
+        // No storage bucket or not signed in — keep as session-only preview
+        if (state.profile) state.profile.avatar_url = dataUrl;
+        if (urlInput) urlInput.value = '';
+
+        showToast(
+          state.user
+            ? 'Avatar previewed. Add a Supabase Storage "avatars" bucket to persist it.'
+            : 'Avatar previewed for this session. Sign in to save it.'
+        );
+      }
+    } catch (err) {
+      console.error('[Profile] Avatar processing failed:', err);
+      showToast('Could not process image. Try a different file.');
+    }
+  }
+
+  // Wire up drag-and-drop on the avatar element.
+  function bindAvatarDragDrop() {
+    const avatar = $('#profileAvatar');
+    if (!avatar) return;
+
+    // Visual feedback during drag
+    avatar.addEventListener('dragenter', evt => {
+      evt.preventDefault();
+      avatar.classList.add('drag-over');
+    }, { passive: false });
+
+    avatar.addEventListener('dragover', evt => {
+      evt.preventDefault();
+      evt.dataTransfer.dropEffect = 'copy';
+      avatar.classList.add('drag-over');
+    }, { passive: false });
+
+    avatar.addEventListener('dragleave', () => {
+      avatar.classList.remove('drag-over');
+    });
+
+    avatar.addEventListener('drop', evt => {
+      evt.preventDefault();
+      avatar.classList.remove('drag-over');
+
+      const file = evt.dataTransfer?.files?.[0];
+      if (file) handleAvatarImageFile(file);
+    }, { passive: false });
+
+    // Click-to-open file picker as fallback
+    avatar.style.cursor = 'pointer';
+    avatar.title        = 'Click, drag, or paste an image to update your avatar';
+
+    avatar.addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type  = 'file';
+      input.accept = 'image/*';
+
+      input.onchange = evt => {
+        const file = evt.target.files?.[0];
+        if (file) handleAvatarImageFile(file);
+      };
+
+      input.click();
+    });
+  }
+
+  // Wire up global paste (Ctrl+V / Cmd+V anywhere on the page).
+  function bindGlobalImagePaste() {
+    document.addEventListener('paste', async evt => {
+      // Skip if user is typing in an input/textarea
+      const target = document.activeElement;
+      if (
+        target &&
+        (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') &&
+        target.id !== 'editAvatarUrl'
+      ) {
+        return;
+      }
+
+      const items = evt.clipboardData?.items || [];
+
+      for (const item of items) {
+        if (item.kind === 'file' && item.type.startsWith('image/')) {
+          const file = item.getAsFile();
+          if (file) {
+            evt.preventDefault();
+            await handleAvatarImageFile(file);
+            return;
+          }
+        }
+      }
+    });
+  }
+
+    /* ═══════════════════════════════════════════════════════════════════════
      UI BINDING
   ═══════════════════════════════════════════════════════════════════════ */
 
@@ -1966,6 +2178,10 @@
         clearGalaxySelection();
       }
     });
+
+    // Avatar image upload — drag-drop, click-to-pick, and global paste
+    bindAvatarDragDrop();
+    bindGlobalImagePaste();
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
