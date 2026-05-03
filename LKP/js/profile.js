@@ -837,20 +837,51 @@
     }
   }
 
-  function waitForLessonData(timeoutMs = 900) {
-    return new Promise(resolve => {
-      const existing = getStaticContentData();
+  // Candidate paths for the lesson data script — tried in order.
+  const LKP_DATA_SCRIPT_PATHS = [
+    'LKP/js/lkp-data.js',
+    'js/lkp-data.js',
+    'lkp-data.js',
+    'LKP/js/data.js',
+    'js/data.js'
+  ];
 
-      if (
-        existing &&
-        Array.isArray(existing.cultures) &&
-        existing.cultures.some(culture => {
-          return Array.isArray(culture.modules) &&
-            culture.modules.some(module => {
-              return Array.isArray(module.lessons) && module.lessons.length;
-            });
-        })
-      ) {
+  function hasUsableLessons(data) {
+    return (
+      data &&
+      Array.isArray(data.cultures) &&
+      data.cultures.some(culture =>
+        Array.isArray(culture.modules) &&
+        culture.modules.some(module =>
+          Array.isArray(module.lessons) && module.lessons.length > 0
+        )
+      )
+    );
+  }
+
+  // Dynamically inject a <script> tag and wait for it to load.
+  function injectScript(src) {
+    return new Promise(resolve => {
+      // Don't inject the same script twice
+      if (document.querySelector(`script[src="${src}"]`)) {
+        resolve(true);
+        return;
+      }
+      const el = document.createElement('script');
+      el.src = src;
+      el.defer = false;
+      el.async = false;
+      el.onload  = () => resolve(true);
+      el.onerror = () => resolve(false);
+      document.head.appendChild(el);
+    });
+  }
+
+  function waitForLessonData(timeoutMs = 1800) {
+    return new Promise(async resolve => {
+      // ── 1. Data already on window ─────────────────────────────────────
+      const existing = getStaticContentData();
+      if (hasUsableLessons(existing)) {
         resolve(existing);
         return;
       }
@@ -861,10 +892,20 @@
         if (resolved) return;
         resolved = true;
         window.removeEventListener('lkp:data-ready', onReady);
-        clearTimeout(timer);
-        resolve(data || getStaticContentData());
+        clearTimeout(eventTimer);
+        const final = data || getStaticContentData();
+        if (!hasUsableLessons(final)) {
+          console.warn(
+            '[Profile] No lesson data found after all attempts.\n' +
+            'Make sure one of these exists and sets window.LKP_DATA, ' +
+            'window.CULTURALVERSE_DATA, or window.IKEVERSE_DATA:\n' +
+            LKP_DATA_SCRIPT_PATHS.join(', ')
+          );
+        }
+        resolve(final);
       };
 
+      // ── 2. Wait for lkp:data-ready event (fired by lkp-data.js) ──────
       const onReady = event => {
         const data =
           event?.detail?.data ||
@@ -872,13 +913,37 @@
           window.LKP_DATA ||
           window.IKEVERSE_DATA ||
           null;
-
         finish(data);
       };
 
       window.addEventListener('lkp:data-ready', onReady);
 
-      const timer = setTimeout(() => {
+      // ── 3. Try injecting lkp-data.js from known paths ─────────────────
+      // Run in parallel with the event listener — whichever fires first wins.
+      (async () => {
+        for (const path of LKP_DATA_SCRIPT_PATHS) {
+          if (resolved) return;
+
+          const ok = await injectScript(path);
+
+          if (ok) {
+            // Give the script a tick to execute and set window globals
+            await new Promise(r => setTimeout(r, 80));
+
+            const data = getStaticContentData();
+            if (hasUsableLessons(data)) {
+              console.info('[Profile] Lesson data loaded via injected script:', path);
+              finish(data);
+              return;
+            }
+          }
+        }
+
+        // All paths tried — fall through to the event timer
+      })();
+
+      // ── 4. Absolute timeout fallback ──────────────────────────────────
+      const eventTimer = setTimeout(() => {
         finish(getStaticContentData());
       }, timeoutMs);
     });
@@ -1318,13 +1383,26 @@
     let avatarUrl = $('#editAvatarUrl')?.value.trim();
     const bio = $('#editBio')?.value.trim();
 
+    // If it's a data URL it came from the avatar upload flow.
+    // Try to upload to Supabase Storage first; if that fails, strip it from the payload
+    // (data URLs are never persisted to the profiles table directly).
     if (avatarUrl && isDataImage(avatarUrl)) {
-      showToast('Avatar URL cannot be a base64 image. Use a normal image path or hosted URL.');
-      avatarUrl = '';
+      if (supabaseClient && state.user) {
+        const publicUrl = await uploadAvatarToStorage(avatarUrl);
+        if (publicUrl) {
+          avatarUrl = publicUrl;
+        } else {
+          showToast('Could not upload image to storage. Add a Supabase "avatars" storage bucket.');
+          avatarUrl = state.profile?.avatar_url || '';
+        }
+      } else {
+        // Guest mode — can't persist data URLs, just keep current
+        avatarUrl = state.profile?.avatar_url || '';
+      }
     }
 
-    if (avatarUrl && avatarUrl.length > 2000) {
-      showToast('Avatar URL is too long. Use a shorter hosted image URL or local file path.');
+    if (avatarUrl && !isDataImage(avatarUrl) && avatarUrl.length > 2000) {
+      showToast('Avatar URL is too long. Use a shorter hosted image URL.');
       avatarUrl = '';
     }
 
@@ -1960,27 +2038,85 @@
       const publicUrl = await uploadAvatarToStorage(dataUrl);
 
       if (publicUrl) {
-        // Persist to profile
+        // Persist the public URL to profile
         if (state.profile) state.profile.avatar_url = publicUrl;
         if (urlInput) urlInput.value = publicUrl;
 
         await saveProfile();
-        showToast('Avatar uploaded and saved.');
+        showToast('Avatar uploaded and saved ✓');
       } else {
-        // No storage bucket or not signed in — keep as session-only preview
+        // No storage bucket — keep data URL in session preview only
+        // Don't put the data URL in the text field (it's 50k+ chars)
         if (state.profile) state.profile.avatar_url = dataUrl;
         if (urlInput) urlInput.value = '';
+        if (urlInput) urlInput.placeholder = 'Image previewed (session only)';
 
         showToast(
           state.user
-            ? 'Avatar previewed. Add a Supabase Storage "avatars" bucket to persist it.'
-            : 'Avatar previewed for this session. Sign in to save it.'
+            ? 'Image previewed. To persist it, create a Supabase Storage bucket named "avatars".'
+            : 'Image previewed for this session. Sign in to save your avatar.'
         );
       }
     } catch (err) {
       console.error('[Profile] Avatar processing failed:', err);
       showToast('Could not process image. Try a different file.');
     }
+  }
+
+  // Inject an "Upload Photo" button next to the avatar URL field in the edit form.
+  // This works dynamically so profile.html doesn't need to be modified.
+  function injectAvatarUploadButton() {
+    const urlInput = $('#editAvatarUrl');
+    if (!urlInput || document.getElementById('lkp-avatar-upload-btn')) return;
+
+    const btn = document.createElement('button');
+    btn.id          = 'lkp-avatar-upload-btn';
+    btn.type        = 'button';
+    btn.textContent = '📷 Upload Photo';
+    btn.title       = 'Click to upload a photo, or drag & drop / paste an image anywhere';
+
+    btn.style.cssText = [
+      'display:block',
+      'margin-top:8px',
+      'padding:8px 16px',
+      'background:rgba(240,201,106,0.15)',
+      'border:1px solid rgba(240,201,106,0.45)',
+      'border-radius:8px',
+      'color:#f0c96a',
+      'font-size:13px',
+      'cursor:pointer',
+      'transition:background 0.2s',
+      'width:100%',
+    ].join(';');
+
+    btn.addEventListener('mouseenter', () => {
+      btn.style.background = 'rgba(240,201,106,0.28)';
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.background = 'rgba(240,201,106,0.15)';
+    });
+
+    btn.addEventListener('click', () => {
+      const input = document.createElement('input');
+      input.type   = 'file';
+      input.accept = 'image/*';
+
+      input.onchange = evt => {
+        const file = evt.target.files?.[0];
+        if (file) handleAvatarImageFile(file);
+      };
+
+      input.click();
+    });
+
+    // Insert right after the URL input
+    urlInput.parentNode.insertBefore(btn, urlInput.nextSibling);
+
+    // Also add a small hint label
+    const hint = document.createElement('small');
+    hint.style.cssText = 'display:block;margin-top:6px;opacity:0.55;font-size:11px;';
+    hint.textContent   = 'Or drag & drop / paste (Ctrl+V) an image anywhere on the page';
+    btn.parentNode.insertBefore(hint, btn.nextSibling);
   }
 
   // Wire up drag-and-drop on the avatar element.
@@ -2182,6 +2318,10 @@
     // Avatar image upload — drag-drop, click-to-pick, and global paste
     bindAvatarDragDrop();
     bindGlobalImagePaste();
+
+    // Inject an upload button next to the avatar URL input in the edit form.
+    // Works even if profile.html doesn't have a dedicated upload button.
+    injectAvatarUploadButton();
   }
 
   /* ═══════════════════════════════════════════════════════════════════════
