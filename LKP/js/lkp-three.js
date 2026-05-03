@@ -324,6 +324,31 @@ function makeGoldCompassTexture(imgEl) {
 
   ctx.putImageData(imageData, 0, 0);
 
+  // Gold glow pass
+  const glowCanvas = document.createElement("canvas");
+  const glowCtx = glowCanvas.getContext("2d");
+  glowCanvas.width = size;
+  glowCanvas.height = size;
+
+  glowCtx.clearRect(0, 0, size, size);
+  glowCtx.drawImage(canvas, 0, 0);
+  glowCtx.globalCompositeOperation = "source-in";
+  glowCtx.fillStyle = "rgba(255, 204, 86, 0.72)";
+  glowCtx.fillRect(0, 0, size, size);
+
+  const finalCanvas = document.createElement("canvas");
+  const finalCtx = finalCanvas.getContext("2d");
+  finalCanvas.width = size;
+  finalCanvas.height = size;
+
+  finalCtx.clearRect(0, 0, size, size);
+  finalCtx.filter = "blur(1.15px)";
+  finalCtx.globalAlpha = 0.42;
+  finalCtx.drawImage(glowCanvas, 0, 0);
+  finalCtx.filter = "none";
+  finalCtx.globalAlpha = 1;
+  finalCtx.drawImage(canvas, 0, 0);
+
   const visibleRatio = visiblePixels / Math.max(1, size * size);
 
   if (visibleRatio < 0.001) {
@@ -331,74 +356,28 @@ function makeGoldCompassTexture(imgEl) {
     return makeTextureFromImage(imgEl);
   }
 
-  // ── FIX: Clip to circle at 0.455 radius BEFORE the glow pass.
-  // Clipping first means the glow blur cannot push caption text pixels
-  // ("Nainoa's Hawaiian Starcompass @ with english and numerical equivalent
-  // in degrees") back inside the circle from the image edges.
-  const circleCanvas = document.createElement("canvas");
-  const circleCtx    = circleCanvas.getContext("2d");
-  circleCanvas.width  = size;
-  circleCanvas.height = size;
+  // ── FIX: Clip to circle to remove the caption text
+  // "Nainoa's Hawaiian Starcompass @ with english and numerical equivalent
+  // in degrees" which sits outside the circular compass boundary at the
+  // top/bottom edges of the source JPG. A 49% radius circle keeps the
+  // full compass artwork intact while erasing everything outside it.
+  const clippedCanvas = document.createElement("canvas");
+  const clippedCtx = clippedCanvas.getContext("2d");
+  clippedCanvas.width = size;
+  clippedCanvas.height = size;
 
-  circleCtx.clearRect(0, 0, size, size);
-  circleCtx.save();
-  circleCtx.beginPath();
-  circleCtx.arc(size / 2, size / 2, size * 0.455, 0, Math.PI * 2, false);
-  circleCtx.closePath();
-  circleCtx.clip();
-  circleCtx.drawImage(canvas, 0, 0);
-  circleCtx.restore();
+  clippedCtx.clearRect(0, 0, size, size);
+  clippedCtx.save();
+  clippedCtx.beginPath();
+  clippedCtx.arc(size / 2, size / 2, size * 0.49, 0, Math.PI * 2, false);
+  clippedCtx.closePath();
+  clippedCtx.clip();
+  clippedCtx.drawImage(finalCanvas, 0, 0);
+  clippedCtx.restore();
 
-  // Bake a top-left specular highlight to sell the 3D dome illusion.
-  // This makes the compass look lit from above-left like a curved metallic surface.
-  const specCtx = circleCtx;
-  const specGrd = specCtx.createRadialGradient(
-    size * 0.34, size * 0.28, 0,
-    size * 0.50, size * 0.50, size * 0.455
-  );
-  specGrd.addColorStop(0,    "rgba(255, 240, 180, 0.28)");
-  specGrd.addColorStop(0.28, "rgba(255, 220, 120, 0.14)");
-  specGrd.addColorStop(0.64, "rgba(120,  90,  20, 0.08)");
-  specGrd.addColorStop(1,    "rgba(30,   15,   0, 0.38)");
+  console.log("[LKP] Gold compass texture created. Visible ratio:", visibleRatio.toFixed(4));
 
-  specCtx.save();
-  specCtx.beginPath();
-  specCtx.arc(size / 2, size / 2, size * 0.455, 0, Math.PI * 2, false);
-  specCtx.closePath();
-  specCtx.clip();
-  specCtx.globalCompositeOperation = "source-atop";
-  specCtx.fillStyle = specGrd;
-  specCtx.fillRect(0, 0, size, size);
-  specCtx.restore();
-
-  // Gold glow pass — now contained inside the clip circle
-  const glowCanvas = document.createElement("canvas");
-  const glowCtx    = glowCanvas.getContext("2d");
-  glowCanvas.width  = size;
-  glowCanvas.height = size;
-
-  glowCtx.clearRect(0, 0, size, size);
-  glowCtx.drawImage(circleCanvas, 0, 0);
-  glowCtx.globalCompositeOperation = "source-in";
-  glowCtx.fillStyle = "rgba(255, 204, 86, 0.60)";
-  glowCtx.fillRect(0, 0, size, size);
-
-  const finalCanvas = document.createElement("canvas");
-  const finalCtx    = finalCanvas.getContext("2d");
-  finalCanvas.width  = size;
-  finalCanvas.height = size;
-
-  finalCtx.clearRect(0, 0, size, size);
-  finalCtx.filter      = "blur(0.85px)";
-  finalCtx.globalAlpha = 0.36;
-  finalCtx.drawImage(glowCanvas, 0, 0);
-  finalCtx.filter      = "none";
-  finalCtx.globalAlpha = 1;
-  finalCtx.drawImage(circleCanvas, 0, 0);
-
-  console.log("[LKP] Gold compass texture created (clipped + specular). Visible ratio:", visibleRatio.toFixed(4));
-
-  return canvasToTexture(finalCanvas);
+  return canvasToTexture(clippedCanvas);
 }
 
 function makeGlowTex(r, g, b, peak, size = 128) {
@@ -1119,76 +1098,23 @@ function makeCompassImageOverlay() {
 
   const compassTexture = makeGoldCompassTexture(imgEl);
 
-  // ── 3D DOME: use a sphere-cap geometry instead of a flat plane.
-  // SphereGeometry rows/cols + phi range limited to the top 18° of arc
-  // gives a shallow bowl that catches light and reads as 3D.
-  const domeR   = size * 0.5;
-  const domeArc = Math.PI * 0.10;           // shallow dome — 18° of sphere arc
-  const domeSeg = IS_MOBILE ? 32 : 64;
-
-  const domeGeo = new THREE.SphereGeometry(
-    domeR,                  // radius
-    domeSeg,                // widthSegments
-    domeSeg,                // heightSegments
-    0,                      // phiStart
-    Math.PI * 2,            // phiLength (full circle)
-    0,                      // thetaStart (top of sphere)
-    domeArc                 // thetaLength (shallow cap)
-  );
-
-  // MeshStandardMaterial so scene lights shade the curved surface
-  const mat = new THREE.MeshStandardMaterial({
-    map:           compassTexture,
-    color:         0xffffff,
-    metalness:     0.48,
-    roughness:     0.26,
-    transparent:   true,
-    opacity:       IS_MOBILE ? 0.97 : 1.0,
-    depthWrite:    false,
-    depthTest:     false,
-    fog:           false,
-    side:          THREE.FrontSide,
-    alphaTest:     0.012,
-    envMapIntensity: 0.6
+  const mat = new THREE.MeshBasicMaterial({
+    map: compassTexture, color: 0xffffff,
+    transparent: true, opacity: IS_MOBILE ? 0.98 : 1,
+    depthWrite: false, depthTest: false, fog: false,
+    side: THREE.DoubleSide, alphaTest: 0.012
   });
 
-  const mesh = new THREE.Mesh(domeGeo, mat);
+  const geo  = new THREE.PlaneGeometry(size, size);
+  const mesh = new THREE.Mesh(geo, mat);
 
-  // Flip so the cap faces upward and centre it at Y
-  mesh.rotation.x = Math.PI;
-  mesh.position.set(0, Y + 0.075 + domeR * (1 - Math.cos(domeArc)), 0);
+  mesh.rotation.x = -Math.PI / 2;
+  mesh.position.set(0, Y + 0.075, 0);
   mesh.renderOrder = 20;
   mesh.name = "hawaiian-star-compass-gold-image";
 
   compassGrp.add(mesh);
   compassFloorMesh = mesh;
-
-  // Centre orb glow — tiny bright sprite at the dome apex
-  const orbGlow = new THREE.Sprite(new THREE.SpriteMaterial({
-    map:      makeGlowTex(255, 220, 120, 0.96, 64),
-    transparent: true,
-    opacity:  IS_MOBILE ? 0.38 : 0.52,
-    depthWrite: false,
-    blending: THREE.AdditiveBlending
-  }));
-  orbGlow.scale.setScalar(IS_MOBILE ? 1.8 : 2.8);
-  orbGlow.position.set(0, Y + 0.22, 0);
-  orbGlow.renderOrder = 22;
-  compassGrp.add(orbGlow);
-
-  // Raised inner rim to emphasise the dome edge
-  const innerRimPts = [];
-  const innerRimR   = size * 0.448;
-  for (let i = 0; i <= 260; i++) {
-    const a = (i / 260) * Math.PI * 2;
-    innerRimPts.push(new THREE.Vector3(Math.cos(a) * innerRimR, Y + 0.18, Math.sin(a) * innerRimR));
-  }
-  const innerRim = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints(innerRimPts),
-    new THREE.LineBasicMaterial({ color: 0xffd060, transparent: true, opacity: IS_MOBILE ? 0.42 : 0.58, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending })
-  );
-  innerRim.renderOrder = 23;
-  compassGrp.add(innerRim);
 
   const rimPts = [];
   const rimR   = size * 0.495;
@@ -1274,17 +1200,6 @@ function makeLights() {
   const em  = new THREE.PointLight(0x3cb371, IS_MOBILE ? 1.45 : 2.0, 120, 1.4); em.position.set(-30, 20, -20); scene.add(em);
   const gd  = new THREE.PointLight(0xf0c96a, IS_MOBILE ? 1.20 : 1.6, 120, 1.4); gd.position.set(40, 15, 30);   scene.add(gd);
   const vi  = new THREE.PointLight(0x7b88ff, IS_MOBILE ? 0.75 : 1.0, 100, 1.6); vi.position.set(0, 60, -40);   scene.add(vi);
-
-  // Dedicated warm gold light above the compass to highlight the dome surface.
-  // Positioned top-left to match the specular highlight baked into the texture.
-  const compassKey = new THREE.PointLight(0xffd36b, IS_MOBILE ? 3.2 : 4.8, 60, 1.8);
-  compassKey.position.set(-8, 18, 6);
-  scene.add(compassKey);
-
-  // Cool fill light from opposite side for depth contrast
-  const compassFill = new THREE.PointLight(0x7ab4e8, IS_MOBILE ? 1.2 : 1.8, 50, 2.0);
-  compassFill.position.set(10, 8, -8);
-  scene.add(compassFill);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
