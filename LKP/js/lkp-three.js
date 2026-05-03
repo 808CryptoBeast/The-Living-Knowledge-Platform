@@ -239,174 +239,145 @@ function removeWhiteBg(imgEl, threshold = 238, tolerance = 34) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Hawaiian star compass image processor.
-// This keeps the image shape, removes white, and turns all non-white design into gold.
-//
-// CAPTION FIX: The image is portrait — compass circle fills the width, caption
-// "Nainoa’s Hawaiian Starcompass…" sits in extra height above/below.
-// Math.min(w,h) crops to a centred square, excluding those caption strips.
+// Crops portrait image to square (excludes caption), removes white background,
+// converts all compass artwork to bright readable gold.
 function makeGoldCompassTexture(imgEl) {
-  const sourceW = imgEl.naturalWidth || imgEl.width || 1024;
+  const sourceW = imgEl.naturalWidth  || imgEl.width  || 1024;
   const sourceH = imgEl.naturalHeight || imgEl.height || 1024;
 
-  // Crop to square using the SHORTER dimension.
+  // Crop to square using the SHORTER dimension — caption strips in extra height excluded.
   const size = Math.min(sourceW, sourceH);
-  const canvas = document.createElement("canvas");
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
-  canvas.width = size;
+  const canvas = document.createElement("canvas");
+  const ctx    = canvas.getContext("2d", { willReadFrequently: true });
+  canvas.width  = size;
   canvas.height = size;
 
   ctx.clearRect(0, 0, size, size);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
 
-  // Centre-crop: skip caption margins in the longer dimension.
+  // Centre-crop from source image.
   const sx = (sourceW - size) / 2;
   const sy = (sourceH - size) / 2;
   ctx.drawImage(imgEl, sx, sy, size, size, 0, 0, size, size);
 
   const imageData = ctx.getImageData(0, 0, size, size);
-  const data = imageData.data;
+  const data      = imageData.data;
 
-  const goldHi = { r: 255, g: 220, b: 122 };
-  const goldMid = { r: 216, g: 164, b: 66 };
-  const goldDeep = { r: 132, g: 92, b: 30 };
+  // Brighter, more readable gold palette.
+  const goldHi   = { r: 255, g: 232, b: 145 };  // bright highlight
+  const goldMid  = { r: 228, g: 172, b: 72  };  // mid tone
+  const goldDeep = { r: 140, g: 95,  b: 28  };  // shadow tone
 
   let visiblePixels = 0;
 
   for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    const a = data[i + 3];
-
+    const r = data[i], g = data[i+1], b = data[i+2], a = data[i+3];
     if (a === 0) continue;
 
-    const max = Math.max(r, g, b);
-    const min = Math.min(r, g, b);
-    const saturation = max - min;
-    const lum = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+    const maxC      = Math.max(r, g, b);
+    const minC      = Math.min(r, g, b);
+    const sat       = maxC - minC;
+    const lum       = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
 
-    // White paper/background detector.
-    const isWhitePaper =
-      lum >= 0.76 &&
-      saturation <= 42 &&
-      r >= 185 &&
-      g >= 185 &&
-      b >= 185;
+    // Aggressive white/paper removal — the JPG background is off-white.
+    const isWhite = lum >= 0.82 && sat <= 38 && r >= 190 && g >= 190 && b >= 190;
+    // Softer halo fade for anti-aliased pixels just outside compass lines.
+    const isHalo  = lum >= 0.70 && sat <= 52 && r >= 172 && g >= 172 && b >= 172;
 
-    // Very light anti-aliasing / halo pixels around the drawing.
-    const isWhiteHalo =
-      lum >= 0.66 &&
-      saturation <= 55 &&
-      r >= 165 &&
-      g >= 165 &&
-      b >= 165;
+    if (isWhite) { data[i+3] = 0; continue; }
 
-    if (isWhitePaper) {
-      data[i + 3] = 0;
-      continue;
+    if (isHalo) {
+      // Gentle fade — keep more of the edge pixels so lines look clean not choppy.
+      const fade = THREE.MathUtils.clamp((lum - 0.70) / 0.14, 0, 1);
+      data[i+3]  = Math.round(a * (1 - fade * 0.88));
+      if (data[i+3] <= 6) { data[i+3] = 0; continue; }
     }
 
-    if (isWhiteHalo) {
-      const fade = THREE.MathUtils.clamp((lum - 0.66) / 0.12, 0, 1);
-      data[i + 3] = Math.round(a * (1 - fade));
-      if (data[i + 3] <= 4) {
-        data[i + 3] = 0;
-        continue;
-      }
-    }
+    // Convert all surviving artwork to gold.
+    const ink       = THREE.MathUtils.clamp((0.88 - lum) / 0.68, 0.28, 1);
+    const edgeBoost = THREE.MathUtils.clamp((sat - 8) / 80, 0, 0.25);
+    const strength  = THREE.MathUtils.clamp(ink + edgeBoost, 0.28, 1);
+    const mixToHi   = THREE.MathUtils.clamp((lum - 0.18) / 0.52, 0, 1);
 
-    // Everything that survives is compass artwork.
-    // Convert all black, gray, colored, or dark markings to gold.
-    const ink = THREE.MathUtils.clamp((0.86 - lum) / 0.72, 0.18, 1);
-    const edgeBoost = THREE.MathUtils.clamp((saturation - 10) / 90, 0, 0.22);
-    const strength = THREE.MathUtils.clamp(ink + edgeBoost, 0.22, 1);
-
-    const mixToHi = THREE.MathUtils.clamp((lum - 0.20) / 0.55, 0, 1);
     const baseR = goldDeep.r + (goldMid.r - goldDeep.r) * strength;
     const baseG = goldDeep.g + (goldMid.g - goldDeep.g) * strength;
     const baseB = goldDeep.b + (goldMid.b - goldDeep.b) * strength;
 
-    data[i] = Math.round(baseR + (goldHi.r - baseR) * mixToHi * 0.32);
-    data[i + 1] = Math.round(baseG + (goldHi.g - baseG) * mixToHi * 0.32);
-    data[i + 2] = Math.round(baseB + (goldHi.b - baseB) * mixToHi * 0.32);
+    data[i]   = Math.round(baseR + (goldHi.r - baseR) * mixToHi * 0.44);
+    data[i+1] = Math.round(baseG + (goldHi.g - baseG) * mixToHi * 0.44);
+    data[i+2] = Math.round(baseB + (goldHi.b - baseB) * mixToHi * 0.44);
 
-    // Stronger alpha for dark design lines; softer alpha for faint edges.
-    const alphaStrength = THREE.MathUtils.clamp((0.92 - lum) / 0.58, 0.22, 1);
-    data[i + 3] = Math.round(Math.max(data[i + 3], 255 * alphaStrength));
+    // Dark lines (text, edges) = fully opaque. Lighter fills = strong but not full.
+    // Minimum 0.55 so nothing looks washed out or semi-transparent.
+    const alphaStr = THREE.MathUtils.clamp((0.94 - lum) / 0.52, 0.55, 1);
+    data[i+3]  = Math.round(Math.max(data[i+3], 255 * alphaStr));
 
     visiblePixels++;
   }
 
   ctx.putImageData(imageData, 0, 0);
 
-  // Second pass: subtle gold glow behind only the artwork.
+  // Gold glow pass — warm radiance behind the artwork lines.
   const glowCanvas = document.createElement("canvas");
-  const glowCtx = glowCanvas.getContext("2d");
-  glowCanvas.width = size;
-  glowCanvas.height = size;
-
+  const glowCtx    = glowCanvas.getContext("2d");
+  glowCanvas.width = glowCanvas.height = size;
   glowCtx.clearRect(0, 0, size, size);
   glowCtx.drawImage(canvas, 0, 0);
   glowCtx.globalCompositeOperation = "source-in";
-  glowCtx.fillStyle = "rgba(255, 204, 86, 0.72)";
+  glowCtx.fillStyle = "rgba(255, 210, 80, 0.55)";
   glowCtx.fillRect(0, 0, size, size);
 
-  const finalCanvas = document.createElement("canvas");
-  const finalCtx = finalCanvas.getContext("2d");
-  finalCanvas.width = size;
-  finalCanvas.height = size;
-
-  finalCtx.clearRect(0, 0, size, size);
-  finalCtx.filter = "blur(1.15px)";
-  finalCtx.globalAlpha = 0.42;
-  finalCtx.drawImage(glowCanvas, 0, 0);
-  finalCtx.filter = "none";
-  finalCtx.globalAlpha = 1;
-  finalCtx.drawImage(canvas, 0, 0);
+  const outCanvas = document.createElement("canvas");
+  const outCtx    = outCanvas.getContext("2d");
+  outCanvas.width = outCanvas.height = size;
+  outCtx.clearRect(0, 0, size, size);
+  outCtx.filter      = "blur(0.9px)";
+  outCtx.globalAlpha = 0.30;
+  outCtx.drawImage(glowCanvas, 0, 0);
+  outCtx.filter      = "none";
+  outCtx.globalAlpha = 1;
+  outCtx.drawImage(canvas, 0, 0);
 
   const visibleRatio = visiblePixels / Math.max(1, size * size);
-
   if (visibleRatio < 0.001) {
-    console.warn("[LKP] Gold compass processor removed too much. Falling back to original image.");
+    console.warn("[LKP] Compass texture: too little survived, using original.");
     return makeTextureFromImage(imgEl);
   }
 
-  // Soft circular clip — 0.488 just rounds the square-crop corners.
-  // The caption is already excluded by the Math.min crop above.
+  // Circular clip — 0.488 just rounds the square corners; caption already gone above.
   const clipCanvas = document.createElement("canvas");
   const clipCtx    = clipCanvas.getContext("2d");
-  clipCanvas.width  = size;
-  clipCanvas.height = size;
+  clipCanvas.width = clipCanvas.height = size;
 
   clipCtx.clearRect(0, 0, size, size);
   clipCtx.save();
   clipCtx.beginPath();
-  clipCtx.arc(size / 2, size / 2, size * 0.488, 0, Math.PI * 2, false);
+  clipCtx.arc(size / 2, size / 2, size * 0.488, 0, Math.PI * 2);
   clipCtx.closePath();
   clipCtx.clip();
-  clipCtx.drawImage(finalCanvas, 0, 0);
+  clipCtx.drawImage(outCanvas, 0, 0);
 
-  // Bake specular highlight: bright top-left, dim bottom-right — sells 3D dome look.
+  // Specular highlight: bright top-left, dim bottom-right — sells the lit-dome look.
   const specGrd = clipCtx.createRadialGradient(
-    size * 0.34, size * 0.28, 0,
+    size * 0.32, size * 0.26, 0,
     size * 0.50, size * 0.50, size * 0.488
   );
-  specGrd.addColorStop(0,    "rgba(255, 240, 180, 0.22)");
-  specGrd.addColorStop(0.30, "rgba(255, 220, 120, 0.10)");
-  specGrd.addColorStop(0.70, "rgba(80,   55,  10, 0.04)");
-  specGrd.addColorStop(1,    "rgba(20,   10,   0, 0.26)");
+  specGrd.addColorStop(0,    "rgba(255, 248, 200, 0.30)");
+  specGrd.addColorStop(0.22, "rgba(255, 230, 140, 0.14)");
+  specGrd.addColorStop(0.58, "rgba(60,   40,   8, 0.04)");
+  specGrd.addColorStop(1,    "rgba(10,    6,   0, 0.32)");
 
   clipCtx.globalCompositeOperation = "source-atop";
   clipCtx.fillStyle = specGrd;
   clipCtx.fillRect(0, 0, size, size);
   clipCtx.restore();
 
-  console.log("[LKP] Gold compass texture created. Visible ratio:", visibleRatio.toFixed(4));
-
+  console.log("[LKP] Gold compass texture. Visible ratio:", visibleRatio.toFixed(4));
   return canvasToTexture(clipCanvas);
 }
+
 function makeGlowTex(r, g, b, peak, size = 128) {
   const c = document.createElement("canvas");
   c.width = c.height = size;
@@ -1116,124 +1087,214 @@ function makeCompassImageOverlay() {
   const imgEl = loadedImages.compass;
 
   if (!imgEl || !compassGrp) {
-    console.warn("[LKP] Hawaiian star compass image was not loaded. Check the .jpg path.");
+    console.warn("[LKP] Hawaiian star compass image was not loaded.");
     return;
   }
 
   const size = IS_MOBILE ? 19.25 : 28.5;
-  const Y = -4.48;
+  const Y    = -4.48;
+  const R    = size * 0.488;   // compass face radius in world units
 
   const compassTexture = makeGoldCompassTexture(imgEl);
 
-  // MeshStandardMaterial: scene lights shade the surface for metallic depth.
-  // PlaneGeometry: perfect 0-1 UV so every compass detail is visible.
-  const mat = new THREE.MeshStandardMaterial({
-    map: compassTexture,
-    color: 0xffffff,
-    metalness: 0.42,
-    roughness: 0.30,
+  // ── LAYER 1: Deep shadow disc (ground plane shadow) ──────────────────────
+  const shadowDisc = new THREE.Mesh(
+    new THREE.CircleGeometry(R * 1.12, 128),
+    new THREE.MeshBasicMaterial({
+      color: 0x010408, transparent: true, opacity: 0.72,
+      depthWrite: false, depthTest: false, side: THREE.DoubleSide
+    })
+  );
+  shadowDisc.rotation.x = -Math.PI / 2;
+  shadowDisc.position.set(0, Y - 0.08, 0);
+  shadowDisc.renderOrder = 10;
+  compassGrp.add(shadowDisc);
+
+  // ── LAYER 2: Compass face — flat plane, perfect UV mapping ───────────────
+  // PlaneGeometry is mandatory: any curved geometry maps only a fraction of
+  // the texture (thetaLength/PI of V), destroying all compass detail.
+  const faceMat = new THREE.MeshStandardMaterial({
+    map:         compassTexture,
+    color:       0xffffff,
+    metalness:   0.38,
+    roughness:   0.34,
     transparent: true,
-    opacity: IS_MOBILE ? 0.98 : 1,
-    depthWrite: false,
-    depthTest: false,
-    fog: false,
-    side: THREE.DoubleSide,
-    alphaTest: 0.012
+    opacity:     1.0,
+    depthWrite:  false,
+    depthTest:   false,
+    fog:         false,
+    side:        THREE.DoubleSide,
+    alphaTest:   0.008
   });
 
-  const geo = new THREE.PlaneGeometry(size, size);
-  const mesh = new THREE.Mesh(geo, mat);
+  const faceMesh = new THREE.Mesh(new THREE.PlaneGeometry(size, size), faceMat);
+  faceMesh.rotation.x = -Math.PI / 2;
+  faceMesh.position.set(0, Y + 0.06, 0);
+  faceMesh.renderOrder = 20;
+  faceMesh.name = "hawaiian-star-compass-gold-image";
+  compassGrp.add(faceMesh);
+  compassFloorMesh = faceMesh;
 
-  mesh.rotation.x = -Math.PI / 2;
-  mesh.position.set(0, Y + 0.075, 0);
-
-  mesh.renderOrder = 20;
-  mesh.name = "hawaiian-star-compass-gold-image";
-
-  compassGrp.add(mesh);
-  compassFloorMesh = mesh;
-
-  // Transparent dome overlay — a hemisphere squashed to 4.5% height sits on top.
-  // Catches the compassKey/compassFill lights and adds a curved metallic sheen
-  // without distorting the texture UVs at all.
-  const overlayR   = size * 0.488;
-  const overlayGeo = new THREE.SphereGeometry(
-    overlayR,
-    IS_MOBILE ? 48 : 80,
-    IS_MOBILE ? 24 : 40,
-    0, Math.PI * 2,
-    0, Math.PI / 2
+  // ── LAYER 3: Physical outer rim — TorusGeometry ───────────────────────────
+  // This is the main 3D element: a raised gold ring around the compass edge.
+  // Lighting hits the curved torus surface differently top vs bottom = depth.
+  const rimGeo = new THREE.TorusGeometry(
+    R,                        // radius to centre of tube
+    IS_MOBILE ? 0.38 : 0.55, // tube radius (rim thickness)
+    IS_MOBILE ? 12 : 20,     // radial segments (tube cross-section)
+    IS_MOBILE ? 80 : 160     // tubular segments (ring smoothness)
   );
-  overlayGeo.scale(1, 0.045, 1);
 
-  const overlayMesh = new THREE.Mesh(
-    overlayGeo,
-    new THREE.MeshPhysicalMaterial({
-      color:       0xffd36b,
-      metalness:   0.88,
-      roughness:   0.06,
-      transparent: true,
-      opacity:     IS_MOBILE ? 0.10 : 0.14,
-      depthWrite:  false,
-      depthTest:   false,
-      side:        THREE.FrontSide,
-      blending:    THREE.AdditiveBlending
-    })
+  const rimMat = new THREE.MeshPhysicalMaterial({
+    color:        0xd4a843,
+    emissive:     0x3d2800,
+    emissiveIntensity: 0.22,
+    metalness:    0.88,
+    roughness:    0.14,
+    clearcoat:    0.60,
+    clearcoatRoughness: 0.10,
+    reflectivity: 0.85
+  });
+
+  const rimMesh = new THREE.Mesh(rimGeo, rimMat);
+  rimMesh.rotation.x = Math.PI / 2;  // lay the torus flat (horizontal)
+  rimMesh.position.set(0, Y + 0.09, 0);
+  rimMesh.renderOrder = 22;
+  compassGrp.add(rimMesh);
+
+  // ── LAYER 4: Inner bevel ring ─────────────────────────────────────────────
+  // A thinner, slightly inset torus creates the second concentric ridge.
+  const bevelGeo = new THREE.TorusGeometry(
+    R * 0.88,
+    IS_MOBILE ? 0.14 : 0.20,
+    IS_MOBILE ? 8 : 14,
+    IS_MOBILE ? 70 : 140
   );
-  overlayMesh.rotation.x = Math.PI;
-  overlayMesh.position.set(0, Y + 0.09, 0);
-  overlayMesh.renderOrder = 21;
-  compassGrp.add(overlayMesh);
 
-  // Centre orb glow at the dome apex.
-  const orbGlow = new THREE.Sprite(new THREE.SpriteMaterial({
-    map:         makeGlowTex(255, 220, 120, 0.96, 64),
-    transparent: true,
-    opacity:     IS_MOBILE ? 0.28 : 0.40,
-    depthWrite:  false,
-    blending:    THREE.AdditiveBlending
-  }));
-  orbGlow.scale.setScalar(IS_MOBILE ? 1.4 : 2.2);
-  orbGlow.position.set(0, Y + 0.16, 0);
-  orbGlow.renderOrder = 22;
-  compassGrp.add(orbGlow);
+  const bevelMesh = new THREE.Mesh(bevelGeo, rimMat.clone());
+  bevelMesh.material.emissiveIntensity = 0.18;
+  bevelMesh.rotation.x = Math.PI / 2;
+  bevelMesh.position.set(0, Y + 0.11, 0);
+  bevelMesh.renderOrder = 23;
+  compassGrp.add(bevelMesh);
 
-  const rimPts = [];
-  const rimR = size * 0.495;
+  // ── LAYER 5: Raised concentric ring discs ────────────────────────────────
+  // Three flat cylinder rings at ascending Y heights simulate the physical
+  // stepped structure of a real compass (like a coin or instrument dial).
+  const ringDefs = [
+    { r: R * 0.958, thickness: IS_MOBILE ? 0.055 : 0.08, yOff: 0.04, opacity: 0.82 },
+    { r: R * 0.860, thickness: IS_MOBILE ? 0.040 : 0.06, yOff: 0.07, opacity: 0.70 },
+    { r: R * 0.720, thickness: IS_MOBILE ? 0.030 : 0.05, yOff: 0.10, opacity: 0.55 },
+  ];
 
-  for (let i = 0; i <= 260; i++) {
-    const a = (i / 260) * Math.PI * 2;
+  ringDefs.forEach((def) => {
+    // CylinderGeometry with inner radius creates a flat ring/washer
+    const innerR = def.r - (IS_MOBILE ? 0.55 : 0.88);
+    if (innerR <= 0) return;
 
-    rimPts.push(
-      new THREE.Vector3(
-        Math.cos(a) * rimR,
-        Y + 0.09,
-        Math.sin(a) * rimR
-      )
+    // Build ring as a flat cylinder (top face only, thin height)
+    const ringGeo = new THREE.CylinderGeometry(
+      def.r, def.r,           // top and bottom radius (same = cylinder not cone)
+      def.thickness,          // height (thin)
+      IS_MOBILE ? 64 : 128,  // radial segments
+      1,                      // height segments
+      true                    // openEnded — just the tube wall
     );
-  }
 
-  const rim = new THREE.Line(
-    new THREE.BufferGeometry().setFromPoints(rimPts),
-    new THREE.LineBasicMaterial({
-      color: 0xffcc66,
-      transparent: true,
-      opacity: IS_MOBILE ? 0.28 : 0.38,
-      depthWrite: false,
-      depthTest: false,
-      blending: THREE.AdditiveBlending
-    })
+    const ringMesh = new THREE.Mesh(
+      ringGeo,
+      new THREE.MeshStandardMaterial({
+        color:     0xc49a38,
+        emissive:  0x2a1a00,
+        emissiveIntensity: 0.15,
+        metalness: 0.80,
+        roughness: 0.20,
+        transparent: true,
+        opacity:   def.opacity,
+        side:      THREE.DoubleSide
+      })
+    );
+
+    ringMesh.position.set(0, Y + def.yOff, 0);
+    ringMesh.renderOrder = 21;
+    compassGrp.add(ringMesh);
+
+    // Top disc cap for each ring (the flat top surface)
+    const capPoints = [];
+    for (let i = 0; i <= 120; i++) {
+      const a = (i / 120) * Math.PI * 2;
+      capPoints.push(new THREE.Vector3(Math.cos(a) * def.r, Y + def.yOff + def.thickness / 2, Math.sin(a) * def.r));
+    }
+    const capLine = new THREE.Line(
+      new THREE.BufferGeometry().setFromPoints(capPoints),
+      new THREE.LineBasicMaterial({ color: 0xf0c050, transparent: true, opacity: def.opacity * 0.55, depthWrite: false })
+    );
+    capLine.renderOrder = 21;
+    compassGrp.add(capLine);
+  });
+
+  // ── LAYER 6: Centre hub ───────────────────────────────────────────────────
+  // A small raised cylinder at the compass centre — traditional compass pivot point.
+  const hubGeo = new THREE.CylinderGeometry(
+    IS_MOBILE ? 0.28 : 0.44,  // top radius
+    IS_MOBILE ? 0.34 : 0.52,  // bottom radius (slightly wider = truncated cone)
+    IS_MOBILE ? 0.20 : 0.32,  // height
+    IS_MOBILE ? 20  : 36      // segments
   );
 
-  rim.renderOrder = 23;
-  compassGrp.add(rim);
+  const hubMat = new THREE.MeshPhysicalMaterial({
+    color:     0xe8b830,
+    emissive:  0x3a2400,
+    emissiveIntensity: 0.28,
+    metalness: 0.92,
+    roughness: 0.10,
+    clearcoat: 0.80,
+    clearcoatRoughness: 0.08
+  });
 
-  console.log("[LKP] Gold Hawaiian star compass added:", {
-    width: imgEl.naturalWidth || imgEl.width,
-    height: imgEl.naturalHeight || imgEl.height,
-    src: loadedImageUrls.compass || imgEl.src
+  const hubMesh = new THREE.Mesh(hubGeo, hubMat);
+  hubMesh.position.set(0, Y + 0.22, 0);
+  hubMesh.renderOrder = 25;
+  compassGrp.add(hubMesh);
+
+  // Hub top cap disc
+  const hubCapGeo = new THREE.CircleGeometry(IS_MOBILE ? 0.28 : 0.44, IS_MOBILE ? 20 : 36);
+  const hubCap    = new THREE.Mesh(hubCapGeo, hubMat.clone());
+  hubCap.material.emissiveIntensity = 0.40;
+  hubCap.rotation.x = -Math.PI / 2;
+  hubCap.position.set(0, Y + (IS_MOBILE ? 0.32 : 0.38), 0);
+  hubCap.renderOrder = 26;
+  compassGrp.add(hubCap);
+
+  // Hub centre glow
+  const hubGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: makeGlowTex(255, 215, 100, 0.96, 64),
+    transparent: true, opacity: IS_MOBILE ? 0.55 : 0.72,
+    depthWrite: false, blending: THREE.AdditiveBlending
+  }));
+  hubGlow.scale.setScalar(IS_MOBILE ? 1.2 : 1.8);
+  hubGlow.position.set(0, Y + 0.35, 0);
+  hubGlow.renderOrder = 27;
+  compassGrp.add(hubGlow);
+
+  // ── LAYER 7: Outer gold aura glow (ambient halo) ─────────────────────────
+  const auraGlow = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: makeGlowTex(212, 168, 56, 0.96, 128),
+    transparent: true, opacity: IS_MOBILE ? 0.18 : 0.26,
+    depthWrite: false, blending: THREE.AdditiveBlending
+  }));
+  auraGlow.scale.setScalar(size * 1.08);
+  auraGlow.position.set(0, Y + 0.05, 0);
+  auraGlow.renderOrder = 11;
+  compassGrp.add(auraGlow);
+
+  console.log("[LKP] 3D compass built:", {
+    faceSize: size, rimR: R.toFixed(2),
+    w: imgEl.naturalWidth || imgEl.width,
+    h: imgEl.naturalHeight || imgEl.height
   });
 }
+
 // ─────────────────────────────────────────────────────────────────────────────
 
 let iwaSpr  = null;
@@ -1306,17 +1367,30 @@ function makeLights() {
   vi.position.set(0, 60, -40);
   scene.add(vi);
 
-  // Dedicated warm gold light above the compass — top-left position matches
-  // the specular highlight baked into the texture.
-  const compassKey = new THREE.PointLight(0xffd36b, IS_MOBILE ? 3.2 : 4.8, 60, 1.8);
-  compassKey.position.set(-8, 18, 6);
+  // ── Dedicated compass lights ──────────────────────────────────────────────
+  // Primary: warm gold from top-left — creates the highlight that makes the
+  // torus rim and concentric rings read as physically raised surfaces.
+  const compassKey = new THREE.PointLight(0xffd060, IS_MOBILE ? 4.5 : 7.2, 55, 1.6);
+  compassKey.position.set(-10, 22, 8);
   scene.add(compassKey);
 
-  // Cool blue fill from opposite side for depth contrast.
-  const compassFill = new THREE.PointLight(0x7ab4e8, IS_MOBILE ? 1.2 : 1.8, 50, 2.0);
-  compassFill.position.set(10, 8, -8);
+  // Secondary: slightly cooler gold from right to fill shadow side.
+  const compassRight = new THREE.PointLight(0xffb840, IS_MOBILE ? 2.8 : 4.4, 50, 1.8);
+  compassRight.position.set(12, 14, -6);
+  scene.add(compassRight);
+
+  // Fill: cool blue from below the horizon to add depth contrast to the rim underside.
+  const compassFill = new THREE.PointLight(0x5588cc, IS_MOBILE ? 1.0 : 1.6, 45, 2.0);
+  compassFill.position.set(0, -8, 12);
   scene.add(compassFill);
+
+  // Zenith: soft warm white from directly above — ensures the compass face
+  // texture is evenly lit so text is readable.
+  const compassTop = new THREE.PointLight(0xfff8e8, IS_MOBILE ? 2.2 : 3.4, 40, 1.4);
+  compassTop.position.set(0, 28, 0);
+  scene.add(compassTop);
 }
+
 // ─────────────────────────────────────────────────────────────────────────────
 // TOOLTIP + HOVER + CLICK NAVIGATION
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1475,8 +1549,9 @@ function onFrame() {
   compassGrp.rotation.y = -t * 0.038 * spd;
 
   if (compassFloorMesh) {
+    // Fade the compass face in smoothly on load.
     compassFloorMesh.material.opacity = THREE.MathUtils.lerp(
-      compassFloorMesh.material.opacity, IS_MOBILE ? 0.98 : 1, 0.05
+      compassFloorMesh.material.opacity, 1.0, 0.05
     );
   }
 
