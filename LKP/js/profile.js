@@ -714,6 +714,60 @@
     return { cultures: [] };
   }
 
+  // Resolve lessons array from a module, tolerating various key names.
+  function resolveModuleLessons(module) {
+    const raw =
+      module.lessons      ||   // standard
+      module.items        ||   // alternative
+      module.content      ||   // alternative
+      module.lessonList   ||   // alternative
+      module.lesson_items ||   // snake_case
+      [];
+    if (!Array.isArray(raw)) return [];
+    return raw.map(lesson => ({
+      id:       lesson.id       || lesson._id || lesson.lessonId || '',
+      num:      lesson.num      || lesson.lesson_num  || lesson.number || '',
+      title:    lesson.title    || lesson.name        || lesson.id    || 'Lesson',
+      readTime: lesson.readTime || lesson.read_time   || lesson.duration || '',
+      content:  lesson.content  || lesson.body        || lesson.text  || '',
+      leadText: lesson.leadText || lesson.lead_text   || lesson.intro || '',
+      excerpt:  lesson.excerpt  || lesson.summary     || '',
+      mana:     lesson.mana     || lesson.mana_value  || 10,
+      xp:       lesson.xp      || lesson.xp_value    || 25
+    })).filter(l => l.id);   // drop any entries with no id
+  }
+
+  // Resolve modules array from a culture, tolerating various key names.
+  function resolveCultureModules(culture) {
+    const raw =
+      culture.modules     ||
+      culture.sections    ||
+      culture.units       ||
+      culture.chapters    ||
+      [];
+
+    if (!Array.isArray(raw) || raw.length === 0) {
+      // Some data files put lessons directly on the culture (no modules wrapper).
+      // Wrap them in a synthetic module so the rest of the pipeline works.
+      const directLessons =
+        culture.lessons     ||
+        culture.items       ||
+        culture.content     ||
+        [];
+      if (Array.isArray(directLessons) && directLessons.length > 0) {
+        return [{
+          id:      `${culture.id}-module-0`,
+          title:   culture.name || 'Module',
+          emoji:   culture.emoji || '\u2736',
+          desc:    '',
+          lessons: directLessons
+        }];
+      }
+      return [];
+    }
+    return raw;
+  }
+
   function normalizeContentData(data) {
     if (!data || !Array.isArray(data.cultures)) {
       return { cultures: [] };
@@ -722,33 +776,19 @@
     return {
       ...data,
       cultures: data.cultures.map(culture => ({
-        id: culture.id,
-        name: culture.name,
-        emoji: culture.emoji || '\u2736',
-        theme: culture.theme || culture.culture_theme || 'default',
-        colorHex: culture.colorHex || culture.color_hex || null,
-        modules: Array.isArray(culture.modules)
-          ? culture.modules.map(module => ({
-              id: module.id,
-              title: module.title || module.module_title || 'Module',
-              emoji: module.emoji || module.module_emoji || culture.emoji || '\u2736',
-              desc: module.desc || module.description || '',
-              lessons: Array.isArray(module.lessons)
-                ? module.lessons.map(lesson => ({
-                    id: lesson.id,
-                    num: lesson.num || lesson.lesson_num || '',
-                    title: lesson.title || lesson.id,
-                    readTime: lesson.readTime || lesson.read_time || '',
-                    content: lesson.content || '',
-                    leadText: lesson.leadText || lesson.lead_text || '',
-                    excerpt: lesson.excerpt || '',
-                    mana: lesson.mana || 10,
-                    xp: lesson.xp || 25
-                  }))
-                : []
-            }))
-          : []
-      }))
+        id:       culture.id       || culture._id    || '',
+        name:     culture.name     || culture.title  || 'Culture',
+        emoji:    culture.emoji    || '\u2736',
+        theme:    culture.theme    || culture.culture_theme || 'default',
+        colorHex: culture.colorHex || culture.color_hex    || null,
+        modules:  resolveCultureModules(culture).map(module => ({
+          id:      module.id    || module._id   || '',
+          title:   module.title || module.name  || 'Module',
+          emoji:   module.emoji || module.module_emoji || culture.emoji || '\u2736',
+          desc:    module.desc  || module.description  || '',
+          lessons: resolveModuleLessons(module)
+        }))
+      })).filter(c => c.id)   // drop cultures with no id
     };
   }
 
@@ -1004,7 +1044,10 @@
 
       if (error) throw error;
 
-      if (data && Array.isArray(data.cultures)) {
+      if (data && Array.isArray(data.cultures) && data.cultures.length > 0) {
+        // Only replace static data if Supabase actually returned cultures.
+        // An empty response from the RPC means "no managed content yet" —
+        // don't wipe the static lessons that already loaded from lkp-data.js.
         await hydrateLessonsFromData(data);
         populateCultureFilter();
         renderLessonPath();
@@ -1872,13 +1915,39 @@
       });
     }
 
+    // Safety net: if state.lessons is empty but we have content data,
+    // re-flatten right now (handles race conditions or repeated renders).
+    if (!state.lessons.length && state.contentData) {
+      state.lessons = flattenLessons(state.contentData);
+      if (state.lessons.length) {
+        populateCultureFilter();
+      }
+    }
+
+    // Also try the global data objects as a last resort
     if (!state.lessons.length) {
-      list.innerHTML = `
-        <div class="profile-note">
-          No lesson data found. Make sure <strong>LKP/js/lkp-data.js</strong>
-          loads before <strong>profile.js</strong>, or that Supabase content is live.
-        </div>
-      `;
+      const fallback =
+        window.CULTURALVERSE_DATA ||
+        window.LKP_DATA           ||
+        window.IKEVERSE_DATA      ||
+        null;
+      if (fallback && Array.isArray(fallback.cultures) && fallback.cultures.length) {
+        state.contentData = normalizeContentData(fallback);
+        state.lessons     = flattenLessons(state.contentData);
+        if (state.lessons.length) {
+          populateCultureFilter();
+        }
+      }
+    }
+
+    if (!state.lessons.length) {
+      // Show a more informative message based on what we do/don't have
+      const hasCultures = state.contentData?.cultures?.length > 0;
+      const detail = hasCultures
+        ? `Found ${state.contentData.cultures.length} culture(s) but no lessons inside them. Check that your data file's modules contain a <code>lessons</code> array.`
+        : 'No lesson data found. Make sure <strong>LKP/js/lkp-data.js</strong> loads before <strong>profile.js</strong>, or that Supabase content is live.';
+
+      list.innerHTML = `<div class="profile-note">${detail}</div>`;
       return;
     }
 
