@@ -564,7 +564,15 @@
     }
 
     if (_supabase && _userId) {
-      const { data, error } = await _supabase.rpc("complete_lesson", { p_lesson_id: lessonId });
+      // Pass user email so the DB function can satisfy the NOT NULL constraint
+      // on profiles.email when upserting the profile row.
+      const sessionUser = (await _supabase.auth.getUser())?.data?.user || null;
+      const userEmail   = sessionUser?.email || '';
+
+      const { data, error } = await _supabase.rpc("complete_lesson", {
+        p_lesson_id:  lessonId,
+        p_user_email: userEmail
+      });
 
       if (error) {
         console.warn("[LKPRewards] complete_lesson RPC error:", error.message);

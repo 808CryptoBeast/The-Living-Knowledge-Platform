@@ -795,33 +795,19 @@
     };
   }
 
-  // Build the best URL for opening a lesson in lessons.html.
-  // Priority: explicit href from data file > hash + query params
+  // Build the URL for opening a lesson in lessons.html.
+  // Uses hash-only routing — safe on GitHub Pages and all static hosts.
+  // Query params cause 404s on GitHub Pages even when the file exists.
   function buildLessonUrl(lesson) {
-    // 1. Raw data file provided an explicit URL — use it directly
-    if (lesson.href && lesson.href.startsWith('http')) return lesson.href;
-    if (lesson.href && lesson.href.length > 1) {
-      // Relative href (e.g. "lessons/km-kumulipo")
-      return lesson.href;
-    }
+    // 1. Explicit URL from data file — use as-is
+    if (lesson.href && lesson.href.length > 1) return lesson.href;
     if (lesson.slug && lesson.slug.length > 1) {
-      return `lessons.html#${encodeURIComponent(lesson.slug)}`;
+      return 'lessons.html#' + encodeURIComponent(lesson.slug);
     }
-
-    // 2. Build from lesson id, module id, and culture id
-    // Hash: lessons.html#km-kumulipo (direct anchor — works if lessons.html uses hash routing)
-    // Also append query params so lessons.html can find it by search if it uses those
-    const id      = encodeURIComponent(lesson.id       || '');
-    const culture = encodeURIComponent(lesson.cultureId  || '');
-    const module  = encodeURIComponent(lesson.moduleId   || '');
-
-    if (culture && module) {
-      return `lessons.html?culture=${culture}&module=${module}&id=${id}#${id}`;
-    }
-    if (culture) {
-      return `lessons.html?culture=${culture}&id=${id}#${id}`;
-    }
-    return `lessons.html#${id}`;
+    // 2. Hash-only: lessons.html#lessonId
+    // lessons.html reads window.location.hash to open the right lesson.
+    const id = lesson.id || '';
+    return 'lessons.html#' + encodeURIComponent(id);
   }
 
   function flattenLessons(data) {
@@ -1342,20 +1328,23 @@
           : `wayfinder_${String(user.id).slice(0, 8)}`;
 
         const newProfile = {
-          id: user.id,
-          email: user.email,
+          id:           user.id,
+          email:        user.email || user.user_metadata?.email || '',
           display_name: displayName,
-          handle: safeHandle,
-          role: 'user',
-          home_realm: 'lkp',
-          preferences: {},
+          handle:       safeHandle,
+          role:         'user',
+          home_realm:   'lkp',
+          preferences:  {},
           ecosystem_access: {
-            lkp: true,
-            lessons: true,
-            rewards: true,
-            profile: true
+            lkp: true, lessons: true, rewards: true, profile: true
           }
         };
+
+        // Guard: email must not be empty — Supabase profiles.email is NOT NULL
+        if (!newProfile.email) {
+          console.warn('[Profile] User email is missing — cannot create profile row safely.');
+          return;
+        }
 
         const { data: inserted, error: insertError } = await supabaseClient
           .from('profiles')
@@ -1510,14 +1499,20 @@
 
     try {
       const payload = {
-        id: state.user.id,
-        email: state.user.email,
-        display_name: displayName || state.user.email?.split('@')[0],
-        handle: handle || null,
-        home_realm: homeRealm,
-        avatar_url: avatarUrl || null,
-        bio: bio || null
+        id:           state.user.id,
+        email:        state.user.email || state.user.user_metadata?.email || '',
+        display_name: displayName || state.user.email?.split('@')[0] || 'Wayfinder',
+        handle:       handle      || null,
+        home_realm:   homeRealm,
+        avatar_url:   avatarUrl   || null,
+        bio:          bio         || null
       };
+
+      // Guard: don't upsert if email is still blank
+      if (!payload.email) {
+        showToast('Could not save — user email is missing. Try signing out and back in.');
+        return;
+      }
 
       const { data, error } = await supabaseClient
         .from('profiles')
