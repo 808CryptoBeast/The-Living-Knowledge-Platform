@@ -725,15 +725,18 @@
       [];
     if (!Array.isArray(raw)) return [];
     return raw.map(lesson => ({
-      id:       lesson.id       || lesson._id || lesson.lessonId || '',
-      num:      lesson.num      || lesson.lesson_num  || lesson.number || '',
-      title:    lesson.title    || lesson.name        || lesson.id    || 'Lesson',
-      readTime: lesson.readTime || lesson.read_time   || lesson.duration || '',
-      content:  lesson.content  || lesson.body        || lesson.text  || '',
-      leadText: lesson.leadText || lesson.lead_text   || lesson.intro || '',
-      excerpt:  lesson.excerpt  || lesson.summary     || '',
-      mana:     lesson.mana     || lesson.mana_value  || 10,
-      xp:       lesson.xp      || lesson.xp_value    || 25
+      id:       lesson.id       || lesson._id      || lesson.lessonId  || '',
+      num:      lesson.num      || lesson.lesson_num || lesson.number   || '',
+      title:    lesson.title    || lesson.name      || lesson.id        || 'Lesson',
+      readTime: lesson.readTime || lesson.read_time || lesson.duration  || '',
+      content:  lesson.content  || lesson.body      || lesson.text      || '',
+      leadText: lesson.leadText || lesson.lead_text || lesson.intro     || '',
+      excerpt:  lesson.excerpt  || lesson.summary   || '',
+      mana:     lesson.mana     || lesson.mana_value || 10,
+      xp:       lesson.xp      || lesson.xp_value   || 25,
+      // Preserve any explicit URL/slug the data file provides
+      href:     lesson.href     || lesson.url        || lesson.link     || '',
+      slug:     lesson.slug     || lesson.path       || ''
     })).filter(l => l.id);   // drop any entries with no id
   }
 
@@ -792,6 +795,35 @@
     };
   }
 
+  // Build the best URL for opening a lesson in lessons.html.
+  // Priority: explicit href from data file > hash + query params
+  function buildLessonUrl(lesson) {
+    // 1. Raw data file provided an explicit URL — use it directly
+    if (lesson.href && lesson.href.startsWith('http')) return lesson.href;
+    if (lesson.href && lesson.href.length > 1) {
+      // Relative href (e.g. "lessons/km-kumulipo")
+      return lesson.href;
+    }
+    if (lesson.slug && lesson.slug.length > 1) {
+      return `lessons.html#${encodeURIComponent(lesson.slug)}`;
+    }
+
+    // 2. Build from lesson id, module id, and culture id
+    // Hash: lessons.html#km-kumulipo (direct anchor — works if lessons.html uses hash routing)
+    // Also append query params so lessons.html can find it by search if it uses those
+    const id      = encodeURIComponent(lesson.id       || '');
+    const culture = encodeURIComponent(lesson.cultureId  || '');
+    const module  = encodeURIComponent(lesson.moduleId   || '');
+
+    if (culture && module) {
+      return `lessons.html?culture=${culture}&module=${module}&id=${id}#${id}`;
+    }
+    if (culture) {
+      return `lessons.html?culture=${culture}&id=${id}#${id}`;
+    }
+    return `lessons.html#${id}`;
+  }
+
   function flattenLessons(data) {
     const normalized = normalizeContentData(data);
     const lessons = [];
@@ -803,26 +835,31 @@
         const moduleLessons = Array.isArray(module.lessons) ? module.lessons : [];
 
         moduleLessons.forEach(lesson => {
-          lessons.push({
-            cultureId: culture.id,
+          const flatLesson = {
+            cultureId:   culture.id,
             cultureName: culture.name,
             cultureEmoji: culture.emoji || '\u2736',
             cultureTheme: culture.theme || 'default',
             cultureColor: culture.colorHex || themeColor(culture.theme),
-            moduleId: module.id,
+            moduleId:    module.id,
             moduleTitle: module.title || 'Module',
             moduleEmoji: module.emoji || culture.emoji || '\u2736',
-            id: lesson.id,
-            num: lesson.num || '',
-            title: lesson.title || lesson.id,
-            readTime: lesson.readTime || '',
-            content: lesson.content || '',
+            id:          lesson.id,
+            num:         lesson.num      || '',
+            title:       lesson.title    || lesson.id,
+            readTime:    lesson.readTime || '',
+            content:     lesson.content  || '',
             contentText: stripHTML(lesson.content || ''),
-            leadText: lesson.leadText || '',
-            excerpt: lesson.excerpt || '',
-            mana: lesson.mana || 10,
-            xp: lesson.xp || 25
-          });
+            leadText:    lesson.leadText || '',
+            excerpt:     lesson.excerpt  || '',
+            mana:        lesson.mana     || 10,
+            xp:          lesson.xp       || 25,
+            href:        lesson.href     || '',
+            slug:        lesson.slug     || ''
+          };
+          // Pre-compute the URL once here so renderLessonPath is fast
+          flatLesson.lessonUrl = buildLessonUrl(flatLesson);
+          lessons.push(flatLesson);
         });
       });
     });
@@ -1968,7 +2005,7 @@
         <article class="lesson-row" style="--lesson-color:${color}">
           <span class="lesson-row__num">${escapeHTML(lesson.num || 'LESSON')}</span>
 
-          <a class="lesson-row__body" href="lessons.html#${encodeURIComponent(lesson.id)}">
+          <a class="lesson-row__body" href="${escapeHTML(lesson.lessonUrl || buildLessonUrl(lesson))}">
             <strong>${completed ? '\u2705 ' : ''}${escapeHTML(lesson.title)}</strong>
             <small>${escapeHTML(lesson.cultureName)} \u00b7 ${escapeHTML(lesson.moduleTitle)} \u00b7 ${escapeHTML(lesson.readTime || 'Lesson')}</small>
           </a>
@@ -1981,7 +2018,7 @@
             ${completed ? 'Done' : 'Complete'}
           </button>
 
-          <a class="lesson-row__open" href="lessons.html#${encodeURIComponent(lesson.id)}">\u2192</a>
+          <a class="lesson-row__open" href="${escapeHTML(lesson.lessonUrl || buildLessonUrl(lesson))}">\u2192</a>
         </article>
       `;
     }).join('');
