@@ -50,7 +50,7 @@
     ];
 
     const data = candidates.find(item => {
-      return item && Array.isArray(item.cultures);
+      return item && Array.isArray(item.cultures) && item.cultures.length > 0;
     });
 
     if (data) {
@@ -60,11 +60,7 @@
       return data;
     }
 
-    console.warn(
-      '[LKP Lessons] No lesson data found. Make sure LKP/js/lkp-data.js loads before LKP/js/lkp-lessons.js.'
-    );
-
-    return { cultures: [] };
+    return null;
   }
 
   function normalizeData(data) {
@@ -73,7 +69,7 @@
     return cultures.map(culture => ({
       id: culture.id || '',
       name: culture.name || 'Untitled Culture',
-      emoji: culture.emoji || '✦',
+      emoji: culture.emoji || '✶',
       tagline: culture.tagline || '',
       theme: culture.theme || 'default',
       status: culture.status || 'live',
@@ -82,7 +78,7 @@
         ? culture.modules.map(module => ({
             id: module.id || '',
             title: module.title || 'Untitled Module',
-            emoji: module.emoji || culture.emoji || '✦',
+            emoji: module.emoji || culture.emoji || '✶',
             desc: module.desc || '',
             lessons: Array.isArray(module.lessons)
               ? module.lessons.map(lesson => ({
@@ -93,11 +89,11 @@
                   content: lesson.content || '',
                   cultureId: culture.id || '',
                   cultureName: culture.name || 'Untitled Culture',
-                  cultureEmoji: culture.emoji || '✦',
+                  cultureEmoji: culture.emoji || '✶',
                   cultureTheme: culture.theme || 'default',
                   moduleId: module.id || '',
                   moduleTitle: module.title || 'Untitled Module',
-                  moduleEmoji: module.emoji || culture.emoji || '✦'
+                  moduleEmoji: module.emoji || culture.emoji || '✶'
                 }))
               : []
           }))
@@ -293,9 +289,8 @@
 
     const welcome = $('#lessonWelcome');
     const article = $('#lessonArticle');
-    const header = $('#lessonHeader');
-    const body = $('#lessonBody');
-    const nav = $('#lessonNav');
+    const header  = $('#lessonHeader');
+    const body    = $('#lessonBody');
 
     if (welcome) welcome.hidden = true;
     if (article) article.hidden = false;
@@ -322,16 +317,12 @@
     }
 
     renderLessonNav();
-
     renderLessonTree();
     updateUrlHash(lesson.id);
 
     if (!options.noScroll) {
       requestAnimationFrame(() => {
-        $('#lessonMain')?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
+        $('#lessonMain')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     }
 
@@ -353,9 +344,9 @@
     const nav = $('#lessonNav');
     if (!nav || !state.activeLessonId) return;
 
-    const index = getLessonIndex(state.activeLessonId);
+    const index    = getLessonIndex(state.activeLessonId);
     const previous = index > 0 ? state.lessons[index - 1] : null;
-    const next = index >= 0 && index < state.lessons.length - 1 ? state.lessons[index + 1] : null;
+    const next     = index >= 0 && index < state.lessons.length - 1 ? state.lessons[index + 1] : null;
 
     nav.innerHTML = `
       <button
@@ -392,10 +383,7 @@
     html = html.replace(
       /<facts>([\s\S]*?)<\/facts>/gi,
       function (_match, inner) {
-        const items = String(inner)
-          .split('|')
-          .map(item => item.trim())
-          .filter(Boolean);
+        const items = String(inner).split('|').map(item => item.trim()).filter(Boolean);
 
         return `
           <div class="cv-facts">
@@ -416,8 +404,8 @@
     html = html.replace(
       /<twocol\s+left="([^"]*)"\s+right="([^"]*)">([\s\S]*?)<\/twocol>/gi,
       function (_match, left, right, inner) {
-        const parts = String(inner).split('||');
-        const leftBody = parts[0] || '';
+        const parts     = String(inner).split('\|\|');
+        const leftBody  = parts[0] || '';
         const rightBody = parts[1] || '';
 
         return `
@@ -438,10 +426,7 @@
     html = html.replace(
       /<concepts>([\s\S]*?)<\/concepts>/gi,
       function (_match, inner) {
-        const items = String(inner)
-          .split('·')
-          .map(item => item.trim())
-          .filter(Boolean);
+        const items = String(inner).split('·').map(item => item.trim()).filter(Boolean);
 
         return `
           <div class="cv-concepts">
@@ -468,9 +453,7 @@
 
   function updateUrlHash(id) {
     if (!id) return;
-
     const nextHash = `#${encodeURIComponent(id)}`;
-
     if (window.location.hash !== nextHash) {
       history.replaceState(null, '', nextHash);
     }
@@ -481,13 +464,10 @@
       const cultureBtn = event.target.closest('[data-culture-filter]');
       if (cultureBtn) {
         const culture = cultureBtn.dataset.cultureFilter || 'all';
-
         state.activeCulture = culture;
-
         $all('[data-culture-filter]').forEach(btn => {
           btn.classList.toggle('is-active', btn.dataset.cultureFilter === culture);
         });
-
         renderLessonTree();
         return;
       }
@@ -511,13 +491,10 @@
 
     document.addEventListener('keydown', event => {
       if (!state.activeLessonId) return;
-
       const index = getLessonIndex(state.activeLessonId);
-
       if (event.key === 'ArrowLeft' && index > 0) {
         renderLesson(state.lessons[index - 1].id);
       }
-
       if (event.key === 'ArrowRight' && index < state.lessons.length - 1) {
         renderLesson(state.lessons[index + 1].id);
       }
@@ -526,11 +503,9 @@
 
   function openLessonFromHash(options = {}) {
     const hash = decodeURIComponent(window.location.hash.replace(/^#/, ''));
-
     if (!hash) return false;
 
     const lesson = findLesson(hash);
-
     if (!lesson) return false;
 
     state.activeCulture = 'all';
@@ -540,7 +515,6 @@
 
   function closeSidebarOnMobile() {
     const sidebar = $('#cvSidebar');
-
     if (window.matchMedia('(max-width: 980px)').matches) {
       sidebar?.classList.remove('is-open');
     }
@@ -549,20 +523,15 @@
   function initStarfield() {
     const canvas = $('#starfield');
     if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let width = 0;
-    let height = 0;
-    let stars = [];
+    let width = 0, height = 0, stars = [];
 
     function resize() {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
-
       const count = Math.min(220, Math.floor((width * height) / 9000));
-
       stars = Array.from({ length: count }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
@@ -574,82 +543,92 @@
 
     function draw() {
       ctx.clearRect(0, 0, width, height);
-
       stars.forEach(star => {
         star.a += star.s;
-
         const opacity = 0.25 + Math.abs(Math.sin(star.a)) * 0.65;
-
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255,255,255,${opacity})`;
         ctx.fill();
       });
-
       requestAnimationFrame(draw);
     }
 
     resize();
     draw();
-
     window.addEventListener('resize', resize, { passive: true });
   }
 
-  function build() {
-    state.data = getData();
-    state.cultures = normalizeData(state.data);
-    state.lessons = flattenLessons(state.cultures);
+  function build(data) {
+    state.data     = data;
+    state.cultures = normalizeData(data);
+    state.lessons  = flattenLessons(state.cultures);
 
     console.info(
       '[LKP Lessons] Loaded:',
-      state.cultures.length,
-      'cultures,',
-      state.lessons.length,
-      'lessons'
+      state.cultures.length, 'cultures,',
+      state.lessons.length,  'lessons'
     );
 
     renderCultureFilters();
     renderLessonTree();
 
+    // Open lesson from hash — this is how profile.js links work.
+    // e.g. lessons.html#km-kumulipo opens the Kumulipo lesson directly.
     const opened = openLessonFromHash({ noScroll: true });
 
     if (!opened && state.lessons.length) {
-      const firstLiveLesson = state.lessons[0];
-
-      if (firstLiveLesson) {
-        renderLesson(firstLiveLesson.id, { noScroll: true });
-      }
+      // No hash or hash didn't match — open the first lesson
+      renderLesson(state.lessons[0].id, { noScroll: true });
     }
 
     bindEvents();
     initStarfield();
+
+    // Notify Three.js sidebars
+    window.dispatchEvent(new Event('lkp:tree-built'));
   }
 
   function waitForDataAndBuild() {
-    const existing = getData();
+    // With defer-loaded scripts, lkp-data.js always runs before lkp-lessons.js,
+    // so getData() should succeed on the first call.
+    // The retry loop is a safety net for async or dynamically-injected data files.
 
-    if (
-      existing &&
-      Array.isArray(existing.cultures) &&
-      existing.cultures.length
-    ) {
-      build();
-      return;
+    let attempts = 0;
+    const MAX_ATTEMPTS = 8;
+    const RETRY_MS     = 250;
+
+    function attempt() {
+      const data = getData();
+
+      if (data && Array.isArray(data.cultures) && data.cultures.length > 0) {
+        build(data);
+        return;
+      }
+
+      attempts++;
+
+      if (attempts >= MAX_ATTEMPTS) {
+        console.warn(
+          '[LKP Lessons] No lesson data after', MAX_ATTEMPTS * RETRY_MS, 'ms.',
+          'Make sure LKP/js/lkp-data.js loads before LKP/js/lkp-lessons.js.'
+        );
+        // Render with empty data so the UI isn't blank
+        build({ cultures: [] });
+        return;
+      }
+
+      setTimeout(attempt, RETRY_MS);
     }
 
-    window.addEventListener(
-      'lkp:data-ready',
-      () => {
-        build();
-      },
-      { once: true }
-    );
+    // Also listen for the explicit data-ready event (fired by some LKP data loaders)
+    window.addEventListener('lkp:data-ready', function onReady(e) {
+      window.removeEventListener('lkp:data-ready', onReady);
+      const data = e?.detail?.data || getData();
+      if (data && !state.data) build(data);
+    });
 
-    setTimeout(() => {
-      if (!state.data) {
-        build();
-      }
-    }, 400);
+    attempt();
   }
 
   document.addEventListener('DOMContentLoaded', waitForDataAndBuild);

@@ -796,18 +796,24 @@
   }
 
   // Build the URL for opening a lesson in lessons.html.
-  // Uses hash-only routing — safe on GitHub Pages and all static hosts.
-  // Query params cause 404s on GitHub Pages even when the file exists.
+  //
+  // PATH LOGIC — why 'LKP/lessons.html':
+  //   profile.html is at the repo root:  The-Living-Knowledge-Platform/profile.html
+  //   lessons.html is one folder deep:   The-Living-Knowledge-Platform/LKP/lessons.html
+  //   Evidence: lessons.html nav uses href="../index.html" (one level up)
+  //
+  // Hash-only routing — no query params. GitHub Pages 404s on ?params
+  // even when the file exists, but always serves #hash correctly.
+  // lkp-lessons.js reads window.location.hash to open the right lesson.
   function buildLessonUrl(lesson) {
     // 1. Explicit URL from data file — use as-is
     if (lesson.href && lesson.href.length > 1) return lesson.href;
     if (lesson.slug && lesson.slug.length > 1) {
-      return 'lessons.html#' + encodeURIComponent(lesson.slug);
+      return 'LKP/lessons.html#' + encodeURIComponent(lesson.slug);
     }
-    // 2. Hash-only: lessons.html#lessonId
-    // lessons.html reads window.location.hash to open the right lesson.
+    // 2. Hash-only: LKP/lessons.html#lessonId
     const id = lesson.id || '';
-    return 'lessons.html#' + encodeURIComponent(id);
+    return 'LKP/lessons.html#' + encodeURIComponent(id);
   }
 
   function flattenLessons(data) {
