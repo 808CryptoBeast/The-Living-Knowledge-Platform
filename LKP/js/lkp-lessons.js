@@ -1512,8 +1512,13 @@
     const emoji = $('#cultureHeroEmoji');
     const name = $('#cultureHeroName');
 
-    if (emoji) emoji.textContent = lesson.cultureEmoji || '✦';
-    if (name) name.textContent = `${lesson.cultureName} · ${lesson.scene?.type || 'lesson'}`;
+    if (emoji) {
+      emoji.textContent = lesson.cultureEmoji || '✦';
+    }
+
+    if (name) {
+      name.textContent = `${lesson.cultureName} · ${lesson.moduleTitle || 'Lesson'}`;
+    }
   }
 
   async function loadTHREE() {
@@ -1811,33 +1816,211 @@
   }
 
   function addCreationHero(THREE, group, c1, c2) {
-    for (let i = 0; i < 9; i++) {
-      const ring = new THREE.Mesh(
-        new THREE.TorusGeometry(0.6 + i * 0.38, 0.018, 6, 80),
-        new THREE.MeshBasicMaterial({
-          color: i % 2 ? c2 : c1,
-          transparent: true,
-          opacity: 0.12 + i * 0.035
-        })
-      );
+    /*
+      Creation / cosmology scene:
+      built for lessons like Kumulipo, Wākea & Papahānaumoku, Pō, Ao,
+      sky-earth relationship, oceanic source, and genealogy of life.
+    */
 
-      ring.rotation.x = i * 0.18;
-      ring.rotation.y = i * 0.22;
-      group.add(ring);
-    }
+    const skyMat = new THREE.MeshBasicMaterial({
+      color: c2,
+      transparent: true,
+      opacity: 0.18,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
 
+    const earthMat = new THREE.MeshBasicMaterial({
+      color: c1,
+      transparent: true,
+      opacity: 0.20,
+      depthWrite: false,
+      side: THREE.DoubleSide
+    });
+
+    const goldMat = new THREE.MeshBasicMaterial({
+      color: 0xf0c96a,
+      transparent: true,
+      opacity: 0.78,
+      depthWrite: false
+    });
+
+    /* Upper sky dome / Wākea */
+    const skyArc = new THREE.Mesh(
+      new THREE.TorusGeometry(4.65, 0.035, 10, 140, Math.PI),
+      skyMat
+    );
+
+    skyArc.position.set(0, -0.08, 0);
+    skyArc.rotation.z = Math.PI;
+    skyArc.scale.set(1.42, 0.68, 1);
+    group.add(skyArc);
+
+    /* Lower earth/ocean arc / Papahānaumoku */
+    const earthArc = new THREE.Mesh(
+      new THREE.TorusGeometry(4.45, 0.04, 10, 140, Math.PI),
+      earthMat
+    );
+
+    earthArc.position.set(0, -0.55, 0);
+    earthArc.scale.set(1.34, 0.50, 1);
+    group.add(earthArc);
+
+    /* Central axis of life */
+    const axis = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.028, 0.028, 4.8, 14),
+      goldMat
+    );
+
+    axis.position.set(0, 0.05, 0);
+    group.add(axis);
+
+    /* Pō / source core */
     const core = new THREE.Mesh(
-      new THREE.SphereGeometry(0.55, 32, 32),
+      new THREE.SphereGeometry(0.52, 32, 32),
       new THREE.MeshPhysicalMaterial({
         color: c1,
         emissive: c1,
-        emissiveIntensity: 1.1,
+        emissiveIntensity: 1.2,
+        roughness: 0.22,
+        metalness: 0.05,
         transparent: true,
-        opacity: 0.9
+        opacity: 0.96
       })
     );
 
+    core.position.set(0, -1.65, 0);
     group.add(core);
+
+    /* Ao / light star */
+    const star = new THREE.Mesh(
+      new THREE.OctahedronGeometry(0.46, 0),
+      new THREE.MeshPhysicalMaterial({
+        color: 0xffe7a5,
+        emissive: 0xf0c96a,
+        emissiveIntensity: 1.4,
+        roughness: 0.12,
+        metalness: 0.08
+      })
+    );
+
+    star.position.set(0, 1.95, 0);
+    group.add(star);
+
+    /* Genealogy rings */
+    for (let i = 0; i < 7; i++) {
+      const ring = new THREE.Mesh(
+        new THREE.TorusGeometry(0.82 + i * 0.48, 0.014, 6, 96),
+        new THREE.MeshBasicMaterial({
+          color: i % 2 ? c2 : c1,
+          transparent: true,
+          opacity: 0.12 + i * 0.022,
+          depthWrite: false
+        })
+      );
+
+      ring.rotation.x = Math.PI / 2 + i * 0.08;
+      ring.rotation.z = i * 0.22;
+      ring.position.y = -0.18 + i * 0.05;
+      ring.scale.set(1.28, 0.64, 1);
+      group.add(ring);
+    }
+
+    /* Kalo / life sprout motif */
+    const stem = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.025, 0.025, 1.35, 10),
+      new THREE.MeshBasicMaterial({
+        color: c1,
+        transparent: true,
+        opacity: 0.82
+      })
+    );
+
+    stem.position.set(0, -0.95, 0.05);
+    stem.rotation.z = -0.08;
+    group.add(stem);
+
+    const leafGeometry = new THREE.SphereGeometry(0.22, 18, 18);
+
+    const leftLeaf = new THREE.Mesh(
+      leafGeometry,
+      new THREE.MeshPhysicalMaterial({
+        color: c1,
+        emissive: c1,
+        emissiveIntensity: 0.45,
+        roughness: 0.35,
+        transparent: true,
+        opacity: 0.94
+      })
+    );
+
+    leftLeaf.scale.set(1.9, 0.52, 0.13);
+    leftLeaf.position.set(-0.34, -0.38, 0.05);
+    leftLeaf.rotation.z = 0.55;
+    group.add(leftLeaf);
+
+    const rightLeaf = leftLeaf.clone();
+    rightLeaf.position.set(0.34, -0.38, 0.05);
+    rightLeaf.rotation.z = -0.55;
+    group.add(rightLeaf);
+
+    /* Ocean / deep source waves */
+    for (let i = 0; i < 4; i++) {
+      const wavePoints = [];
+
+      for (let n = 0; n < 80; n++) {
+        const x = -3.8 + (n / 79) * 7.6;
+        const y = -2.18 - i * 0.18 + Math.sin(n * 0.25 + i) * 0.08;
+        wavePoints.push(new THREE.Vector3(x, y, -0.12 - i * 0.02));
+      }
+
+      const wave = new THREE.Line(
+        new THREE.BufferGeometry().setFromPoints(wavePoints),
+        new THREE.LineBasicMaterial({
+          color: i % 2 ? c2 : c1,
+          transparent: true,
+          opacity: 0.25 - i * 0.035
+        })
+      );
+
+      group.add(wave);
+    }
+
+    /* Small star / ancestor nodes */
+    for (let i = 0; i < 16; i++) {
+      const angle = (i / 16) * Math.PI * 2;
+      const radius = 3.15 + (i % 4) * 0.26;
+
+      const node = new THREE.Mesh(
+        new THREE.SphereGeometry(i % 4 === 0 ? 0.075 : 0.052, 14, 14),
+        new THREE.MeshPhysicalMaterial({
+          color: i % 2 ? c2 : 0xf0c96a,
+          emissive: i % 2 ? c2 : 0xf0c96a,
+          emissiveIntensity: 0.95,
+          transparent: true,
+          opacity: 0.9
+        })
+      );
+
+      node.position.set(
+        Math.cos(angle) * radius,
+        Math.sin(angle) * radius * 0.42,
+        0.18
+      );
+
+      group.add(node);
+    }
+
+    /* Central glows */
+    const glowA = makeThreeGlow(THREE, c1.getStyle(), 6.8, 0.26);
+    glowA.position.set(0, -0.5, -0.2);
+    group.add(glowA);
+
+    const glowB = makeThreeGlow(THREE, c2.getStyle(), 5.2, 0.18);
+    glowB.position.set(0, 0.7, -0.25);
+    group.add(glowB);
+
+    group.scale.setScalar(1.18);
   }
 
   function addBalanceHero(THREE, group, c1, c2) {

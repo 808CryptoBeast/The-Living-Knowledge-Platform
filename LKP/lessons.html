@@ -48,18 +48,13 @@
 </head>
 
 <body data-culture="default" data-lesson-mode="scholar">
-  <!-- Three.js lesson background handled by lkp-lessons.js -->
   <canvas id="lkp-galaxy-bg" aria-hidden="true"></canvas>
-
-  <!-- Lightweight starfield handled by lkp-lessons.js -->
   <canvas id="starfield" aria-hidden="true"></canvas>
 
-  <!-- Page scroll progress -->
   <div class="lkp-progress" aria-hidden="true">
     <div class="lkp-progress__fill" id="progressFill"></div>
   </div>
 
-  <!-- Navigation -->
   <nav class="lkp-nav" id="lkpNav">
     <a
       class="lkp-nav__brand"
@@ -142,11 +137,8 @@
     </div>
   </nav>
 
-  <!-- Main lesson layout -->
   <div class="lkp-lessons-layout">
-    <!-- Sidebar -->
     <aside class="lkp-sidebar" id="cvSidebar">
-      <!-- Reserved for sidebar constellation / future lesson map layer -->
       <canvas id="lkp-sidebar-constellation" aria-hidden="true"></canvas>
 
       <div class="lkp-sidebar__inner">
@@ -165,12 +157,21 @@
       </div>
     </aside>
 
-    <!-- Lesson content -->
     <main class="lkp-lesson-main" id="lessonMain">
-      <!-- Welcome state -->
       <div class="cv-lesson-welcome" id="lessonWelcome">
         <div class="cv-lesson-welcome__inner">
-          <span class="cv-lesson-welcome__glyph">◈</span>
+          <img
+            class="cv-lesson-welcome__icon"
+            src="assets/images/kaikeola.png"
+            alt="Ka ʻIke Ola"
+            onerror="this.style.display='none'; var f=document.getElementById('lessonWelcomeGlyphFallback'); if(f) f.style.display='inline-flex';"
+          />
+
+          <span
+            class="cv-lesson-welcome__glyph"
+            id="lessonWelcomeGlyphFallback"
+            style="display:none;"
+          >◈</span>
 
           <h2>Ka ʻIke Ola</h2>
 
@@ -184,9 +185,7 @@
         </div>
       </div>
 
-      <!-- Active lesson -->
       <article class="cv-lesson-article" id="lessonArticle" hidden>
-        <!-- Culture / lesson hero canvas handled by lkp-lessons.js -->
         <div class="cv-lesson-culture-hero" id="cultureHero">
           <canvas id="cv-culture-hero-canvas" aria-hidden="true"></canvas>
 
@@ -207,7 +206,6 @@
     </main>
   </div>
 
-  <!-- Mobile sidebar button -->
   <button
     class="cv-sidebar-fab"
     id="cvSidebarFab"
@@ -217,7 +215,6 @@
     <i class="fas fa-list"></i>
   </button>
 
-  <!-- Footer -->
   <footer class="lkp-footer">
     <div class="lkp-footer__inner">
       <p>
@@ -236,19 +233,11 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
 
-  <!-- Base lesson data -->
-  <script src="js/lkp-data.js?v=base-1" defer></script>
-
-  <!-- Additive richer lesson metadata, Keiki mode fields, sources, and new lessons -->
-  <script src="js/lkp-data-rich-additions.js?v=rich-1" defer></script>
-
-  <!-- Rewards/progress engine -->
+  <script src="js/lkp-data.js?v=base-2" defer></script>
+  <script src="js/lkp-data-rich-additions.js?v=rich-2" defer></script>
   <script src="js/lkp-rewards.js?v=rewards-1" defer></script>
-
-  <!-- Main lessons renderer and Three.js lesson visual system -->
-  <script src="js/lkp-lessons.js?v=lesson-upgrades-2" defer></script>
+  <script src="js/lkp-lessons.js?v=lesson-upgrades-3" defer></script>
 </body>
 </html>
