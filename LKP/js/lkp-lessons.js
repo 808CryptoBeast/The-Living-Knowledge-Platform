@@ -1369,13 +1369,13 @@
     } else if (type === 'creation') {
       /* Pō/Ao axis — very light */
       hero.group.add(new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.018,5,8), new THREE.MeshBasicMaterial({ color:c1, transparent:true, opacity:0.32 })));
-      hero.group.add(Object.assign(new THREE.Mesh(new THREE.OctahedronGeometry(0.34,0), meshMat(new THREE.Color(0xffe7a5))), { position: new THREE.Vector3(0,2,0) }));
-      hero.group.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(0.38,16,16), meshMat(c1)), { position: new THREE.Vector3(0,-1.5,0) }));
+      { const _ao=new THREE.Mesh(new THREE.OctahedronGeometry(0.34,0), meshMat(new THREE.Color(0xffe7a5))); _ao.position.set(0,2,0); hero.group.add(_ao); }
+      { const _po=new THREE.Mesh(new THREE.SphereGeometry(0.38,16,16), meshMat(c1)); _po.position.set(0,-1.5,0); hero.group.add(_po); }
       for (let i=0;i<5;i++) { const rg=new THREE.Mesh(new THREE.TorusGeometry(1.1+i*0.45,0.009,6,80), new THREE.MeshBasicMaterial({ color:i%2?c2:c1, transparent:true, opacity:0.08+i*0.012, depthWrite:false })); rg.rotation.x=Math.PI/2+i*0.10; rg.scale.set(1.28,0.62,1); hero.group.add(rg); }
     } else if (type === 'pyramid') {
       const pyr = new THREE.Mesh(new THREE.ConeGeometry(2.4,3.8,4), new THREE.MeshPhysicalMaterial({ color:c1, emissive:c1, emissiveIntensity:0.18, wireframe:true, transparent:true, opacity:0.30 }));
       pyr.rotation.y = Math.PI/4; hero.group.add(pyr);
-      hero.group.add(Object.assign(new THREE.Mesh(new THREE.SphereGeometry(0.38,16,16), meshMat(c2)), { position: new THREE.Vector3(0,2.8,0) }));
+      { const _sun=new THREE.Mesh(new THREE.SphereGeometry(0.38,16,16), meshMat(c2)); _sun.position.set(0,2.8,0); hero.group.add(_sun); }
     } else if (type === 'balance') {
       hero.group.add(new THREE.Mesh(new THREE.BoxGeometry(6,0.05,0.05), new THREE.MeshBasicMaterial({ color:c1, transparent:true, opacity:0.30 })));
       [-2.2,2.2].forEach(x => { const bw=new THREE.Mesh(new THREE.TorusGeometry(0.65,0.025,8,48), new THREE.MeshBasicMaterial({ color:c2, transparent:true, opacity:0.28 })); bw.position.set(x,-0.7,0); hero.group.add(bw); });
