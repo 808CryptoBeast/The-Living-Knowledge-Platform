@@ -79,27 +79,27 @@
     /* These lessons need custom cultural artwork — see filename hint */
     'km-kumulipo': {
       placeholder: true,
-      filename: 'km-kumulipo.jpg',
+      filename: 'LKP/assets/images/km-kumulipo.png',
       hint: 'Deep night sky over ocean — stars, darkness, first light emerging'
     },
     'km-wakea': {
       placeholder: true,
-      filename: 'km-wakea.jpg',
+      filename: 'LKP/assets/images/km-wakea.png',
       hint: 'Sky meeting ocean horizon — Wākea (sky) and Papahānaumoku (earth)'
     },
     'km-olelo': {
       placeholder: true,
-      filename: 'km-olelo.jpg',
+      filename: 'LKP/assets/images/km-olelo.png',
       hint: 'Hawaiian kapa cloth patterns or traditional writing/chant imagery'
     },
     'km-hula': {
       placeholder: true,
-      filename: 'km-hula.jpg',
+      filename: 'LKP/assets/images/km-hula.png',
       hint: 'Hula dancers in traditional kapa — flowing, grounded movement'
     },
     'km-laau': {
       placeholder: true,
-      filename: 'km-laau.jpg',
+      filename: 'km-laau.png',
       hint: 'Hawaiian medicinal plants — ʻolena (turmeric), noni, kalo leaves'
     },
 
@@ -124,22 +124,22 @@
 
     'ke-nun': {
       placeholder: true,
-      filename: 'ke-nun.jpg',
+      filename: 'ke-nun.png',
       hint: 'Primordial waters — deep, still, dark water reflecting ancient sky'
     },
     'ke-ennead': {
       placeholder: true,
-      filename: 'ke-ennead.jpg',
+      filename: 'ke-ennead.png',
       hint: 'Temple at Heliopolis / Karnak — columns, stone, morning light'
     },
     'ke-ptah': {
       placeholder: true,
-      filename: 'ke-ptah.jpg',
+      filename: 'ke-ptah.png',
       hint: 'Ptah deity — blue-skinned, staff, cartouche, mummiform figure'
     },
     'ke-maat': {
       placeholder: true,
-      filename: 'ke-maat.jpg',
+      filename: 'ke-maat.png',
       hint: 'Balance scales, feather of Maʻat, Hall of Two Truths imagery'
     },
 
@@ -153,7 +153,7 @@
     },
     'br-aloha-maat': {
       placeholder: true,
-      filename: 'br-aloha-maat.jpg',
+      filename: 'br-alohamaat.png',
       hint: 'Two hands, two cultural symbols meeting — lei + ankh, green + gold'
     }
   };
