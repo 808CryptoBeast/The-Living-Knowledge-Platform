@@ -31,7 +31,7 @@
 
   const LESSON_IMAGE_REGISTRY = {
     /* ── Kānaka Maoli — actual files are .png ── */
-    'km-starcompass': { url:'assets/images/hawaiian-star-compass.png', pos:'center center',  credit:"Nainoa Thompson's Hawaiian Star Compass" },
+    'km-starcompass': { url:'assets/images/hawaiian-star-compass.jpg', pos:'center center',  credit:"Nainoa Thompson's Hawaiian Star Compass" },
     'km-hokuleaa':    { url:'assets/images/km-hokuleaa.png',           pos:'center 55%',     credit:"Hōkūleʻa — Polynesian Voyaging Society / Wikimedia Commons" },
     'km-loikalo':     { url:'assets/images/km-loikalo.png',            pos:'center 50%',     credit:"Hanalei Valley Loʻi Kalo — Wikimedia Commons" },
     'km-ahupuaa':     { url:'assets/images/km-ahupuaa.png',            pos:'center 45%',     credit:"Nuʻuanu Valley — Wikimedia Commons" },
@@ -40,15 +40,15 @@
     'km-olelo':       { placeholder:true, filename:'assets/images/km-olelo.png',       hint:'Hawaiian kapa cloth patterns or traditional chant imagery' },
     'km-hula':        { placeholder:true, filename:'assets/images/km-hula.png',        hint:'Hula dancers in traditional kapa — flowing, grounded movement' },
     'km-laau':        { placeholder:true, filename:'assets/images/km-laau.png',        hint:'Hawaiian medicinal plants — ʻolena, noni, kalo leaves' },
-    'ke-medicine':    { url:'assets/images/ke-medicine.jpg',           pos:'center center',  credit:"Edwin Smith Surgical Papyrus — Wikimedia Commons" },
-    'ke-medunetjer':  { url:'assets/images/ke-medunetjer.jpg',         pos:'center center',  credit:"Egyptian Hieroglyphs — Wikimedia Commons" },
-    'ke-maat-politics':{ url:'assets/images/ke-maat-politics.jpg',     pos:'center 55%',     credit:"Great Sphinx of Giza — Wikimedia Commons" },
-    'ke-nun':         { placeholder:true, filename:'assets/images/ke-nun.jpg',         hint:'Primordial waters — deep, still, dark water reflecting ancient sky' },
-    'ke-ennead':      { placeholder:true, filename:'assets/images/ke-ennead.jpg',      hint:'Temple at Heliopolis / Karnak — columns, stone, morning light' },
-    'ke-ptah':        { placeholder:true, filename:'assets/images/ke-ptah.jpg',        hint:'Ptah deity — blue-skinned, staff, cartouche, mummiform figure' },
-    'ke-maat':        { placeholder:true, filename:'assets/images/ke-maat.jpg',        hint:'Balance scales, feather of Maʻat, Hall of Two Truths' },
-    'br-darkness':    { placeholder:true, filename:'assets/images/br-darkness.jpg',    hint:'Milky Way over ocean — Pō / Nun' },
-    'br-aloha-maat':  { placeholder:true, filename:'assets/images/br-alohamaat.jpg',   hint:'Two cultural symbols meeting — lei + ankh, green + gold' }
+    'ke-medicine':    { url:'assets/images/ke-medicine.png',           pos:'center center',  credit:"Edwin Smith Surgical Papyrus — Wikimedia Commons" },
+    'ke-medunetjer':  { url:'assets/images/ke-medunetjer.png',         pos:'center center',  credit:"Egyptian Hieroglyphs — Wikimedia Commons" },
+    'ke-maat-politics':{ url:'assets/images/ke-maat-politics.png',     pos:'center 55%',     credit:"Great Sphinx of Giza — Wikimedia Commons" },
+    'ke-nun':         { placeholder:true, filename:'assets/images/ke-nun.png',         hint:'Primordial waters — deep, still, dark water reflecting ancient sky' },
+    'ke-ennead':      { placeholder:true, filename:'assets/images/ke-ennead.png',      hint:'Temple at Heliopolis / Karnak — columns, stone, morning light' },
+    'ke-ptah':        { placeholder:true, filename:'assets/images/ke-ptah.png',        hint:'Ptah deity — blue-skinned, staff, cartouche, mummiform figure' },
+    'ke-maat':        { placeholder:true, filename:'assets/images/ke-maat.png',        hint:'Balance scales, feather of Maʻat, Hall of Two Truths' },
+    'br-darkness':    { placeholder:true, filename:'assets/images/br-darkness.png',    hint:'Milky Way over ocean — Pō / Nun' },
+    'br-aloha-maat':  { placeholder:true, filename:'assets/images/br-alohamaat.png',   hint:'Two cultural symbols meeting — lei + ankh, green + gold' }
   };
 
   const CULTURE_FALLBACKS = {
