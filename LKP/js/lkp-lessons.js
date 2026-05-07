@@ -30,6 +30,7 @@
   ══════════════════════════════════════════════════════════════════════ */
 
   const LESSON_IMAGE_REGISTRY = {
+    /* ── Kānaka Maoli — actual files are .png ── */
     'km-starcompass': { url:'assets/images/hawaiian-star-compass.png', pos:'center center',  credit:"Nainoa Thompson's Hawaiian Star Compass" },
     'km-hokuleaa':    { url:'assets/images/km-hokuleaa.png',           pos:'center 55%',     credit:"Hōkūleʻa — Polynesian Voyaging Society / Wikimedia Commons" },
     'km-loikalo':     { url:'assets/images/km-loikalo.png',            pos:'center 50%',     credit:"Hanalei Valley Loʻi Kalo — Wikimedia Commons" },
