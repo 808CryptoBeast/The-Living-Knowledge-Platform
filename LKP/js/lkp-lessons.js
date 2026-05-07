@@ -9,8 +9,7 @@
      themed inline SVG card — looks DESIGNED not broken — and tells you
      exactly which file to create (e.g. LKP/assets/images/km-kumulipo.jpg)
    ─ updateHeroImage(): tries real URL → verifies it loads → gracefully
-     falls back to placeholder; Three.js overlay is VERY subtle (opacity
-     0.08–0.14 max) so photos read clearly
+     falls back to placeholder
 
    EDUCATOR LESSON STRUCTURE (top → bottom)
    ─ Lesson breadcrumb path
@@ -61,17 +60,17 @@
       credit: "Nainoa Thompson's Hawaiian Star Compass"
     },
     'km-hokuleaa': {
-      url:    'https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/Hokule%27a_and_Hikianalia_in_Kaneohe_Bay.jpg/1280px-Hokule%27a_and_Hikianalia_in_Kaneohe_Bay.jpg',
+      url:    'LKP/assets/images/km-hokuleaa.jpg',
       pos:    'center 55%',
       credit: "Hōkūleʻa — Polynesian Voyaging Society / Wikimedia Commons"
     },
     'km-loikalo': {
-      url:    'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Hanalei_Valley_taro_fields.jpg/1280px-Hanalei_Valley_taro_fields.jpg',
+      url:    'LKP/assets/images/km-loikalo.jpg',
       pos:    'center 50%',
       credit: "Hanalei Valley Loʻi Kalo — Wikimedia Commons"
     },
     'km-ahupuaa': {
-      url:    'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Nuuanu_Valley_from_Pali_Lookout.jpg/1280px-Nuuanu_Valley_from_Pali_Lookout.jpg',
+      url:    'LKP/assets/images/km-ahupuaa.jpg',
       pos:    'center 45%',
       credit: "Nuʻuanu Valley — Wikimedia Commons"
     },
@@ -99,7 +98,7 @@
     },
     'km-laau': {
       placeholder: true,
-      filename: 'km-laau.png',
+      filename: 'LKP/assets/images/km-laau.png',
       hint: 'Hawaiian medicinal plants — ʻolena (turmeric), noni, kalo leaves'
     },
 
@@ -107,39 +106,39 @@
        Kemetic aesthetic: warm ochre/gold, papyrus, hieroglyphs, stone    */
 
     'ke-medicine': {
-      url:    'https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Edwin_Smith_Papyrus_v2.jpg/800px-Edwin_Smith_Papyrus_v2.jpg',
+      url:    'LKP/assets/images/ke-medicine.jpg',
       pos:    'center center',
       credit: "Edwin Smith Surgical Papyrus — Wikimedia Commons"
     },
     'ke-medunetjer': {
-      url:    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Hieroglyphen_im_Alten_%C3%84gypten.jpg/1280px-Hieroglyphen_im_Alten_%C3%84gypten.jpg',
+      url:    'LKP/assets/images/ke-medunetjer.jpg',
       pos:    'center center',
       credit: "Egyptian Hieroglyphs — Wikimedia Commons"
     },
     'ke-maat-politics': {
-      url:    'https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Great_Sphinx_of_Giza_-_20080716a.jpg/1280px-Great_Sphinx_of_Giza_-_20080716a.jpg',
+      url:    'LKP/assets/images/ke-maat-politics.jpg',
       pos:    'center 55%',
       credit: "Great Sphinx of Giza — Wikimedia Commons"
     },
 
     'ke-nun': {
       placeholder: true,
-      filename: 'ke-nun.png',
+      filename: 'LKP/assets/images/ke-nun.png',
       hint: 'Primordial waters — deep, still, dark water reflecting ancient sky'
     },
     'ke-ennead': {
       placeholder: true,
-      filename: 'ke-ennead.png',
+      filename: 'LKP/assets/images/ke-ennead.png',
       hint: 'Temple at Heliopolis / Karnak — columns, stone, morning light'
     },
     'ke-ptah': {
       placeholder: true,
-      filename: 'ke-ptah.png',
+      filename: 'LKP/assets/images/ke-ptah.png',
       hint: 'Ptah deity — blue-skinned, staff, cartouche, mummiform figure'
     },
     'ke-maat': {
       placeholder: true,
-      filename: 'ke-maat.png',
+      filename: 'LKP/assets/images/ke-maat.png',
       hint: 'Balance scales, feather of Maʻat, Hall of Two Truths imagery'
     },
 
@@ -148,23 +147,23 @@
 
     'br-darkness': {
       placeholder: true,
-      filename: 'br-darkness.jpg',
+      filename: 'LKP/assets/images/br-darkness.jpg',
       hint: 'Milky Way over ocean — Pō (Hawaiian darkness) / Nun (Kemetic source)'
     },
     'br-aloha-maat': {
       placeholder: true,
-      filename: 'br-alohamaat.png',
+      filename: 'LKP/assets/images/br-alohamaat.png',
       hint: 'Two hands, two cultural symbols meeting — lei + ankh, green + gold'
     }
   };
 
   /* Culture-level fallbacks (also placeholder-based) */
   const CULTURE_FALLBACKS = {
-    kanaka:    { placeholder: true, filename: 'kanaka-culture.jpg', hint: 'Hawaiian ocean and stars at night — Nā Hōkū Nā Kiu' },
-    kemet:     { placeholder: true, filename: 'kemet-culture.jpg',  hint: 'Egyptian pyramid at dawn — gold and shadow' },
-    bridge:    { placeholder: true, filename: 'bridge-culture.jpg', hint: 'Two coastlines meeting — Pacific and Nile' },
-    dreamtime: { placeholder: true, filename: 'dreamtime-culture.jpg', hint: 'Australian desert stars — Uluru at dusk' },
-    default:   { placeholder: true, filename: 'default-culture.jpg', hint: 'Milky Way arch over ocean' }
+    kanaka:    { placeholder: true, filename: 'LKP/assets/images/kanaka-culture.jpg',    hint: 'Hawaiian ocean and stars at night — Nā Hōkū Nā Kiu' },
+    kemet:     { placeholder: true, filename: 'LKP/assets/images/kemet-culture.jpg',     hint: 'Egyptian pyramid at dawn — gold and shadow' },
+    bridge:    { placeholder: true, filename: 'LKP/assets/images/bridge-culture.jpg',    hint: 'Two coastlines meeting — Pacific and Nile' },
+    dreamtime: { placeholder: true, filename: 'LKP/assets/images/dreamtime-culture.jpg', hint: 'Australian desert stars — Uluru at dusk' },
+    default:   { placeholder: true, filename: 'LKP/assets/images/default-culture.jpg',   hint: 'Milky Way arch over ocean' }
   };
 
   /* ══════════════════════════════════════════════════════════════════════
@@ -346,7 +345,7 @@
     hero.classList.toggle('is-loading', !!isLoading);
     hero.classList.remove('has-lesson-image');
     const notice = img.filename
-      ? `📸 Add: LKP/assets/images/${img.filename}`
+      ? `📸 Add: ${img.filename}`
       : (img.hint || '');
     _setCredit(hero, notice);
   }
@@ -390,8 +389,7 @@
     fontScale:   Number(localStorage.getItem(FONT_SCALE_KEY) || '1') || 1,
     completed:   readJSON(COMPLETED_KEY, []),
     reflections: readJSON(REFLECTIONS_KEY, {}),
-    sidebarSearch: '',
-    three: { THREE: null, hero: null }
+    sidebarSearch: ''
   };
 
   /* ── Utilities ──────────────────────────────────────────────────────── */
@@ -643,23 +641,17 @@
 
   /* ══════════════════════════════════════════════════════════════════════
      EDUCATOR LESSON OBJECTIVES
-     Auto-generates 3 clear learning objectives if none are in the data.
-     Data files can supply: lesson.objectives = ['...','...','...']
-     OR use the <objectives> content tag in lesson.content.
   ══════════════════════════════════════════════════════════════════════ */
 
   function inferLessonObjectives(lesson) {
-    /* Check data-file supplied objectives */
     if (Array.isArray(lesson.objectives) && lesson.objectives.length) return lesson.objectives;
 
-    /* Check for <objectives> tag in content */
     const match = (lesson.content || '').match(/<objectives>([\s\S]*?)<\/objectives>/i);
     if (match) {
       const items = match[1].split('\n').map(s => s.replace(/^[-•]\s*/, '').trim()).filter(Boolean);
       if (items.length) return items;
     }
 
-    /* Auto-generate from lesson metadata */
     const cultureName = lesson.cultureName || 'this culture';
     const moduleTitle = lesson.moduleTitle || 'this module';
 
@@ -669,7 +661,6 @@
       `Reflect on how this teaching connects to living communities and contemporary relevance.`
     ];
 
-    /* Culture-specific overrides */
     if (lesson.cultureId === 'kanaka') {
       base[1] = `Recognize key Hawaiian terms, practices, and their connections to land, ocean, and sky.`;
     } else if (lesson.cultureId === 'kemet') {
@@ -679,7 +670,6 @@
       base[2] = `Consider what cross-cultural dialogue reveals about universal human knowledge systems.`;
     }
 
-    /* Module-specific tweaks */
     if (/navigat|star|wayfind/i.test(moduleTitle)) {
       base[0] = `Understand how ${lesson.title} functioned as a living navigational system.`;
     } else if (/heal|medic|laau/i.test(moduleTitle)) {
@@ -707,7 +697,6 @@
 
   /* ══════════════════════════════════════════════════════════════════════
      EDUCATOR LESSON HEADER
-     Breadcrumb path → title → excerpt → objectives → meta → actions
   ══════════════════════════════════════════════════════════════════════ */
 
   function renderLessonHeader(lesson) {
@@ -797,7 +786,7 @@
       ? renderKeikiContent(lesson)
       : transformLessonContent(lesson.content, lesson);
 
-    /* Set hero image FIRST (photo or placeholder) — Three.js overlays on top */
+    /* Set hero image (photo or placeholder) */
     updateHeroImage(lesson);
 
     /* Hero label */
@@ -805,9 +794,6 @@
     const name  = document.getElementById('cultureHeroName');
     if (emoji) emoji.textContent = lesson.cultureEmoji || '✦';
     if (name)  name.textContent  = `${lesson.cultureName} · ${lesson.moduleTitle}`;
-
-    /* Three.js subtle overlay */
-    updateThreeHeroScene(lesson);
 
     /* Remaining sections */
     renderSources(lesson);
@@ -941,7 +927,6 @@
 
   /* ══════════════════════════════════════════════════════════════════════
      CONTENT TRANSFORMS
-     All custom tags rendered to HTML for the lesson body.
   ══════════════════════════════════════════════════════════════════════ */
 
   function renderReflectionBlock(prompts, lesson, title) {
@@ -971,10 +956,7 @@
   function transformLessonContent(content, lesson) {
     let html = String(content || '');
 
-    /* Strip <objectives> tag (handled in header already) */
     html = html.replace(/<objectives>[\s\S]*?<\/objectives>/gi, '');
-
-    /* ── Custom tags ─────────────────────────────────────────────────── */
 
     html = html.replace(/<callout(?:\s+type="([^"]+)")?>([\s\S]*?)<\/callout>/gi,
       (_, type, inner) =>
@@ -1069,7 +1051,6 @@
           <p>${inner.trim()}</p>
         </div>`);
 
-    /* Auto-append reflection block if none found in content */
     if (!html.includes('cv-reflection')) {
       html += renderReflectionBlock(DEFAULT_REFLECTIONS, lesson, 'Reflection Prompts');
     }
@@ -1269,139 +1250,6 @@
     });
   }
 
-  /* ── Three.js hero OVERLAY — very subtle on top of real photo ────────── */
-
-  async function loadTHREE() {
-    if (state.three.THREE) return state.three.THREE;
-    try { state.three.THREE = await import('https://esm.sh/three@0.160.0'); } catch {}
-    return state.three.THREE;
-  }
-
-  async function initThreeHero() {
-    const canvas = document.getElementById('cv-culture-hero-canvas');
-    const wrap   = document.getElementById('cultureHero');
-    if (!canvas || !wrap) return;
-    const THREE = await loadTHREE();
-    if (!THREE) return;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(65, 1, 0.1, 120);
-    camera.position.set(0, 0, 14);
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1, 1.5));
-    renderer.outputColorSpace = THREE.SRGBColorSpace;
-    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
-
-    const group = new THREE.Group();
-    scene.add(group);
-    state.three.hero = { scene, camera, renderer, group, wrap };
-
-    function resize() {
-      const w = Math.max(280, wrap.clientWidth||760);
-      const h = Math.max(120, wrap.clientHeight||160);
-      camera.aspect = w/h; camera.updateProjectionMatrix();
-      renderer.setSize(w, h, false);
-    }
-    resize();
-    if ('ResizeObserver' in window) new ResizeObserver(resize).observe(wrap);
-    else window.addEventListener('resize', resize, { passive:true });
-
-    (function animate() {
-      requestAnimationFrame(animate);
-      const t = performance.now() * 0.001;
-      group.rotation.y += 0.0012;
-      group.children.forEach((c,i) => { c.rotation.z += 0.0005 + i*0.0001; c.position.y += Math.sin(t+i)*0.0004; });
-      renderer.render(scene, camera);
-    })();
-  }
-
-  function makeGlow(THREE, color, size, opacity) {
-    const c = document.createElement('canvas'); c.width = c.height = 128;
-    const ctx = c.getContext('2d');
-    const col = new THREE.Color(color);
-    const r = Math.round(col.r*255), g = Math.round(col.g*255), b = Math.round(col.b*255);
-    const grd = ctx.createRadialGradient(64,64,0,64,64,64);
-    grd.addColorStop(0,    `rgba(${r},${g},${b},0.85)`);
-    grd.addColorStop(0.5,  `rgba(${r},${g},${b},0.18)`);
-    grd.addColorStop(1,    `rgba(${r},${g},${b},0)`);
-    ctx.fillStyle = grd; ctx.fillRect(0,0,128,128);
-    const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
-    const spr = new THREE.Sprite(new THREE.SpriteMaterial({ map:tex, transparent:true, opacity, depthWrite:false, blending:THREE.AdditiveBlending }));
-    spr.scale.setScalar(size); return spr;
-  }
-
-  function clearGroup(group) {
-    while (group.children.length) {
-      const o = group.children.pop();
-      o.geometry?.dispose?.();
-      if (Array.isArray(o.material)) o.material.forEach(m=>m.dispose?.());
-      else o.material?.dispose?.();
-    }
-  }
-
-  /* Overlay opacity is intentionally very low (0.08–0.14) so photos show through clearly */
-  function updateThreeHeroScene(lesson) {
-    const hero  = state.three.hero;
-    const THREE = state.three.THREE;
-    if (!hero || !THREE || !lesson) return;
-    clearGroup(hero.group);
-
-    const c1   = new THREE.Color(getCultureColor(lesson.cultureTheme));
-    const c2   = new THREE.Color(getCultureSecondary(lesson.cultureTheme));
-    const type = lesson.sceneType || 'constellation';
-
-    /* Very subtle ambient glows — they should NOT dominate the real photo */
-    hero.group.add(makeGlow(THREE, c1.getStyle(), 10, 0.10));
-    hero.group.add(makeGlow(THREE, c2.getStyle(),  7, 0.06));
-
-    const lineMat = c => new THREE.LineBasicMaterial({ color:c, transparent:true, opacity:0.14, depthWrite:false });
-    const meshMat = c => new THREE.MeshPhysicalMaterial({ color:c, emissive:c, emissiveIntensity:0.5, transparent:true, opacity:0.40 });
-
-    if (type === 'starcompass') {
-      /* Rotating compass ring + 16 small directional stars */
-      hero.group.add(new THREE.Mesh(new THREE.TorusGeometry(4,0.03,10,120), new THREE.MeshBasicMaterial({ color:c1, transparent:true, opacity:0.28 })));
-      for (let i=0; i<16; i++) {
-        const a = (i/16)*Math.PI*2;
-        const s = new THREE.Mesh(new THREE.OctahedronGeometry(i%4===0?0.16:0.09,0), meshMat(i%2?c2:c1));
-        s.position.set(Math.cos(a)*4, Math.sin(a)*4, 0);
-        hero.group.add(s);
-      }
-    } else if (type === 'creation') {
-      /* Pō/Ao axis — very light */
-      hero.group.add(new THREE.Mesh(new THREE.CylinderGeometry(0.018,0.018,5,8), new THREE.MeshBasicMaterial({ color:c1, transparent:true, opacity:0.32 })));
-      { const _ao=new THREE.Mesh(new THREE.OctahedronGeometry(0.34,0), meshMat(new THREE.Color(0xffe7a5))); _ao.position.set(0,2,0); hero.group.add(_ao); }
-      { const _po=new THREE.Mesh(new THREE.SphereGeometry(0.38,16,16), meshMat(c1)); _po.position.set(0,-1.5,0); hero.group.add(_po); }
-      for (let i=0;i<5;i++) { const rg=new THREE.Mesh(new THREE.TorusGeometry(1.1+i*0.45,0.009,6,80), new THREE.MeshBasicMaterial({ color:i%2?c2:c1, transparent:true, opacity:0.08+i*0.012, depthWrite:false })); rg.rotation.x=Math.PI/2+i*0.10; rg.scale.set(1.28,0.62,1); hero.group.add(rg); }
-    } else if (type === 'pyramid') {
-      const pyr = new THREE.Mesh(new THREE.ConeGeometry(2.4,3.8,4), new THREE.MeshPhysicalMaterial({ color:c1, emissive:c1, emissiveIntensity:0.18, wireframe:true, transparent:true, opacity:0.30 }));
-      pyr.rotation.y = Math.PI/4; hero.group.add(pyr);
-      { const _sun=new THREE.Mesh(new THREE.SphereGeometry(0.38,16,16), meshMat(c2)); _sun.position.set(0,2.8,0); hero.group.add(_sun); }
-    } else if (type === 'balance') {
-      hero.group.add(new THREE.Mesh(new THREE.BoxGeometry(6,0.05,0.05), new THREE.MeshBasicMaterial({ color:c1, transparent:true, opacity:0.30 })));
-      [-2.2,2.2].forEach(x => { const bw=new THREE.Mesh(new THREE.TorusGeometry(0.65,0.025,8,48), new THREE.MeshBasicMaterial({ color:c2, transparent:true, opacity:0.28 })); bw.position.set(x,-0.7,0); hero.group.add(bw); });
-    } else if (type === 'healing') {
-      hero.group.add(new THREE.Mesh(new THREE.CylinderGeometry(0.025,0.025,4,8), new THREE.MeshBasicMaterial({ color:c1, transparent:true, opacity:0.30 })));
-      for (let i=0;i<6;i++) { const lf=new THREE.Mesh(new THREE.SphereGeometry(0.16,12,12), meshMat(i%2?c2:c1)); lf.scale.set(1.7,0.42,0.11); lf.position.set(i%2?0.40:-0.40,-1.4+i*0.45,0); lf.rotation.z=i%2?-0.55:0.55; hero.group.add(lf); }
-    } else if (type === 'bridge') {
-      const sl=new THREE.Mesh(new THREE.SphereGeometry(0.38,16,16),meshMat(c1)); sl.position.set(-2.2,0,0); hero.group.add(sl);
-      const sr=new THREE.Mesh(new THREE.SphereGeometry(0.38,16,16),meshMat(c2)); sr.position.set(2.2,0,0); hero.group.add(sr);
-      const curve=new THREE.CatmullRomCurve3([new THREE.Vector3(-2.2,0,0),new THREE.Vector3(0,1.2,0),new THREE.Vector3(2.2,0,0)]);
-      hero.group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(56)), lineMat(c1.clone().lerp(c2,0.5))));
-    } else {
-      /* Constellation — a few stars and lines */
-      const pts = [];
-      for (let i=0;i<8;i++) {
-        const p = new THREE.Vector3((Math.random()-0.5)*6,(Math.random()-0.5)*2.5,(Math.random()-0.5)*1);
-        pts.push(p);
-        const s=new THREE.Mesh(new THREE.OctahedronGeometry(i%3===0?0.16:0.10,0), meshMat(i%2?c2:c1));
-        s.position.copy(p); hero.group.add(s);
-        if (i>0) hero.group.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([pts[i-1],p]), lineMat(c1)));
-      }
-    }
-
-    hero.group.scale.setScalar(1.10);
-  }
-
   /* ── Nav / FAB / progress ───────────────────────────────────────────── */
 
   function initNavAndProgress() {
@@ -1452,10 +1300,6 @@
 
     bindEvents();
     initNavAndProgress();
-
-    initThreeHero().then(() => {
-      if (state.activeLessonId) updateThreeHeroScene(findLesson(state.activeLessonId));
-    });
 
     window.dispatchEvent(new Event('lkp:tree-built'));
   }
