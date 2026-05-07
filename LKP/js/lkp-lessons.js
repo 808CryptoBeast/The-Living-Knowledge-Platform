@@ -119,7 +119,7 @@
       credit: 'Maʻat — Truth, Justice, and Cosmic Balance'
     },
     'ke-maat-politics': {
-      url: 'assets/images/ke-maat-politics.png',
+      url: 'assets/images/ke-maat.png',
       pos: 'center 55%',
       credit: 'Maʻat as Political Philosophy — The Ruler Serves the Principle'
     },
@@ -139,7 +139,7 @@
       credit: 'Seshat — Measurement, Writing, Architecture, and Sacred Recordkeeping'
     },
     'ke-celestial-nile': {
-      url: 'assets/images/ke-celestial-nile.png',
+      url: 'assets/images/ke-nilestars.png',
       pos: 'center center',
       credit: 'The Nile, the Stars, and Sacred Timekeeping'
     },
@@ -156,17 +156,17 @@
       credit: 'Paired Forces — Balance and Complementarity'
     },
     'bridge-aloha-maat': {
-      url: 'assets/images/bridge-aloha-maat.png',
+      url: 'assets/images/bridge-alohamaat.png',
       pos: 'center center',
       credit: 'Aloha & Maʻat — Ethics of Right Relationship'
     },
     'bridge-genealogy-ecology': {
-      url: 'assets/images/bridge-genealogy-ecology.png',
+      url: 'assets/images/bridge-culture.png',
       pos: 'center center',
       credit: 'Genealogy as Ecology — When Family Trees Include the Living World'
     },
     'bridge-navigation-astronomy': {
-      url: 'assets/images/bridge-navigation-astronomy.png',
+      url: 'assets/images/br-skyknowledge.png',
       pos: 'center center',
       credit: 'Sky Knowledge — Navigation, Calendars, and Reading the Heavens'
     },
