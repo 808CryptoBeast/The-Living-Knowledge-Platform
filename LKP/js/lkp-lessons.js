@@ -31,7 +31,7 @@
 
   const LESSON_IMAGE_REGISTRY = {
     /* ── Kānaka Maoli — actual files are .png ── */
-    'km-starcompass': { url:'assets/images/km-starcompass.png', pos:'center center',  credit:"Nainoa Thompson's Hawaiian Star Compass" },
+    'km-starcompass': { url:'assets/images/hawaiian-star-compass.png', pos:'center center',  credit:"Nainoa Thompson's Hawaiian Star Compass" },
     'km-hokuleaa':    { url:'assets/images/km-hokuleaa.png',           pos:'center 55%',     credit:"Hōkūleʻa — Polynesian Voyaging Society / Wikimedia Commons" },
     'km-loikalo':     { url:'assets/images/km-loikalo.png',            pos:'center 50%',     credit:"Hanalei Valley Loʻi Kalo — Wikimedia Commons" },
     'km-ahupuaa':     { url:'assets/images/km-ahupuaa.png',            pos:'center 45%',     credit:"Nuʻuanu Valley — Wikimedia Commons" },
@@ -52,11 +52,11 @@
   };
 
   const CULTURE_FALLBACKS = {
-    kanaka:    { placeholder:true, filename:'assets/images/kanaka-culture.jpg',    hint:'Hawaiian ocean and stars at night' },
-    kemet:     { placeholder:true, filename:'assets/images/kemet-culture.jpg',     hint:'Egyptian pyramid at dawn — gold and shadow' },
-    bridge:    { placeholder:true, filename:'assets/images/bridge-culture.jpg',    hint:'Two coastlines meeting — Pacific and Nile' },
-    dreamtime: { placeholder:true, filename:'assets/images/dreamtime-culture.jpg', hint:'Australian desert stars — Uluru at dusk' },
-    default:   { placeholder:true, filename:'assets/images/default-culture.jpg',   hint:'Milky Way arch over ocean' }
+    kanaka:    { placeholder:true, filename:'assets/images/kanaka-culture.png',    hint:'Hawaiian ocean and stars at night' },
+    kemet:     { placeholder:true, filename:'assets/images/kemet-culture.png',     hint:'Egyptian pyramid at dawn — gold and shadow' },
+    bridge:    { placeholder:true, filename:'assets/images/bridge-culture.png',    hint:'Two coastlines meeting — Pacific and Nile' },
+    dreamtime: { placeholder:true, filename:'assets/images/dreamtime-culture.png', hint:'Australian desert stars — Uluru at dusk' },
+    default:   { placeholder:true, filename:'assets/images/default-culture.png',   hint:'Milky Way arch over ocean' }
   };
 
   /* ══════════════════════════════════════════════════════════════════════
@@ -135,7 +135,11 @@
       pts.slice(0,-1).map(([x,y],i)=>{const[nx,ny]=pts[i+1];return `<line x1="${x}" y1="${y}" x2="${nx}" y2="${ny}" stroke="${p.a1}" stroke-width="0.5" opacity="0.09"/>`;}).join('');
   }
 
-  /* ── Hero image ─────────────────────────────────────────────────── */
+  /* ── Hero image ─────────────────────────────────────────────────────
+     Multi-extension fallback: if the registered URL fails (404 / wrong ext)
+     we automatically try .png → .jpg → .jpeg → .webp before giving up
+     and falling back to the placeholder SVG.
+  ─────────────────────────────────────────────────────────────────── */
 
   function getHeroImage(lesson) {
     const raw = lesson.image || lesson.heroImage || lesson.thumbnail || '';
@@ -143,16 +147,48 @@
     return LESSON_IMAGE_REGISTRY[lesson.id] || CULTURE_FALLBACKS[lesson.cultureId] || CULTURE_FALLBACKS.default;
   }
 
+  /* Build a list of URLs to try in order, swapping extensions */
+  function buildUrlCandidates(url) {
+    const exts = ['.png', '.jpg', '.jpeg', '.webp'];
+    const current = url.match(/\.\w+$/)?.[0]?.toLowerCase() || '';
+    const base = current ? url.slice(0, -current.length) : url;
+    // Start with exactly what's registered, then try all other extensions
+    const ordered = [url, ...exts.filter(e => e !== current).map(e => base + e)];
+    return [...new Set(ordered)]; // deduplicate
+  }
+
   function updateHeroImage(lesson) {
     const hero = document.getElementById('cultureHero');
     if (!hero) return;
     const img = getHeroImage(lesson);
-    if (img.placeholder) { _applyPlaceholder(hero, lesson, img); return; }
-    const probe = new window.Image();
-    probe.onload  = () => _applyReal(hero, img);
-    probe.onerror = () => _applyPlaceholder(hero, lesson, img);
-    probe.src = img.url;
+
+    if (img.placeholder) {
+      _applyPlaceholder(hero, lesson, img);
+      return;
+    }
+
+    // Show shimmer while probing
     _applyPlaceholder(hero, lesson, img, true);
+
+    const candidates = buildUrlCandidates(img.url);
+
+    function tryNext(i) {
+      if (i >= candidates.length) {
+        // All URLs failed — show proper placeholder
+        _applyPlaceholder(hero, lesson, img);
+        console.warn('[LKP Hero] No image found for', lesson.id, '— tried:', candidates);
+        return;
+      }
+      const probe = new window.Image();
+      probe.onload = () => {
+        // Use whichever URL actually loaded
+        _applyReal(hero, { ...img, url: candidates[i] });
+      };
+      probe.onerror = () => tryNext(i + 1);
+      probe.src = candidates[i];
+    }
+
+    tryNext(0);
   }
 
   function _applyReal(hero, img) {
@@ -160,7 +196,7 @@
     hero.style.backgroundSize     = 'cover';
     hero.style.backgroundPosition = img.pos || 'center center';
     hero.classList.add('has-lesson-image');
-    hero.classList.remove('has-placeholder','is-loading');
+    hero.classList.remove('has-placeholder', 'is-loading');
     _setCredit(hero, img.credit || '');
   }
 
@@ -171,13 +207,13 @@
     hero.classList.toggle('has-placeholder', !loading);
     hero.classList.toggle('is-loading', !!loading);
     hero.classList.remove('has-lesson-image');
-    _setCredit(hero, img.filename ? `📸 Add: ${img.filename}` : (img.hint||''));
+    _setCredit(hero, img.filename ? `📸 Add: ${img.filename}` : (img.hint || ''));
   }
 
   function _setCredit(hero, text) {
     let b = hero.querySelector('.cv-hero-credit');
     if (!text) { b?.remove(); return; }
-    if (!b) { b = document.createElement('div'); b.className='cv-hero-credit'; hero.appendChild(b); }
+    if (!b) { b = document.createElement('div'); b.className = 'cv-hero-credit'; hero.appendChild(b); }
     b.textContent = text;
   }
 
