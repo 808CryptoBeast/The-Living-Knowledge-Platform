@@ -363,52 +363,67 @@ strong { color: rgba(255,239,198,0.96); }
 /* Culture label */
 .cv-culture-hero-label {
   position:absolute; bottom:14px; left:16px; z-index:2;
-  display:flex; align-items:center; gap:8px;
-  padding:6px 12px; border-radius:999px;
+  display:flex; align-items:center; gap:7px;
+  padding:5px 12px; border-radius:999px;
   border:1px solid var(--active-border);
   background:rgba(1,3,10,0.70);
   color:var(--active-text);
-  font-size:10.5px; font-weight:900; letter-spacing:0.10em; text-transform:uppercase;
+  font-size:10px; font-weight:900; letter-spacing:0.10em; text-transform:uppercase;
+  line-height:1;
   backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
 }
+.cv-culture-hero-label span:first-child { font-size:14px; line-height:1; }
 
 /* ══════════════════════════════════════════════════════════════════════
    LESSON HEADER
 ══════════════════════════════════════════════════════════════════════ */
-.cv-lesson-article__header { padding:clamp(20px,4vw,40px); padding-bottom:0; }
+.cv-lesson-article__header {
+  padding: clamp(22px,4vw,40px);
+  padding-bottom: 0;
+  /* Ensure the sentinel div sits flush at bottom of header */
+  display: flex;
+  flex-direction: column;
+}
 
 .cv-lesson-path {
-  display:flex; flex-wrap:wrap; align-items:center; gap:6px;
-  margin-bottom:18px;
-  color:var(--text-3); font-size:11px; font-weight:900; letter-spacing:0.06em; text-transform:uppercase;
+  display:flex; flex-wrap:wrap; align-items:center; gap:5px;
+  margin-bottom:16px;
+  color:var(--text-3); font-size:10.5px; font-weight:900;
+  letter-spacing:0.07em; text-transform:uppercase; line-height:1;
 }
 .cv-lesson-path__link { color:var(--active-color); }
-.cv-lesson-path__sep  { opacity:0.4; }
+.cv-lesson-path__sep  { opacity:0.35; }
 
 .cv-lesson-title {
-  margin:0 0 14px;
+  margin:0 0 16px;
   color:var(--active-text);
   font-family:var(--font-title);
-  font-size:clamp(2.8rem,7vw,5.2rem);
-  line-height:0.88; font-weight:400; letter-spacing:0.03em;
+  font-size:clamp(2.6rem,6.5vw,4.8rem);
+  line-height:1.0;          /* was 0.88 — clips descenders on Pirata One */
+  font-weight:400;
+  letter-spacing:0.025em;
+  /* Nudge up so visual top of letters aligns with header padding */
+  position:relative;
+  top:-0.05em;
 }
 
 .cv-lesson-excerpt {
   margin:0 0 20px;
-  color:rgba(235,245,255,0.88);
+  color:rgba(235,245,255,0.84);
   font-family:var(--font-serif);
-  font-size:calc(1.22rem * var(--lesson-font-scale));
-  line-height:1.68;
+  font-size:calc(1.18rem * var(--lesson-font-scale));
+  line-height:1.70;
 }
 
 .cv-lesson-meta {
-  display:flex; flex-wrap:wrap; gap:7px; margin-bottom:18px;
+  display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-bottom:18px;
 }
 .cv-meta-chip {
-  padding:5px 9px; border-radius:999px;
+  padding:5px 10px; border-radius:999px;
   border:1px solid var(--border); background:rgba(255,255,255,0.04);
   color:var(--text-3); font-size:11px; font-weight:800;
   display:inline-flex; align-items:center; gap:5px;
+  line-height:1; white-space:nowrap;
 }
 
 /* Objectives accordion */
