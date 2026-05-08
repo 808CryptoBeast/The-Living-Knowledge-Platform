@@ -35,11 +35,30 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
   />
 
+  <!-- Supabase library -->
   <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script defer src="LKP/js/lkp-data.js"></script>
-  <script defer src="LKP/js/lkp-rewards.js"></script>
-  <script defer src="LKP/js/lkp-signout.js"></script>
-  <script defer src="LKP/js/profile.js"></script>
+
+  <!-- Supabase browser config.
+       Replace these with your real project values.
+       Use the anon public key only. Never use the service-role key in frontend code. -->
+  <script>
+    window.SUPABASE_URL = "https://YOUR-PROJECT-REF.supabase.co";
+    window.SUPABASE_ANON_KEY = "YOUR-SUPABASE-ANON-KEY";
+  </script>
+
+  <!-- Shared platform data and rewards -->
+  <script defer src="LKP/js/lkp-data.js?v=base-2"></script>
+  <script defer src="LKP/js/lkp-data-rich-additions.js?v=rich-2"></script>
+  <script defer src="LKP/js/lkp-data-primary-sources.js?v=ps-1"></script>
+  <script defer src="LKP/js/lkp-rewards.js?v=rewards-1"></script>
+
+  <!-- Cross-device Supabase profile/progress sync.
+       Must load before profile.js. -->
+  <script defer src="LKP/js/lkp-profile-sync.js?v=profile-sync-1"></script>
+
+  <!-- Sign out helper and main profile renderer -->
+  <script defer src="LKP/js/lkp-signout.js?v=signout-1"></script>
+  <script defer src="LKP/js/profile.js?v=profile-cloud-1"></script>
 </head>
 
 <body class="profile-page profile-theme-dark" data-time-phase="night" data-bg-variant="0">
@@ -77,7 +96,7 @@
     <nav class="profile-topbar__links" aria-label="Profile navigation">
       <a href="index.html"><i class="fas fa-house"></i> Home</a>
       <a href="LKP/lessons.html"><i class="fas fa-book-open"></i> Lessons</a>
-      <a href="admin.html"><i class="fas fa-user-shield"></i> Admin</a>
+      <a href="LKP/admin.html"><i class="fas fa-user-shield"></i> Admin</a>
 
       <button id="profileThemeToggle" class="profile-topbar__button profile-theme-toggle" type="button" aria-label="Toggle light and dark mode">
         <i class="fas fa-sun"></i> Light Mode
@@ -447,13 +466,13 @@
             </div>
 
             <div class="profile-admin-grid">
-              <a href="admin.html" class="profile-admin-card">
+              <a href="LKP/admin.html" class="profile-admin-card">
                 <i class="fas fa-screwdriver-wrench"></i>
                 <strong>Open Admin Dashboard</strong>
                 <span>Manage lessons, galaxies, cultures, modules, and sources.</span>
               </a>
 
-              <a href="lessons.html" class="profile-admin-card">
+              <a href="LKP/lessons.html" class="profile-admin-card">
                 <i class="fas fa-book-open"></i>
                 <strong>Review Lessons</strong>
                 <span>Inspect the public lesson experience.</span>
