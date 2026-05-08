@@ -1,16 +1,13 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   KA PAEPAE ʻIKE OLA — DEEP LESSONS v6
+   KA PAEPAE ʻIKE OLA — DEEP LESSONS v7 CLOUD SYNC
    File: LKP/js/lkp-lessons.js
 
-   Fixes:
-   - Hero images now load real files instead of placeholders.
-   - Image paths are relative to LKP/:
-       assets/images/example.png
-     NOT:
-       LKP/assets/images/example.png
-   - Supports .png, .jpg, .jpeg, .webp fallback attempts.
-   - Three.js removed from lesson hero.
-   - Hero is now a full-bleed background image.
+   Updates:
+   - Uses Supabase cloud sync through window.LKPProfileSync when signed in.
+   - Lesson completion syncs to user_lesson_progress.
+   - Reflections sync to user_lesson_reflections.
+   - Guest/local mode still works through localStorage.
+   - Hero images use full-bleed background images.
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -25,8 +22,13 @@
 
   /* ══════════════════════════════════════════════════════════════════════
      LESSON IMAGE REGISTRY
+
      IMPORTANT:
-     lessons.html lives inside /LKP/, so these paths should NOT start with LKP/.
+     lessons.html lives inside /LKP/, so image paths are relative to /LKP/.
+     Correct:
+       assets/images/example.png
+     Incorrect:
+       LKP/assets/images/example.png
   ══════════════════════════════════════════════════════════════════════ */
 
   const LESSON_IMAGE_REGISTRY = {
@@ -119,7 +121,7 @@
       credit: 'Maʻat — Truth, Justice, and Cosmic Balance'
     },
     'ke-maat-politics': {
-      url: 'assets/images/ke-maat.png',
+      url: 'assets/images/ke-maat-politics.png',
       pos: 'center 55%',
       credit: 'Maʻat as Political Philosophy — The Ruler Serves the Principle'
     },
@@ -139,7 +141,7 @@
       credit: 'Seshat — Measurement, Writing, Architecture, and Sacred Recordkeeping'
     },
     'ke-celestial-nile': {
-      url: 'assets/images/ke-nilestars.png',
+      url: 'assets/images/ke-celestial-nile.png',
       pos: 'center center',
       credit: 'The Nile, the Stars, and Sacred Timekeeping'
     },
@@ -148,7 +150,7 @@
     'bridge-darkness': {
       url: 'assets/images/bridge-darkness.png',
       pos: 'center center',
-      credit: 'Pō & Nun — Primordial Darkness and Water'
+      credit: 'Kumulipo & Nun — Creation from Primordial Darkness'
     },
     'bridge-pairs': {
       url: 'assets/images/bridge-pairs.png',
@@ -156,17 +158,17 @@
       credit: 'Paired Forces — Balance and Complementarity'
     },
     'bridge-aloha-maat': {
-      url: 'assets/images/bridge-alohamaat.png',
+      url: 'assets/images/bridge-aloha-maat.png',
       pos: 'center center',
       credit: 'Aloha & Maʻat — Ethics of Right Relationship'
     },
     'bridge-genealogy-ecology': {
-      url: 'assets/images/bridge-culture.png',
+      url: 'assets/images/bridge-genealogy-ecology.png',
       pos: 'center center',
       credit: 'Genealogy as Ecology — When Family Trees Include the Living World'
     },
     'bridge-navigation-astronomy': {
-      url: 'assets/images/br-skyknowledge.png',
+      url: 'assets/images/bridge-navigation-astronomy.png',
       pos: 'center center',
       credit: 'Sky Knowledge — Navigation, Calendars, and Reading the Heavens'
     },
@@ -180,7 +182,7 @@
     'br-darkness': {
       url: 'assets/images/bridge-darkness.png',
       pos: 'center center',
-      credit: 'Pō & Nun — Primordial Darkness and Water'
+      credit: 'Kumulipo & Nun — Creation from Primordial Darkness'
     },
     'br-aloha-maat': {
       url: 'assets/images/bridge-aloha-maat.png',
@@ -1309,7 +1311,7 @@
 
         <div class="cv-reflection__body">
           <p class="cv-reflection__intro">
-            These prompts are for your own thinking — saved locally on this device.
+            These prompts are for your own thinking — saved locally on this device and synced when signed in.
           </p>
 
           <div class="cv-reflection-list">
@@ -1462,15 +1464,30 @@
         state.reflections[lesson.id] = reflections;
         writeJSON(REFLECTIONS_KEY, state.reflections);
 
+        if (window.LKPProfileSync && window.LKPProfileSync.state.user) {
+          window.LKPProfileSync.saveReflection(
+            lesson.id,
+            textarea.dataset.reflectionIndex,
+            textarea.value,
+            textarea.closest('.cv-reflection-card')?.querySelector('.cv-reflection-card__prompt')?.textContent || ''
+          );
+        }
+
         const status = document.getElementById('reflectionStatus');
 
         if (status) {
-          status.innerHTML = '<i class="fas fa-check"></i> Saved';
+          if (window.LKPProfileSync && window.LKPProfileSync.state.user) {
+            status.innerHTML = '<i class="fas fa-cloud"></i> Saved to cloud';
+          } else {
+            status.innerHTML = '<i class="fas fa-check"></i> Saved locally';
+          }
 
           clearTimeout(bindReflectionTextareas._timer);
 
           bindReflectionTextareas._timer = setTimeout(() => {
-            status.innerHTML = '<i class="fas fa-lock"></i> Saved on this device only';
+            status.innerHTML = window.LKPProfileSync && window.LKPProfileSync.state.user
+              ? '<i class="fas fa-cloud"></i> Synced with your Passport'
+              : '<i class="fas fa-lock"></i> Saved on this device only';
           }, 1800);
         }
       });
@@ -1765,13 +1782,37 @@
     return true;
   }
 
-  function completeActiveLesson() {
+  async function completeActiveLesson() {
     const lesson = findLesson(state.activeLessonId);
     if (!lesson) return;
 
     if (isCompleted(lesson.id)) {
       showToast('Already complete — Nānā i ke kumu.');
       return;
+    }
+
+    if (window.LKPProfileSync && window.LKPProfileSync.state.user) {
+      const result = await window.LKPProfileSync.completeLesson(lesson);
+
+      if (result.completed) {
+        const localCompleted = readJSON(COMPLETED_KEY, []);
+
+        if (!localCompleted.includes(lesson.id)) {
+          localCompleted.push(lesson.id);
+          writeJSON(COMPLETED_KEY, localCompleted);
+        }
+
+        state.completed = [...new Set([...state.completed, lesson.id])];
+
+        try {
+          window.LKPRewards?.setCompletedLessons?.(state.completed);
+        } catch {}
+
+        updateCompleteButton(lesson);
+        renderLessonTree();
+        triggerCeremony(lesson, lesson.mana || DEFAULT_MANA);
+        return;
+      }
     }
 
     state.completed.push(lesson.id);
@@ -1991,6 +2032,30 @@
     });
   }
 
+  function hydrateFromCloudSync() {
+    if (!window.LKPProfileSync) return;
+
+    const completed = window.LKPProfileSync.getLocalCompleted?.();
+
+    if (Array.isArray(completed)) {
+      state.completed = completed;
+      writeJSON(COMPLETED_KEY, completed);
+    }
+
+    const reflections = window.LKPProfileSync.getLocalReflections?.();
+
+    if (reflections && typeof reflections === 'object') {
+      state.reflections = reflections;
+      writeJSON(REFLECTIONS_KEY, reflections);
+    }
+
+    renderLessonTree();
+
+    if (state.activeLessonId) {
+      updateCompleteButton(findLesson(state.activeLessonId));
+    }
+  }
+
   function build(data) {
     state.data = data;
     state.cultures = normalizeData(data);
@@ -2000,7 +2065,7 @@
     ensureSidebarTools();
 
     console.info(
-      '[LKP Lessons v6] Loaded:',
+      '[LKP Lessons v7 Cloud Sync] Loaded:',
       state.cultures.length,
       'cultures,',
       state.lessons.length,
@@ -2018,6 +2083,24 @@
 
     bindEvents();
     initNavAndProgress();
+
+    window.addEventListener('lkp:profile-sync-ready', function () {
+      hydrateFromCloudSync();
+
+      if (state.activeLessonId) {
+        renderLesson(state.activeLessonId, { noScroll: true });
+      }
+    });
+
+    window.addEventListener('lkp:cloud-progress-updated', function () {
+      hydrateFromCloudSync();
+
+      if (state.activeLessonId) {
+        updateCompleteButton(findLesson(state.activeLessonId));
+      }
+    });
+
+    hydrateFromCloudSync();
 
     window.dispatchEvent(new Event('lkp:tree-built'));
   }
