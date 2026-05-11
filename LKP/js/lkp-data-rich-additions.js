@@ -118,6 +118,7 @@
       concepts: data.concepts || lesson.concepts || [],
       sources: data.sources || lesson.sources || [],
       related: data.related || lesson.related || [],
+      connections: data.connections || lesson.connections || [],
       kidVersion: data.kidVersion || lesson.kidVersion || lesson.keikiVersion || undefined
     });
 
@@ -130,15 +131,21 @@
     kanakaCore: [
       {
         label: 'Queen Liliʻuokalani — The Kumulipo',
-        note: 'Primary Hawaiian-language/English translation tradition for the Kumulipo.'
+        note: 'Primary Hawaiian-language/English translation tradition for the Kumulipo.',
+        sourceType: 'primary text',
+        sourceConfidence: 'high confidence'
       },
       {
         label: 'Samuel M. Kamakau — Ruling Chiefs of Hawaii',
-        note: 'Historical Hawaiian accounts and aliʻi genealogical context.'
+        note: 'Historical Hawaiian accounts and aliʻi genealogical context.',
+        sourceType: 'historical chronicle',
+        sourceConfidence: 'high confidence'
       },
       {
         label: 'Mary Kawena Pukui — Hawaiian Dictionary / ʻŌlelo resources',
-        note: 'Language and cultural meaning reference.'
+        note: 'Language and cultural meaning reference.',
+        sourceType: 'language reference',
+        sourceConfidence: 'high confidence'
       }
     ],
     wayfinding: [
@@ -164,25 +171,35 @@
     kemetCore: [
       {
         label: 'Pyramid Texts and Coffin Texts',
-        note: 'Primary ritual and cosmological source material from ancient Kemet.'
+        note: 'Primary ritual and cosmological source material from ancient Kemet.',
+        sourceType: 'primary text',
+        sourceConfidence: 'high confidence'
       },
       {
         label: 'Memphite Theology / Shabaka Stone tradition',
-        note: 'Creation through heart, tongue, speech, and Ptah.'
+        note: 'Creation through heart, tongue, speech, and Ptah.',
+        sourceType: 'inscription tradition',
+        sourceConfidence: 'high confidence'
       },
       {
         label: 'Egyptian wisdom literature and Maʻat texts',
-        note: 'Ethics, governance, order, and proper conduct.'
+        note: 'Ethics, governance, order, and proper conduct.',
+        sourceType: 'wisdom literature',
+        sourceConfidence: 'high confidence'
       }
     ],
     bridge: [
       {
         label: 'Cross-cultural cosmology comparison notes',
-        note: 'Used for comparing pattern, not claiming identical origin.'
+        note: 'Used for comparing pattern, not claiming identical origin.',
+        sourceType: 'comparative synthesis',
+        sourceConfidence: 'context-based'
       },
       {
         label: 'Living knowledge methodology',
-        note: 'Treats traditions as knowledge systems carried by people, not decorative mythology.'
+        note: 'Treats traditions as knowledge systems carried by people, not decorative mythology.',
+        sourceType: 'methodological framework',
+        sourceConfidence: 'context-based'
       }
     ]
   };
@@ -195,6 +212,25 @@
       concepts: ['Pō', 'Ao', 'Koʻa', 'Genealogy', 'Ecology', 'Sacred darkness', 'Unfolding life'],
       sources: SOURCE_SETS.kanakaCore,
       related: ['km-wakea', 'ke-nun', 'bridge-darkness', 'bridge-genealogy-ecology'],
+      connections: [
+        {
+          cultureId: 'kemet',
+          lessonId: 'ke-nun',
+          axis: 'Cosmology',
+          note: 'Compare Pō and Nun as generative source frameworks.'
+        },
+        {
+          cultureId: 'bridge',
+          lessonId: 'bridge-darkness',
+          axis: 'Bridge',
+          note: 'Use the bridge lens to compare pattern without collapsing difference.'
+        },
+        {
+          cultureId: 'dreamtime',
+          axis: 'Future Thread',
+          note: 'Future expansion: link Songlines and place-memory cosmology.'
+        }
+      ],
       kidVersion: {
         summary: 'The Kumulipo teaches that life begins in deep darkness, water, heat, and relationship. It connects coral, sea life, land life, people, chiefs, and the cosmos into one family story.',
         bigIdeas: [
@@ -503,6 +539,25 @@ Map your own neighborhood as if it were an ahupuaʻa. Identify high ground, wate
       concepts: ['Nun', 'Primordial waters', 'Emergence', 'Atum', 'Creation before form'],
       sources: SOURCE_SETS.kemetCore,
       related: ['km-kumulipo', 'bridge-darkness', 'ke-ennead'],
+      connections: [
+        {
+          cultureId: 'kanaka',
+          lessonId: 'km-kumulipo',
+          axis: 'Creation',
+          note: 'Read with Kumulipo openings to contrast emergence language.'
+        },
+        {
+          cultureId: 'bridge',
+          lessonId: 'bridge-darkness',
+          axis: 'Bridge',
+          note: 'Follow synthesis threads while preserving each source context.'
+        },
+        {
+          cultureId: 'dogon',
+          axis: 'Future Thread',
+          note: 'Future expansion: compare sky-water origin models and symbolism.'
+        }
+      ],
       kidVersion: {
         summary: 'Nun is the deep primordial water before creation. In Kemetic thought, the world emerges from this hidden watery source.',
         bigIdeas: [
@@ -708,6 +763,25 @@ Make a Maʻat decision chart: write one hard choice, list actions that create ba
       concepts: ['Pō', 'Nun', 'Primordial water', 'Darkness', 'Potential', 'Creation'],
       sources: SOURCE_SETS.bridge,
       related: ['km-kumulipo', 'ke-nun', 'bridge-pairs'],
+      connections: [
+        {
+          cultureId: 'kanaka',
+          lessonId: 'km-kumulipo',
+          axis: 'Source',
+          note: 'Return to Hawaiian source chant context.'
+        },
+        {
+          cultureId: 'kemet',
+          lessonId: 'ke-nun',
+          axis: 'Source',
+          note: 'Return to Kemetic scripture context.'
+        },
+        {
+          cultureId: 'vedic',
+          axis: 'Future Thread',
+          note: 'Future expansion: compare primordial waters and speech-creation motifs.'
+        }
+      ],
       kidVersion: {
         summary: 'Both Hawaiian and Kemetic traditions describe beginnings through deep darkness or deep water. These are not empty places; they are full of possibility.',
         bigIdeas: [

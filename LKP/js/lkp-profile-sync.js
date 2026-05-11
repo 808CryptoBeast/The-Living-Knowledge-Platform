@@ -95,9 +95,28 @@
     const supabase = getSupabaseClient();
     if (!supabase) return null;
 
+    const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+
+    if (sessionError) {
+      console.warn('[LKP Profile Sync] getSession failed:', sessionError.message);
+      return null;
+    }
+
+    const sessionUser = sessionData?.session?.user || null;
+
+    if (!sessionUser) {
+      state.user = null;
+      return null;
+    }
+
     const { data, error } = await supabase.auth.getUser();
 
     if (error) {
+      if (/auth session missing/i.test(String(error.message || ''))) {
+        state.user = null;
+        return null;
+      }
+
       console.warn('[LKP Profile Sync] getUser failed:', error.message);
       return null;
     }

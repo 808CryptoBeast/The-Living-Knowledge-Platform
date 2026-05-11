@@ -234,6 +234,9 @@
         <li>
           <a class="lkp-nav__link lkp-nav__link--profile" href="profile.html">Profile</a>
         </li>
+        <li>
+          <a class="lkp-nav__link lkp-nav__link--begin" href="LKP/lessons.html">Begin Learning</a>
+        </li>
       </ul>
 
       <div class="lkp-nav__right">
@@ -658,33 +661,58 @@
       <div class="lkp-container">
 
         <div class="lkp-compass-explainer">
-          <div class="lkp-compass-visual lkp-reveal" aria-hidden="true">
-            <div class="lkp-compass-ring"></div>
-            <div class="lkp-compass-ring lkp-compass-ring--inner"></div>
-            <div class="lkp-compass-center">◈</div>
+          <div class="lkp-compass-panel lkp-reveal">
+            <div class="lkp-compass-visual" aria-hidden="true">
+              <div class="lkp-compass-ring"></div>
+              <div class="lkp-compass-ring lkp-compass-ring--inner"></div>
+              <div class="lkp-compass-center">◈</div>
+            </div>
+
+            <aside class="lkp-navmap-mini" id="lkp-mini-viewer" aria-label="Mini live explorer preview">
+              <div class="lkp-navmap-mini__head">
+                <span>Live Explorer Preview</span>
+                <small>Mirrors the main sky dome</small>
+              </div>
+
+              <div class="lkp-navmap-mini__controls" role="group" aria-label="Mini viewer controls">
+                <button class="lkp-navmap-mini__btn" id="lkp-mini-toggle" type="button" aria-pressed="false">Pause Preview</button>
+                <button class="lkp-navmap-mini__btn" id="lkp-mini-zoom-in" type="button">Zoom +</button>
+                <button class="lkp-navmap-mini__btn" id="lkp-mini-zoom-out" type="button">Zoom −</button>
+                <button class="lkp-navmap-mini__btn" id="lkp-mini-reset" type="button">Reset View</button>
+              </div>
+
+              <canvas id="lkp-mini-viewer-canvas" aria-hidden="true"></canvas>
+            </aside>
           </div>
 
-          <div class="lkp-reveal">
+          <div class="lkp-navmap-copy lkp-reveal">
             <div class="lkp-eyebrow">How to Navigate</div>
-            <h2 class="lkp-section-title" style="text-align:left">The Star Navigation Map</h2>
-            <p style="font-family:var(--font-serif);font-size:16px;line-height:1.80;color:var(--muted);margin-bottom:20px">
-              Above, you are standing at the center of a celestial dome — the same vantage point
-              from which Hawaiian navigators read the stars. Knowledge concepts appear as luminous
-              crystal prisms at their positions across the sky.
+            <h2 class="lkp-section-title lkp-navmap-title">The Star Navigation Map</h2>
+            <p class="lkp-navmap-intro">
+              You are standing at the center of a celestial dome, the same observational vantage
+              used in Hawaiian wayfinding. Each knowledge concept appears as a luminous crystal
+              node positioned in the sky by its cultural constellation.
             </p>
-            <p style="font-family:var(--font-serif);font-size:16px;line-height:1.80;color:var(--muted);margin-bottom:24px">
-              The 32-house Hawaiian star compass is rendered below the horizon — the same navigation
-              instrument that guided Hōkūleʻa across open ocean. Cultural territories glow with their
-              characteristic light: emerald for Kānaka Maoli, gold for Kemet, violet for the Bridge
-              between them.
+            <p class="lkp-navmap-intro">
+              The 32-house Hawaiian star compass is rendered below the horizon, echoing the
+              navigation framework that guided Hōkūleʻa across open ocean. Cultural territories
+              are color-coded for orientation: emerald for Kānaka Maoli, gold for Kemet, and
+              violet for the Bridge between them.
             </p>
-            <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;font-size:13px;color:var(--muted)">
-              <li><span style="color:var(--gold);margin-right:8px">◈</span> Drag to rotate the sky — the dome turns around you</li>
-              <li><span style="color:var(--gold);margin-right:8px">◈</span> Scroll wheel or pinch to zoom in and out</li>
-              <li><span style="color:var(--gold);margin-right:8px">◈</span> Hover a crystal node to identify the concept</li>
-              <li><span style="color:var(--gold);margin-right:8px">◈</span> Double-click a node to zoom into it</li>
-              <li><span style="color:var(--gold);margin-right:8px">◈</span> Single-click to navigate to that lesson</li>
-              <li><span style="color:var(--gold);margin-right:8px">◈</span> Double-click empty sky to zoom back out</li>
+
+            <div class="lkp-navmap-territories" aria-label="Cultural color legend">
+              <span class="lkp-navmap-territory lkp-navmap-territory--kanaka">Emerald · Kānaka Maoli</span>
+              <span class="lkp-navmap-territory lkp-navmap-territory--kemet">Gold · Kemet</span>
+              <span class="lkp-navmap-territory lkp-navmap-territory--bridge">Violet · Bridge</span>
+            </div>
+
+            <ul class="lkp-navmap-legend" aria-label="Map controls">
+              <li><span class="lkp-navmap-bullet">◈</span><span>Drag to rotate the sky; the dome turns around your viewpoint.</span></li>
+              <li><span class="lkp-navmap-bullet">◈</span><span>Scroll wheel or pinch to zoom in and out.</span></li>
+              <li><span class="lkp-navmap-bullet">◈</span><span>Hover a crystal node to reveal concept and culture.</span></li>
+              <li><span class="lkp-navmap-bullet">◈</span><span>Click a node to open its lesson (tap on mobile).</span></li>
+              <li><span class="lkp-navmap-bullet">◈</span><span>Double-click a node to zoom into it (double-tap on mobile).</span></li>
+              <li><span class="lkp-navmap-bullet">◈</span><span>Double-click empty sky to return to full-map view.</span></li>
             </ul>
           </div>
         </div>

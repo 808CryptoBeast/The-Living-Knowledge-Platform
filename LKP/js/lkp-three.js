@@ -488,6 +488,87 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = IS_MOBILE ? 1.02 : 1.08;
 renderer.setClearColor(0x01030a);
 
+const miniViewerCanvas = document.getElementById("lkp-mini-viewer-canvas");
+const miniToggleBtn = document.getElementById("lkp-mini-toggle");
+const miniZoomInBtn = document.getElementById("lkp-mini-zoom-in");
+const miniZoomOutBtn = document.getElementById("lkp-mini-zoom-out");
+const miniResetBtn = document.getElementById("lkp-mini-reset");
+let miniRenderer = null;
+let miniCamera = null;
+let miniControls = null;
+const miniViewerState = {
+  paused: false
+};
+
+function clamp(v, min, max) {
+  return Math.max(min, Math.min(max, v));
+}
+
+function stepMiniDistance(mult) {
+  if (!miniCamera || !miniControls) return;
+  const v = miniCamera.position.clone().sub(miniControls.target).multiplyScalar(mult);
+  const max = IS_MOBILE ? 150 : 220;
+  const min = 1;
+  const len = clamp(v.length(), min, max);
+  miniCamera.position.copy(miniControls.target).add(v.setLength(len));
+}
+
+function syncMiniButtons() {
+  if (miniToggleBtn) {
+    miniToggleBtn.textContent = miniViewerState.paused ? "Resume Preview" : "Pause Preview";
+    miniToggleBtn.setAttribute("aria-pressed", miniViewerState.paused ? "true" : "false");
+  }
+}
+
+if (miniToggleBtn) {
+  miniToggleBtn.addEventListener("click", () => {
+    miniViewerState.paused = !miniViewerState.paused;
+    syncMiniButtons();
+  });
+}
+
+if (miniZoomInBtn) miniZoomInBtn.addEventListener("click", () => stepMiniDistance(0.86));
+if (miniZoomOutBtn) miniZoomOutBtn.addEventListener("click", () => stepMiniDistance(1.16));
+if (miniResetBtn) {
+  miniResetBtn.addEventListener("click", () => {
+    if (!miniCamera || !miniControls) return;
+    miniCamera.position.copy(getOverviewCameraPos());
+    miniControls.target.set(0, 0, 0);
+    miniControls.update();
+  });
+}
+
+syncMiniButtons();
+
+function resizeMiniViewer() {
+  if (!miniViewerCanvas || !miniRenderer || !miniCamera) return;
+
+  const rect = miniViewerCanvas.getBoundingClientRect();
+  if (!rect.width || !rect.height) return;
+
+  const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+  miniRenderer.setPixelRatio(dpr);
+  miniRenderer.setSize(rect.width, rect.height, false);
+  miniCamera.aspect = rect.width / rect.height;
+  miniCamera.fov = IS_MOBILE ? 78 : 72;
+  miniCamera.updateProjectionMatrix();
+
+  if (miniControls) {
+    miniControls.zoomSpeed = IS_MOBILE ? 0.42 : 0.55;
+    miniControls.maxDistance = IS_MOBILE ? 150 : 220;
+    miniControls.panSpeed = IS_MOBILE ? 0.34 : 0.48;
+    miniControls.rotateSpeed = IS_MOBILE ? -0.34 : -0.42;
+    miniControls.autoRotateSpeed = IS_MOBILE ? 0.14 : 0.22;
+  }
+}
+
+function syncMiniViewer() {
+  if (!miniRenderer || !miniCamera || !miniControls) return;
+  if (miniViewerState.paused) return;
+  miniControls.update();
+  miniRenderer.render(scene, miniCamera);
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // SCENE / CAMERA / BLOOM
 // ─────────────────────────────────────────────────────────────────────────────
@@ -502,7 +583,13 @@ const camera = new THREE.PerspectiveCamera(
   600
 );
 
-camera.position.set(0, IS_MOBILE ? 1.9 : 1.6, 0);
+function getOverviewCameraPos() {
+  return IS_MOBILE
+    ? new THREE.Vector3(0, 9.5, 44)
+    : new THREE.Vector3(0, 11.5, 58);
+}
+
+camera.position.copy(getOverviewCameraPos());
 
 const composer = new EffectComposer(renderer);
 composer.addPass(new RenderPass(scene, camera));
@@ -524,17 +611,71 @@ const controls = new OrbitControls(camera, renderer.domElement);
 
 controls.enableDamping = true;
 controls.dampingFactor = IS_MOBILE ? 0.075 : 0.06;
-controls.enablePan = false;
+controls.enablePan = true;
+controls.panSpeed = IS_MOBILE ? 0.34 : 0.48;
+controls.screenSpacePanning = true;
 controls.enableZoom = true;
 controls.zoomSpeed = IS_MOBILE ? 0.42 : 0.55;
 controls.minDistance = 1;
-controls.maxDistance = IS_MOBILE ? 92 : 120;
+controls.maxDistance = IS_MOBILE ? 150 : 220;
 controls.rotateSpeed = IS_MOBILE ? -0.34 : -0.42;
 controls.minPolarAngle = 0.28;
 controls.maxPolarAngle = Math.PI * 0.86;
 controls.autoRotate = !REDUCED_MOTION;
 controls.autoRotateSpeed = IS_MOBILE ? 0.14 : 0.22;
 controls.target.set(0, 0, 0);
+
+if (miniViewerCanvas) {
+  miniRenderer = new THREE.WebGLRenderer({
+    canvas: miniViewerCanvas,
+    antialias: !IS_MOBILE,
+    powerPreference: "high-performance",
+    alpha: false
+  });
+
+  miniRenderer.outputColorSpace = THREE.SRGBColorSpace;
+  miniRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+  miniRenderer.toneMappingExposure = renderer.toneMappingExposure;
+  miniRenderer.setClearColor(0x01030a);
+
+  miniCamera = new THREE.PerspectiveCamera(
+    IS_MOBILE ? 78 : 72,
+    16 / 10,
+    0.1,
+    600
+  );
+
+  miniCamera.position.copy(getOverviewCameraPos());
+
+  miniControls = new OrbitControls(miniCamera, miniRenderer.domElement);
+  miniControls.enableDamping = true;
+  miniControls.dampingFactor = IS_MOBILE ? 0.075 : 0.06;
+  miniControls.enablePan = true;
+  miniControls.panSpeed = IS_MOBILE ? 0.34 : 0.48;
+  miniControls.screenSpacePanning = true;
+  miniControls.enableZoom = true;
+  miniControls.zoomSpeed = IS_MOBILE ? 0.42 : 0.55;
+  miniControls.minDistance = 1;
+  miniControls.maxDistance = IS_MOBILE ? 150 : 220;
+  miniControls.rotateSpeed = IS_MOBILE ? -0.34 : -0.42;
+  miniControls.minPolarAngle = 0.28;
+  miniControls.maxPolarAngle = Math.PI * 0.86;
+  miniControls.autoRotate = !REDUCED_MOTION;
+  miniControls.autoRotateSpeed = IS_MOBILE ? 0.14 : 0.22;
+  miniControls.target.set(0, 0, 0);
+
+  miniViewerCanvas.addEventListener("pointerdown", () => {
+    miniViewerCanvas.classList.add("is-panning");
+  }, { passive: true });
+
+  const clearMiniPanClass = () => miniViewerCanvas.classList.remove("is-panning");
+  miniViewerCanvas.addEventListener("pointerup", clearMiniPanClass, { passive: true });
+  miniViewerCanvas.addEventListener("pointercancel", clearMiniPanClass, { passive: true });
+  miniViewerCanvas.addEventListener("pointerleave", clearMiniPanClass, { passive: true });
+
+  miniViewerCanvas.addEventListener("wheel", (e) => e.preventDefault(), { passive: false });
+  resizeMiniViewer();
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SCENE GROUPS
@@ -1411,9 +1552,27 @@ let activeGalaxyId = null;
 
 const CULTURE_LABELS = { kanaka: "K\u0101naka Maoli", kemet: "Kemet", bridge: "The Bridge" };
 const CULTURE_COLORS = { kanaka: "#3cb371", kemet: "#f0c96a", bridge: "#7b88ff" };
-const LESSON_URL     = "lessons.html#";
+const LESSON_URL     = "LKP/lessons.html#";
 
 function setPointerFromEvent(e) {
+
+  function getConceptFromEvent(e, domEl, cam) {
+    if (!domEl || !cam) return null;
+    const b = domEl.getBoundingClientRect();
+    if (!b.width || !b.height) return null;
+
+    const p = new THREE.Vector2(
+      ((e.clientX - b.left) / b.width) * 2 - 1,
+      -((e.clientY - b.top) / b.height) * 2 + 1
+    );
+
+    raycaster.setFromCamera(p, cam);
+    const hits = raycaster.intersectObjects(pickable, false);
+    if (!hits.length) return null;
+
+    const id = hits[0].object?.userData?.conceptId;
+    return id ? CONCEPT_MAP.get(id) || null : null;
+  }
   const b = renderer.domElement.getBoundingClientRect();
   pointer.x =  ((e.clientX - b.left) / b.width)  * 2 - 1;
   pointer.y = -((e.clientY - b.top)  / b.height) * 2 + 1;
@@ -1440,6 +1599,9 @@ let lastTap      = 0;
 let zoomTarget   = null;
 let zoomStart    = null;
 let zoomProgress = 0;
+let miniZoomTarget = null;
+let miniZoomStart = null;
+let miniZoomProgress = 0;
 
 function startZoomTo(pos) {
   if (!pos) return;
@@ -1449,12 +1611,20 @@ function startZoomTo(pos) {
   controls.autoRotate = false;
 }
 
+function startMiniZoomTo(pos) {
+  if (!pos || !miniCamera || !miniControls) return;
+  miniZoomTarget = pos.clone().multiplyScalar(IS_MOBILE ? 0.26 : 0.22);
+  miniZoomStart = miniCamera.position.clone();
+  miniZoomProgress = 0;
+  miniControls.autoRotate = false;
+}
+
 renderer.domElement.addEventListener("dblclick", () => {
   if (hoveredId) {
     const c = CONCEPT_MAP.get(hoveredId);
     if (c) startZoomTo(skyPos(c.az, c.alt, c.r));
   } else {
-    zoomTarget   = new THREE.Vector3(0, IS_MOBILE ? 1.9 : 1.6, 0);
+    zoomTarget   = getOverviewCameraPos();
     zoomStart    = camera.position.clone();
     zoomProgress = 0;
     window.setTimeout(() => { controls.autoRotate = !REDUCED_MOTION; }, 1800);
@@ -1631,6 +1801,7 @@ function onFrame() {
   updateTooltip();
   controls.update();
   composer.render();
+  syncMiniViewer();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1649,9 +1820,33 @@ function handleResize() {
   renderer.toneMappingExposure = IS_MOBILE ? 1.02 : 1.08;
   scene.fog.density     = IS_MOBILE ? 0.0055 : 0.004;
   controls.zoomSpeed    = IS_MOBILE ? 0.42 : 0.55;
-  controls.maxDistance  = IS_MOBILE ? 92 : 120;
+  controls.maxDistance  = IS_MOBILE ? 150 : 220;
+  controls.panSpeed     = IS_MOBILE ? 0.34 : 0.48;
   controls.rotateSpeed  = IS_MOBILE ? -0.34 : -0.42;
   controls.autoRotateSpeed = IS_MOBILE ? 0.14 : 0.22;
+
+  miniViewerCanvas.addEventListener("click", (e) => {
+    const c = getConceptFromEvent(e, miniRenderer?.domElement, miniCamera);
+    if (c?.lessonId) window.location.href = LESSON_URL + c.lessonId;
+  });
+
+  miniViewerCanvas.addEventListener("dblclick", (e) => {
+    const c = getConceptFromEvent(e, miniRenderer?.domElement, miniCamera);
+    if (c) {
+      startMiniZoomTo(skyPos(c.az, c.alt, c.r));
+      return;
+    }
+
+    if (!miniCamera || !miniControls) return;
+    miniZoomTarget = getOverviewCameraPos();
+    miniZoomStart = miniCamera.position.clone();
+    miniZoomProgress = 0;
+    window.setTimeout(() => {
+      if (miniControls) miniControls.autoRotate = !REDUCED_MOTION;
+    }, 1800);
+  });
+
+  resizeMiniViewer();
 }
 
 window.addEventListener("resize",            handleResize,                         { passive: true });
@@ -1674,6 +1869,13 @@ function injectLoader() {
   `;
   document.body.appendChild(el);
 }
+
+  if (miniZoomTarget && miniZoomProgress < 1 && miniCamera) {
+    miniZoomProgress = Math.min(1, miniZoomProgress + (IS_MOBILE ? 0.034 : 0.028));
+    const ease = 1 - Math.pow(1 - miniZoomProgress, 3);
+    miniCamera.position.lerpVectors(miniZoomStart, miniZoomTarget, ease);
+    if (miniZoomProgress >= 1) miniZoomTarget = null;
+  }
 
 function dismissLoader() {
   const el = document.getElementById("lkp-loader");

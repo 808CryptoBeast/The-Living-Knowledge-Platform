@@ -529,6 +529,40 @@
     return [...new Set(ordered.filter(Boolean))];
   }
 
+  const RESOLVED_IMAGE_CACHE = new Map();
+  let heroResolveToken = 0;
+  let stripResolveToken = 0;
+
+  function resolveFirstExistingImage(url) {
+    const cleaned = cleanAssetPath(url);
+    if (!cleaned) return Promise.resolve('');
+
+    if (RESOLVED_IMAGE_CACHE.has(cleaned)) {
+      return RESOLVED_IMAGE_CACHE.get(cleaned);
+    }
+
+    const candidates = buildUrlCandidates(cleaned);
+
+    const task = new Promise(resolve => {
+      function tryNext(index) {
+        if (index >= candidates.length) {
+          resolve('');
+          return;
+        }
+
+        const probe = new Image();
+        probe.onload = () => resolve(candidates[index]);
+        probe.onerror = () => tryNext(index + 1);
+        probe.src = candidates[index];
+      }
+
+      tryNext(0);
+    });
+
+    RESOLVED_IMAGE_CACHE.set(cleaned, task);
+    return task;
+  }
+
   function getHeroImage(lesson) {
     const raw = cleanAssetPath(lesson.image || lesson.heroImage || lesson.thumbnail || '');
 
@@ -552,6 +586,8 @@
     const hero = document.getElementById('cultureHero');
     if (!hero) return;
 
+    const token = ++heroResolveToken;
+
     const img = getHeroImage(lesson);
 
     if (img.placeholder) {
@@ -561,29 +597,20 @@
 
     applyPlaceholder(hero, lesson, img, true);
 
-    const candidates = buildUrlCandidates(img.url);
+    resolveFirstExistingImage(img.url).then(found => {
+      if (token !== heroResolveToken || state.activeLessonId !== lesson.id) return;
 
-    function tryNext(index) {
-      if (index >= candidates.length) {
+      if (!found) {
         applyPlaceholder(hero, lesson, img);
-        console.warn('[LKP Hero] No image found for', lesson.id, '— tried:', candidates);
+        console.warn('[LKP Hero] No image found for', lesson.id, '— base:', img.url);
         return;
       }
 
-      const probe = new Image();
-
-      probe.onload = () => {
-        applyRealHero(hero, {
-          ...img,
-          url: candidates[index]
-        });
-      };
-
-      probe.onerror = () => tryNext(index + 1);
-      probe.src = candidates[index];
-    }
-
-    tryNext(0);
+      applyRealHero(hero, {
+        ...img,
+        url: found
+      });
+    });
   }
 
   function applyRealHero(hero, img) {
@@ -627,21 +654,111 @@
   function normalizeSources(raw) {
     if (!Array.isArray(raw)) return [];
 
+    function inferSourceMeta(source) {
+      const hint = `${source.label || ''} ${source.note || ''} ${source.url || ''}`.toLowerCase();
+      const explicitType = String(source.sourceType || source.type || '').trim().toLowerCase();
+      const explicitConfidence = String(source.sourceConfidence || source.confidence || '').trim().toLowerCase();
+
+      let sourceType = explicitType;
+      if (!sourceType) {
+        if (/oral|chant|moolelo|mo'olelo|genealogy|kupuna/.test(hint)) sourceType = 'oral tradition';
+        else if (/papyrus|manuscript|inscription|tablet|archive/.test(hint)) sourceType = 'primary text';
+        else if (/journal|press|doi|edu\b|research|article|study/.test(hint)) sourceType = 'research';
+        else if (/museum|artifact|archaeolog|excavat/.test(hint)) sourceType = 'archaeological';
+        else sourceType = 'reference';
+      }
+
+      let sourceConfidence = explicitConfidence;
+      if (!sourceConfidence) {
+        if (/primary|archive|inscription|papyrus|peer review|doi|journal/.test(hint)) sourceConfidence = 'high confidence';
+        else if (/oral|tradition|community|interpret/.test(hint)) sourceConfidence = 'context-based';
+        else sourceConfidence = 'moderate confidence';
+      }
+
+      return { sourceType, sourceConfidence };
+    }
+
     return raw.map(source => {
       if (typeof source === 'string') {
         return {
           label: source,
           url: '',
-          note: ''
+          note: '',
+          sourceType: 'reference',
+          sourceConfidence: 'moderate confidence'
         };
       }
 
-      return {
+      const normalized = {
         label: source.label || source.title || source.name || '',
         url: source.url || source.href || '',
         note: source.note || source.desc || ''
       };
+
+      const meta = inferSourceMeta({
+        ...normalized,
+        type: source.type,
+        sourceType: source.sourceType,
+        confidence: source.confidence,
+        sourceConfidence: source.sourceConfidence
+      });
+
+      return {
+        ...normalized,
+        sourceType: meta.sourceType,
+        sourceConfidence: meta.sourceConfidence
+      };
     }).filter(source => source.label);
+  }
+
+  function getLessonConceptChips(lesson) {
+    const fromTag = [];
+    const match = String(lesson.content || '').match(/<concepts>([\s\S]*?)<\/concepts>/i);
+
+    if (match) {
+      match[1]
+        .split('·')
+        .map(item => item.trim())
+        .filter(Boolean)
+        .forEach(item => fromTag.push(item));
+    }
+
+    if (fromTag.length) {
+      return [...new Set(fromTag)].slice(0, 8);
+    }
+
+    const cleanTitleWords = String(lesson.title || '')
+      .split(/\s+/)
+      .map(word => word.trim())
+      .filter(word => word.length >= 4 && !/^the$/i.test(word));
+
+    return [...new Set(cleanTitleWords)].slice(0, 6);
+  }
+
+  function normalizeConnections(raw) {
+    if (!Array.isArray(raw)) return [];
+
+    return raw.map(item => {
+      if (typeof item === 'string') {
+        return {
+          cultureId: item,
+          lessonId: '',
+          label: '',
+          note: '',
+          axis: '',
+          url: ''
+        };
+      }
+
+      return {
+        cultureId: item.cultureId || item.culture || '',
+        lessonId: item.lessonId || item.lesson || '',
+        label: item.label || item.title || '',
+        note: item.note || item.desc || '',
+        axis: item.axis || item.theme || '',
+        url: item.url || item.href || ''
+      };
+    }).filter(item => item.cultureId || item.lessonId || item.url);
   }
 
   function normalizeKidVersion(lesson) {
@@ -689,6 +806,7 @@
                   image: lesson.image || lesson.heroImage || lesson.thumbnail || '',
                   sources: normalizeSources(lesson.sources || lesson.references || []),
                   related: Array.isArray(lesson.related) ? lesson.related : [],
+                  connections: normalizeConnections(lesson.connections || lesson.bridges || []),
                   kidVersion: normalizeKidVersion(lesson),
                   cultureId: culture.id || '',
                   cultureName: culture.name || '',
@@ -1519,10 +1637,247 @@
               ${source.url ? 'target="_blank" rel="noopener"' : ''}
             >
               <strong>${escapeHTML(source.label)}</strong>
+              <div class="cv-source-badges">
+                ${source.sourceType ? `<span class="cv-source-badge cv-source-badge--type">${escapeHTML(source.sourceType)}</span>` : ''}
+                ${source.sourceConfidence ? `<span class="cv-source-badge cv-source-badge--confidence">${escapeHTML(source.sourceConfidence)}</span>` : ''}
+              </div>
               ${source.note ? `<span>${escapeHTML(source.note)}</span>` : ''}
               <small>${source.url ? 'Open →' : 'Reference'}</small>
             </a>
           `).join('')}
+        </div>
+      </section>
+    `;
+  }
+
+  function renderLessonVisuals(lesson) {
+    const holder = document.getElementById('lessonVisuals');
+    if (!holder) return;
+
+    const words = lesson.contentText ? lesson.contentText.split(/\s+/).length : 0;
+    const readMins = lesson.readTime || (words > 0 ? `${Math.ceil(words / 210)} min read` : 'Deep reading');
+    const conceptChips = getLessonConceptChips(lesson);
+    const sources = Array.isArray(lesson.sources) ? lesson.sources : [];
+    const connections = Array.isArray(lesson.connections) ? lesson.connections : [];
+    const highConfidence = sources.filter(source => /high/i.test(source.sourceConfidence || '')).length;
+
+    holder.innerHTML = `
+      <section class="cv-lesson-visuals">
+        <div class="cv-divider-heading">
+          <span>Lesson Snapshot</span>
+        </div>
+
+        <div class="cv-lesson-stats">
+          <article class="cv-lesson-stat">
+            <small>Depth</small>
+            <strong>${escapeHTML(readMins)}</strong>
+          </article>
+          <article class="cv-lesson-stat">
+            <small>Sources</small>
+            <strong>${sources.length}</strong>
+          </article>
+          <article class="cv-lesson-stat">
+            <small>High Confidence</small>
+            <strong>${highConfidence}</strong>
+          </article>
+          <article class="cv-lesson-stat">
+            <small>Connections</small>
+            <strong>${connections.length}</strong>
+          </article>
+        </div>
+
+        ${conceptChips.length ? `
+          <div class="cv-lesson-concepts" role="list" aria-label="Key lesson concepts">
+            ${conceptChips.map(item => `<span class="cv-lesson-concept" role="listitem">${escapeHTML(item)}</span>`).join('')}
+          </div>
+        ` : ''}
+      </section>
+    `;
+  }
+
+  function renderLessonImageStrip(lesson) {
+    const holder = document.getElementById('lessonVisualStrip');
+    if (!holder) return;
+
+    const token = ++stripResolveToken;
+    const byId = new Map(state.lessons.map(item => [item.id, item]));
+    const sameModule = state.lessons
+      .filter(item => item.id !== lesson.id && item.moduleId === lesson.moduleId)
+      .slice(0, 4);
+
+    const queue = [
+      lesson,
+      ...(lesson.related || []).map(id => byId.get(id)).filter(Boolean),
+      ...sameModule
+    ];
+
+    const uniqueLessons = [...new Map(queue.map(item => [item.id, item])).values()].slice(0, 6);
+
+    Promise.all(uniqueLessons.map(async item => {
+      const image = getHeroImage(item);
+      if (!image || image.placeholder || !image.url) return null;
+
+      const resolved = await resolveFirstExistingImage(image.url);
+      if (!resolved) return null;
+
+      return {
+        id: item.id,
+        title: item.title,
+        cultureName: item.cultureName,
+        color: getCultureColor(item.cultureTheme),
+        url: resolved
+      };
+    })).then(cards => {
+      if (token !== stripResolveToken || state.activeLessonId !== lesson.id) return;
+
+      const liveCards = cards.filter(Boolean).slice(0, 5);
+
+      if (!liveCards.length) {
+        holder.innerHTML = '';
+        return;
+      }
+
+      holder.innerHTML = `
+        <section class="cv-visual-strip">
+          <div class="cv-divider-heading">
+            <span>Visual Archive</span>
+          </div>
+
+          <div class="cv-visual-strip__row">
+            ${liveCards.map(card => `
+              <button
+                class="cv-visual-strip__card"
+                type="button"
+                data-related-lesson="${escapeHTML(card.id)}"
+                style="--visual-color:${card.color}"
+              >
+                <img src="${escapeAttr(card.url)}" alt="${escapeAttr(card.title)}" loading="lazy" />
+                <span>
+                  <strong>${escapeHTML(card.title)}</strong>
+                  <small>${escapeHTML(card.cultureName || 'Lesson')}</small>
+                </span>
+              </button>
+            `).join('')}
+          </div>
+        </section>
+      `;
+    });
+  }
+
+  function getFirstLessonForCulture(cultureId, excludeLessonId) {
+    return state.lessons.find(item => item.cultureId === cultureId && item.id !== excludeLessonId) || null;
+  }
+
+  function renderConnections(lesson) {
+    const holder = document.getElementById('lessonConnections');
+    if (!holder) return;
+
+    const connections = Array.isArray(lesson.connections) ? lesson.connections : [];
+
+    if (!connections.length) {
+      holder.innerHTML = '';
+      return;
+    }
+
+    const byLessonId = new Map(state.lessons.map(item => [item.id, item]));
+    const byCultureId = new Map(state.cultures.map(item => [item.id, item]));
+
+    const cards = connections.map(connection => {
+      const explicitLesson = connection.lessonId ? byLessonId.get(connection.lessonId) : null;
+      const fallbackLesson = !explicitLesson && connection.cultureId
+        ? getFirstLessonForCulture(connection.cultureId, lesson.id)
+        : null;
+      const targetLesson = explicitLesson || fallbackLesson;
+
+      const targetCulture =
+        byCultureId.get(connection.cultureId) ||
+        (targetLesson ? byCultureId.get(targetLesson.cultureId) : null);
+
+      const cultureName = targetCulture?.name || targetLesson?.cultureName || 'Connected Culture';
+      const cultureEmoji = targetCulture?.emoji || targetLesson?.cultureEmoji || '✦';
+      const cultureTheme = targetCulture?.theme || targetLesson?.cultureTheme || 'default';
+      const color = getCultureColor(cultureTheme);
+
+      const title = connection.label || targetLesson?.title || cultureName;
+      const note = connection.note || (targetLesson
+        ? `${targetLesson.cultureName} · ${targetLesson.moduleTitle}`
+        : 'Open this culture thread');
+      const axis = connection.axis || '';
+
+      if (connection.url) {
+        return `
+          <a
+            class="cv-connection-card"
+            href="${escapeHTML(connection.url)}"
+            target="_blank"
+            rel="noopener"
+            style="--connection-color:${color}"
+          >
+            <span class="cv-connection-card__emoji">${escapeHTML(cultureEmoji)}</span>
+            <div>
+              <strong>${escapeHTML(title)}</strong>
+              <small>${escapeHTML(note)}</small>
+            </div>
+            ${axis ? `<span class="cv-connection-card__axis">${escapeHTML(axis)}</span>` : ''}
+            <span class="cv-connection-card__go">Open ↗</span>
+          </a>
+        `;
+      }
+
+      if (targetLesson) {
+        return `
+          <button
+            class="cv-connection-card"
+            type="button"
+            data-connection-lesson="${escapeHTML(targetLesson.id)}"
+            style="--connection-color:${color}"
+          >
+            <span class="cv-connection-card__emoji">${escapeHTML(cultureEmoji)}</span>
+            <div>
+              <strong>${escapeHTML(title)}</strong>
+              <small>${escapeHTML(note)}</small>
+            </div>
+            ${axis ? `<span class="cv-connection-card__axis">${escapeHTML(axis)}</span>` : ''}
+            <span class="cv-connection-card__go">Open →</span>
+          </button>
+        `;
+      }
+
+      if (targetCulture) {
+        return `
+          <button
+            class="cv-connection-card"
+            type="button"
+            data-connection-culture="${escapeHTML(targetCulture.id)}"
+            style="--connection-color:${color}"
+          >
+            <span class="cv-connection-card__emoji">${escapeHTML(cultureEmoji)}</span>
+            <div>
+              <strong>${escapeHTML(title)}</strong>
+              <small>${escapeHTML(note)}</small>
+            </div>
+            ${axis ? `<span class="cv-connection-card__axis">${escapeHTML(axis)}</span>` : ''}
+            <span class="cv-connection-card__go">Browse →</span>
+          </button>
+        `;
+      }
+
+      return '';
+    }).filter(Boolean);
+
+    if (!cards.length) {
+      holder.innerHTML = '';
+      return;
+    }
+
+    holder.innerHTML = `
+      <section class="cv-connections">
+        <div class="cv-divider-heading">
+          <span>Culture Connections</span>
+        </div>
+
+        <div class="cv-connections-grid">
+          ${cards.join('')}
         </div>
       </section>
     `;
@@ -1545,6 +1900,23 @@
 
     const explicit = (lesson.related || []).map(id => byId.get(id)).filter(Boolean);
     const sameModule = state.lessons.filter(item => item.id !== lesson.id && item.moduleId === lesson.moduleId);
+    const activeConcepts = getLessonConceptChips(lesson).map(item => item.toLowerCase());
+
+    const conceptMatch = state.lessons
+      .filter(item => item.id !== lesson.id)
+      .map(item => {
+        const itemConcepts = getLessonConceptChips(item).map(tag => tag.toLowerCase());
+        const overlap = itemConcepts.filter(tag => activeConcepts.includes(tag));
+
+        return {
+          lesson: item,
+          score: overlap.length
+        };
+      })
+      .filter(item => item.score > 0)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 4)
+      .map(item => item.lesson);
 
     const bridgeMatch = state.lessons.filter(item => {
       if (item.id === lesson.id) return false;
@@ -1564,7 +1936,7 @@
     });
 
     const related = [
-      ...new Map([...explicit, ...bridgeMatch, ...sameModule].map(item => [item.id, item])).values()
+      ...new Map([...explicit, ...conceptMatch, ...bridgeMatch, ...sameModule].map(item => [item.id, item])).values()
     ].filter(item => item.id !== lesson.id).slice(0, 3);
 
     if (!related.length) {
@@ -1576,6 +1948,15 @@
       <div class="cv-divider-heading">
         <span>Related Lessons</span>
       </div>
+
+      ${activeConcepts.length ? `
+        <div class="cv-related-concepts" aria-label="Related by concept">
+          <small>Related by concept</small>
+          <div>
+            ${activeConcepts.slice(0, 6).map(item => `<span>${escapeHTML(item)}</span>`).join('')}
+          </div>
+        </div>
+      ` : ''}
 
       <div class="cv-related-grid">
         ${related.map(item => `
@@ -1680,6 +2061,9 @@
     if (emoji) emoji.textContent = lesson.cultureEmoji || '✦';
     if (name) name.textContent = `${lesson.cultureName} · ${lesson.moduleTitle}`;
 
+    renderConnections(lesson);
+    renderLessonVisuals(lesson);
+    renderLessonImageStrip(lesson);
     renderSources(lesson);
     renderLessonNav();
     renderRelatedLessons(lesson);
@@ -1934,6 +2318,33 @@
       const relatedBtn = event.target.closest('[data-related-lesson]');
       if (relatedBtn) {
         renderLesson(relatedBtn.dataset.relatedLesson);
+        return;
+      }
+
+      const connectionLessonBtn = event.target.closest('[data-connection-lesson]');
+      if (connectionLessonBtn) {
+        renderLesson(connectionLessonBtn.dataset.connectionLesson);
+        return;
+      }
+
+      const connectionCultureBtn = event.target.closest('[data-connection-culture]');
+      if (connectionCultureBtn) {
+        const cultureId = connectionCultureBtn.dataset.connectionCulture;
+        state.activeCulture = cultureId || 'all';
+
+        $all('[data-culture-filter]').forEach(btn => {
+          btn.classList.toggle('is-active', btn.dataset.cultureFilter === state.activeCulture);
+        });
+
+        renderLessonTree();
+
+        const first = getFirstLessonForCulture(cultureId, '');
+        if (first) {
+          renderLesson(first.id);
+        } else {
+          showToast('This culture has no lessons yet.');
+        }
+
         return;
       }
 
