@@ -80,6 +80,8 @@
 
   const RAW_CULTURES = DATA.cultures.length ? DATA.cultures : FALLBACK_CULTURES;
 
+  let loaderFailsafeTimer = null;
+
   function injectLoader() {
     if (document.getElementById('lkp-loader')) return;
 
@@ -99,11 +101,21 @@
     `;
 
     document.body.appendChild(el);
+
+    if (loaderFailsafeTimer) window.clearTimeout(loaderFailsafeTimer);
+    loaderFailsafeTimer = window.setTimeout(() => {
+      dismissLoader();
+    }, 6500);
   }
 
   function dismissLoader() {
     const el = document.getElementById('lkp-loader');
     if (!el) return;
+
+    if (loaderFailsafeTimer) {
+      window.clearTimeout(loaderFailsafeTimer);
+      loaderFailsafeTimer = null;
+    }
 
     el.classList.add('out');
     window.setTimeout(() => el.remove(), 720);
@@ -284,18 +296,24 @@
     injectMobileCSS();
     buildShell();
     injectLoader();
-    buildStarfield();
-    buildHome();
-    buildGalaxiesPanel();
-    buildBridgePanel();
-    buildKiloHokuPanel();
-    buildEcosystemPanel();
-    buildProfilePanel();
-    buildBottomSheet();
-    buildBottomNav();
-    switchTab('home');
-    initSwipe();
-    requestAnimationFrame(() => dismissLoader());
+
+    try {
+      buildStarfield();
+      buildHome();
+      buildGalaxiesPanel();
+      buildBridgePanel();
+      buildKiloHokuPanel();
+      buildEcosystemPanel();
+      buildProfilePanel();
+      buildBottomSheet();
+      buildBottomNav();
+      switchTab('home');
+      initSwipe();
+      requestAnimationFrame(() => dismissLoader());
+    } catch (err) {
+      console.error('[LKP Mobile] Boot failed:', err);
+      dismissLoader();
+    }
   }
 
   function injectMobileCSS() {

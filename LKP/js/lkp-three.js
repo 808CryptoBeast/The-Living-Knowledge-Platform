@@ -2154,9 +2154,22 @@ function injectLoader() {
   document.body.appendChild(el);
 }
 
+let loaderFailsafeTimer = null;
+
+function armLoaderFailsafe(ms = 6500) {
+  if (loaderFailsafeTimer) window.clearTimeout(loaderFailsafeTimer);
+  loaderFailsafeTimer = window.setTimeout(() => {
+    dismissLoader();
+  }, ms);
+}
+
 function dismissLoader() {
   const el = document.getElementById("lkp-loader");
   if (!el) return;
+  if (loaderFailsafeTimer) {
+    window.clearTimeout(loaderFailsafeTimer);
+    loaderFailsafeTimer = null;
+  }
   el.classList.add("out");
   window.setTimeout(() => el.remove(), 800);
 }
@@ -2183,32 +2196,39 @@ window.LKP_debugCompass = function() {
 
 async function init() {
   injectLoader();
-  await preloadImages();
+  armLoaderFailsafe();
 
-  makeLights();
-  makeBackgroundStars();
-  makeGalaxies();
+  try {
+    await preloadImages();
 
-  GALAXY_DEFS.forEach(makeGalaxyCoreDisc);
+    makeLights();
+    makeBackgroundStars();
+    makeGalaxies();
 
-  makeAllConceptNodes();
-  makeConstellations();
+    GALAXY_DEFS.forEach(makeGalaxyCoreDisc);
 
-  makeStarCompass();
-  makeCompassImageOverlay();
+    makeAllConceptNodes();
+    makeConstellations();
 
-  makeIwaBird();
-  makeTwinkles();
+    makeStarCompass();
+    makeCompassImageOverlay();
 
-  autoMountComparisonImages();
-  handleResize();
+    makeIwaBird();
+    makeTwinkles();
 
-  let firstFrame = true;
+    autoMountComparisonImages();
+    handleResize();
 
-  renderer.setAnimationLoop(() => {
-    onFrame();
-    if (firstFrame) { firstFrame = false; dismissLoader(); }
-  });
+    let firstFrame = true;
+
+    renderer.setAnimationLoop(() => {
+      onFrame();
+      if (firstFrame) { firstFrame = false; dismissLoader(); }
+    });
+  } catch (err) {
+    console.error("[LKP] Viewer init failed:", err);
+    dismissLoader();
+  }
 }
 
 init();
