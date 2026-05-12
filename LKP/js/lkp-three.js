@@ -2137,13 +2137,16 @@ window.addEventListener("orientationchange", () => window.setTimeout(handleResiz
 
 function injectLoader() {
   if (document.getElementById("lkp-loader")) return;
+  const iconPrimary = assetUrl("LKP/assets/images/LKP-1.png");
+  const iconAltA    = assetUrl("LKP/assets/images/LKP-2.png");
+  const iconAltB    = assetUrl("assets/images/LKP-1.png");
   const el = document.createElement("div");
   el.id = "lkp-loader";
   el.innerHTML = `
     <div class="lkp-loader__inner">
       <div class="lkp-loader__icon-wrap">
         <div class="lkp-loader__fill"></div>
-        <img class="lkp-loader__icon" src="LKP/assets/images/LKP-1.png" alt="The Living Knowledge Platform" />
+        <img class="lkp-loader__icon" src="${iconPrimary}" alt="The Living Knowledge Platform" loading="eager" decoding="sync" onerror="if(this.dataset.fbk!=='1'){this.dataset.fbk='1';this.src='${iconAltA}';return;} if(this.dataset.fbk!=='2'){this.dataset.fbk='2';this.src='${iconAltB}';return;}" />
         <div class="lkp-loader__ring"></div>
         <div class="lkp-loader__upload"></div>
       </div>
