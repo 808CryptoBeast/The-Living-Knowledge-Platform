@@ -834,8 +834,6 @@
       }
     }
   }
-    }
-  }
 
   function makeMoonOrbitRing(THREE,radius,color,opacity,tiltX=0,tiltZ=0){
     const pts=[];for(let i=0;i<=64;i++){const a=(i/64)*Math.PI*2;pts.push(new THREE.Vector3(Math.cos(a)*radius,0,Math.sin(a)*radius));}
@@ -850,12 +848,12 @@
     for(let i=0;i<70;i++){const px=128+(Math.random()-0.5)*190,py=128+(Math.random()-0.5)*190,pr=8+Math.random()*28;const puff=ctx.createRadialGradient(px,py,0,px,py,pr);puff.addColorStop(0,`rgba(255,255,255,${0.025+Math.random()*0.04})`);puff.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=puff;ctx.beginPath();ctx.arc(px,py,pr,0,Math.PI*2);ctx.fill();}
     const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;const sprite=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,opacity,depthWrite:false,blending:THREE.AdditiveBlending}));sprite.scale.set(size,size*0.72,1);sprite.userData.baseSize=size;return sprite;
   }
-  function addMobileGalaxyDust(group,THREE,color,count,radius,opacity){
+  function addMobileGalaxyDust(group,THREE,color,count,radius,opacity,targetState=mobileGalaxyState){
     const p=new Float32Array(count*3),c=new Float32Array(count*3);const base=new THREE.Color(color),gold=new THREE.Color('#f0c96a'),cyan=new THREE.Color('#54c6ee');
     for(let i=0;i<count;i++){const arm=i%3,angle=Math.random()*Math.PI*2+arm*((Math.PI*2)/3),spread=Math.pow(Math.random(),0.55)*radius,spiral=angle+spread*0.34;p[i*3]=Math.cos(spiral)*spread;p[i*3+1]=(Math.random()-0.5)*1.25;p[i*3+2]=Math.sin(spiral)*spread;const mixed=base.clone();if(Math.random()>0.65)mixed.lerp(gold,0.32);if(Math.random()>0.78)mixed.lerp(cyan,0.22);c[i*3]=mixed.r;c[i*3+1]=mixed.g;c[i*3+2]=mixed.b;}
     const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.BufferAttribute(p,3));geo.setAttribute('color',new THREE.BufferAttribute(c,3));
     const dust=new THREE.Points(geo,new THREE.PointsMaterial({size:0.055,vertexColors:true,transparent:true,opacity,depthWrite:false,blending:THREE.AdditiveBlending}));
-    group.add(dust);mobileGalaxyState.dustSystems.push(dust);return dust;
+    group.add(dust);targetState.dustSystems.push(dust);return dust;
   }
   function makeMobileGlowSprite(THREE,color,size,opacity){
     const c=document.createElement('canvas');c.width=c.height=96;const ctx=c.getContext('2d');const col=new THREE.Color(color);const r=Math.round(col.r*255),g=Math.round(col.g*255),b=Math.round(col.b*255);const grd=ctx.createRadialGradient(48,48,0,48,48,48);grd.addColorStop(0,`rgba(${r},${g},${b},0.85)`);grd.addColorStop(0.45,`rgba(${r},${g},${b},0.24)`);grd.addColorStop(1,`rgba(${r},${g},${b},0)`);ctx.fillStyle=grd;ctx.fillRect(0,0,96,96);
@@ -1087,7 +1085,7 @@
       // Dust system around culture
       const dustCount=80+Math.min(120,culture.lessonCount*6);
       const dustRadius=3.2+Math.random()*1.5;
-      addMobileGalaxyDust(group,THREE,culture.color||'#54c6ee',dustCount,dustRadius,0.14);
+      addMobileGalaxyDust(group,THREE,culture.color||'#54c6ee',dustCount,dustRadius,0.14,homeGalaxyState);
 
       // Lesson stars orbit around culture at individual radii/speeds
       (culture.modules||[]).forEach((mod,mi)=>{
