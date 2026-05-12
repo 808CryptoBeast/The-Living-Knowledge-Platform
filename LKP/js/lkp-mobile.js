@@ -195,6 +195,7 @@
   let activeGalaxy = 0;
   let sheetOpen    = false;
   let sheetData    = null;
+  let blockSwipeUntil = 0;
 
   const mobileGalaxyState = {
     initialized: false,
@@ -929,9 +930,45 @@
 
   /* ── Galaxy tap detection ─────────────────────────────────────────────── */
   function bindMobileGalaxyEvents(canvas){
-    canvas.addEventListener('pointermove',e=>{updateMobileGalaxyPointer(e,canvas);pickMobileGalaxyNode(false);},{passive:true});
-    canvas.addEventListener('click',e=>{updateMobileGalaxyPointer(e,canvas);pickMobileGalaxyNode(true);},{passive:true});
-    canvas.addEventListener('touchend',e=>{if(!e.changedTouches?.length)return;updateMobileGalaxyPointer(e.changedTouches[0],canvas);pickMobileGalaxyNode(true);},{passive:true});
+    const gesture = { down:false, startX:0, startY:0, startTime:0, moved:false };
+
+    canvas.addEventListener('pointerdown',e=>{
+      gesture.down = true;
+      gesture.startX = e.clientX;
+      gesture.startY = e.clientY;
+      gesture.startTime = performance.now();
+      gesture.moved = false;
+    },{passive:true});
+
+    canvas.addEventListener('pointermove',e=>{
+      updateMobileGalaxyPointer(e,canvas);
+      if (gesture.down) {
+        const dx = e.clientX - gesture.startX;
+        const dy = e.clientY - gesture.startY;
+        if ((dx * dx + dy * dy) > 196) gesture.moved = true; // 14px movement threshold
+      }
+      if (!gesture.down || !gesture.moved) pickMobileGalaxyNode(false);
+    },{passive:true});
+
+    canvas.addEventListener('pointerup',e=>{
+      updateMobileGalaxyPointer(e,canvas);
+      if (!gesture.down) return;
+
+      const dt = performance.now() - gesture.startTime;
+      const dx = e.clientX - gesture.startX;
+      const dy = e.clientY - gesture.startY;
+      const distSq = dx * dx + dy * dy;
+      const isTap = distSq < 121 && dt < 280; // 11px and 280ms
+
+      gesture.down = false;
+      if (isTap) {
+        pickMobileGalaxyNode(true);
+      } else {
+        blockSwipeUntil = Date.now() + 420;
+      }
+    },{passive:true});
+
+    canvas.addEventListener('pointercancel',()=>{ gesture.down = false; },{passive:true});
   }
 
   function updateMobileGalaxyPointer(e,canvas){
@@ -1185,6 +1222,7 @@
           const lessonAngle=-Math.PI/2+(Math.PI*2*li)/Math.max(1,lessons.length);
           const lessonSpeed=0.0011+li*0.00014+Math.random()*0.00016;
           const isMajor=li===0&&mi===0;
+          const ly=Math.sin(lessonAngle*1.2+mi)*0.25;
           
           // Use a pivot for individual lesson orbit
           const lessonPivot=new THREE.Object3D();
@@ -1192,7 +1230,6 @@
           
           const lx=Math.cos(lessonAngle)*lessonOrbitR;
           const lz=Math.sin(lessonAngle)*lessonOrbitR;
-          const ly=Math.sin(lessonAngle*1.2+mi)*0.25;
           
           const mesh=new THREE.Mesh(
             isMajor?new THREE.OctahedronGeometry(0.18,0):new THREE.SphereGeometry(0.12,12,12),
@@ -1335,12 +1372,25 @@
   /* ── Swipe gesture ────────────────────────────────────────────────────── */
   function initSwipe(){
     const panels=document.getElementById('lkp-m-panels');if(!panels)return;
-    let startX=0,startY=0,isDragging=false;
-    panels.addEventListener('touchstart',e=>{if(e.touches.length!==1)return;startX=e.touches[0].clientX;startY=e.touches[0].clientY;isDragging=true;},{passive:true});
+    let startX=0,startY=0,isDragging=false,swipeBlocked=false;
+    const isInteractiveTarget=(target)=>{
+      if (!target || !(target instanceof Element)) return false;
+      return !!target.closest('canvas,.lkp-m-three-galaxy-wrap,.lkp-m-home-galaxy-wrap,.lkp-m-sheet,.lkp-m-nav,.lkp-m-galaxy-scroll,[data-galaxy-card],a,button,input,textarea,select,label');
+    };
+
+    panels.addEventListener('touchstart',e=>{
+      if(e.touches.length!==1)return;
+      const t=e.touches[0];
+      startX=t.clientX;startY=t.clientY;
+      swipeBlocked = isInteractiveTarget(e.target);
+      isDragging=!swipeBlocked;
+    },{passive:true});
+
     panels.addEventListener('touchend',e=>{
       if(!isDragging)return;isDragging=false;
+      if (swipeBlocked || Date.now() < blockSwipeUntil) return;
       const dx=e.changedTouches[0].clientX-startX,dy=e.changedTouches[0].clientY-startY;
-      if(Math.abs(dx)<50||Math.abs(dy)>Math.abs(dx)*0.8)return;
+      if(Math.abs(dx)<88||Math.abs(dy)>Math.abs(dx)*0.5||Math.abs(dy)>72)return;
       const order=['home','galaxies','bridge','chart','ecosystem'];const cur=order.indexOf(activeTab);
       if(dx<0&&cur<order.length-1)switchTab(order[cur+1]);if(dx>0&&cur>0)switchTab(order[cur-1]);
     },{passive:true});
