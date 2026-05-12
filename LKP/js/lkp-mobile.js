@@ -402,6 +402,10 @@
           <p class="lkp-m-home__sub">${liveCount} live ${liveCount===1?'galaxy':'galaxies'}, ${totalCount} total culture orbits. Every lesson is linked to the full lesson page.</p>
         </div>
         <div class="lkp-m-home__pills">${buildHomePills()}</div>
+        <div class="lkp-m-home-galaxy-wrap" style="position:relative;width:100%;height:240px;margin:1.5rem 0;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,rgba(15,3,10,0.8) 0%,rgba(20,8,18,0.9) 100%);border:1px solid rgba(84,198,238,0.12);">
+          <canvas id="lkp-m-home-galaxy" style="display:block;width:100%;height:100%;" aria-label="Living Knowledge Galaxy"></canvas>
+          <div style="position:absolute;bottom:8px;right:8px;font-size:10px;color:rgba(240,201,106,0.5);font-weight:600;">Tap or drag to explore</div>
+        </div>
         <div class="lkp-m-compass-portal" aria-label="Living Hawaiian star compass gateway">
           <div class="lkp-m-compass-aura lkp-m-compass-aura--gold"></div>
           <div class="lkp-m-compass-aura lkp-m-compass-aura--cyan"></div>
@@ -419,6 +423,7 @@
       </div>`;
     bindTabButtons(el);
     activateMobileCompassImage(el);
+    requestAnimationFrame(()=>initMobileHomeGalaxy());
   }
 
   /* ── Lesson row renderer (RICHER INFO) ────────────────────────────────── */
@@ -727,22 +732,38 @@
     const n=Math.max(1,CULTURES.length);const galaxyR=Math.min(28,13+n*2.2);
 
     CULTURES.forEach((culture,ci)=>{
+      // Each nebula (culture) has unique orbital parameters
       const angle=-Math.PI/2+(Math.PI*2*ci)/n;
+      // More varied orbital radius for each nebula
+      const orbitalRadiusOffset=(((ci*7)%11)-5)*0.35; // Creates more varied distribution
+      const orbitalRadius=galaxyR+orbitalRadiusOffset+((ci%3)-1)*0.4;
+      // Each nebula spins at different speed
+      const uniqueOrbitalSpeed=0.0014+ci*0.00018+Math.sin(ci*0.8)*0.0006;
+      
       const cx=Math.cos(angle)*galaxyR,cz=Math.sin(angle)*galaxyR,cy=culture.id==='bridge'?4:0;
       const group=new THREE.Group();
       group.position.set(cx,cy,cz);
-      group.userData={rotationSpeed:0.0008+ci*0.00018,orbitAngle:angle,orbitSpeed:0.0014+ci*0.00013,orbitRadius:galaxyR+(ci%3)*0.55,baseY:cy,cultureIndex:ci};
+      group.userData={
+        rotationSpeed:0.0008+ci*0.00025+Math.cos(ci*0.6)*0.0003,
+        orbitAngle:angle,
+        orbitSpeed:uniqueOrbitalSpeed,
+        orbitRadius:orbitalRadius,
+        baseY:cy,
+        cultureIndex:ci
+      };
       scene.add(group);mobileGalaxyState.cultureGroups.push(group);
 
       const color=new THREE.Color(culture.color||'#54c6ee');
 
-      const core=new THREE.Mesh(new THREE.SphereGeometry(0.72,24,24),new THREE.MeshPhysicalMaterial({color,emissive:color,emissiveIntensity:culture.status==='live'?0.92:0.42,metalness:0.08,roughness:0.18,transparent:true,opacity:culture.status==='live'?0.96:0.52}));
+      // Planet (culture core) with size variation based on content
+      const coreSize=0.65+Math.min(0.25,culture.lessonCount*0.008);
+      const core=new THREE.Mesh(new THREE.SphereGeometry(coreSize,24,24),new THREE.MeshPhysicalMaterial({color,emissive:color,emissiveIntensity:culture.status==='live'?0.92:0.42,metalness:0.08,roughness:0.18,transparent:true,opacity:culture.status==='live'?0.96:0.52}));
       core.userData={isCultureCore:true,cultureIndex:ci,cultureId:culture.id,cultureName:culture.name};
       group.add(core);mobileGalaxyState.cultureCores.push({mesh:core,group,culture,index:ci});
 
       group.add(makeMobileGlowSprite(THREE,culture.color||'#54c6ee',5.1,0.46));
       const neb=makeMobileNebulaSprite(THREE,culture.color||'#54c6ee',8.5+Math.min(6,culture.lessonCount*0.18),culture.id==='bridge'?0.36:0.28);
-      neb.rotation.z=ci*0.7;group.add(neb);
+      neb.rotation.z=ci*0.7+Math.random()*0.3;group.add(neb);
       addMobileGalaxyDust(group,THREE,culture.color||'#54c6ee',180+Math.min(220,culture.lessonCount*10),4.2+Math.min(5.5,culture.lessonCount*0.16),culture.id==='bridge'?0.50:0.38);
 
       const label=makeMobileTextSprite(THREE,`${culture.emoji} ${culture.name}`,culture.color||'#f0c96a');
@@ -750,13 +771,18 @@
       group.add(label);mobileGalaxyState.labels.push(label);
 
       (culture.modules||[]).forEach((mod,mi)=>{
-        const lessons=mod.lessons||[];const modR=2.35+mi*1.85;
+        const lessons=mod.lessons||[];
+        // Each module gets unique orbital radius
+        const modR=2.35+mi*1.85+Math.sin(mi*1.2)*0.35;
         addMobileOrbitRing(group,THREE,modR,culture.color||'#f0c96a',0.17);
         addMobileGalaxyDust(group,THREE,culture.color||'#54c6ee',54+Math.min(80,lessons.length*8),modR+0.2,0.18);
 
         lessons.forEach((lesson,li)=>{
+          // Each star (lesson) has unique orbital characteristics
           const angle2=-Math.PI/2+(Math.PI*2*li)/Math.max(1,lessons.length);
-          const lx=Math.cos(angle2)*modR,lz=Math.sin(angle2)*modR,ly=Math.sin(angle2*2+mi)*0.45;
+          // Vary radius slightly for each lesson within its module
+          const lessonRadiusVar=(((li*5+mi*3)%7)-3)*0.12;
+          const lx=Math.cos(angle2)*(modR+lessonRadiusVar),lz=Math.sin(angle2)*(modR+lessonRadiusVar),ly=Math.sin(angle2*2+mi)*0.45+Math.cos(li*0.9)*0.15;
           const isMajor=li===0&&mi===0;
 
           const mesh=new THREE.Mesh(
@@ -770,13 +796,16 @@
           glow.position.copy(mesh.position);
           group.add(mesh);group.add(glow);
 
-          // Moon orbit rings + pivots (children of lesson mesh — auto-follow)
+          // Moon orbit rings + pivots with unique orbital speeds per moon
           const satellitePivots=[];const moonCount=isMajor?2:1;
           for(let m=0;m<moonCount;m++){
-            const mR=(isMajor?0.62:0.46)+m*0.24;const mTX=Math.PI/(3+m*1.2);const mTZ=(Math.PI/6)*(m%2===0?1:-1);
+            const mR=(isMajor?0.62:0.46)+m*0.24+Math.random()*0.08;
+            const mTX=Math.PI/(3+m*1.2)+Math.sin(m*0.7)*0.08;
+            const mTZ=(Math.PI/6)*(m%2===0?1:-1)+Math.cos(li*0.5)*0.06;
             const moonRing=makeMoonOrbitRing(THREE,mR,culture.color||'#f0c96a',0.30,mTX,mTZ);mesh.add(moonRing);
             const pivot=new THREE.Object3D();pivot.rotation.x=mTX;pivot.rotation.z=mTZ;
-            pivot.userData={speed:0.028+m*0.012+li*0.003,wobble:0.0006+m*0.0002};
+            // Each moon has unique orbital speed
+            pivot.userData={speed:0.028+m*0.012+li*0.003+Math.random()*0.006,wobble:0.0006+m*0.0002+Math.random()*0.0002};
             const moonMesh=new THREE.Mesh(new THREE.SphereGeometry(0.06+m*0.022,10,10),new THREE.MeshPhysicalMaterial({color:new THREE.Color(culture.color||'#f0c96a').offsetHSL(0.04*m,0.06,0.12),emissive:new THREE.Color(culture.color||'#f0c96a'),emissiveIntensity:0.75+m*0.08,roughness:0.28,metalness:0.08}));
             moonMesh.position.set(mR,0,0);
             const moonGlow=makeMobileGlowSprite(THREE,culture.color||'#f0c96a',0.52+m*0.18,0.38+m*0.06);moonGlow.position.copy(moonMesh.position);
@@ -793,11 +822,18 @@
       }
     });
 
-    // Bridge arcs between live cultures
+    // Bridge arcs between live cultures with individual arc paths
     const live=CULTURES.filter(c=>c.status==='live');
     if (live.length>=2){
-      const pts=live.map(c=>{const idx=CULTURES.findIndex(x=>x.id===c.id);const a=-Math.PI/2+(Math.PI*2*idx)/n;return new THREE.Vector3(Math.cos(a)*galaxyR,c.id==='bridge'?4:0,Math.sin(a)*galaxyR);});
-      for(let i=0;i<pts.length-1;i++){const curve=new THREE.CatmullRomCurve3([pts[i],new THREE.Vector3(0,6,0),pts[i+1]]);scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(48)),new THREE.LineBasicMaterial({color:0xd4ae5a,transparent:true,opacity:0.17})));}
+      const pts=live.map(c=>{const idx=CULTURES.findIndex(x=>x.id===c.id);const a=-Math.PI/2+(Math.PI*2*idx)/n;const baseR=Math.min(28,13+n*2.2);return new THREE.Vector3(Math.cos(a)*baseR,c.id==='bridge'?4:0,Math.sin(a)*baseR);});
+      for(let i=0;i<pts.length-1;i++){
+        const arcHeight=6+Math.sin(i*0.7)*1.5;
+        const curve=new THREE.CatmullRomCurve3([pts[i],new THREE.Vector3(0,arcHeight,0),pts[i+1]]);
+        const arcOpacity=0.17+Math.sin(i*0.5)*0.06;
+        scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(48)),new THREE.LineBasicMaterial({color:0xd4ae5a,transparent:true,opacity:arcOpacity})));
+      }
+    }
+  }
     }
   }
 
@@ -922,6 +958,184 @@
     if (!renderer||!camera||!wrap) return;
     camera.aspect=wrap.clientWidth/wrap.clientHeight;camera.updateProjectionMatrix();
     renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5));renderer.setSize(wrap.clientWidth,wrap.clientHeight);
+  }
+
+  /* ── Mobile Home Galaxy Viewer ─────────────────────────────────────────── */
+  const homeGalaxyState = {
+    initialized: false,
+    THREE: null, scene:null, camera:null, renderer:null, controls:null,
+    cultureGroups:[], dustSystems:[], frameId:null
+  };
+
+  async function initMobileHomeGalaxy(){
+    const canvas=document.getElementById('lkp-m-home-galaxy');
+    const wrap=canvas?.closest('.lkp-m-home-galaxy-wrap');
+    if (!canvas||!wrap) return;
+    if (homeGalaxyState.initialized){resizeMobileHomeGalaxy();return;}
+
+    const THREE=await import('https://esm.sh/three@0.160.0');
+    const {OrbitControls}=await import('https://esm.sh/three@0.160.0/examples/jsm/controls/OrbitControls.js');
+
+    homeGalaxyState.THREE=THREE;homeGalaxyState.initialized=true;
+
+    const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x01030a,0.016);
+    const camera=new THREE.PerspectiveCamera(55,wrap.clientWidth/wrap.clientHeight,0.1,200);
+    camera.position.set(0,8,32);
+
+    const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.3));
+    renderer.setSize(wrap.clientWidth,wrap.clientHeight);
+    renderer.outputColorSpace=THREE.SRGBColorSpace;
+    renderer.toneMapping=THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure=1.1;
+
+    const controls=new OrbitControls(camera,canvas);
+    controls.enablePan=false;controls.enableZoom=true;controls.enableDamping=true;
+    controls.dampingFactor=0.12;controls.rotateSpeed=0.35;controls.zoomSpeed=0.5;
+    controls.minDistance=6;controls.maxDistance=70;
+    controls.autoRotate=true;controls.autoRotateSpeed=0.18;
+    controls.target.set(0,0,0);
+
+    homeGalaxyState.scene=scene;homeGalaxyState.camera=camera;homeGalaxyState.renderer=renderer;
+    homeGalaxyState.controls=controls;homeGalaxyState.cultureGroups=[];homeGalaxyState.dustSystems=[];
+
+    scene.add(new THREE.AmbientLight(0xffffff,0.35));
+    const key=new THREE.PointLight(0xffdd9a,2.2,140);key.position.set(0,28,24);scene.add(key);
+    const cyan=new THREE.PointLight(0x54c6ee,1.0,100);cyan.position.set(-30,16,-15);scene.add(cyan);
+
+    // Add simplified central core
+    const core=new THREE.Mesh(new THREE.IcosahedronGeometry(0.8,1),new THREE.MeshPhysicalMaterial({color:0xf0c96a,emissive:0xf0c96a,emissiveIntensity:0.8,metalness:0.1,roughness:0.2,transparent:true,opacity:0.95}));
+    scene.add(core);
+
+    // Build home galaxy with individual orbits for each culture
+    buildHomeGalaxySystem(scene,THREE);
+
+    window.addEventListener('resize',resizeMobileHomeGalaxy,{passive:true});
+
+    function animate(){
+      homeGalaxyState.frameId=requestAnimationFrame(animate);
+      const t=performance.now()*0.0008;
+      
+      core.rotation.y+=0.004;
+      core.rotation.x=Math.sin(t*0.3)*0.04;
+
+      homeGalaxyState.cultureGroups.forEach((group,i)=>{
+        const d=group.userData;
+        d.orbitAngle+=d.orbitSpeed;
+        group.position.x=Math.cos(d.orbitAngle)*d.orbitRadius;
+        group.position.z=Math.sin(d.orbitAngle)*d.orbitRadius;
+        group.position.y=d.baseY+Math.sin(t*0.4+i)*0.28;
+        group.rotation.y+=0.0012+i*0.00008;
+      });
+
+      homeGalaxyState.dustSystems.forEach((d,i)=>{d.rotation.y+=0.0007+i*0.0001;d.rotation.z+=0.00025;});
+
+      controls.update();renderer.render(scene,camera);
+    }
+    animate();
+  }
+
+  function buildHomeGalaxySystem(scene,THREE){
+    const n=Math.max(1,CULTURES.length);
+    const baseR=Math.min(18,10+n*1.5);
+
+    CULTURES.forEach((culture,ci)=>{
+      // Each nebula gets its own orbital parameters
+      const baseAngle=-Math.PI/2+(Math.PI*2*ci)/n;
+      const orbitRadiusVariance=0.8+Math.random()*1.2;
+      const orbitRadius=baseR+((ci%3)-1)*0.6+orbitRadiusVariance*0.3;
+      const orbitSpeed=0.0018+ci*0.00008+Math.random()*0.0008;
+      const tiltAngle=Math.sin(ci*0.7)*0.12;
+      
+      const group=new THREE.Group();
+      group.userData={
+        orbitAngle:baseAngle,
+        orbitSpeed:orbitSpeed,
+        orbitRadius:orbitRadius,
+        baseY:culture.id==='bridge'?2.5:0,
+        tiltAngle:tiltAngle,
+        cultureIndex:ci
+      };
+      scene.add(group);
+      homeGalaxyState.cultureGroups.push(group);
+
+      const color=new THREE.Color(culture.color||'#54c6ee');
+      
+      // Culture core
+      const coreSize=0.42+Math.random()*0.15;
+      const core=new THREE.Mesh(
+        new THREE.SphereGeometry(coreSize,16,16),
+        new THREE.MeshPhysicalMaterial({
+          color,emissive:color,emissiveIntensity:culture.status==='live'?0.7:0.3,
+          metalness:0.05,roughness:0.2,transparent:true,
+          opacity:culture.status==='live'?0.92:0.48
+        })
+      );
+      group.add(core);
+
+      // Glow
+      const glowSize=2.8+Math.random()*1.2;
+      const glow=makeMobileGlowSprite(THREE,culture.color||'#54c6ee',glowSize,0.32);
+      group.add(glow);
+
+      // Nebula sprite with rotation
+      const nebSize=4.5+Math.min(3.2,culture.lessonCount*0.12);
+      const neb=makeMobileNebulaSprite(THREE,culture.color||'#54c6ee',nebSize,culture.id==='bridge'?0.22:0.18);
+      neb.rotation.z=ci*0.5+Math.random()*0.6;
+      group.add(neb);
+
+      // Dust system around culture
+      const dustCount=80+Math.min(120,culture.lessonCount*6);
+      const dustRadius=3.2+Math.random()*1.5;
+      addMobileGalaxyDust(group,THREE,culture.color||'#54c6ee',dustCount,dustRadius,0.14);
+
+      // Lesson stars orbit around culture at individual radii/speeds
+      (culture.modules||[]).forEach((mod,mi)=>{
+        const lessons=mod.lessons||[];
+        const lessonOrbitR=1.8+mi*0.9+Math.random()*0.4;
+        
+        lessons.forEach((lesson,li)=>{
+          // Each lesson gets individual orbital speed and angle
+          const lessonAngle=-Math.PI/2+(Math.PI*2*li)/Math.max(1,lessons.length);
+          const lessonSpeed=0.012+li*0.004+Math.random()*0.005;
+          const isMajor=li===0&&mi===0;
+          
+          // Use a pivot for individual lesson orbit
+          const lessonPivot=new THREE.Object3D();
+          lessonPivot.userData={angle:lessonAngle,speed:lessonSpeed,radius:lessonOrbitR};
+          
+          const lx=Math.cos(lessonAngle)*lessonOrbitR;
+          const lz=Math.sin(lessonAngle)*lessonOrbitR;
+          const ly=Math.sin(lessonAngle*1.2+mi)*0.25;
+          
+          const mesh=new THREE.Mesh(
+            isMajor?new THREE.OctahedronGeometry(0.18,0):new THREE.SphereGeometry(0.12,12,12),
+            new THREE.MeshPhysicalMaterial({
+              color,emissive:color,emissiveIntensity:isMajor?0.75:0.5,
+              metalness:0.04,roughness:0.2,transparent:true,opacity:0.95
+            })
+          );
+          mesh.position.set(lx,ly,lz);
+          lessonPivot.add(mesh);
+          
+          const lGlow=makeMobileGlowSprite(THREE,culture.color||'#f0c96a',isMajor?1.0:0.6,isMajor?0.4:0.25);
+          lGlow.position.copy(mesh.position);
+          lessonPivot.add(lGlow);
+          
+          group.add(lessonPivot);
+        });
+      });
+    });
+  }
+
+  function resizeMobileHomeGalaxy(){
+    const {renderer,camera}=homeGalaxyState;
+    const canvas=document.getElementById('lkp-m-home-galaxy');
+    const wrap=canvas?.closest('.lkp-m-home-galaxy-wrap');
+    if (!renderer||!camera||!wrap) return;
+    camera.aspect=wrap.clientWidth/wrap.clientHeight;camera.updateProjectionMatrix();
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.3));
+    renderer.setSize(wrap.clientWidth,wrap.clientHeight);
   }
 
   /* ── Ecosystem panel ──────────────────────────────────────────────────── */
