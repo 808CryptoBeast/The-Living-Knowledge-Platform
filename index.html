@@ -679,10 +679,25 @@
                 <button class="lkp-navmap-mini__btn" id="lkp-mini-zoom-in" type="button">Zoom +</button>
                 <button class="lkp-navmap-mini__btn" id="lkp-mini-zoom-out" type="button">Zoom −</button>
                 <button class="lkp-navmap-mini__btn" id="lkp-mini-reset" type="button">Reset View</button>
+                <button class="lkp-navmap-mini__btn lkp-navmap-mini__btn--fullscreen" id="lkp-mini-fullscreen" type="button">Full Screen</button>
               </div>
 
               <canvas id="lkp-mini-viewer-canvas" aria-hidden="true"></canvas>
             </aside>
+
+            <div class="lkp-mobile-viewer" id="lkp-mobile-viewer" aria-hidden="true">
+              <div class="lkp-mobile-viewer__bar">
+                <div>
+                  <strong>Explorer View</strong>
+                  <small>Drag, zoom, and pan the full sky map</small>
+                </div>
+                <button class="lkp-mobile-viewer__close" id="lkp-mobile-viewer-close" type="button" aria-label="Close fullscreen viewer">Close</button>
+              </div>
+
+              <canvas id="lkp-mobile-viewer-canvas" aria-label="Fullscreen mobile knowledge explorer"></canvas>
+
+              <div class="lkp-mobile-viewer__hint">Use one finger to rotate or pan, and pinch to zoom.</div>
+            </div>
           </div>
 
           <div class="lkp-navmap-copy lkp-reveal">

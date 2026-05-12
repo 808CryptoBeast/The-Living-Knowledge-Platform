@@ -493,9 +493,16 @@ const miniToggleBtn = document.getElementById("lkp-mini-toggle");
 const miniZoomInBtn = document.getElementById("lkp-mini-zoom-in");
 const miniZoomOutBtn = document.getElementById("lkp-mini-zoom-out");
 const miniResetBtn = document.getElementById("lkp-mini-reset");
+const miniFullscreenBtn = document.getElementById("lkp-mini-fullscreen");
+const mobileViewerEl = document.getElementById("lkp-mobile-viewer");
+const mobileViewerCanvas = document.getElementById("lkp-mobile-viewer-canvas");
+const mobileViewerCloseBtn = document.getElementById("lkp-mobile-viewer-close");
 let miniRenderer = null;
 let miniCamera = null;
 let miniControls = null;
+let mobileRenderer = null;
+let mobileCamera = null;
+let mobileControls = null;
 const miniViewerState = {
   paused: false
 };
@@ -511,6 +518,15 @@ function stepMiniDistance(mult) {
   const min = 1;
   const len = clamp(v.length(), min, max);
   miniCamera.position.copy(miniControls.target).add(v.setLength(len));
+}
+
+function stepMobileDistance(mult) {
+  if (!mobileCamera || !mobileControls) return;
+  const v = mobileCamera.position.clone().sub(mobileControls.target).multiplyScalar(mult);
+  const max = IS_MOBILE ? 150 : 220;
+  const min = 1;
+  const len = clamp(v.length(), min, max);
+  mobileCamera.position.copy(mobileControls.target).add(v.setLength(len));
 }
 
 function syncMiniButtons() {
@@ -538,28 +554,61 @@ if (miniResetBtn) {
   });
 }
 
+if (miniFullscreenBtn && mobileViewerEl) {
+  miniFullscreenBtn.addEventListener("click", () => {
+    mobileViewerEl.classList.add("is-open");
+    mobileViewerEl.setAttribute("aria-hidden", "false");
+    document.body.classList.add("lkp-mobile-viewer-open");
+    if (mobileCamera && mobileControls) {
+      mobileCamera.position.copy(getOverviewCameraPos());
+      mobileControls.target.set(0, 0, 0);
+      mobileControls.update();
+    }
+    window.setTimeout(() => resizeAuxViewers(), 30);
+  });
+}
+
+if (mobileViewerCloseBtn && mobileViewerEl) {
+  mobileViewerCloseBtn.addEventListener("click", () => {
+    mobileViewerEl.classList.remove("is-open");
+    mobileViewerEl.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("lkp-mobile-viewer-open");
+  });
+}
+
 syncMiniButtons();
 
-function resizeMiniViewer() {
-  if (!miniViewerCanvas || !miniRenderer || !miniCamera) return;
+function resizeViewport(rendererRef, cameraRef, controlsRef, canvasRef) {
+  if (!canvasRef || !rendererRef || !cameraRef) return;
 
-  const rect = miniViewerCanvas.getBoundingClientRect();
+  const rect = canvasRef.getBoundingClientRect();
   if (!rect.width || !rect.height) return;
 
   const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-  miniRenderer.setPixelRatio(dpr);
-  miniRenderer.setSize(rect.width, rect.height, false);
-  miniCamera.aspect = rect.width / rect.height;
-  miniCamera.fov = IS_MOBILE ? 78 : 72;
-  miniCamera.updateProjectionMatrix();
+  rendererRef.setPixelRatio(dpr);
+  rendererRef.setSize(rect.width, rect.height, false);
+  cameraRef.aspect = rect.width / rect.height;
+  cameraRef.fov = IS_MOBILE ? 78 : 72;
+  cameraRef.updateProjectionMatrix();
 
-  if (miniControls) {
-    miniControls.zoomSpeed = IS_MOBILE ? 0.42 : 0.55;
-    miniControls.maxDistance = IS_MOBILE ? 150 : 220;
-    miniControls.panSpeed = IS_MOBILE ? 0.34 : 0.48;
-    miniControls.rotateSpeed = IS_MOBILE ? -0.34 : -0.42;
-    miniControls.autoRotateSpeed = IS_MOBILE ? 0.14 : 0.22;
+  if (controlsRef) {
+    controlsRef.zoomSpeed = IS_MOBILE ? 0.42 : 0.55;
+    controlsRef.maxDistance = IS_MOBILE ? 150 : 220;
+    controlsRef.panSpeed = IS_MOBILE ? 0.34 : 0.48;
+    controlsRef.rotateSpeed = IS_MOBILE ? -0.34 : -0.42;
+    controlsRef.autoRotateSpeed = IS_MOBILE ? 0.14 : 0.22;
   }
+}
+
+function resizeAuxViewers() {
+  resizeViewport(miniRenderer, miniCamera, miniControls, miniViewerCanvas);
+  if (mobileViewerEl?.classList.contains("is-open")) {
+    resizeViewport(mobileRenderer, mobileCamera, mobileControls, mobileViewerCanvas);
+  }
+}
+
+function resizeMiniViewer() {
+  resizeViewport(miniRenderer, miniCamera, miniControls, miniViewerCanvas);
 }
 
 function syncMiniViewer() {
@@ -567,6 +616,13 @@ function syncMiniViewer() {
   if (miniViewerState.paused) return;
   miniControls.update();
   miniRenderer.render(scene, miniCamera);
+}
+
+function syncMobileViewer() {
+  if (!mobileRenderer || !mobileCamera || !mobileControls) return;
+  if (!mobileViewerEl?.classList.contains("is-open")) return;
+  mobileControls.update();
+  mobileRenderer.render(scene, mobileCamera);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -675,6 +731,46 @@ if (miniViewerCanvas) {
 
   miniViewerCanvas.addEventListener("wheel", (e) => e.preventDefault(), { passive: false });
   resizeMiniViewer();
+}
+
+if (mobileViewerCanvas) {
+  mobileRenderer = new THREE.WebGLRenderer({
+    canvas: mobileViewerCanvas,
+    antialias: !IS_MOBILE,
+    powerPreference: "high-performance",
+    alpha: false
+  });
+
+  mobileRenderer.outputColorSpace = THREE.SRGBColorSpace;
+  mobileRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+  mobileRenderer.toneMappingExposure = renderer.toneMappingExposure;
+  mobileRenderer.setClearColor(0x01030a);
+
+  mobileCamera = new THREE.PerspectiveCamera(
+    IS_MOBILE ? 78 : 72,
+    4 / 5,
+    0.1,
+    600
+  );
+
+  mobileCamera.position.copy(getOverviewCameraPos());
+
+  mobileControls = new OrbitControls(mobileCamera, mobileRenderer.domElement);
+  mobileControls.enableDamping = true;
+  mobileControls.dampingFactor = IS_MOBILE ? 0.075 : 0.06;
+  mobileControls.enablePan = true;
+  mobileControls.panSpeed = IS_MOBILE ? 0.34 : 0.48;
+  mobileControls.screenSpacePanning = true;
+  mobileControls.enableZoom = true;
+  mobileControls.zoomSpeed = IS_MOBILE ? 0.42 : 0.55;
+  mobileControls.minDistance = 1;
+  mobileControls.maxDistance = IS_MOBILE ? 150 : 220;
+  mobileControls.rotateSpeed = IS_MOBILE ? -0.34 : -0.42;
+  mobileControls.minPolarAngle = 0.28;
+  mobileControls.maxPolarAngle = Math.PI * 0.86;
+  mobileControls.autoRotate = !REDUCED_MOTION;
+  mobileControls.autoRotateSpeed = IS_MOBILE ? 0.14 : 0.22;
+  mobileControls.target.set(0, 0, 0);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1546,33 +1642,38 @@ function makeLights() {
 const tooltip  = document.getElementById("lkp-tooltip");
 const raycaster = new THREE.Raycaster();
 const pointer   = new THREE.Vector2(-10, -10);
+const miniRaycaster = new THREE.Raycaster();
+const miniPointer   = new THREE.Vector2(-10, -10);
+const mobileRaycaster = new THREE.Raycaster();
 
 let hoveredId    = null;
+let miniHoveredId = null;
+let mobileHoveredId = null;
 let activeGalaxyId = null;
 
 const CULTURE_LABELS = { kanaka: "K\u0101naka Maoli", kemet: "Kemet", bridge: "The Bridge" };
 const CULTURE_COLORS = { kanaka: "#3cb371", kemet: "#f0c96a", bridge: "#7b88ff" };
 const LESSON_URL     = "LKP/lessons.html#";
 
+function getConceptFromEvent(e, domEl, cam, ray) {
+  if (!domEl || !cam) return null;
+  const b = domEl.getBoundingClientRect();
+  if (!b.width || !b.height) return null;
+
+  const p = new THREE.Vector2(
+    ((e.clientX - b.left) / b.width) * 2 - 1,
+    -((e.clientY - b.top) / b.height) * 2 + 1
+  );
+
+  ray.setFromCamera(p, cam);
+  const hits = ray.intersectObjects(pickable, false);
+  if (!hits.length) return null;
+
+  const id = hits[0].object?.userData?.conceptId;
+  return id ? CONCEPT_MAP.get(id) || null : null;
+}
+
 function setPointerFromEvent(e) {
-
-  function getConceptFromEvent(e, domEl, cam) {
-    if (!domEl || !cam) return null;
-    const b = domEl.getBoundingClientRect();
-    if (!b.width || !b.height) return null;
-
-    const p = new THREE.Vector2(
-      ((e.clientX - b.left) / b.width) * 2 - 1,
-      -((e.clientY - b.top) / b.height) * 2 + 1
-    );
-
-    raycaster.setFromCamera(p, cam);
-    const hits = raycaster.intersectObjects(pickable, false);
-    if (!hits.length) return null;
-
-    const id = hits[0].object?.userData?.conceptId;
-    return id ? CONCEPT_MAP.get(id) || null : null;
-  }
   const b = renderer.domElement.getBoundingClientRect();
   pointer.x =  ((e.clientX - b.left) / b.width)  * 2 - 1;
   pointer.y = -((e.clientY - b.top)  / b.height) * 2 + 1;
@@ -1583,6 +1684,33 @@ function setPointerFromEvent(e) {
     tooltip.style.top  = `${ly}px`;
     if (lx + tooltip.offsetWidth > window.innerWidth)
       tooltip.style.left = `${Math.max(8, e.clientX - tooltip.offsetWidth - 12)}px`;
+  }
+}
+
+function setMiniPointerFromEvent(e) {
+  if (!miniRenderer?.domElement || !miniCamera) return;
+  const b = miniRenderer.domElement.getBoundingClientRect();
+  miniPointer.x = ((e.clientX - b.left) / b.width) * 2 - 1;
+  miniPointer.y = -((e.clientY - b.top) / b.height) * 2 + 1;
+
+  if (tooltip) {
+    const lx = e.clientX + 18, ly = e.clientY - 12;
+    tooltip.style.left = `${lx}px`;
+    tooltip.style.top  = `${ly}px`;
+    if (lx + tooltip.offsetWidth > window.innerWidth)
+      tooltip.style.left = `${Math.max(8, e.clientX - tooltip.offsetWidth - 12)}px`;
+  }
+}
+
+function setMobilePointerFromEvent(e) {
+  if (!mobileRenderer?.domElement || !mobileCamera) return;
+  if (tooltip) {
+    const lx = e.clientX + 18, ly = e.clientY - 12;
+    tooltip.style.left = `${lx}px`;
+    tooltip.style.top  = `${ly}px`;
+    if (lx + tooltip.offsetWidth > window.innerWidth) {
+      tooltip.style.left = `${Math.max(8, e.clientX - tooltip.offsetWidth - 12)}px`;
+    }
   }
 }
 
@@ -1619,6 +1747,45 @@ function startMiniZoomTo(pos) {
   miniControls.autoRotate = false;
 }
 
+function updateMiniTooltip(e) {
+  miniHoveredId = getConceptFromEvent(e, miniRenderer?.domElement, miniCamera, miniRaycaster)?.id || null;
+
+  if (!tooltip) return;
+
+  if (miniHoveredId) {
+    const c = CONCEPT_MAP.get(miniHoveredId);
+    if (!c) return;
+
+    tooltip.innerHTML = `
+      <div class="lkp-tip__title" style="color:${c.hex}">${c.label}</div>
+      <div class="lkp-tip__culture" style="color:${CULTURE_COLORS[c.culture] || "#fff"}">◈ ${CULTURE_LABELS[c.culture] || ""}</div>
+      <div class="lkp-tip__action">${IS_MOBILE ? "Tap" : "Click"} to open this lesson →</div>
+    `;
+    tooltip.classList.remove("hidden");
+    tooltip.classList.add("visible");
+  }
+}
+
+function updateAuxTooltip(hoverId, actionLabel) {
+  if (!tooltip) return;
+  if (!hoverId) {
+    tooltip.classList.remove("visible");
+    tooltip.classList.add("hidden");
+    return;
+  }
+
+  const c = CONCEPT_MAP.get(hoverId);
+  if (!c) return;
+
+  tooltip.innerHTML = `
+    <div class="lkp-tip__title" style="color:${c.hex}">${c.label}</div>
+    <div class="lkp-tip__culture" style="color:${CULTURE_COLORS[c.culture] || "#fff"}">◈ ${CULTURE_LABELS[c.culture] || ""}</div>
+    <div class="lkp-tip__action">${actionLabel}</div>
+  `;
+  tooltip.classList.remove("hidden");
+  tooltip.classList.add("visible");
+}
+
 renderer.domElement.addEventListener("dblclick", () => {
   if (hoveredId) {
     const c = CONCEPT_MAP.get(hoveredId);
@@ -1645,6 +1812,84 @@ renderer.domElement.addEventListener("touchend", (e) => {
   const c = CONCEPT_MAP.get(hoveredId);
   if (c?.lessonId) window.location.href = LESSON_URL + c.lessonId;
 }, { passive: false });
+
+if (miniViewerCanvas) {
+  miniViewerCanvas.addEventListener("pointermove", (e) => {
+    setMiniPointerFromEvent(e);
+    updateMiniTooltip(e);
+  }, { passive: true });
+
+  miniViewerCanvas.addEventListener("pointerdown", (e) => {
+    setMiniPointerFromEvent(e);
+    updateMiniTooltip(e);
+  }, { passive: true });
+
+  miniViewerCanvas.addEventListener("pointerleave", () => {
+    miniHoveredId = null;
+    updateAuxTooltip(null, "");
+  }, { passive: true });
+
+  miniViewerCanvas.addEventListener("click", (e) => {
+    const c = getConceptFromEvent(e, miniRenderer?.domElement, miniCamera, miniRaycaster);
+    if (c?.lessonId) window.location.href = LESSON_URL + c.lessonId;
+  });
+
+  miniViewerCanvas.addEventListener("dblclick", (e) => {
+    const c = getConceptFromEvent(e, miniRenderer?.domElement, miniCamera, miniRaycaster);
+    if (c) {
+      startMiniZoomTo(skyPos(c.az, c.alt, c.r));
+      return;
+    }
+
+    if (!miniCamera || !miniControls) return;
+    miniZoomTarget = getOverviewCameraPos();
+    miniZoomStart = miniCamera.position.clone();
+    miniZoomProgress = 0;
+    window.setTimeout(() => {
+      if (miniControls) miniControls.autoRotate = !REDUCED_MOTION;
+    }, 1800);
+  });
+}
+
+if (mobileViewerCanvas) {
+  mobileViewerCanvas.addEventListener("pointermove", (e) => {
+    setMobilePointerFromEvent(e);
+    mobileHoveredId = getConceptFromEvent(e, mobileRenderer?.domElement, mobileCamera, mobileRaycaster)?.id || null;
+    updateAuxTooltip(mobileHoveredId, `${IS_MOBILE ? "Tap" : "Click"} to open this lesson →`);
+  }, { passive: true });
+
+  mobileViewerCanvas.addEventListener("pointerdown", (e) => {
+    setMobilePointerFromEvent(e);
+    mobileHoveredId = getConceptFromEvent(e, mobileRenderer?.domElement, mobileCamera, mobileRaycaster)?.id || null;
+    updateAuxTooltip(mobileHoveredId, `${IS_MOBILE ? "Tap" : "Click"} to open this lesson →`);
+  }, { passive: true });
+
+  mobileViewerCanvas.addEventListener("pointerleave", () => {
+    mobileHoveredId = null;
+    updateAuxTooltip(null, "");
+  }, { passive: true });
+
+  mobileViewerCanvas.addEventListener("click", (e) => {
+    const c = getConceptFromEvent(e, mobileRenderer?.domElement, mobileCamera, mobileRaycaster);
+    if (c?.lessonId) window.location.href = LESSON_URL + c.lessonId;
+  });
+
+  mobileViewerCanvas.addEventListener("dblclick", (e) => {
+    const c = getConceptFromEvent(e, mobileRenderer?.domElement, mobileCamera, mobileRaycaster);
+    if (c) {
+      if (!mobileCamera || !mobileControls) return;
+      mobileCamera.position.copy(skyPos(c.az, c.alt, c.r).multiplyScalar(IS_MOBILE ? 0.26 : 0.22));
+      mobileControls.autoRotate = false;
+      return;
+    }
+
+    if (!mobileCamera || !mobileControls) return;
+    mobileCamera.position.copy(getOverviewCameraPos());
+    mobileControls.target.set(0, 0, 0);
+    mobileControls.autoRotate = !REDUCED_MOTION;
+    mobileControls.update();
+  });
+}
 
 function updateTooltip() {
   raycaster.setFromCamera(pointer, camera);
@@ -1798,10 +2043,18 @@ function onFrame() {
     if (zoomProgress >= 1) zoomTarget = null;
   }
 
+  if (miniZoomTarget && miniZoomProgress < 1 && miniCamera) {
+    miniZoomProgress = Math.min(1, miniZoomProgress + (IS_MOBILE ? 0.034 : 0.028));
+    const ease = 1 - Math.pow(1 - miniZoomProgress, 3);
+    miniCamera.position.lerpVectors(miniZoomStart, miniZoomTarget, ease);
+    if (miniZoomProgress >= 1) miniZoomTarget = null;
+  }
+
   updateTooltip();
   controls.update();
   composer.render();
   syncMiniViewer();
+  syncMobileViewer();
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1824,29 +2077,7 @@ function handleResize() {
   controls.panSpeed     = IS_MOBILE ? 0.34 : 0.48;
   controls.rotateSpeed  = IS_MOBILE ? -0.34 : -0.42;
   controls.autoRotateSpeed = IS_MOBILE ? 0.14 : 0.22;
-
-  miniViewerCanvas.addEventListener("click", (e) => {
-    const c = getConceptFromEvent(e, miniRenderer?.domElement, miniCamera);
-    if (c?.lessonId) window.location.href = LESSON_URL + c.lessonId;
-  });
-
-  miniViewerCanvas.addEventListener("dblclick", (e) => {
-    const c = getConceptFromEvent(e, miniRenderer?.domElement, miniCamera);
-    if (c) {
-      startMiniZoomTo(skyPos(c.az, c.alt, c.r));
-      return;
-    }
-
-    if (!miniCamera || !miniControls) return;
-    miniZoomTarget = getOverviewCameraPos();
-    miniZoomStart = miniCamera.position.clone();
-    miniZoomProgress = 0;
-    window.setTimeout(() => {
-      if (miniControls) miniControls.autoRotate = !REDUCED_MOTION;
-    }, 1800);
-  });
-
-  resizeMiniViewer();
+  resizeAuxViewers();
 }
 
 window.addEventListener("resize",            handleResize,                         { passive: true });
@@ -1869,13 +2100,6 @@ function injectLoader() {
   `;
   document.body.appendChild(el);
 }
-
-  if (miniZoomTarget && miniZoomProgress < 1 && miniCamera) {
-    miniZoomProgress = Math.min(1, miniZoomProgress + (IS_MOBILE ? 0.034 : 0.028));
-    const ease = 1 - Math.pow(1 - miniZoomProgress, 3);
-    miniCamera.position.lerpVectors(miniZoomStart, miniZoomTarget, ease);
-    if (miniZoomProgress >= 1) miniZoomTarget = null;
-  }
 
 function dismissLoader() {
   const el = document.getElementById("lkp-loader");
