@@ -28,12 +28,12 @@
   <link rel="canonical" href="https://www.pikoverse.xyz/" />
 
   <!-- Google / favicon / app icons -->
-  <link rel="icon" type="image/png" sizes="16x16" href="LKP/assets/images/LKP-2.png" />
-  <link rel="icon" type="image/png" sizes="32x32" href="LKP/assets/images/LKP-2.png" />
-  <link rel="icon" type="image/png" sizes="48x48" href="LKP/assets/images/LKP-2.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="LKP/assets/images/LKP-2.png" />
-  <link rel="apple-touch-icon" sizes="180x180" href="LKP/assets/images/LKP-2.png" />
-  <link rel="shortcut icon" href="LKP/assets/images/LKP-2.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="LKP/assets/images/LKP-1.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="LKP/assets/images/LKP-1.png" />
+  <link rel="icon" type="image/png" sizes="48x48" href="LKP/assets/images/LKP-1.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="LKP/assets/images/LKP-1.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="LKP/assets/images/LKP-1.png" />
+  <link rel="shortcut icon" href="LKP/assets/images/LKP-1.png" />
   <link rel="manifest" href="site.webmanifest" />
 
   <!-- Open Graph -->
@@ -44,8 +44,8 @@
     content="A living portal into ancestral wisdom, Hawaiian and Kemetic knowledge systems, and the stars of living understanding."
   />
   <meta property="og:url" content="https://www.pikoverse.xyz/" />
-  <meta property="og:image" content="https://www.pikoverse.xyz/LKP/assets/images/LKP-2.png" />
-  <meta property="og:image:alt" content="Ka Paepae 'Ike Ola - The Knowledge Platform icon" />
+  <meta property="og:image" content="https://www.pikoverse.xyz/LKP/assets/images/LKP-1.png" />
+  <meta property="og:image:alt" content="Ka Paepae 'Ike Ola - The Knowledge Platform brand icon" />
   <meta property="og:site_name" content="The Living Knowledge Platform" />
   <meta property="og:locale" content="en_US" />
 
@@ -56,8 +56,8 @@
     name="twitter:description"
     content="A living portal into ancestral wisdom, Hawaiian and Kemetic traditions, and the stars of living understanding."
   />
-  <meta name="twitter:image" content="https://www.pikoverse.xyz/LKP/assets/images/LKP-2.png" />
-  <meta name="twitter:image:alt" content="Ka Paepae 'Ike Ola - The Knowledge Platform icon" />
+  <meta name="twitter:image" content="https://www.pikoverse.xyz/LKP/assets/images/LKP-1.png" />
+  <meta name="twitter:image:alt" content="Ka Paepae 'Ike Ola - The Knowledge Platform brand icon" />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -691,12 +691,29 @@
                   <strong>Explorer View</strong>
                   <small>Drag, zoom, and pan the full sky map</small>
                 </div>
-                <button class="lkp-mobile-viewer__close" id="lkp-mobile-viewer-close" type="button" aria-label="Close fullscreen viewer">Close</button>
+                <div class="lkp-mobile-viewer__actions">
+                  <button class="lkp-mobile-viewer__helpbtn" id="lkp-mobile-viewer-help-open" type="button" aria-label="Open viewer help">Help</button>
+                  <button class="lkp-mobile-viewer__close" id="lkp-mobile-viewer-close" type="button" aria-label="Close fullscreen viewer">Close</button>
+                </div>
               </div>
 
               <canvas id="lkp-mobile-viewer-canvas" aria-label="Fullscreen mobile knowledge explorer"></canvas>
 
               <div class="lkp-mobile-viewer__hint">Use one finger to rotate or pan, and pinch to zoom.</div>
+
+              <section class="lkp-mobile-viewer-help" id="lkp-mobile-viewer-help" aria-label="Mobile explorer help" hidden>
+                <h3>Quick Explorer Guide</h3>
+                <ul>
+                  <li>Drag with one finger to orbit and pan the sky.</li>
+                  <li>Pinch in or out to zoom.</li>
+                  <li>Tap any concept crystal to open its lesson.</li>
+                  <li>Double tap a concept to zoom into it quickly.</li>
+                </ul>
+                <div class="lkp-mobile-viewer-help__actions">
+                  <button type="button" id="lkp-mobile-viewer-help-close">Got it</button>
+                  <button type="button" id="lkp-mobile-viewer-help-never">Don't show again</button>
+                </div>
+              </section>
             </div>
           </div>
 

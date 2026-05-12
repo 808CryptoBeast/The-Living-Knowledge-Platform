@@ -1,239 +1,104 @@
-# Ka Paepae ʻIke Ola  
-## The Living Knowledge Platform
+# Ka Paepae ʻIke Ola
 
-**Ka Paepae ʻIke Ola — The Living Knowledge Platform** is an interactive cultural learning platform designed to preserve, organize, and teach living knowledge systems through modern web technology.
+**GitHub description:** A living cultural knowledge platform with interactive 3D navigation, deep lessons, progress tracking, and mobile-friendly learning across the Ikeverse.
 
-This project brings together cultural education, historical research, celestial navigation, interactive lessons, profile-based learning, and future-ready blockchain integration. It begins with Kanaka Maoli knowledge and expands outward toward other Indigenous, ancestral, and ancient civilizations across the world.
+Ka Paepae ʻIke Ola is a static-site learning platform built around living knowledge rather than a flat archive. It combines a desktop Three.js knowledge galaxy, a mobile-first explorer, a lessons engine, a rewards and profile system, and a visual brand built around the platform’s nav mark.
 
-This is not built as a static history archive. It is built as a living learning environment.
+## What It Does
 
----
+The app lets learners explore cultural knowledge systems, open deep lesson pages, track completion, and return to their last lesson later. It is organized around Kānaka Maoli, Kemet, and cross-cultural bridge lessons, with room for future expansion across the wider Ikeverse.
 
-## 🌺 Project Vision
+## Current Experience
 
-The Living Knowledge Platform is designed to become a digital learning foundation where culture, history, technology, and identity are connected.
+- Desktop 3D knowledge galaxy with hover, click, zoom, pan, and lesson selection.
+- Mini live viewer in the homepage navigation area.
+- Mobile fullscreen 3D explorer with its own controls and help sheet.
+- Lessons page with culture filters, search, related concepts, lesson images, and sources.
+- Lesson hero fullscreen viewer for image viewing on small screens and desktop.
+- Swipe navigation, mobile lesson scrubber, and resume-last-lesson behavior.
+- Profile passport with Mana, rewards, badges, and sync support.
 
-The goal is to create a space where learners can:
+## Key Features
 
-- study living knowledge systems with respect and depth
-- explore cultural lessons through interactive visual systems
-- follow learning paths across different civilizations and traditions
-- track progress through a personal Wayfinder Passport
-- earn internal learning rewards such as Mana, badges, and certificates
-- prepare for future blockchain-based learning records through XRPL integration
-- connect with the wider Ikeverse, Culturalverse, Digitalverse, IkeHub, IkeStar, and Pikoverse ecosystem
+### 1. Knowledge Galaxy
 
----
+The homepage uses Three.js to render a living sky-map of concepts and lessons. It includes a main explorer, a preview viewer, and a mobile fullscreen viewer that shares the same knowledge graph.
 
-## 🧭 Meaning of the Name
+### 2. Deep Lessons
 
-**Ka Paepae ʻIke Ola** can be understood as a foundation or platform for living knowledge.
+The lessons system supports:
 
-- **Ka Paepae** — the foundation, platform, or raised base
-- **ʻIke** — knowledge, understanding, insight
-- **Ola** — life, living, health, vitality
+- lesson objectives
+- scholar and keiki modes
+- reflection prompts
+- completion tracking
+- source badges with inference and overrides
+- image strips and hero artwork
+- concept-based related lessons
+- prev/next navigation
+- mobile swipe navigation
 
-Together, the name reflects the purpose of this project:
+### 3. Wayfinder Passport
 
-> A foundation for knowledge that is alive, carried forward, practiced, taught, and connected across generations.
+The profile area tracks learning identity, completion progress, Mana, badges, and cloud-sync-ready profile data.
 
----
+### 4. Rewards
 
-## 🌌 Core Features
+The reward system uses Mana, XP, streaks, ranks, and badges to reinforce learning momentum.
 
-### 1. Interactive Knowledge Galaxy
+### 5. Mobile-First Behavior
 
-The platform uses Three.js to create an interactive cosmic learning map. Each connected realm appears as its own orbiting world with nebulae, cosmic dust, mini-planets, and distinct colors.
+Mobile is treated as a primary experience, not a fallback. The mobile app has its own loader, explorer flow, and lesson-friendly layout choices.
 
-Current realm palettes include:
+## Branding and Icon System
 
-- **LKP** — Gold / Cyan
-- **Ikeverse** — Emerald / Jade
-- **Culturalverse** — Amber / Rust
-- **Digitalverse** — Violet / Neon Cyan
-- **IkeStar** — Star Blue / White
-- **Pikoverse** — Gold / Orange
+The repo now uses the nav brand mark as the shared icon identity:
 
-Users can click a realm to focus on it, view a preview card, reset the galaxy view, center the sun, or open the selected realm.
+- favicon and app icons use the same brand image
+- manifest and Windows tile metadata point to the same mark
+- loader screens use the same icon with an uploading animation
+- social preview metadata stays aligned with the same visual identity
 
----
+## Tech Stack
 
-### 2. Wayfinder Passport Profile
+- HTML5
+- CSS3
+- JavaScript
+- Three.js
+- Supabase
+- LocalStorage
+- Font Awesome
+- Google Fonts
 
-The profile section acts as the user’s learning identity across the platform.
+## Main Files
 
-Features include:
+- `index.html` — homepage and desktop 3D entry point
+- `LKP/lessons.html` — deep lessons page
+- `profile.html` — Wayfinder Passport
+- `admin.html` — admin deck
+- `LKP/js/lkp-three.js` — desktop Three.js galaxy and loader
+- `LKP/js/lkp-mobile.js` — mobile experience and loader
+- `LKP/js/lkp-lessons.js` — lesson renderer and lesson controls
+- `LKP/css/lkp.css` — homepage and loader styles
+- `LKP/css/lkp-mobile.css` — mobile app styles
+- `LKP/css/lkp-lessons.css` — lessons styles
+- `site.webmanifest` — install metadata
+- `browserconfig.xml` — Windows tile metadata
 
-- user sign-in and profile creation
-- display name, handle, bio, avatar URL, and home realm
-- lesson progress tracking
-- completed lesson count
-- Mana count
-- learning percentage
-- badges and reward progress
-- admin-aware profile experience
-- future-ready connection to ecosystem-wide identity
+## Data Sources
 
-The profile is designed to become the user’s personal learning passport through the full platform ecosystem.
+The content layer is driven by:
 
----
+- `LKP/js/lkp-data.js`
+- `LKP/js/lkp-data-rich-additions.js`
+- `LKP/js/lkp-data-primary-sources.js`
 
-### 3. Mana Rewards System
+This keeps the platform static-file friendly while still supporting richer lesson metadata and source handling.
 
-The platform includes an internal reward system built around learning progression.
+## Documentation
 
-Current reward elements include:
+For a detailed current-state report, see [APP_REPORT_2026-05-12.md](APP_REPORT_2026-05-12.md).
 
-- Mana
-- XP
-- daily check-ins
-- learning streaks
-- rank progression
-- badges
-- module completion
-- culture path completion
-- XRPL-ready certificate records for future expansion
+## Notes
 
-The Mana system is not meant to replace the value of knowledge. It is meant to encourage accountability, consistency, and learning momentum.
-
----
-
-### 4. Lesson Path System
-
-Lessons are structured into cultures, modules, and individual learning experiences.
-
-Users can:
-
-- search lessons
-- filter by culture
-- filter by completion status
-- mark lessons as complete
-- track progress locally or through Supabase
-- connect learning progress to future rewards
-
-The lesson system is designed to support both current static data and future admin-managed Supabase content.
-
----
-
-### 5. Admin-Ready Structure
-
-The platform is being built with an admin layer in mind.
-
-Admin and owner users will eventually be able to:
-
-- add lessons
-- edit lessons
-- manage cultures
-- manage galaxies
-- manage modules
-- manage sources
-- publish updates
-- control learning content across the platform
-
-The profile system already recognizes upgraded roles such as:
-
-- `user`
-- `admin`
-- `owner`
-
----
-
-### 6. Time-of-Day Background System
-
-The profile experience includes a dynamic visual background that changes by time of day:
-
-- Dawn
-- Day
-- Dusk
-- Night
-
-This works alongside dark and light mode, allowing combinations such as:
-
-- dark night
-- dark dawn
-- light day
-- light dusk
-
-The goal is to make the platform feel alive rather than static.
-
----
-
-## 🛠️ Technology Stack
-
-This project currently uses:
-
-- **HTML5**
-- **CSS3**
-- **JavaScript**
-- **Three.js**
-- **Supabase**
-- **Supabase Auth**
-- **Supabase Database**
-- **LocalStorage**
-- **Font Awesome**
-- **Google Fonts**
-- **GitHub Pages-compatible structure**
-
-Future integrations may include:
-
-- XRPL wallet connection
-- XRPL learning records
-- NFT-style proof of completion
-- credential verification
-- expanded admin dashboards
-- dynamic culture/lesson publishing
-- multi-chain learning records
-
----
-
-## 📁 Suggested Project Structure
-
-```text
-project-root/
-│
-├── index.html
-├── lessons.html
-├── profile.html
-├── admin.html
-│
-├── LKP/
-│   ├── css/
-│   │   ├── lkp-brand.css
-│   │   └── profile.css
-│   │
-│   ├── js/
-│   │   ├── lkp-data.js
-│   │   ├── lkp-rewards.js
-│   │   └── profile.js
-│   │
-│   └── assets/
-│       └── images/
-│           ├── LKP-1.png
-│           └── LKP-2.png
-│
-└── README.md
-
-🔐 Supabase Profile System
-
-The platform uses Supabase for authentication and profile management.
-
-The profile table supports fields such as:
-
-id
-email
-display_name
-handle
-bio
-avatar_url
-role
-home_realm
-ecosystem_access
-preferences
-created_at
-updated_at
-
-Roles are used to control user and admin experiences.
-
-user  → regular learner profile
-admin → upgraded profile with content tools
-owner → full platform authority
+This repository is structured to stay compatible with GitHub Pages and future Supabase-backed growth. The app is intentionally additive: new features are layered on top of the existing experience rather than replacing it.

@@ -80,6 +80,35 @@
 
   const RAW_CULTURES = DATA.cultures.length ? DATA.cultures : FALLBACK_CULTURES;
 
+  function injectLoader() {
+    if (document.getElementById('lkp-loader')) return;
+
+    const el = document.createElement('div');
+    el.id = 'lkp-loader';
+    el.innerHTML = `
+      <div class="lkp-loader__inner">
+        <div class="lkp-loader__icon-wrap">
+          <div class="lkp-loader__fill"></div>
+          <img class="lkp-loader__icon" src="${assetPath('LKP-1.png')}" alt="The Living Knowledge Platform" />
+          <div class="lkp-loader__ring"></div>
+          <div class="lkp-loader__upload"></div>
+        </div>
+        <div class="lkp-loader__title">Living Knowledge</div>
+        <div class="lkp-loader__sub">Uploading the living archive&hellip;</div>
+      </div>
+    `;
+
+    document.body.appendChild(el);
+  }
+
+  function dismissLoader() {
+    const el = document.getElementById('lkp-loader');
+    if (!el) return;
+
+    el.classList.add('out');
+    window.setTimeout(() => el.remove(), 720);
+  }
+
   /* ── Utilities ────────────────────────────────────────────────────────── */
   function stripTags(html) { return String(html||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim(); }
   function escapeHTML(v)   { return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;'); }
@@ -254,6 +283,7 @@
   function boot() {
     injectMobileCSS();
     buildShell();
+    injectLoader();
     buildStarfield();
     buildHome();
     buildGalaxiesPanel();
@@ -265,6 +295,7 @@
     buildBottomNav();
     switchTab('home');
     initSwipe();
+    requestAnimationFrame(() => dismissLoader());
   }
 
   function injectMobileCSS() {

@@ -497,6 +497,11 @@ const miniFullscreenBtn = document.getElementById("lkp-mini-fullscreen");
 const mobileViewerEl = document.getElementById("lkp-mobile-viewer");
 const mobileViewerCanvas = document.getElementById("lkp-mobile-viewer-canvas");
 const mobileViewerCloseBtn = document.getElementById("lkp-mobile-viewer-close");
+const mobileViewerHelpOpenBtn = document.getElementById("lkp-mobile-viewer-help-open");
+const mobileViewerHelpEl = document.getElementById("lkp-mobile-viewer-help");
+const mobileViewerHelpCloseBtn = document.getElementById("lkp-mobile-viewer-help-close");
+const mobileViewerHelpNeverBtn = document.getElementById("lkp-mobile-viewer-help-never");
+const MOBILE_VIEWER_HELP_KEY = "lkp_mobile_viewer_help_seen_v1";
 let miniRenderer = null;
 let miniCamera = null;
 let miniControls = null;
@@ -536,6 +541,21 @@ function syncMiniButtons() {
   }
 }
 
+function setMobileHelpVisible(isVisible) {
+  if (!mobileViewerHelpEl) return;
+
+  mobileViewerHelpEl.hidden = !isVisible;
+}
+
+function maybeShowMobileHelpOnOpen() {
+  try {
+    const seen = localStorage.getItem(MOBILE_VIEWER_HELP_KEY) === "1";
+    setMobileHelpVisible(!seen);
+  } catch {
+    setMobileHelpVisible(true);
+  }
+}
+
 if (miniToggleBtn) {
   miniToggleBtn.addEventListener("click", () => {
     miniViewerState.paused = !miniViewerState.paused;
@@ -559,6 +579,7 @@ if (miniFullscreenBtn && mobileViewerEl) {
     mobileViewerEl.classList.add("is-open");
     mobileViewerEl.setAttribute("aria-hidden", "false");
     document.body.classList.add("lkp-mobile-viewer-open");
+    maybeShowMobileHelpOnOpen();
     if (mobileCamera && mobileControls) {
       mobileCamera.position.copy(getOverviewCameraPos());
       mobileControls.target.set(0, 0, 0);
@@ -573,6 +594,33 @@ if (mobileViewerCloseBtn && mobileViewerEl) {
     mobileViewerEl.classList.remove("is-open");
     mobileViewerEl.setAttribute("aria-hidden", "true");
     document.body.classList.remove("lkp-mobile-viewer-open");
+    setMobileHelpVisible(false);
+  });
+}
+
+if (mobileViewerHelpOpenBtn) {
+  mobileViewerHelpOpenBtn.addEventListener("click", () => {
+    setMobileHelpVisible(true);
+  });
+}
+
+if (mobileViewerHelpCloseBtn) {
+  mobileViewerHelpCloseBtn.addEventListener("click", () => {
+    setMobileHelpVisible(false);
+
+    try {
+      localStorage.setItem(MOBILE_VIEWER_HELP_KEY, "1");
+    } catch {}
+  });
+}
+
+if (mobileViewerHelpNeverBtn) {
+  mobileViewerHelpNeverBtn.addEventListener("click", () => {
+    setMobileHelpVisible(false);
+
+    try {
+      localStorage.setItem(MOBILE_VIEWER_HELP_KEY, "1");
+    } catch {}
   });
 }
 
@@ -2093,9 +2141,14 @@ function injectLoader() {
   el.id = "lkp-loader";
   el.innerHTML = `
     <div class="lkp-loader__inner">
-      <div class="lkp-loader__ring"></div>
+      <div class="lkp-loader__icon-wrap">
+        <div class="lkp-loader__fill"></div>
+        <img class="lkp-loader__icon" src="LKP/assets/images/LKP-1.png" alt="The Living Knowledge Platform" />
+        <div class="lkp-loader__ring"></div>
+        <div class="lkp-loader__upload"></div>
+      </div>
       <div class="lkp-loader__title">Living Knowledge</div>
-      <div class="lkp-loader__sub">Navigating the stars&hellip;</div>
+      <div class="lkp-loader__sub">Uploading the living archive&hellip;</div>
     </div>
   `;
   document.body.appendChild(el);

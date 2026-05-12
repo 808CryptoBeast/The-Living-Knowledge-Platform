@@ -22,10 +22,10 @@
     content="Explore deep cultural lessons, living knowledge systems, and cross-cultural bridges."
   />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="assets/images/LKP-2.png" />
+  <meta property="og:image" content="assets/images/LKP-1.png" />
 
-  <link rel="icon" type="image/png" href="assets/images/LKP-2.png" />
-  <link rel="apple-touch-icon" href="assets/images/LKP-2.png" />
+  <link rel="icon" type="image/png" href="assets/images/LKP-1.png" />
+  <link rel="apple-touch-icon" href="assets/images/LKP-1.png" />
   <link rel="manifest" href="../site.webmanifest" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -183,6 +183,11 @@
 
         <!-- Hero — background-image set by JS -->
         <div class="cv-lesson-culture-hero" id="cultureHero">
+          <button class="cv-hero-fullscreen-btn" type="button" data-hero-fullscreen-open aria-label="Open lesson image fullscreen">
+            <i class="fas fa-expand"></i>
+            <span>View Fullscreen</span>
+          </button>
+
           <div class="cv-culture-hero-label" id="cultureHeroLabel">
             <span id="cultureHeroEmoji">✦</span>
             <span id="cultureHeroName">Culture · Module</span>
@@ -210,7 +215,18 @@
         <!-- Prev / Next navigation -->
         <div class="cv-lesson-article__nav" id="lessonNav"></div>
 
+        <!-- Mobile scrubber -->
+        <div class="cv-lesson-mobile-scrubber" id="lessonMobileScrubber"></div>
+
       </article>
+
+      <div class="cv-hero-lightbox" id="heroLightbox" aria-hidden="true">
+        <div class="cv-hero-lightbox__top">
+          <button class="cv-hero-lightbox__close" type="button" data-hero-fullscreen-close aria-label="Close fullscreen lesson image">Close</button>
+        </div>
+        <div class="cv-hero-lightbox__image" id="heroLightboxImage" role="img" aria-label="Lesson hero image"></div>
+        <div class="cv-hero-lightbox__caption" id="heroLightboxCaption"></div>
+      </div>
     </main>
   </div>
 

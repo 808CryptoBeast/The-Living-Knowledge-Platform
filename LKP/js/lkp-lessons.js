@@ -18,6 +18,7 @@
   const REFLECTIONS_KEY = 'lkp_lesson_reflections_v2';
   const MODE_KEY        = 'lkp_lesson_mode_v1';
   const FONT_SCALE_KEY  = 'lkp_lesson_font_scale_v1';
+  const LAST_LESSON_KEY = 'lkp_last_lesson_id_v1';
   const DEFAULT_MANA    = 10;
 
   /* ══════════════════════════════════════════════════════════════════════
@@ -610,6 +611,8 @@
         ...img,
         url: found
       });
+
+      syncHeroLightbox();
     });
   }
 
@@ -649,6 +652,37 @@
     }
 
     badge.textContent = text;
+    syncHeroLightbox();
+  }
+
+  function syncHeroLightbox() {
+    const hero = document.getElementById('cultureHero');
+    const lightboxImage = document.getElementById('heroLightboxImage');
+    const lightboxCaption = document.getElementById('heroLightboxCaption');
+    if (!hero || !lightboxImage || !lightboxCaption) return;
+
+    lightboxImage.style.backgroundImage = hero.style.backgroundImage || '';
+    lightboxImage.style.backgroundPosition = hero.style.backgroundPosition || 'center center';
+
+    const credit = hero.querySelector('.cv-hero-credit')?.textContent?.trim() || '';
+    lightboxCaption.textContent = credit || 'Lesson artwork';
+  }
+
+  function openHeroLightbox() {
+    const lightbox = document.getElementById('heroLightbox');
+    if (!lightbox) return;
+    syncHeroLightbox();
+    lightbox.classList.add('is-open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('is-hero-lightbox-open');
+  }
+
+  function closeHeroLightbox() {
+    const lightbox = document.getElementById('heroLightbox');
+    if (!lightbox) return;
+    lightbox.classList.remove('is-open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('is-hero-lightbox-open');
   }
 
   function normalizeSources(raw) {
@@ -2012,6 +2046,45 @@
         </div>
         <i class="fas fa-arrow-right"></i>
       </button>
+
+      <div class="cv-swipe-hint" aria-hidden="true">Swipe left or right to move between lessons</div>
+    `;
+  }
+
+  function renderMobileScrubber() {
+    const scrubber = document.getElementById('lessonMobileScrubber');
+    if (!scrubber || !state.activeLessonId) return;
+
+    const index = getLessonIndex(state.activeLessonId);
+    const previous = index > 0 ? state.lessons[index - 1] : null;
+    const next = index < state.lessons.length - 1 ? state.lessons[index + 1] : null;
+    const current = findLesson(state.activeLessonId);
+
+    scrubber.innerHTML = `
+      <button
+        class="cv-mobile-scrubber__btn"
+        type="button"
+        data-nav-lesson="${previous ? escapeHTML(previous.id) : ''}"
+        ${previous ? '' : 'disabled'}
+        aria-label="Go to previous lesson"
+      >
+        <i class="fas fa-chevron-left"></i>
+      </button>
+
+      <div class="cv-mobile-scrubber__center">
+        <small>Lesson ${index + 1} of ${state.lessons.length}</small>
+        <strong>${escapeHTML(current?.title || '')}</strong>
+      </div>
+
+      <button
+        class="cv-mobile-scrubber__btn"
+        type="button"
+        data-nav-lesson="${next ? escapeHTML(next.id) : ''}"
+        ${next ? '' : 'disabled'}
+        aria-label="Go to next lesson"
+      >
+        <i class="fas fa-chevron-right"></i>
+      </button>
     `;
   }
 
@@ -2024,6 +2097,7 @@
     }
 
     state.activeLessonId = lesson.id;
+    localStorage.setItem(LAST_LESSON_KEY, lesson.id);
 
     document.body.dataset.culture = lesson.cultureId || 'default';
     document.body.dataset.lessonMode = state.mode;
@@ -2034,6 +2108,16 @@
 
     if (welcome) welcome.hidden = true;
     if (article) article.hidden = false;
+
+    if (article) {
+      article.classList.remove('is-transitioning');
+      void article.offsetWidth;
+      article.classList.add('is-transitioning');
+      clearTimeout(renderLesson._transitionTimer);
+      renderLesson._transitionTimer = setTimeout(() => {
+        article.classList.remove('is-transitioning');
+      }, 260);
+    }
 
     const header = document.getElementById('lessonHeader');
 
@@ -2054,6 +2138,7 @@
     }
 
     updateHeroImage(lesson);
+    syncHeroLightbox();
 
     const emoji = document.getElementById('cultureHeroEmoji');
     const name = document.getElementById('cultureHeroName');
@@ -2066,6 +2151,7 @@
     renderLessonImageStrip(lesson);
     renderSources(lesson);
     renderLessonNav();
+    renderMobileScrubber();
     renderRelatedLessons(lesson);
     renderLessonTree();
     updateCompleteButton(lesson);
@@ -2289,6 +2375,68 @@
   }
 
   function bindEvents() {
+    const swipeState = {
+      x: 0,
+      y: 0,
+      active: false,
+      time: 0
+    };
+
+    function canUseTouchGestures() {
+      return window.matchMedia('(max-width:980px)').matches || window.matchMedia('(pointer:coarse)').matches;
+    }
+
+    function onSwipeStart(event) {
+      if (!state.activeLessonId || !canUseTouchGestures()) return;
+      if (!event.touches || event.touches.length !== 1) return;
+
+      const target = event.target;
+      if (target.closest('textarea,input,button,a,.lkp-sidebar,.cv-sidebar-fab')) return;
+
+      const startX = event.touches[0].clientX;
+      const startY = event.touches[0].clientY;
+      const vw = window.innerWidth || document.documentElement.clientWidth || 1;
+      const vh = window.innerHeight || document.documentElement.clientHeight || 1;
+      const inEdgeZone = startX <= vw * 0.08 || startX >= vw * 0.92;
+      const inTopZone = startY <= vh * 0.1;
+      const inBottomZone = startY >= vh * 0.9;
+
+      // Guard edge and extreme top/bottom regions to avoid clashes with OS gestures.
+      if (inEdgeZone || inTopZone || inBottomZone) return;
+
+      swipeState.active = true;
+      swipeState.x = startX;
+      swipeState.y = startY;
+      swipeState.time = Date.now();
+    }
+
+    function onSwipeEnd(event) {
+      if (!swipeState.active || !state.activeLessonId || !canUseTouchGestures()) return;
+      swipeState.active = false;
+      if (!event.changedTouches || !event.changedTouches.length) return;
+
+      const dx = event.changedTouches[0].clientX - swipeState.x;
+      const dy = event.changedTouches[0].clientY - swipeState.y;
+      const elapsed = Date.now() - swipeState.time;
+
+      if (elapsed > 820) return;
+      if (Math.abs(dx) < 66) return;
+      if (Math.abs(dy) > 76) return;
+      if (Math.abs(dx) < Math.abs(dy) * 1.2) return;
+
+      const index = getLessonIndex(state.activeLessonId);
+      if (index < 0) return;
+
+      if (dx < 0 && index < state.lessons.length - 1) {
+        renderLesson(state.lessons[index + 1].id);
+      } else if (dx > 0 && index > 0) {
+        renderLesson(state.lessons[index - 1].id);
+      }
+    }
+
+    document.getElementById('lessonMain')?.addEventListener('touchstart', onSwipeStart, { passive: true });
+    document.getElementById('lessonMain')?.addEventListener('touchend', onSwipeEnd, { passive: true });
+
     document.addEventListener('click', event => {
       const cultureFilter = event.target.closest('[data-culture-filter]');
 
@@ -2367,6 +2515,22 @@
 
       if (event.target.closest('[data-reading-mode]')) {
         document.body.classList.toggle('is-reading-mode');
+        return;
+      }
+
+      if (event.target.closest('[data-hero-fullscreen-open]')) {
+        openHeroLightbox();
+        return;
+      }
+
+      if (event.target.closest('[data-hero-fullscreen-close]')) {
+        closeHeroLightbox();
+        return;
+      }
+
+      const lightbox = document.getElementById('heroLightbox');
+      if (lightbox?.classList.contains('is-open') && event.target === lightbox) {
+        closeHeroLightbox();
       }
     });
 
@@ -2397,6 +2561,7 @@
 
       if (event.key === 'Escape') {
         document.body.classList.remove('is-reading-mode');
+        closeHeroLightbox();
       }
     });
   }
@@ -2489,7 +2654,14 @@
     const opened = openLessonFromHash({ noScroll: true });
 
     if (!opened && state.lessons.length) {
-      renderLesson(state.lessons[0].id, { noScroll: true });
+      const lastLessonId = localStorage.getItem(LAST_LESSON_KEY) || '';
+      const hasLastLesson = findLesson(lastLessonId);
+
+      if (hasLastLesson) {
+        renderLesson(lastLessonId, { noScroll: true });
+      } else {
+        renderLesson(state.lessons[0].id, { noScroll: true });
+      }
     }
 
     bindEvents();
