@@ -1103,6 +1103,10 @@ code {
   touch-action: none;
 }
 
+.lkp-m-home-galaxy {
+  touch-action: none;
+}
+
 .lkp-m-three-galaxy__hud {
   position: absolute;
   top: 12px;

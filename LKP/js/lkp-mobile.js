@@ -197,6 +197,17 @@
   let sheetData    = null;
   let blockSwipeUntil = 0;
 
+  const GESTURE = {
+    tapMovePx: 11,
+    tapMaxMs: 280,
+    dragMovePx: 14,
+    swipeMinX: 88,
+    swipeMaxY: 72,
+    swipeAspect: 0.5,
+    lockAfterDragMs: 420,
+    lockAfterSwipeMs: 280
+  };
+
   const mobileGalaxyState = {
     initialized: false,
     THREE: null, scene:null, camera:null, renderer:null, controls:null,
@@ -428,7 +439,7 @@
         </div>
         <div class="lkp-m-home__pills">${buildHomePills()}</div>
         <div class="lkp-m-home-galaxy-wrap" style="position:relative;width:100%;height:240px;margin:1.5rem 0;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,rgba(15,3,10,0.8) 0%,rgba(20,8,18,0.9) 100%);border:1px solid rgba(84,198,238,0.12);">
-          <canvas id="lkp-m-home-galaxy" style="display:block;width:100%;height:100%;" aria-label="Living Knowledge Galaxy"></canvas>
+          <canvas id="lkp-m-home-galaxy" class="lkp-m-home-galaxy" style="display:block;width:100%;height:100%;" aria-label="Living Knowledge Galaxy"></canvas>
           <div style="position:absolute;bottom:8px;right:8px;font-size:10px;color:rgba(240,201,106,0.5);font-weight:600;">Tap or drag to explore</div>
         </div>
         <div class="lkp-m-compass-portal" aria-label="Living Hawaiian star compass gateway">
@@ -945,7 +956,7 @@
       if (gesture.down) {
         const dx = e.clientX - gesture.startX;
         const dy = e.clientY - gesture.startY;
-        if ((dx * dx + dy * dy) > 196) gesture.moved = true; // 14px movement threshold
+        if ((dx * dx + dy * dy) > (GESTURE.dragMovePx * GESTURE.dragMovePx)) gesture.moved = true;
       }
       if (!gesture.down || !gesture.moved) pickMobileGalaxyNode(false);
     },{passive:true});
@@ -958,13 +969,13 @@
       const dx = e.clientX - gesture.startX;
       const dy = e.clientY - gesture.startY;
       const distSq = dx * dx + dy * dy;
-      const isTap = distSq < 121 && dt < 280; // 11px and 280ms
+      const isTap = distSq < (GESTURE.tapMovePx * GESTURE.tapMovePx) && dt < GESTURE.tapMaxMs;
 
       gesture.down = false;
       if (isTap) {
         pickMobileGalaxyNode(true);
       } else {
-        blockSwipeUntil = Date.now() + 420;
+        blockSwipeUntil = Date.now() + GESTURE.lockAfterDragMs;
       }
     },{passive:true});
 
@@ -1094,6 +1105,8 @@
     controls.autoRotate=true;controls.autoRotateSpeed=0.18;
     controls.target.set(0,0,0);
 
+    bindHomeGalaxyGestureLock(canvas);
+
     homeGalaxyState.scene=scene;homeGalaxyState.camera=camera;homeGalaxyState.renderer=renderer;
     homeGalaxyState.controls=controls;homeGalaxyState.cultureGroups=[];homeGalaxyState.dustSystems=[];homeGalaxyState.nebulaSprites=[];homeGalaxyState.lessonPivots=[];
 
@@ -1148,6 +1161,36 @@
       controls.update();renderer.render(scene,camera);
     }
     animate();
+  }
+
+  function bindHomeGalaxyGestureLock(canvas){
+    const gesture = { down:false, startX:0, startY:0, moved:false };
+
+    canvas.addEventListener('pointerdown', (e) => {
+      gesture.down = true;
+      gesture.startX = e.clientX;
+      gesture.startY = e.clientY;
+      gesture.moved = false;
+    }, { passive: true });
+
+    canvas.addEventListener('pointermove', (e) => {
+      if (!gesture.down) return;
+      const dx = e.clientX - gesture.startX;
+      const dy = e.clientY - gesture.startY;
+      if ((dx * dx + dy * dy) > (GESTURE.dragMovePx * GESTURE.dragMovePx)) {
+        gesture.moved = true;
+      }
+    }, { passive: true });
+
+    const end = () => {
+      if (gesture.down && gesture.moved) {
+        blockSwipeUntil = Date.now() + GESTURE.lockAfterDragMs;
+      }
+      gesture.down = false;
+    };
+
+    canvas.addEventListener('pointerup', end, { passive: true });
+    canvas.addEventListener('pointercancel', () => { gesture.down = false; }, { passive: true });
   }
 
   function buildHomeGalaxySystem(scene,THREE){
@@ -1390,9 +1433,10 @@
       if(!isDragging)return;isDragging=false;
       if (swipeBlocked || Date.now() < blockSwipeUntil) return;
       const dx=e.changedTouches[0].clientX-startX,dy=e.changedTouches[0].clientY-startY;
-      if(Math.abs(dx)<88||Math.abs(dy)>Math.abs(dx)*0.5||Math.abs(dy)>72)return;
+      if(Math.abs(dx)<GESTURE.swipeMinX||Math.abs(dy)>Math.abs(dx)*GESTURE.swipeAspect||Math.abs(dy)>GESTURE.swipeMaxY)return;
       const order=['home','galaxies','bridge','chart','ecosystem'];const cur=order.indexOf(activeTab);
       if(dx<0&&cur<order.length-1)switchTab(order[cur+1]);if(dx>0&&cur>0)switchTab(order[cur-1]);
+      blockSwipeUntil = Date.now() + GESTURE.lockAfterSwipeMs;
     },{passive:true});
   }
 
