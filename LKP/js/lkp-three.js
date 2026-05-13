@@ -1172,8 +1172,28 @@ function makeGalaxyCoreDisc(def) {
 
 const conceptNodes = [];
 const pickable     = [];
+const LESSON_MEMORY_KEY = "lkp-seen-lessons-v1";
+let newLessonIds = new Set();
 
-function makeCrystalNode(concept) {
+function safeReadSeenLessons() {
+  try {
+    const raw = window.localStorage.getItem(LESSON_MEMORY_KEY);
+    const arr = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(arr) ? arr : []);
+  } catch (_) {
+    return new Set();
+  }
+}
+
+function safeWriteSeenLessons(ids) {
+  try {
+    window.localStorage.setItem(LESSON_MEMORY_KEY, JSON.stringify(Array.from(ids)));
+  } catch (_) {
+    // Non-fatal if storage is unavailable.
+  }
+}
+
+function makeCrystalNode(concept, buildIndex = 0) {
   const grp = new THREE.Group();
   grp.position.copy(skyPos(concept.az, concept.alt, concept.r));
   grp.userData = { conceptId: concept.id };
@@ -1241,14 +1261,29 @@ function makeCrystalNode(concept) {
   grp.add(lSpr);
 
   skyDome.add(grp);
-  conceptNodes.push({ concept, grp, crystal, glow, wire, baseOpacity: concept.major ? 0.80 : 0.60, phase: Math.random() * Math.PI * 2 });
+  const nowMs = performance.now();
+  const isNewLesson = concept.lessonId ? newLessonIds.has(concept.lessonId) : false;
+  const revealDelay = buildIndex * (IS_MOBILE ? 16 : 22) + (isNewLesson ? 0 : (IS_MOBILE ? 180 : 260));
+  conceptNodes.push({
+    concept,
+    grp,
+    crystal,
+    glow,
+    wire,
+    label: lSpr,
+    baseOpacity: concept.major ? 0.80 : 0.60,
+    phase: Math.random() * Math.PI * 2,
+    revealAt: nowMs + revealDelay,
+    isNewLesson
+  });
 }
 
 function makeAllConceptNodes() {
+  let buildIndex = 0;
   GALAXY_DEFS.forEach((g) => {
-    g.concepts.forEach((c) => makeCrystalNode({ ...c, culture: g.id, galaxyId: g.id }));
+    g.concepts.forEach((c) => makeCrystalNode({ ...c, culture: g.id, galaxyId: g.id }, buildIndex++));
   });
-  BRIDGE_CONCEPTS.forEach((c) => makeCrystalNode({ ...c, culture: "bridge", galaxyId: "bridge" }));
+  BRIDGE_CONCEPTS.forEach((c) => makeCrystalNode({ ...c, culture: "bridge", galaxyId: "bridge" }, buildIndex++));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1257,10 +1292,64 @@ function makeAllConceptNodes() {
 
 const flowItems = [];
 const constellationLines = [];
+let constellationBuildTick = 0;
+const storyFocus = {
+  active: false,
+  galaxyId: null,
+  path: [],
+  startedAt: 0,
+  stepMs: 1100,
+  totalMs: 0
+};
+
+function culturePhaseKey(value) {
+  const s = String(value || "lkp");
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h) + s.charCodeAt(i);
+  return Math.abs(h % 628) / 100;
+}
+
+function triggerConnectionSurge(seedConceptId, galaxyId, strength = 1.0) {
+  const now = performance.now();
+  const burstDur = 2200;
+
+  constellationLines.forEach((ln) => {
+    const touchesConcept = seedConceptId && (ln.aId === seedConceptId || ln.bId === seedConceptId);
+    const touchesGalaxy = galaxyId && (ln.aGalaxyId === galaxyId || ln.bGalaxyId === galaxyId || ln.cultureId === galaxyId);
+    if (!touchesConcept && !touchesGalaxy) return;
+
+    const nextBoost = touchesConcept ? 1.15 * strength : 0.72 * strength;
+    ln.surgeBoost = Math.max(ln.surgeBoost || 0, nextBoost);
+    ln.surgeUntil = Math.max(ln.surgeUntil || 0, now + burstDur);
+  });
+}
+
+function startGuidedStory(galaxyId) {
+  const ids = ALL_CONCEPTS
+    .filter((c) => c.galaxyId === galaxyId)
+    .sort((a, b) => (b.major ? 1 : 0) - (a.major ? 1 : 0))
+    .slice(0, 6)
+    .map((c) => c.id);
+
+  if (!ids.length) return;
+
+  storyFocus.active = true;
+  storyFocus.galaxyId = galaxyId;
+  storyFocus.path = ids;
+  storyFocus.startedAt = performance.now();
+  storyFocus.stepMs = IS_MOBILE ? 900 : 1100;
+  storyFocus.totalMs = storyFocus.path.length * storyFocus.stepMs + 1000;
+}
 
 function makeConstellations() {
   let foundConnections = 0;
   let missingConnections = 0;
+  const orbBudgetByGalaxy = new Map();
+
+  constellationLines.length = 0;
+  flowItems.length = 0;
+  constellationBuildTick = performance.now();
+  let buildIndex = 0;
 
   CONNECTIONS.forEach((conn) => {
     const aId = conn.aId;
@@ -1320,14 +1409,30 @@ function makeConstellations() {
       isIntra,
       cultureId: conn.cultureId || null,
       aGalaxyId: ca.galaxyId,
-      bGalaxyId: cb.galaxyId
+      bGalaxyId: cb.galaxyId,
+      mid,
+      phase: culturePhaseKey(conn.cultureId || `${aId}:${bId}`),
+      revealAt: constellationBuildTick + buildIndex * (IS_MOBILE ? 8 : 11),
+      surgeUntil: 0,
+      surgeBoost: 0
     });
 
-    if (str >= 0.5 && !REDUCED_MOTION && !IS_MOBILE) {
+    const lineRef = constellationLines[constellationLines.length - 1];
+    buildIndex += 1;
+
+    if (str >= 0.5 && !REDUCED_MOTION && !IS_MOBILE && isIntra) {
       const col2 = colAB;
       const R2 = Math.round(col2.r*255), G2 = Math.round(col2.g*255), B2 = Math.round(col2.b*255);
       const tex = makeGlowTex(R2, G2, B2, 0.96, 32);
-      const N2  = str >= 0.8 ? 4 : isIntra ? 3 : 2;
+      const galaxyId = conn.cultureId || ca.galaxyId;
+      const used = orbBudgetByGalaxy.get(galaxyId) || 0;
+      const maxForGalaxy = str >= 0.8 ? 2 : 1;
+      const remaining = Math.max(0, maxForGalaxy - used);
+      const N2 = Math.min(2, remaining);
+
+      if (N2 <= 0) return;
+
+      orbBudgetByGalaxy.set(galaxyId, used + N2);
 
       for (let i = 0; i < N2; i++) {
         const dot = new THREE.Sprite(new THREE.SpriteMaterial({
@@ -1335,7 +1440,14 @@ function makeConstellations() {
           depthWrite: false, blending: THREE.AdditiveBlending
         }));
         dot.scale.setScalar(isIntra ? 0.26 : 0.24);
-        dot.userData = { curve, t: i / N2, speed: 0.0014 + Math.random() * 0.0012, maxOp: 0.60 * str };
+        dot.userData = {
+          curve,
+          t: i / N2,
+          speed: 0.0014 + Math.random() * 0.0012,
+          maxOp: 0.60 * str,
+          lineRef,
+          bornAt: lineRef.revealAt + i * 40
+        };
         skyDome.add(dot);
         flowItems.push(dot);
       }
@@ -1796,14 +1908,19 @@ renderer.domElement.addEventListener("click", () => {
   if (!galaxy) return;
 
   if (isDoubleClick && c.lessonId) {
-    // Double-click navigates to lesson
-    window.location.href = LESSON_URL + c.lessonId;
+    // Trigger a brief surge before navigation to make relationships feel alive.
+    triggerConnectionSurge(c.id, galaxy.id, 1.0);
+    window.setTimeout(() => {
+      window.location.href = LESSON_URL + c.lessonId;
+    }, 260);
   } else {
     // Single-click zooms to the galaxy
     const galaxyPos = skyPos(galaxy.az, galaxy.alt, galaxy.r);
     startZoomTo(galaxyPos);
     selectedGalaxyId = galaxy.id;
     activeGalaxyId = galaxy.id;
+    triggerConnectionSurge(c.id, galaxy.id, 0.9);
+    startGuidedStory(galaxy.id);
   }
 });
 
@@ -2047,6 +2164,12 @@ function onFrame() {
   const hoveredGalaxyId = hoveredId ? (CONCEPT_MAP.get(hoveredId)?.galaxyId || null) : null;
   const focusedGalaxyId = selectedGalaxyId || hoveredGalaxyId;
 
+  if (storyFocus.active && now > storyFocus.startedAt + storyFocus.totalMs) {
+    storyFocus.active = false;
+    selectedGalaxyId = null;
+    activeGalaxyId = null;
+  }
+
   activeGalaxyId = focusedGalaxyId;
 
   compassGrp.rotation.y = -t * 0.038 * spd;
@@ -2094,6 +2217,27 @@ function onFrame() {
       targetOpacity = Math.max(targetOpacity, ln.baseOpacity * 1.04);
     }
 
+    // Seasonal "knowledge tides" pulse per culture/connection.
+    const tide = REDUCED_MOTION ? 0 : (Math.sin(t * 0.52 + ln.phase) * 0.5 + 0.5);
+    const tideBoost = ln.isIntra ? (0.05 + tide * 0.10) : (0.02 + tide * 0.05);
+
+    // Event surge temporarily amplifies related lines.
+    if (ln.surgeUntil > now) {
+      const k = (ln.surgeUntil - now) / 2200;
+      targetOpacity += (ln.surgeBoost || 0) * k * 0.22;
+    } else {
+      ln.surgeBoost = 0;
+    }
+
+    // Depth layering: farther connections feel softer.
+    const depthDist = camera.position.distanceTo(ln.mid);
+    const depthFactor = THREE.MathUtils.clamp(1.15 - ((depthDist - 22) / 58), 0.38, 1.0);
+
+    // Growth trace reveal on load/new additions.
+    const revealAlpha = THREE.MathUtils.clamp((now - ln.revealAt) / 900, 0, 1);
+
+    targetOpacity = (targetOpacity + tideBoost) * depthFactor * revealAlpha;
+
     ln.mat.opacity = THREE.MathUtils.lerp(ln.mat.opacity, targetOpacity, 0.11);
   });
 
@@ -2115,17 +2259,35 @@ function onFrame() {
     });
     const connectionGlow = (connectionCount / Math.max(1, CONNECTIONS.length)) * 0.15;
 
+    const revealNode = THREE.MathUtils.clamp((now - cn.revealAt) / (cn.isNewLesson ? 520 : 840), 0, 1);
+    const guideIdx = storyFocus.active
+      ? Math.floor((now - storyFocus.startedAt) / storyFocus.stepMs)
+      : -1;
+    const guideConceptId = storyFocus.active && guideIdx >= 0 && guideIdx < storyFocus.path.length
+      ? storyFocus.path[guideIdx]
+      : null;
+    const inFocusedGalaxy = focusedGalaxyId && cn.concept.galaxyId === focusedGalaxyId;
+    const dimForStory = storyFocus.active && !inFocusedGalaxy;
+    const spotlight = guideConceptId && cn.concept.id === guideConceptId;
+
     cn.crystal.material.emissiveIntensity = THREE.MathUtils.lerp(
       cn.crystal.material.emissiveIntensity,
-      isHov ? 0.96 : cn.concept.major ? 0.62 : 0.50,
+      spotlight ? 1.06 : isHov ? 0.96 : cn.concept.major ? 0.62 : 0.50,
       0.12
     );
+
+    const opacityGate = dimForStory ? 0.26 : 1.0;
+    cn.crystal.material.opacity = THREE.MathUtils.lerp(cn.crystal.material.opacity, 0.90 * revealNode * opacityGate, 0.12);
+    cn.wire.material.opacity = THREE.MathUtils.lerp(cn.wire.material.opacity, (IS_MOBILE ? 0.15 : 0.20) * revealNode * opacityGate, 0.12);
+    cn.label.material.opacity = THREE.MathUtils.lerp(cn.label.material.opacity, (IS_MOBILE ? 0.80 : 0.88) * revealNode * (dimForStory ? 0.35 : 1.0), 0.12);
+
     cn.glow.material.opacity = THREE.MathUtils.lerp(
       cn.glow.material.opacity,
-      cn.baseOpacity + pulse + connectionGlow + (isHov ? 0.24 : 0),
+      (cn.baseOpacity + pulse + connectionGlow + (isHov ? 0.24 : 0) + (spotlight ? 0.25 : 0)) * revealNode * opacityGate,
       0.10
     );
-    cn.grp.scale.setScalar(THREE.MathUtils.lerp(cn.grp.scale.x, isHov ? 1.30 : 1.0, 0.12));
+    const targetScale = spotlight ? 1.46 : isHov ? 1.30 : 1.0;
+    cn.grp.scale.setScalar(THREE.MathUtils.lerp(cn.grp.scale.x, targetScale * (0.82 + revealNode * 0.18), 0.12));
     
     // Subtle breathing/pulsing based on concept importance
     const breathe = REDUCED_MOTION ? 0 : Math.sin(t * 0.5 + idx) * 0.02;
@@ -2133,6 +2295,11 @@ function onFrame() {
   });
 
   flowItems.forEach((dot) => {
+    if (dot.userData.bornAt && now < dot.userData.bornAt) {
+      dot.material.opacity = 0;
+      return;
+    }
+
     dot.userData.t = (dot.userData.t + dot.userData.speed) % 1;
     dot.position.copy(dot.userData.curve.getPoint(dot.userData.t));
     const ft = dot.userData.t;
@@ -2141,7 +2308,9 @@ function onFrame() {
     const linePulse = Math.sin(t * 2.2 + dot.userData.t * 6) * 0.3;
     const opacityBase = dot.userData.maxOp * (ft < 0.08 ? ft / 0.08 : ft > 0.90 ? (1 - ft) / 0.10 : 1);
     
-    dot.material.opacity = opacityBase * (1 + linePulse * 0.5);
+    const lineRef = dot.userData.lineRef;
+    const surgeBoost = lineRef && lineRef.surgeUntil > now ? 1 + ((lineRef.surgeUntil - now) / 2200) * 0.7 : 1;
+    dot.material.opacity = opacityBase * (1 + linePulse * 0.5) * surgeBoost;
     dot.scale.setScalar(1 + Math.sin(t * 1.8 + ft * 4) * 0.15); // Pulsing scale
   });
 
@@ -2311,6 +2480,11 @@ async function init() {
       ];
 
       CONCEPT_MAP = new Map(ALL_CONCEPTS.map((c) => [c.id, c]));
+
+      const seenLessons = safeReadSeenLessons();
+      const allLessonIds = new Set(ALL_CONCEPTS.map((c) => c.lessonId).filter(Boolean));
+      newLessonIds = new Set(Array.from(allLessonIds).filter((id) => !seenLessons.has(id)));
+      safeWriteSeenLessons(allLessonIds);
 
       // Generate dynamic connections from enrichment data
       CONNECTIONS.length = 0;
