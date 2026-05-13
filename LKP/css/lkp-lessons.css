@@ -689,6 +689,42 @@ strong { color: rgba(255,239,198,0.96); }
   margin-top: 4px;
 }
 
+.kumu-wa-vocab {
+  margin: 2px 0 10px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(240,201,106,0.22);
+  background: rgba(8,15,35,0.74);
+}
+
+.kumu-wa-vocab h5 {
+  margin: 0 0 8px;
+  color: rgba(255,234,176,0.96);
+  font-size: 0.84rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.kumu-wa-vocab__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.kumu-wa-vocab__chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(84,198,238,0.34);
+  background: rgba(84,198,238,0.10);
+  color: rgba(225,243,255,0.94);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
 .kumu-wa-panel {
   border: 1px solid rgba(255,255,255,0.11);
   border-radius: 14px;
@@ -737,6 +773,49 @@ strong { color: rgba(255,239,198,0.96); }
   text-transform: uppercase;
 }
 
+.kumu-wa-panel__insight {
+  margin: 0 0 8px;
+  padding: 7px 9px;
+  border-left: 3px solid rgba(240,201,106,0.65);
+  border-radius: 8px;
+  background: rgba(240,201,106,0.08);
+}
+
+.kumu-wa-panel__evidence {
+  margin: 10px 0 0;
+  padding: 7px 9px;
+  border-radius: 8px;
+  border: 1px dashed rgba(84,198,238,0.34);
+  background: rgba(84,198,238,0.06);
+  color: rgba(205,225,246,0.9);
+  font-size: 0.9rem;
+}
+
+.kumu-wa-panel__next {
+  margin: 9px 0 0;
+  color: rgba(255,234,176,0.9);
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+.kumu-wa-do-dont {
+  margin: 10px 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(240,201,106,0.24);
+  background: rgba(240,201,106,0.06);
+}
+
+.kumu-wa-do-dont p {
+  margin: 0;
+  color: rgba(215,233,250,0.9);
+  line-height: 1.6;
+}
+
+.kumu-wa-do-dont p + p {
+  margin-top: 4px;
+}
+
 .kumu-wa-panel__list {
   margin: 0;
   padding-left: 18px;
@@ -745,6 +824,46 @@ strong { color: rgba(255,239,198,0.96); }
 }
 
 .kumu-wa-panel__list li + li {
+  margin-top: 6px;
+}
+
+.kumu-wa-misreadings {
+  margin-top: 10px;
+}
+
+.kumu-wa-misreadings details {
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.11);
+  background: linear-gradient(180deg, rgba(6,12,31,0.82), rgba(4,9,24,0.88));
+  overflow: clip;
+}
+
+.kumu-wa-misreadings summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 11px 14px;
+  color: rgba(229,241,255,0.95);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.kumu-wa-misreadings summary::-webkit-details-marker {
+  display: none;
+}
+
+.kumu-wa-misreadings__body {
+  border-top: 1px solid rgba(255,255,255,0.09);
+  padding: 10px 14px 12px;
+}
+
+.kumu-wa-misreadings__body ul {
+  margin: 0;
+  padding-left: 18px;
+  color: rgba(205,225,246,0.9);
+  line-height: 1.64;
+}
+
+.kumu-wa-misreadings__body li + li {
   margin-top: 6px;
 }
 

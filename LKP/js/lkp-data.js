@@ -346,6 +346,38 @@ ${config.lineTranslations.join('\n')}
       </div>
     `;
 
+  const vocab = (config.vocabulary && config.vocabulary.length
+    ? config.vocabulary
+    : ['Po', 'Ao', 'Mo\'oku\'auhau', 'Kuleana']
+  )
+    .slice(0, 4)
+    .map(term => `<span class="kumu-wa-vocab__chip">${term}</span>`)
+    .join('');
+
+  const misreadings = (config.commonMisreadings && config.commonMisreadings.length
+    ? config.commonMisreadings
+    : [
+      'Reading this wa as "myth only" instead of living ancestral knowledge.',
+      'Treating modern science parallels as exact equivalence rather than interpretive bridges.',
+      'Separating humans from the relational genealogy carried through the chant.'
+    ]
+  )
+    .map(item => `<li>${item}</li>`)
+    .join('');
+
+  const safeLine = index => {
+    if (!Array.isArray(config.lines) || !config.lines.length) return 'No chant line selected.';
+    return config.lines[index] || config.lines[0];
+  };
+
+  const deeperEvidence = (config.evidence && config.evidence.deeper) || safeLine(0);
+  const parallelsEvidence = (config.evidence && config.evidence.parallels) || safeLine(1);
+  const whyEvidence = (config.evidence && config.evidence.whyNow) || safeLine(2);
+
+  const deeperInsight = config.deeperInsight || `Core teaching: ${config.emergence}`;
+  const parallelsInsight = config.parallelsInsight || 'Use modern parallels to clarify pattern and relationship, not to replace Hawaiian meaning.';
+  const whyInsight = config.whyInsight || `Today\'s relevance: ${config.whyNow}`;
+
   const inquiryPrompts = (config.inquiryPrompts && config.inquiryPrompts.length
     ? config.inquiryPrompts
     : [
@@ -387,6 +419,13 @@ ${config.lineTranslations.join('\n')}
     </ul>
   </section>
 
+  <section class="kumu-wa-vocab kumu-reveal" aria-label="Vocabulary in context">
+    <h5>Vocabulary in Context</h5>
+    <div class="kumu-wa-vocab__chips">
+      ${vocab}
+    </div>
+  </section>
+
   <section class="kumu-wa-accordion kumu-reveal" data-kumu-wa-accordion>
     <details class="kumu-wa-panel" open>
       <summary>Cultural Meaning</summary>
@@ -400,25 +439,38 @@ ${config.lineTranslations.join('\n')}
     <details class="kumu-wa-panel">
       <summary>Deeper Interpretation · Meaning Layer</summary>
       <div class="kumu-wa-panel__body">
+        <p class="kumu-wa-panel__insight"><strong>Key Insight:</strong> ${deeperInsight}</p>
         <p class="kumu-wa-panel__kicker">Interpretive lens</p>
         <p>${config.deeper}</p>
+        <p class="kumu-wa-panel__evidence"><strong>Evidence anchor:</strong> "${deeperEvidence}"</p>
+        <p class="kumu-wa-panel__next">Read next: <strong>Modern Parallels · Careful Dialogue</strong></p>
       </div>
     </details>
 
     <details class="kumu-wa-panel">
       <summary>Modern Parallels · Careful Dialogue</summary>
       <div class="kumu-wa-panel__body">
+        <p class="kumu-wa-panel__insight"><strong>Key Insight:</strong> ${parallelsInsight}</p>
         <p class="kumu-wa-panel__kicker">Read these as bridges for understanding, not replacements for Hawaiian source meaning.</p>
+        <div class="kumu-wa-do-dont" role="note">
+          <p><strong>Do:</strong> Compare structure, sequence, and interdependence.</p>
+          <p><strong>Don\'t:</strong> Claim the chant is identical to modern scientific theory.</p>
+        </div>
         <div class="kumu-parallel-grid">
           ${parallels}
         </div>
+        <p class="kumu-wa-panel__evidence"><strong>Evidence anchor:</strong> "${parallelsEvidence}"</p>
+        <p class="kumu-wa-panel__next">Read next: <strong>Why This Wa Matters Today · Kuleana Now</strong></p>
       </div>
     </details>
 
     <details class="kumu-wa-panel">
       <summary>Why This Wa Matters Today · Kuleana Now</summary>
       <div class="kumu-wa-panel__body">
+        <p class="kumu-wa-panel__insight"><strong>Key Insight:</strong> ${whyInsight}</p>
         <p>${config.whyNow}</p>
+        <p class="kumu-wa-panel__evidence"><strong>Evidence anchor:</strong> "${whyEvidence}"</p>
+        <p class="kumu-wa-panel__next">Read next: <strong>Inquiry Prompts · Deepen Study</strong></p>
       </div>
     </details>
 
@@ -427,6 +479,17 @@ ${config.lineTranslations.join('\n')}
       <div class="kumu-wa-panel__body">
         <ul class="kumu-wa-panel__list">
           ${inquiryPrompts}
+        </ul>
+      </div>
+    </details>
+  </section>
+
+  <section class="kumu-wa-misreadings kumu-reveal">
+    <details>
+      <summary>Common Misreadings to Avoid</summary>
+      <div class="kumu-wa-misreadings__body">
+        <ul>
+          ${misreadings}
         </ul>
       </div>
     </details>

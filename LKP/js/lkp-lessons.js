@@ -2239,15 +2239,20 @@
       if (!items.length) return;
 
       let guard = false;
+
+      function openPanel(targetItem) {
+        guard = true;
+        items.forEach(other => {
+          other.open = other === targetItem;
+        });
+        guard = false;
+      }
+
       items.forEach(item => {
         item.addEventListener('toggle', () => {
           if (guard || !item.open) return;
 
-          guard = true;
-          items.forEach(other => {
-            if (other !== item) other.open = false;
-          });
-          guard = false;
+          openPanel(item);
         });
       });
     });
@@ -2526,6 +2531,27 @@
     document.getElementById('lessonMain')?.addEventListener('touchend', onSwipeEnd, { passive: true });
 
     document.addEventListener('click', event => {
+      const waSummary = event.target.closest('.kumu-wa-panel > summary');
+      if (waSummary) {
+        event.preventDefault();
+
+        const panel = waSummary.parentElement;
+        const group = panel?.closest('[data-kumu-wa-accordion]');
+
+        if (panel && group) {
+          const panels = Array.from(group.querySelectorAll('.kumu-wa-panel'));
+          const nextOpen = !panel.open;
+
+          panels.forEach(item => {
+            item.open = false;
+          });
+
+          panel.open = nextOpen;
+        }
+
+        return;
+      }
+
       const cultureFilter = event.target.closest('[data-culture-filter]');
 
       if (cultureFilter) {
