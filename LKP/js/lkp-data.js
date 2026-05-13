@@ -61,51 +61,63 @@ const CULTURALVERSE_DATA = {
               title:    'The Kumulipo — Sacred Chant of Creation',
               readTime: '12 min',
               content: `
-<p class="lead">The Kumulipo is one of the most profound sacred texts in all of Polynesian literature — a <em>mele koʻihonua</em> (chant of creation and genealogy) of approximately <strong>2,102 lines</strong>, organized into <strong>16 wā</strong> (epochs). Its name reveals everything: <em>Kumu</em> (source, origin) + <em>Lipo</em> (the deep dark blue-black of the ocean's depths) = <strong>"Beginning in Deep Darkness."</strong></p>
+<p class="lead">The Kumulipo is not best understood as a simple myth, a historical passage, or a poetic artifact. It is a living Kanaka Maoli framework of genealogy, cosmology, ecological memory, and responsibility — a <em>mele koʻihonua</em> (chant of creation and genealogy) of approximately <strong>2,102 lines</strong>, organized into <strong>16 wā</strong> (epochs). Its name reveals the worldview at its center: <em>Kumu</em> (source, origin) + <em>Lipo</em> (the deep dark blue-black of the ocean's depths) = <strong>"Beginning in Deep Darkness."</strong></p>
 
 <facts>2,102::Lines in the Chant|16 Wā::Epochs / Sections|~1700 CE::Approximate Composition|1897::First English Translation</facts>
 
 <h4>Origins & Transmission</h4>
-<p>The Kumulipo was composed approximately in the early 18th century, traditionally attributed to the poet <strong>Keaulumoku</strong> and composed for the birth of <strong>Kalaninuiamamao</strong>, an aliʻi (chief) of the Kamehameha lineage. For generations it was transmitted entirely through oral tradition — memorized, chanted, and passed down with ritual precision. King <strong>Kalākaua</strong> first committed it to writing in the 19th century. <strong>Queen Liliʻuokalani</strong> — the last sovereign monarch of Hawaiʻi — translated it into English, published in 1897. The definitive scholarly translation was produced by Martha Beckwith in 1951.</p>
+<p>The Kumulipo was composed in the early 18th century, traditionally attributed to the poet <strong>Keaulumoku</strong> and composed for the birth of <strong>Kalaninuiamamao</strong>, an aliʻi of the Kamehameha lineage. For generations it was transmitted entirely through oral tradition — memorized, chanted, and passed down with ritual precision. <strong>Kalākaua</strong> first committed it to writing in the 19th century, <strong>Queen Liliʻuokalani</strong> translated it into English in 1897, and Martha Beckwith produced the definitive scholarly translation in 1951.</p>
 
-<callout>The opening line of the Kumulipo: <strong>"O ke au i kahuli wela ka honua"</strong> — "At the time when the earth became hot." Creation begins not in the void, but in heat — the primordial conditions of a world coming into being.</callout>
+<callout>The opening line of the Kumulipo — <strong>"O ke au i kahuli wela ka honua"</strong> — speaks of a world becoming hot, active, and ordered. Creation begins not in emptiness, but in the conditions of emergence.</callout>
 
-<h4>Structure: The Two Great Epochs</h4>
-<p>The 16 wā divide into two great movements that mirror the cosmic arc from darkness to light:</p>
+<h4>Reading the Wā as Living Knowledge</h4>
+<p>The 16 wā are not random episodes. They are layered knowledge-forms that describe how reality unfolds from pō into visible relationship. Read respectfully, they show how Kanaka Maoli thought about cosmic origin, the sequencing of life, the genealogy of beings, and the ethical place of people inside a larger living order. This is a living framework, not a closed historical relic.</p>
 
-<twocol left="Wā 1–8 · The Pō (Darkness)" right="Wā 9–16 · The Ao (Light)">The age of darkness and the natural world. Creation begins with the simplest marine organisms — the coral polyp — and unfolds through progressive stages of increasing complexity: sea creatures, plants, land animals. Each wā introduces paired beings (male and female), revealing a deeply dualistic understanding of creation. Modern scholars have noted this progression from simple marine life to complex organisms parallels evolutionary biology — remarkable in an oral tradition centuries before Darwin.||The age of light and humanity. Here the chant transitions from cosmic creation to the genealogy of the aliʻi — the sacred chiefs of Hawaiʻi. By connecting human lineage to the first stirrings of life in the primordial darkness, the Kumulipo makes a profound statement: humans are not separate from nature. We are the continuation of the same creative force that produced the first coral.</twocol>
-
-<h4>Wā 1: The First Life — Koʻa</h4>
-<p>The first wā opens in the deepest pō (darkness). The first paired living beings introduced are the <strong>koʻa</strong> (coral, the coral polyp) as the male form, paired with its female counterpart. From this single pairing, an unfolding cascade of life begins — each wā introducing new creatures, always in pairs, always building on what came before. The sea is the womb. Darkness is not absence — it is potential.</p>
-
-<h4>16 Wā Bilingual Companion (ʻŌlelo Hawaiʻi + English)</h4>
-<p>This companion gives a concise bilingual learning line for each wā so learners can study the sequence in both Hawaiian framing and English meaning. These are teaching lines and thematic aids, not a replacement for full chant recitation traditions.</p>
-
+<h4>Wā 1–4: Pō and the First Unfolding</h4>
 <ul>
-<li><strong>Wā 1:</strong> <em>"Hānau ka koʻa i ka pō"</em> · Coral life is born in deep darkness.</li>
-<li><strong>Wā 2:</strong> <em>"Hānau nā mea o ke kai"</em> · Sea beings multiply and diversify.</li>
-<li><strong>Wā 3:</strong> <em>"Ulu nā limu o ke kai"</em> · Marine plants and algae establish life webs.</li>
-<li><strong>Wā 4:</strong> <em>"Pili nā mea liʻiliʻi"</em> · Small and creeping life forms connect ecological layers.</li>
-<li><strong>Wā 5:</strong> <em>"Nui nā iʻa o ke kai"</em> · Larger marine beings emerge in patterned pairings.</li>
-<li><strong>Wā 6:</strong> <em>"Lele nā manu kai"</em> · Sea birds and boundary-crossing life move between realms.</li>
-<li><strong>Wā 7:</strong> <em>"Ulu nā mea kanu o ka ʻāina"</em> · Land plants stabilize terrestrial ecosystems.</li>
-<li><strong>Wā 8:</strong> <em>"Hele nā holoholona o ka ʻāina"</em> · Land animals take their place in living relation.</li>
-<li><strong>Wā 9:</strong> <em>"Huli ka pō i ke ao"</em> · Darkness turns toward light.</li>
-<li><strong>Wā 10:</strong> <em>"Puka nā kūpuna akua"</em> · Ancestral divine genealogies come forward.</li>
-<li><strong>Wā 11:</strong> <em>"Paʻa nā hanauna kiʻekiʻe"</em> · High ancestral lines are ordered and secured.</li>
-<li><strong>Wā 12:</strong> <em>"Pili nā aliʻi i ke kumu"</em> · Chiefly lines are tied to sacred origins.</li>
-<li><strong>Wā 13:</strong> <em>"Hānau ka moʻokūʻauhau kanaka"</em> · Human genealogy is born within cosmic continuity.</li>
-<li><strong>Wā 14:</strong> <em>"Hoʻonui ʻia nā hanauna"</em> · Descendant lines expand through kinship.</li>
-<li><strong>Wā 15:</strong> <em>"Kau ʻia ke kuleana"</em> · Responsibility is placed upon lineage.</li>
-<li><strong>Wā 16:</strong> <em>"Ao kanaka, mālama honua"</em> · In the human realm of light, stewardship is the charge.</li>
+<li><strong>Wā 1 · Deep Pō:</strong> Traditional meaning: primordial darkness as a generative source, not an absence. Modern concept: cosmology. Similarity: this parallels modern cosmology's description of an early universe unfolding into energy, matter, and structure. Respectfully, the Kumulipo is not repeating Big Bang theory; it is offering an ancestral Hawaiian account of emergence.</li>
+<li><strong>Wā 2 · First marine life:</strong> Traditional meaning: the sea begins to populate with foundational beings. Modern concept: the staged appearance of life. Similarity: this resembles the way biology describes life arising through ordered transitions rather than all at once.</li>
+<li><strong>Wā 3 · Limu and sea growth:</strong> Traditional meaning: marine plants and algae establish the first webs of nourishment. Modern concept: ecology and biodiversity. Similarity: this reflects what modern ecology calls interdependence, where early life supports later complexity.</li>
+<li><strong>Wā 4 · Small connected beings:</strong> Traditional meaning: tiny forms of life create the first relational layers. Modern concept: systems thinking. Similarity: this shows a systems-based understanding of life — nothing exists alone, and each being prepares the conditions for the next.</li>
 </ul>
 
-<compare left="ʻŌlelo Focus" right="English Focus">
-The Hawaiian lines center relationship, emergence, and genealogy as lived process. || The English lines provide an access lens for study, while preserving the chant's Hawaiian epistemology and sacred authority.
-</compare>
+<h4>Wā 5–8: Differentiation and Ecological Relationship</h4>
+<ul>
+<li><strong>Wā 5 · Fish and reef worlds:</strong> Traditional meaning: ocean life diversifies into larger and more varied forms. Modern concept: biological evolution. Similarity: this resembles the staged development described in evolutionary biology, where complexity grows through time and relationship.</li>
+<li><strong>Wā 6 · Birds and boundary-crossing life:</strong> Traditional meaning: beings that move between sea, sky, and shore appear as mediators. Modern concept: ecological connectivity. Similarity: this reflects how ecosystems depend on species that link environments and carry nutrients, seeds, and balance across boundaries.</li>
+<li><strong>Wā 7 · Land plants:</strong> Traditional meaning: terrestrial life takes root and stabilizes the land. Modern concept: ecological succession. Similarity: this mirrors the way modern environmental science studies how life colonizes, anchors, and transforms habitats over time.</li>
+<li><strong>Wā 8 · Land animals:</strong> Traditional meaning: the land becomes inhabited by fuller animal life. Modern concept: diversification of species. Similarity: this resonates with the idea that life emerges in stages, moving from simpler forms into more complex relationships.</li>
+</ul>
+
+<h4>Wā 9–12: The Shift Toward Ao and Ancestral Order</h4>
+<ul>
+<li><strong>Wā 9 · Transition from pō to ao:</strong> Traditional meaning: the movement from darkness toward light and visibility. Modern concept: cosmic ordering. Similarity: this parallels the shift in cosmology from undifferentiated beginnings toward structured systems.</li>
+<li><strong>Wā 10 · Ancestors become visible:</strong> Traditional meaning: divine and ancestral lines are named within creation. Modern concept: genealogy. Similarity: this shows that identity is relational, not isolated, and that life is understood through inherited connection.</li>
+<li><strong>Wā 11 · High lines are ordered:</strong> Traditional meaning: the upper genealogies are stabilized and made legible. Modern concept: systems organization. Similarity: this shows how the Kumulipo treats lineage as a structured network of relations rather than a simple list of names.</li>
+<li><strong>Wā 12 · Chiefly lines are tied to source:</strong> Traditional meaning: aliʻi genealogy is connected back to sacred origin. Modern concept: social and ecological responsibility. Similarity: this reflects the idea that leadership must remain accountable to the living systems that sustain it.</li>
+</ul>
+
+<h4>Wā 13–16: Humanity, Consciousness, and Kuleana</h4>
+<ul>
+<li><strong>Wā 13 · Human genealogy emerges:</strong> Traditional meaning: people arise within the same cosmic continuity as other beings. Modern concept: consciousness within a relational universe. Similarity: this shows that humans are not outside creation, but formed inside it.</li>
+<li><strong>Wā 14 · Descendant lines expand:</strong> Traditional meaning: human families multiply through kinship and continuity. Modern concept: genealogical systems. Similarity: this reflects the way identity is carried through relationship, memory, and obligation.</li>
+<li><strong>Wā 15 · Kuleana is placed on lineage:</strong> Traditional meaning: responsibility accompanies ancestry. Modern concept: ethical systems and stewardship. Similarity: this shows a systems-based understanding of life in which every action affects the whole.</li>
+<li><strong>Wā 16 · Human life in ao:</strong> Traditional meaning: the human realm of light carries the duty to maintain balance. Modern concept: sustainability and environmental care. Similarity: this aligns with modern thinking about resilience, but the Kumulipo expresses it as sacred responsibility to the world that gave us life.</li>
+</ul>
+
+<h4>Modern Parallels</h4>
+<p><strong>This parallels modern cosmology</strong> in its movement from pō into emergence, order, and visible structure. The Kumulipo does not claim to be Big Bang theory, yet it presents a profound ancestral Hawaiian model of creation unfolding from deep darkness into differentiation.</p>
+<p><strong>This resembles the staged development described in evolutionary biology</strong> as life moves from coral and other oceanic foundations toward plants, fish, birds, land animals, and human beings. The chant preserves a layered understanding that life develops through sequence, relationship, and continuity.</p>
+<p><strong>This reflects what modern ecology calls interdependence</strong> because coral, ocean, land, sky, plants, animals, and people are genealogically linked. The Kumulipo treats every being as part of a larger living fabric.</p>
+<p><strong>This shows a systems-based understanding of life</strong> in which nothing exists alone. Each wā prepares the conditions for the next, and each being is meaningful through relation, not isolation.</p>
+<p><strong>This does not reduce the Kumulipo to science; it shows that ancestral knowledge carried layered observations about existence, life, and relationship.</strong> Modern science gives us one framework. The Kumulipo gives us an ancestral Hawaiian framework. Where they overlap, the similarities reveal the depth and sophistication of Kanaka Maoli knowledge systems.</p>
 
 <h4>Why This Matters</h4>
-<callout>The Kumulipo is not mythology in the dismissive Western sense. It is a sophisticated cosmological and genealogical system that encodes the Hawaiian understanding of the universe — that all life is related, that humans emerge from the same creative process as coral and fish and stars, and that the chiefs who govern carry the responsibility of that entire lineage within their bodies.</callout>
+<callout>The Kumulipo is not mythology in the dismissive Western sense. It is a living genealogical and cosmological framework that teaches how the universe unfolds, how life stays connected, and why human beings carry kuleana rather than dominion. Read this way, the wā are not old stories sitting still in the past — they are active layers of knowledge that continue to guide how relationship, balance, and responsibility are understood today.</callout>
+
+<p>For Culturalverse and Ikeverse, this matters because living knowledge should be encountered as living knowledge. The Kumulipo belongs to a tradition of Kanaka Maoli intelligence that is cultural, ecological, genealogical, and spiritual all at once. It deserves to be presented with precision, reverence, and clarity — not flattened into folklore, and not reduced to science alone.</p>
+
+<p>Within Ikeverse/Culturalverse, the Kumulipo stands as living knowledge, not static mythology. It is an ancestral account of cosmic emergence, ecological relation, consciousness, and human responsibility — a framework that invites readers to understand not only where life comes from, but how life must be carried forward.</p>
 `
             },
             {

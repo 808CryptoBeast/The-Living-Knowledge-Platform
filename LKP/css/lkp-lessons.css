@@ -1351,6 +1351,77 @@ body.is-reading-mode .lkp-lessons-layout { display:block; }
   width:100%; max-width:880px;
 }
 
+/* ── WĀ OPENING HEADER (Dynamic, shows current Wā) ── */
+.kumulipo-wa-opening-header {
+  display:flex; flex-direction:column; gap:1.5rem; margin-bottom:2.5rem;
+  padding:1.8rem 1.6rem; background:rgba(60,179,113,0.06);
+  border-left:4px solid var(--lkp-green); border-radius:8px;
+  animation:headerReveal 0.5s ease forwards;
+}
+
+@keyframes headerReveal {
+  0%{opacity:0;transform:translateY(-8px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+
+.kumulipo-wa-opening-header__intro {
+  display:flex; flex-direction:column; gap:0.4rem;
+}
+
+.kumulipo-wa-opening-header__intro h4 {
+  font-size:1.1rem; font-weight:700; color:var(--text-1); margin:0;
+  font-family:var(--font-serif);
+}
+
+.kumulipo-wa-opening-header__subtitle {
+  font-size:0.95rem; color:var(--text-2); font-weight:500;
+  font-family:var(--font-serif);
+}
+
+.kumulipo-wa-opening-header__content {
+  display:grid; grid-template-columns:1fr 1fr; gap:1.2rem;
+}
+
+.kumulipo-wa-opening-phrase,
+.kumulipo-wa-opening-translation {
+  display:flex; flex-direction:column; gap:0.5rem;
+}
+
+.kumulipo-wa-opening-phrase strong,
+.kumulipo-wa-opening-translation strong {
+  font-size:0.8rem; font-weight:700; color:var(--lkp-gold);
+  text-transform:uppercase; letter-spacing:0.03em; display:block;
+}
+
+.kumulipo-wa-opening-phrase p,
+.kumulipo-wa-opening-translation p {
+  margin:0; font-size:0.95rem; line-height:1.6; color:var(--text-1);
+}
+
+.kumulipo-wa-opening-phrase p {
+  font-style:italic; font-family:var(--font-serif);
+  color:var(--text-2);
+}
+
+@media (max-width:768px) {
+  .kumulipo-wa-opening-header {
+    padding:1.4rem 1.2rem; gap:1.2rem;
+  }
+
+  .kumulipo-wa-opening-header__intro h4 {
+    font-size:1rem;
+  }
+
+  .kumulipo-wa-opening-header__content {
+    grid-template-columns:1fr; gap:1rem;
+  }
+
+  .kumulipo-wa-opening-phrase p,
+  .kumulipo-wa-opening-translation p {
+    font-size:0.9rem;
+  }
+}
+
 /* ── WĀ NAVIGATION LIST VIEW ── */
 .kumulipo-wa-nav {
   display:flex; flex-direction:column; gap:1.5rem;

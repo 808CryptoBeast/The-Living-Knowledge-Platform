@@ -188,11 +188,44 @@
   ];
 
   /**
+   * Generate dynamic opening header that shows current Wā phrase
+   * @param {number} waNum - Current Wā number to display (optional, defaults to 1)
+   * @returns {string} HTML for opening header
+   */
+  function renderWaOpeningHeader(waNum = 1) {
+    const wa = WA_DATA.find(w => w.num === waNum);
+    if (!wa) return '';
+
+    return `
+      <div class="kumulipo-wa-opening-header">
+        <div class="kumulipo-wa-opening-header__intro">
+          <h4>Kumulipo — Opening of Wā ${waNum}</h4>
+          <span class="kumulipo-wa-opening-header__subtitle">${escapeHTML(wa.hawaiian)}</span>
+        </div>
+        
+        <div class="kumulipo-wa-opening-header__content">
+          <div class="kumulipo-wa-opening-phrase">
+            <strong>ʻŌlelo Hawaiʻi:</strong>
+            <p>"${escapeHTML(wa.hawaiianPhrase)}"</p>
+          </div>
+          
+          <div class="kumulipo-wa-opening-translation">
+            <strong>English Meaning:</strong>
+            <p>${escapeHTML(wa.englishMeaning)}</p>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  /**
    * Generate Wā list (navigation buttons only)
+   * @param {number} selectedWa - Currently selected Wā number (for header)
    * @returns {string} HTML for Wā navigation list
    */
-  function renderWaNavigation() {
-    let html = `
+  function renderWaNavigation(selectedWa = 1) {
+    let html = renderWaOpeningHeader(selectedWa);
+    html += `
       <div class="kumulipo-wa-nav">
         <div class="kumulipo-wa-nav__intro">
           <h4>16 Wā Epochs</h4>
@@ -234,7 +267,8 @@
     const waCluster = waNum <= 8 ? 'Pō' : 'Ao';
     const conceptList = isScholar ? wa.concepts.join(' · ') : wa.concepts.slice(0, 2).join(' · ');
 
-    let html = `
+    let html = renderWaOpeningHeader(waNum);
+    html += `
       <div class="kumulipo-wa-single">
         <div class="kumulipo-wa-single__header">
           <div class="kumulipo-wa-single__cluster">
@@ -413,6 +447,9 @@
     const container = document.querySelector('.kumulipo-wa-container');
     if (!container) return;
 
+    // Store current selection for header updates
+    container.dataset.selectedWa = waNum;
+
     const html = renderWaSingleView(waNum, lessonMode);
     container.innerHTML = html;
 
@@ -428,13 +465,15 @@
   }
 
   /**
-   * Show Wā navigation list
+   * Show Wā navigation list with dynamic header
    */
   function showWaNavigation() {
     const container = document.querySelector('.kumulipo-wa-container');
     if (!container) return;
 
-    const html = renderWaNavigation();
+    // Use stored selection for header, or default to 1
+    const selectedWa = parseInt(container.dataset.selectedWa || '1', 10);
+    const html = renderWaNavigation(selectedWa);
     container.innerHTML = html;
 
     // Reinitialize event listeners for the new view
@@ -467,10 +506,14 @@
     // Create wrapper for Wā UI
     const waWrapper = document.createElement('div');
     waWrapper.className = 'kumulipo-wa-wrapper';
-    const html = renderWaNavigation(); // Start with navigation view
+    const html = renderWaNavigation(1); // Start with navigation view, Wā 1 header
     console.log('[KUMULIPO_WA] Rendered navigation HTML length:', html.length);
     
-    waWrapper.innerHTML = `<div class="kumulipo-wa-container">${html}</div>`;
+    const container = document.createElement('div');
+    container.className = 'kumulipo-wa-container';
+    container.dataset.selectedWa = '1'; // Initialize with Wā 1
+    container.innerHTML = html;
+    waWrapper.appendChild(container);
 
     // Insert after action strip
     if (actionStrip.parentElement) {
@@ -482,7 +525,6 @@
     }
 
     // Initialize interactivity within this wrapper only
-    const container = waWrapper.querySelector('.kumulipo-wa-container');
     console.log('[KUMULIPO_WA] Initializing event listeners');
     initWaInteractivity(container, lessonMode, () => {
       // Dynamic mode getter - looks for current lesson mode
