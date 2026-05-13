@@ -652,6 +652,52 @@ const CULTURALVERSE_DATA = {
 
 <callout type="bridge"><strong>The Pattern:</strong> Both cultures understood that personal integrity, ecological responsibility, and cosmic alignment are not separate concerns — they are one. If you damage the land, you damage the cosmic order. If you lie, you damage the cosmic order. Aloha and Maʻat are the same principle wearing different names — and both traditions made that principle the ethical foundation of an entire civilization. This is not a coincidence. It is what civilizations look like when they are built from wisdom rather than conquest.</callout>
 `
+            },
+            {
+              id:       'br-cosmology-evolution',
+              num:      'BR·03',
+              title:    'Kumulipo & Evolution — Cosmology Across Scales',
+              readTime: '14 min',
+              content: `
+<p class=\"lead\">The Kumulipo's unfolding of life from coral to sea creatures to land animals to humans is not a metaphor for evolution — it is something more profound. It is a cosmology that sees creation as a continuous process of increasing complexity, differentiation, and consciousness, mirrored in both the ancient Hawaiian genealogy and modern scientific understanding of how the universe and life evolve.</p>
+
+<h4>Four Lenses on Creation</h4>
+
+<div class=\"cv-card-grid\">
+  <div class=\"cv-info-card cv-info-card--gold\">
+    <div class=\"cv-info-card__title\">Lens 1: Genealogy</div>
+    <p>The Kumulipo is literally a genealogy — a pedigree. It connects living Hawaiian chiefs to the first coral, making them the living continuation of 16 epochs of creative unfolding. This is not metaphor; it is kinship. You are descended from the ocean itself.</p>
+  </div>
+  <div class=\"cv-info-card cv-info-card--gold\">
+    <div class=\"cv-info-card__title\">Lens 2: Biological Evolution</div>
+    <p>The progression coral → sea life → plants → land animals → humans mirrors the sequence of complexity in evolutionary history. Simple marine organisms appeared first; complex land animals much later; humans most recently. The Kumulipo encoded this truth before Darwin, through oral tradition and observation.</p>
+  </div>
+  <div class=\"cv-info-card cv-info-card--gold\">
+    <div class=\"cv-info-card__title\">Lens 3: Cosmic Evolution</div>
+    <p>The Big Bang → radiation era → matter formation → star/galaxy formation → planetary systems → life. Each stage a leap in complexity and structure. The universe unfolds from simple undifferentiated energy into increasingly intricate patterns of order.</p>
+  </div>
+  <div class=\"cv-info-card cv-info-card--gold\">
+    <div class=\"cv-info-card__title\">Lens 4: Quantum to Classical</div>
+    <p>From quantum fields (undifferentiated potential) to particles to atoms to molecules to life. At each scale, new rules of organization emerge. Complexity is not imposed from above — it emerges from the interaction of simpler components following basic rules.</p>
+  </div>
+</div>
+
+<h4>The Pattern of Emergence</h4>
+<p>What connects these four lenses is not equivalence — they are not saying the same thing. Rather, they are describing the same architectural pattern at different scales: <strong>creation unfolds from simplicity to complexity, from potential to form, from darkness to light, through a sequence of stages, each building on what came before, each generating new properties that cannot be predicted from the previous stage alone.</strong></p>
+
+<callout>Emergence is the key concept. When you combine hydrogen atoms, they don't just make \"more hydrogen.\" They make water, which has entirely new properties — wetness, fluidity, the ability to dissolve salt. The properties of water cannot be predicted from hydrogen alone. Each level of organization brings genuinely new phenomena. This is true at every scale: atoms and molecules, molecules and cells, cells and organisms, organisms and ecosystems, celestial bodies and galaxies.</callout>
+
+<h4>Where These Are NOT Equivalent</h4>
+<p>It is crucial to be clear: The Kumulipo is not a \"proto-scientific\" account that we can now correct with modern science. The Kumulipo is a genealogical and spiritual text — it is saying something different than evolutionary biology, even when the two describe similar sequences. Key distinctions:</p>
+
+<ul>
+<li><strong>Genealogy vs. Population:</strong> The Kumulipo traces a lineage — your direct descent from coral. Evolution describes population-level changes over time through mechanism of inheritance and selection. They are not the same framework.</li>
+<li><strong>Agency:</strong> The Kumulipo speaks of paired beings, of choice, of personhood within creation. Modern evolution describes mechanism without intentionality. Both describe complexity; they do so through different narrative structures.</li>
+<li><strong>Timescale:</strong> The Kumulipo structures time as wā (epochs) — qualitative ages that are distinguished by the types of beings present. Modern evolutionary biology uses quantitative timescale — millions of years. The structure of time itself is different.</li>
+<li><strong>Purpose:</strong> The Kumulipo connects living humans to cosmic origin — it is genealogical, relational, sacred. Evolution (in its scientific form) describes mechanism without inherent purpose. These answer different questions.</li>
+</ul>
+
+<callout type=\"bridge\"><strong>The point is not equivalence, but resonance.</strong> When a Hawaiian elder and a modern cosmologist stand together and ask \"How did the universe come to contain life, consciousness, complexity?\" they are asking the same fundamental question. They have observed the same pattern — that the universe unfolds from simple to complex, from potential to form. They have structured their knowledge differently, for different purposes, using different tools. But the underlying pattern is recognizable in both. This is what the bridge does: it reveals structural resonance without collapsing distinct knowledge systems into false equivalence.</callout>\n`
             }
           ]
         }
@@ -659,7 +705,95 @@ const CULTURALVERSE_DATA = {
     },
 
     /* ══════════════════════════════════════════════════════════
-       COMING SOON — placeholder cultures
+       DOGON — West African Cosmology
+    ══════════════════════════════════════════════════════════ */
+    {
+      id:      'dogon',
+      name:    'Dogon',
+      emoji:   '🪘',
+      tagline: 'West African Knowledge — Mali',
+      theme:   'amber',
+      status:  'live',
+      intro:   'The Dogon people of Mali (West Africa) developed one of the most remarkable astronomical traditions in human history. For generations, Dogon knowledge keepers preserved a sophisticated understanding of the cosmos, encoded in ritual, myth, and sacred geometry. These lessons explore the Dogon vision of the Sirius system, the architecture of the universe, and the relationship between celestial order and human community.',
+      modules: [
+        {
+          id:    'dogon-cosmology',
+          title: 'Cosmology & the Sirius System',
+          emoji: '⭐',
+          desc:  'The Dogon understanding of the stars, particularly the Sirius system, and the cosmic architecture of the universe.',
+          lessons: [
+            {
+              id:       'dg-sirius-triplet',
+              num:      'DG·01',
+              title:    'The Sirius Triplet — The Hidden Companion Star',
+              readTime: '11 min',
+              content: `\n<p class=\"lead\">The Dogon peoples of Mali maintained detailed astronomical knowledge passed down through oral tradition for centuries. Central to their cosmology is <strong>Sirius</strong> — the brightest visible star in Earth's night sky — and the knowledge that it is not alone. The Dogon spoke of a companion star, <em>Po Tolo</em>, invisible to the naked eye, orbiting Sirius with an orbital period of about 50 years.</p>\n\n<callout>In 1844, German astronomer Friedrich Wilhelm Bessel theorized that Sirius must have an unseen companion based on observed irregularities in Sirius's motion. In 1862, American telescope-maker Alvan Clark observed <strong>Sirius B</strong> — a white dwarf companion star — directly. The Dogon had been describing this reality, with remarkable accuracy, for generations before modern astronomy confirmed it.</callout>\n\n<h4>Po Tolo & Cosmic Order</h4>\n<p>Within Dogon cosmology, Po Tolo (Sirius B) is not merely an astronomical fact — it is a principle of cosmic order. The Dogon understood that the universe is not simple or transparent. Like the stars themselves, reality contains hidden layers, invisible dimensions, presences felt through their effects even when not directly visible. This mirrors modern physics: dark matter and dark energy comprise 95% of the universe, yet we perceive only 5% directly.</p>\n\n<h4>The Nommo — Waters of Creation</h4>\n<p>The Dogon cosmology centers on the <strong>Nommo</strong> — primordial waters and the principles of life, moisture, and generative power. The universe is understood as a vast system of organized waters. Stars are seeds cast into the cosmic waters. Life emerges from moisture. This parallels the Hebrew <em>mayim</em> (waters), the Egyptian <em>Nun</em>, and the Hawaiian <em>moana</em> — across cultures separated by vast distances, the same cosmological intuition: waters are the generative principle of the universe.</p>\n`
+            },
+            {
+              id:       'dg-ammas-world',
+              num:      'DG·02',
+              title:    'Amma & the Creation of the World — The Cosmic Egg',
+              readTime: '10 min',
+              content: `\n<p class=\"lead\">Central to Dogon cosmology is <strong>Amma</strong> — the creator principle, the cosmic consciousness, the source of all being. In the beginning, Amma existed alone in an infinite void. From Amma emerged all creation, not through external command, but through internal unfoldment — like a cosmic egg that gestates, differentiates, and births worlds.</p>\n\n<h4>The Four Placenta — Sacred Geometry</h4>\n<p>The Dogon spoke of creation in terms of sacred geometry — the spiral, the circle, the cross. These are not arbitrary symbols. They encode actual principles of how the cosmos organizes: from the spiral of galaxies to the circular orbits of planets to the four-fold organization of space and time. The Dogon understanding that reality is fundamentally mathematical and geometric — expressed long before modern physics revealed that all of nature operates according to mathematical principles.</p>\n\n<callout type=\"bridge\">Modern physics describes the universe as emerging from quantum fields — mathematical potentials that become actual through interaction and observation. The Dogon intuition that creation unfolds from a cosmic principle (Amma) through sacred geometric patterns parallels modern theoretical physics in striking ways: reality at its foundation is mathematical and organizational, not material and simple.</callout>\n`
+            },
+            {
+              id:       'dg-syncretism',
+              num:      'DG·03',
+              title:    'Knowledge Keepers & Transmission — Dogon Wisdom in the World',
+              readTime: '9 min',
+              content: `\n<p class=\"lead\">The Dogon maintained their astronomical knowledge through oral transmission, ritual, and sacred societies. Initiated knowledge keepers passed understanding to initiates through symbolic instruction and direct observation. This method preserved knowledge across generations without written text — a sophistication that modern scholarship is only beginning to appreciate.</p>\n\n<h4>The Challenge of Transmission</h4>\n<p>When Western scholars first encountered Dogon astronomical knowledge in the 1940s, they faced a crisis of credibility: How could non-literate peoples have such precise astronomical knowledge? This question reveals the bias embedded in Western assumptions — that knowledge requires written language, that oral transmission is less reliable, that \"primitive\" peoples could not possess sophisticated science.</p>\n<p>In fact, oral transmission creates precision through a different mechanism: ritual repetition, mnemonic poetry, direct observation, and corrective feedback from the community of knowledge keepers. This is not less reliable than writing — it is reliably different, optimized for different purposes.</p>\n\n<callout>The Dogon case teaches us to question our assumptions about what kinds of peoples can develop sophisticated knowledge, what forms that knowledge takes, and how it is preserved and transmitted. The universe does not require a university to reveal its patterns. A careful observer, a good memory, a community committed to precision, and centuries of unbroken transmission can preserve and refine knowledge as well as any written tradition.</callout>\n`
+            }
+          ]
+        }
+      ]
+    },
+
+    /* ══════════════════════════════════════════════════════════
+       VEDIC — Ancient Indian Wisdom Traditions
+    ══════════════════════════════════════════════════════════ */
+    {
+      id:      'vedic',
+      name:    'Vedic',
+      emoji:   '🕉️',
+      tagline: 'Ancient Indian Wisdom Traditions',
+      theme:   'saffron',
+      status:  'live',
+      intro:   'The Vedas are among humanity\'s oldest literary texts, composed in Sanskrit between 1500–500 BCE. They preserve the astronomical, philosophical, and cosmological knowledge of ancient Indian civilization. These lessons explore Vedic cosmology, the structure of time and space according to Hindu philosophy, and the sophisticated mathematics and astronomy encoded within ancient Indian traditions.',
+      modules: [
+        {
+          id:    'vedic-cosmology',
+          title: 'Cosmology & the Rigveda',
+          emoji: '✨',
+          desc:  'Vedic understanding of creation, the cosmos, and the sacred principles that structure reality.',
+          lessons: [
+            {
+              id:       'vd-nasadiya',
+              num:      'VD·01',
+              title:    'The Nasadiya Sukta — \"Not Then Was\"',
+              readTime: '12 min',
+              content: `\n<p class=\"lead\">The Nasadiya Sukta (Rigveda 10.129) is one of the most philosophically sophisticated creation hymns in any human tradition. Its name comes from its opening: <strong>\"Na asit\"</strong> — \"Not then was.\" What does it mean to begin a creation story by describing what did NOT exist? This single choice reveals a radically different approach to cosmology.</p>\n\n<h4>Not Being & Pure Potential</h4>\n<p>The Nasadiya begins: <em>\"Not then was nor not-was; there was no sky nor the heavens beyond. What stirred? Where? And in whose protection? What was the water, the deep and mighty water?\"</em></p>\n<p>The Nasadiya does not posit a creator god who shapes pre-existing material. It begins in a state that is neither being nor non-being — what Hindu philosophy calls <strong>Brahman</strong>, the ultimate undifferentiated reality. From this state of pure potential, without external agent or command, the universe emerges through an inherent principle of manifestation.</p>\n\n<callout>Modern quantum cosmology describes something strikingly similar: the universe may have emerged not from \"nothing\" (which itself requires definition) but from a state of quantum potential — described mathematically but not physically manifest. The Nasadiya\'s \"not-being and being\" resonates with quantum superposition: a state that is neither definitively this nor that, until the act of emergence/observation collapses potential into actual.</callout>\n\n<h4>Emergence Without External Creator</h4>\n<p>The Nasadiya concludes: <em>\"Whence this creation hath arisen, perhaps it formed itself, or perhaps it did not. The one who looks down on it in the highest heaven, only he knows, or perhaps even he does not know.\"</em></p>\n<p>This is radical philosophical honesty: the text acknowledges uncertainty at the very heart of the cosmological question. It does not claim final knowledge. It describes a process of emergence that is fundamentally self-organizing and mysterious — not reducible to simple causation by external will.</p>\n`
+            },
+            {
+              id:       'vd-brahma-cycles',
+              num:      'VD·02',
+              title:    'Brahma Cycles — Time at Cosmic Scale',
+              readTime: '11 min',
+              content: `\n<p class=\"lead\">Hindu cosmology structures time in cycles within cycles — a nested hierarchy of temporal organization. The smallest unit is the <strong>paramanu</strong> (smallest particle), and time scales up through increasingly vast cycles called <strong>yugas</strong> (ages) and <strong>kalpas</strong> (cosmic days).</p>\n\n<h4>The Four Yugas — Cosmic Ages</h4>\n<p>A full cosmic cycle consists of four yugas:</p>\n<ul>\n<li><strong>Satya Yuga</strong> — The Age of Truth. Dharma (cosmic order) is perfect. Humans live in harmony. Duration: 1,728,000 years.</li>\n<li><strong>Treta Yuga</strong> — The Age of Ritual. Dharma begins to decline. Humans must work. Duration: 1,296,000 years.</li>\n<li><strong>Dvapara Yuga</strong> — The Age of Doubt. Dharma erodes further. Conflict increases. Duration: 864,000 years.</li>\n<li><strong>Kali Yuga</strong> — The Age of Darkness/Conflict. Dharma nearly disappears. Humanity struggles. Duration: 432,000 years.</li>\n</ul>\n<p>One complete cycle of four yugas = 4,320,000 years = one <strong>Mahayuga</strong> (great age). One thousand Mahayugas = one Kalpa (cosmic day). One Brahman lifetime = 311 trillion years, then the universe collapses into chaos, and the cycle begins anew.</p>\n\n<callout type=\"bridge\">Modern cosmology describes the universe as approximately 13.8 billion years old, with a finite lifespan measured in trillions of years before heat death. The Hindu model posits a similar vastness and cyclical renewal. While the exact numbers differ, the structural intuition is the same: the universe is old beyond human comprehension, operates in grand cycles, and will eventually return to primal state before beginning again.</callout>\n\n<h4>Dharma — The Principle of Order</h4>\n<p>Crucial to this cosmology is the concept of <strong>Dharma</strong> — cosmic order, ethics, righteousness, the natural law that maintains the universe\'s function. As the universe ages through the yugas, Dharma naturally declines. This is not moralistic judgment — it is structural inevitability, like entropy. The cycle must complete itself; a new cycle must begin.</p>\n`
+            },
+            {
+              id:       'vd-vedic-astronomy',
+              num:      'VD·03',
+              title:    'Vedic Mathematics & Astronomy — Numbers of the Gods',
+              readTime: '10 min',
+              content: `\n<p class=\"lead\">Ancient Indian civilization developed mathematics and astronomy of stunning sophistication. The Vedas contain astronomical data — observations of planetary motion, predictions of eclipses, descriptions of the structure of the cosmos in terms of mathematical relationships.</p>\n\n<h4>Decimal Mathematics & the Zero</h4>\n<p>Indian mathematicians developed the decimal system and the concept of <strong>zero</strong> as a number, not merely a placeholder. This innovation — which seems obvious now — was revolutionary. It enabled calculation at scales that were practically impossible with Roman or Greek numerals. The very concept of zero required philosophical sophistication: the recognition that non-being (zero) could be a mathematical entity with computational reality.</p>\n\n<callout>The term \"zero\" comes from the Sanskrit <em>sunya</em>, meaning \"empty\" or \"void.\" This carries philosophical weight: zero is not nothing in the sense of annihilation. It is the fertile emptiness — like the Brahman of the Nasadiya Sukta. From zero (potential), calculations unfold, structures emerge. The mathematics of the Vedas and the metaphysics of the Nasadiya teach the same lesson: potential is real, void is generative.</callout>\n\n<h4>Astronomical Precision</h4>\n<p>Vedic texts contain descriptions of planetary positions and motions with precision that matches modern observation. The Aryabhata, composed around 500 CE, describes the cosmos as heliocentric — the Sun at the center, planets orbiting. This description predates Copernicus by 1,000 years. Whether this was theoretical model or observational discovery remains debated — but the sophistication of Vedic astronomy is beyond question.</p>\n`
+            }
+          ]
+        }
+      ]
+    },
+
+    /* ══════════════════════════════════════════════════════════
+       DREAMTIME — Aboriginal Australian Traditions
     ══════════════════════════════════════════════════════════ */
     {
       id:      'dreamtime',
@@ -667,29 +801,39 @@ const CULTURALVERSE_DATA = {
       emoji:   '🌏',
       tagline: 'Aboriginal Australian Wisdom Traditions',
       theme:   'rust',
-      status:  'soon',
-      intro:   'Coming soon.',
-      modules: []
-    },
-    {
-      id:      'dogon',
-      name:    'Dogon',
-      emoji:   '🪘',
-      tagline: 'West African Knowledge — Mali',
-      theme:   'amber',
-      status:  'soon',
-      intro:   'Coming soon.',
-      modules: []
-    },
-    {
-      id:      'vedic',
-      name:    'Vedic',
-      emoji:   '🕉️',
-      tagline: 'Ancient Indian Wisdom Traditions',
-      theme:   'saffron',
-      status:  'soon',
-      intro:   'Coming soon.',
-      modules: []
+      status:  'live',
+      intro:   'The Aboriginal peoples of Australia developed one of the world\'s longest continuous cultures — at least 65,000 years of unbroken transmission. Central to this culture are the Songlines: spiritual narratives that encode astronomy, geography, kinship, and ecological knowledge in stories that are simultaneously maps, histories, and songs. These lessons explore the Songlines, celestial navigation, totem systems, and the Aboriginal understanding of Country as a living, conscious entity.',
+      modules: [
+        {
+          id:    'dreamtime-songlines',
+          title: 'Songlines & Country',
+          emoji: '🎵',
+          desc:  'The sacred narratives that encode place, kinship, and cosmic knowledge across the Australian continent.',
+          lessons: [
+            {
+              id:       'dt-songlines-intro',
+              num:      'DT·01',
+              title:    'The Songlines — Stories That Are Maps',
+              readTime: '13 min',
+              content: `\n<p class=\"lead\">Across the Australian continent, thousands of stories form a vast interconnected network called the <strong>Songlines</strong> or <strong>Dreaming Tracks</strong>. A Songline is not merely a story or a poem or a map. It is all of these simultaneously — a narrative that simultaneously describes the journey of ancestral beings, encodes the geography of the continent, preserves kinship relationships, teaches practical ecological knowledge, and connects the living present to the sacred time of the Dreaming.</p>\n\n<h4>The Dreaming — Eternal Creative Time</h4>\n<p>The Dreaming (or Dreamtime) is not a time in the past — it is not historical. Rather, it is a permanent dimension of reality, accessible through song, story, ceremony, and connection to Country. During the Dreaming, ancestral beings — Dreamings — traveled across the landscape, shaping the features we see today: mountains, rivers, rock formations. Their actions created relationships between places, between peoples, between humans and the land itself.</p>\n<p>The Songlines trace these ancestral journeys. To sing the Songline is to travel the path, to recall the story, to reconnect with the sacred power of the place, and to maintain the relationship between the human community and Country.</p>\n\n<callout>A single Songline might stretch thousands of kilometers across the continent, passing through the territories of dozens of different Aboriginal nations, each of whom maintain their own portion of the story, their own verses, their own relationship to the places the Songline traverses. The entire continent is covered by intersecting, overlapping Songlines, forming a vast poetic geography encoded in the bodies and voices of the people who live there.</callout>\n\n<h4>Knowledge Encoded in Story</h4>\n<p>Within the Songlines are encoded practical, actionable knowledge: the locations of water sources in the desert; which plants are edible and when to harvest them; animal migration patterns; seasonal indicators; the locations of sacred sites; the kinship relationships between groups; protocols for sharing land and resources. This knowledge is preserved not in written form, but in narrative structure — in the characters, their actions, the geographic features they created, the songs that describe them.</p>\n<p>To know the Songline is to possess a map, a history, a spiritual practice, and a set of ecological knowledge simultaneously. The distinction between \"story\" and \"information,\" between \"sacred\" and \"practical,\" between \"past\" and \"present,\" does not apply. These categories are creations of literate, separated from the land cultures. For Aboriginal peoples, knowledge and story, place and meaning, past and present are unified.</p>\n`
+            },
+            {
+              id:       'dt-celestial-navigation',
+              num:      'DT·02',
+              title:    'Stars & Navigation — The Celestial Songlines',
+              readTime: '11 min',
+              content: `\n<p class=\"lead\">The Aboriginal peoples of Australia were sophisticated navigators who used the stars to orient themselves across vast distances of desert and ocean. The stars themselves form Songlines — narratives written in the night sky that tell stories and encode navigational information.</p>\n\n<h4>The Pleiades — Seven Sisters</h4>\n<p>One of the most widespread Songlines across Aboriginal Australia involves the Pleiades — known as the Seven Sisters (or Pleiadies, or Makara). The story of the Seven Sisters appears in hundreds of variations across different Aboriginal nations, but the core narrative is consistent: celestial beings, often represented as young women, whose movements and positions encode seasonal knowledge and navigation information.</p>\n\n<h4>Orion & the Southern Cross</h4>\n<p>Major constellations visible from Australia — including Orion and the Southern Cross — are incorporated into Songlines and navigation knowledge. The Southern Cross (Crux) particularly served as a reliable orientation marker: it circles Polaris Australis, nearly directly above the southern celestial pole. For navigators traveling across deserts or open ocean, knowing the position of the Southern Cross provided constant orientation.</p>\n\n<callout type=\"bridge\">Modern GPS satellites provide the same function today — orienting travelers across vast distances by reference to fixed celestial points. Aboriginal navigators achieved similar precision through direct observation and encoded knowledge rather than technological instrument. The principle is identical: know the positions of reliable celestial markers, use them to orient yourself across terrain where ground-based landmarks are unavailable or unreliable.</callout>\n\n<h4>Seasonal Astronomy</h4>\n<p>Aboriginal astronomers tracked not just locations of stars, but their rising and setting positions throughout the year — which shift as Earth\'s axis tilts through its yearly cycle. This created a celestial calendar: the rising of particular stars signaled particular seasons — times to prepare for migration of animals, times to harvest certain plants, times for ceremony. The night sky was a living calendar, constantly teaching those who knew how to read it.</p>\n`
+            },
+            {
+              id:       'dt-country-consciousness',
+              num:      'DT·03',
+              title:    'Country as Living — Kinship & Custodianship',
+              readTime: '10 min',
+              content: `\n<p class=\"lead\">At the heart of Aboriginal philosophy is the understanding that <strong>Country</strong> — the land, water, sky, creatures, plants, and people — is alive, conscious, and relational. This is not metaphor. Country is person. The Aboriginal relationship to land is not that of owner to property, or even steward to resource. It is kinship.</p>\n\n<h4>Country Speaks — Language of Connection</h4>\n<p>To \"know Country\" is to speak its language, to understand its structures, to recognize one\'s relationship within its patterns. Country communicates through the Songlines, through the behavior of animals, through the arrangement of rocks and water, through the positions of stars. Those who are deeply connected to Country learn to read these communications — they become fluent in the language their Country speaks.</p>\n\n<h4>Custodianship & Obligation</h4>\n<p>Aboriginal peoples are not owners of Country — they are custodians, responsible for maintaining the relationships and obligations encoded in the Songlines. To perform ceremony at the right time in the right place is to strengthen the connection, to maintain the sacred relationships, to ensure that the land continues to provide, that the seasons continue to cycle, that the creatures and plants continue to flourish. This is not charity offered by humans to nature — it is reciprocal relationship. Country cares for those who care for it.</p>\n\n<callout>Modern environmental science has largely adopted a similar understanding: ecosystems are not resources to be extracted but living systems in which humans are participants, with obligations and relationships. The Aboriginal understanding preceded Western ecology by thousands of years. It is knowledge carried in the bodies, ceremonies, and Songlines of living people — knowledge that Western science is finally learning to recognize and honor.</callout>\n`
+            }
+          ]
+        }
+      ]
     }
 
   ] // end cultures

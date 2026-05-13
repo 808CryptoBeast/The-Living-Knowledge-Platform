@@ -275,6 +275,38 @@ A strong teaching move is to ask learners to compare a standard Western timeline
 <historian-note>
 The Kumulipo was also used in aliʻi contexts to affirm chiefly genealogy and authority. That political use matters, but it should not be mistaken for the whole purpose of the chant. Its deeper function preserves cosmology, kinship, ecological relationship, sacred order, and cultural memory.
 </historian-note>
+
+<h4>Kumulipo Wā 1–16 Teaching Map (ʻŌlelo + English)</h4>
+<p>This guide offers a teaching map of all 16 wā with practical English meaning alongside Hawaiian naming. It is a study companion, not a replacement for full chant recitation and line-level translation traditions.</p>
+
+<ul>
+<li><strong>Wā 1 — Wā o ke Koʻa (Era of Coral)</strong> · First life in deep pō: coral and earliest sea forms. <em>English lens:</em> life begins in oceanic darkness.</li>
+<li><strong>Wā 2 — Wā o nā Mea o ke Kai (Era of Sea Creatures)</strong> · Marine multiplicity expands. <em>English lens:</em> diversification of aquatic life.</li>
+<li><strong>Wā 3 — Wā o nā Limu a me nā Mea Ulu o ke Kai (Sea Plants and Growth)</strong> · Algae and marine growth systems. <em>English lens:</em> ecological foundations and food webs.</li>
+<li><strong>Wā 4 — Wā o nā Mea Kolo a me nā Mea Pēlā (Creeping and Small Forms)</strong> · Transitional and interlinked species. <em>English lens:</em> complexity through relation.</li>
+<li><strong>Wā 5 — Wā o nā Iʻa Nui (Larger Sea Beings)</strong> · Expanded marine orders and paired emergence. <em>English lens:</em> patterned increase in scale.</li>
+<li><strong>Wā 6 — Wā o nā Manu Kai a me nā Mea Pēlā (Sea Birds and Boundary Crossers)</strong> · Life crossing air-water thresholds. <em>English lens:</em> new ecological niches.</li>
+<li><strong>Wā 7 — Wā o nā Mea Ulu o ka ʻĀina (Land Growth)</strong> · Plant worlds of land become central. <em>English lens:</em> terrestrial systems stabilize.</li>
+<li><strong>Wā 8 — Wā o nā Holoholona o ka ʻĀina (Land Animals)</strong> · Land life matures in layered relations. <em>English lens:</em> increasing terrestrial complexity.</li>
+<li><strong>Wā 9 — Wā o ka Huli i ke Ao (Turning Toward Light)</strong> · Transition from deep pō toward ao. <em>English lens:</em> cosmological threshold and emergence.</li>
+<li><strong>Wā 10 — Wā o nā Kūpuna Akua (Ancestral Divine Genealogies)</strong> · Sacred genealogical ordering. <em>English lens:</em> cosmos expressed through lineage.</li>
+<li><strong>Wā 11 — Wā o nā Hanauna Kiʻekiʻe (High Genealogical Lines)</strong> · Intensified chiefly/ancestral sequencing. <em>English lens:</em> social order linked to cosmic order.</li>
+<li><strong>Wā 12 — Wā o nā Pili Aliʻi (Chiefly Relational Lines)</strong> · Governance and genealogy intertwine. <em>English lens:</em> authority as inherited kuleana.</li>
+<li><strong>Wā 13 — Wā o ka Hānau Moʻokūʻauhau (Genealogical Birth Lines)</strong> · Human lines in sacred continuity. <em>English lens:</em> humans placed inside, not outside, creation.</li>
+<li><strong>Wā 14 — Wā o ka Hoʻonui Hanauna (Expansion of Descendant Lines)</strong> · Social worlds widen through kinship. <em>English lens:</em> peoplehood as ecological relationship.</li>
+<li><strong>Wā 15 — Wā o ke Kauoha a me ke Kuleana (Charge and Responsibility)</strong> · Lineage carries ethical obligation. <em>English lens:</em> memory becomes duty.</li>
+<li><strong>Wā 16 — Wā o ke Ao Kanaka (Human Realm in Light)</strong> · Genealogy culminates in living responsibility. <em>English lens:</em> to be human is to steward relations across land, sea, and sky.</li>
+</ul>
+
+<callout type="bridge"><strong>Many-level reading of the Kumulipo:</strong> (1) Genealogical: a sacred lineage text; (2) Ecological: life unfolds through relationship; (3) Political-historical: aliʻi legitimacy and kuleana; (4) Philosophical: darkness as fertile source; (5) Scientific dialogue: meaningful resonance with staged emergence, evolution, and early hot dense cosmology, while remaining a distinct Hawaiian knowledge system rather than a pre-modern physics manual.</callout>
+
+<compare left="Scientific Conversation" right="Cultural Integrity">
+Possible conversation points: staged emergence of complexity, oceanic origins of life, hot primordial conditions, non-linear relational systems (sometimes compared metaphorically with network, quantum, or string thinking). || Essential boundary: Kumulipo is not reducible to Big Bang theory, evolution, quantum mechanics, or string theory. It is a sovereign chant tradition with its own epistemology, language, protocol, and sacred authority.
+</compare>
+
+<activity>
+Bridge exercise: create a four-column notebook page titled Wā, Hawaiian phrase/theme, English meaning, and multi-level interpretation (ecological, genealogical, philosophical, scientific dialogue). Fill all 16 wā and then link at least three entries to bridge lessons without collapsing distinct traditions.
+</activity>
 `
     },
 
@@ -798,7 +830,25 @@ Make a Maʻat decision chart: write one hard choice, list actions that create ba
           'Why do beginnings sometimes look quiet or hidden?',
           'How can two cultures share a pattern but not be the same?'
         ]
-      }
+      },
+      additions: `
+<h4>Bridge Expansion: Kumulipo, Evolution, and Contemporary Cosmology</h4>
+<p>The bridge work here is comparative and careful: we are not claiming that Hawaiian or Kemetic traditions were secretly doing modern physics. We are recognizing that different knowledge systems asked similar origin questions and preserved sophisticated pattern-language about emergence, relation, and order.</p>
+
+<twocol left="Kumulipo Sequence" right="Scientific Dialogue Points">Wā 1–8 move through oceanic beginnings, relational pairings, and increasing life complexity before the transition to human genealogical lines in Wā 9–16. The chant encodes staged unfolding, interdependence, and continuity between humans and earlier life forms.||Potential dialogue points include: evolutionary staging (simple to complex life forms), deep-time emergence, and the insight that humans are continuous with earlier life rather than separate from it.</twocol>
+
+<twocol left="Pō / Nun Intuition" right="Big Bang-Era Conversation">Both traditions preserve a deep-source beginning: dark, fertile, undifferentiated potential.||Modern cosmology describes an early hot dense state, expansion, and later structure formation. The resonance is in shared inquiry about origins under extreme conditions, not in literal equation of terms.</twocol>
+
+<compare left="Quantum/String Metaphor (Use Carefully)" right="What We Must Not Do">
+You can use metaphorical parallels: hidden structure, relation before visible form, pattern-like emergence, and reality described through unseen dynamics. || Do not claim the Kumulipo predicts quantum field equations or string models. Do not flatten chant traditions into modern theory vocabulary. Keep comparison dialogical, not extractive.
+</compare>
+
+<callout type="bridge"><strong>Bridge protocol:</strong> Similarity is a conversation starter, not a proof of sameness. The goal is mutual illumination with cultural specificity intact. Keep Hawaiian terms in Hawaiian context, Kemetic terms in Kemetic context, and scientific terms in scientific method context.</callout>
+
+<activity>
+Use three columns: (1) Kumulipo / Nun source language, (2) scientific concept family (evolution, Big Bang cosmology, quantum, string), (3) boundary statement. Fill each row with one resonance and one non-equivalence sentence.
+</activity>
+`
     },
 
     'bridge-pairs': {
@@ -862,6 +912,117 @@ What does it mean to build technology from ethics instead of adding ethics later
 When teaching this comparison, emphasize that resonance does not prove sameness. The goal is to recognize patterns of wisdom while protecting cultural specificity.
 </teacher-note>
 `
+    },
+
+    'br-cosmology-evolution': {
+      mana: 16,
+      xp: 44,
+      sceneType: 'cosmology',
+      concepts: ['Kumulipo', 'Evolution', 'Big Bang', 'Emergence', 'Scale', 'Genealogy', 'Time', 'Complexity'],
+      sources: SOURCE_SETS.bridge,
+      related: ['km-kumulipo', 'ke-nun', 'bridge-darkness'],
+      kidVersion: {
+        summary: 'The Kumulipo traces how life unfolds step by step: coral, sea creatures, plants, land animals, people. Science shows that life evolves the same way. The universe unfolds the same way too — from simple energy to complex galaxies to life. All these stories use the same pattern: simple things combine to make complicated things.',
+        bigIdeas: [
+          'Creation unfolds in stages, getting more complex.',
+          'The same pattern appears at different sizes: atoms to cells to organisms to galaxies.',
+          'Hawaiian genealogy, evolution, and cosmic history are different stories about the same pattern.',
+          'Complexity emerges from simpler parts following simple rules.'
+        ],
+        vocabulary: [
+          { term: 'Genealogy', meaning: 'A family tree; where you come from.' },
+          { term: 'Evolution', meaning: 'How life changes and becomes more complex over time.' },
+          { term: 'Emergence', meaning: 'New things appearing that were not there before.' },
+          { term: 'Wā', meaning: 'An epoch or age in Hawaiian tradition.' }
+        ],
+        activity: `<activity>
+Create three timelines on separate paper: one for the Kumulipo (coral to humans), one for evolution (simple life to humans), one for the universe (Big Bang to galaxies). Compare them. What's the same? What's different? Is it the pattern or the details?
+</activity>`,
+        reflection: `<reflect>
+The Kumulipo, evolution, and the Big Bang are not the same story. But they describe the same pattern happening at different scales and in different ways. Can something be both true and different at the same time?
+</reflect>`
+      }
+    },
+
+    'dg-sirius-triplet': {
+      mana: 11,
+      xp: 31,
+      sceneType: 'astronomy',
+      concepts: ['Sirius system', 'Invisible companions', 'Dogon astronomy', 'Hidden realities', 'Dark matter'],
+      sources: SOURCE_SETS.kemet,
+      related: ['vd-vedic-astronomy', 'dt-celestial-navigation']
+    },
+
+    'dg-ammas-world': {
+      mana: 10,
+      xp: 28,
+      sceneType: 'cosmology',
+      concepts: ['Amma', 'Creator principle', 'Sacred geometry', 'Emergence', 'Self-organization'],
+      sources: SOURCE_SETS.kemet,
+      related: ['dg-sirius-triplet', 'vd-nasadiya']
+    },
+
+    'dg-syncretism': {
+      mana: 9,
+      xp: 26,
+      sceneType: 'epistemology',
+      concepts: ['Oral transmission', 'Knowledge systems', 'Precision', 'Cultural knowledge', 'Bias'],
+      sources: SOURCE_SETS.kemet,
+      related: ['dt-songlines-intro']
+    },
+
+    'vd-nasadiya': {
+      mana: 12,
+      xp: 34,
+      sceneType: 'philosophy',
+      concepts: ['Creation', 'Non-being', 'Brahman', 'Quantum potential', 'Emergence', 'Uncertainty'],
+      sources: SOURCE_SETS.bridge,
+      related: ['km-kumulipo', 'br-darkness', 'dg-ammas-world']
+    },
+
+    'vd-brahma-cycles': {
+      mana: 13,
+      xp: 38,
+      sceneType: 'cosmology',
+      concepts: ['Yugas', 'Dharma', 'Cosmic cycles', 'Time scales', 'Entropy', 'Renewal'],
+      sources: SOURCE_SETS.bridge,
+      related: ['vd-nasadiya', 'km-kumulipo']
+    },
+
+    'vd-vedic-astronomy': {
+      mana: 11,
+      xp: 32,
+      sceneType: 'astronomy',
+      concepts: ['Decimal system', 'Zero', 'Heliocentric', 'Mathematics', 'Ancient knowledge'],
+      sources: SOURCE_SETS.kemet,
+      related: ['dg-sirius-triplet', 'dt-celestial-navigation']
+    },
+
+    'dt-songlines-intro': {
+      mana: 13,
+      xp: 37,
+      sceneType: 'narrative',
+      concepts: ['Songlines', 'Dreaming', 'Country', 'Oral geography', 'Knowledge system', 'Sacred places'],
+      sources: SOURCE_SETS.kemet,
+      related: ['dt-celestial-navigation', 'dt-country-consciousness']
+    },
+
+    'dt-celestial-navigation': {
+      mana: 11,
+      xp: 31,
+      sceneType: 'astronomy',
+      concepts: ['Navigation', 'Stars', 'Constellations', 'Pleiades', 'Southern Cross', 'Seasonal markers'],
+      sources: SOURCE_SETS.kemet,
+      related: ['dt-songlines-intro', 'vd-vedic-astronomy', 'dg-sirius-triplet']
+    },
+
+    'dt-country-consciousness': {
+      mana: 12,
+      xp: 34,
+      sceneType: 'philosophy',
+      concepts: ['Country', 'Kinship', 'Custodianship', 'Living systems', 'Reciprocal relationship', 'Ethics'],
+      sources: SOURCE_SETS.kemet,
+      related: ['dt-songlines-intro', 'br-aloha-maat']
     }
   };
 
