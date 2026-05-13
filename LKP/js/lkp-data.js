@@ -61,63 +61,264 @@ const CULTURALVERSE_DATA = {
               title:    'The Kumulipo — Sacred Chant of Creation',
               readTime: '12 min',
               content: `
-<p class="lead">The Kumulipo is not best understood as a simple myth, a historical passage, or a poetic artifact. It is a living Kanaka Maoli framework of genealogy, cosmology, ecological memory, and responsibility — a <em>mele koʻihonua</em> (chant of creation and genealogy) of approximately <strong>2,102 lines</strong>, organized into <strong>16 wā</strong> (epochs). Its name reveals the worldview at its center: <em>Kumu</em> (source, origin) + <em>Lipo</em> (the deep dark blue-black of the ocean's depths) = <strong>"Beginning in Deep Darkness."</strong></p>
+<section class="kumu-hero kumu-reveal">
+  <p class="kumu-hero__eyebrow">Kanaka Maoli Sacred Knowledge</p>
+  <h2 class="kumu-hero__title">Kumulipo</h2>
+  <p class="kumu-hero__subtitle">A Genealogy of Creation, Life, and Living Knowledge</p>
+  <p class="kumu-hero__lead">This lesson is designed as a guided Culturalverse/Ikeverse journey through Wā 1 and the wider Kumulipo knowledge architecture. The purpose is not to flatten the chant into modern categories, but to learn how ancestral Kanaka Maoli thought holds cosmology, ecology, genealogy, and kuleana in one relational framework.</p>
+</section>
 
-<facts>2,102::Lines in the Chant|16 Wā::Epochs / Sections|~1700 CE::Approximate Composition|1897::First English Translation</facts>
+<facts>2,102::Lines in the Chant|16 Wā::Epochs of Unfolding|Pō::Generative Darkness, Not Emptiness|1897::Liliʻuokalani Translation</facts>
 
-<h4>Origins & Transmission</h4>
-<p>The Kumulipo was composed in the early 18th century, traditionally attributed to the poet <strong>Keaulumoku</strong> and composed for the birth of <strong>Kalaninuiamamao</strong>, an aliʻi of the Kamehameha lineage. For generations it was transmitted entirely through oral tradition — memorized, chanted, and passed down with ritual precision. <strong>Kalākaua</strong> first committed it to writing in the 19th century, <strong>Queen Liliʻuokalani</strong> translated it into English in 1897, and Martha Beckwith produced the definitive scholarly translation in 1951.</p>
+<section class="kumu-section kumu-reveal">
+  <h4>What Is the Kumulipo?</h4>
+  <p>The Kumulipo is a sacred Kanaka Maoli creation chant, genealogy, cosmology, and living knowledge system. It is a profound framework of pō, emergence, life, genealogy, ecology, relationship, and kuleana. It carries ancestral intelligence through chant, memory, protocol, and transmission across generations.</p>
+  <p>The Kumulipo should not be reduced to mythology, poetry, or Western scientific explanation. Modern science offers one framework, while the Kumulipo offers a Kanaka Maoli ancestral framework. Where meaningful parallels appear, they can be used carefully to support understanding, without collapsing difference.</p>
+  <callout>The opening line, <strong>"O ke au i kahuli wela ka honua"</strong>, describes transformation in conditions of heat, motion, and becoming. Creation is presented as unfolding process, not static event.</callout>
+</section>
 
-<callout>The opening line of the Kumulipo — <strong>"O ke au i kahuli wela ka honua"</strong> — speaks of a world becoming hot, active, and ordered. Creation begins not in emptiness, but in the conditions of emergence.</callout>
+<section class="kumu-section kumu-reveal">
+  <h4>Beyond Royal Lineage</h4>
+  <p>The Kumulipo has historically been used to affirm aliʻi genealogy and chiefly authority. That historical use is real and important. But it is not the whole meaning of the chant. Its deeper function is broader: preserving a worldview in which creation is genealogical, life is interconnected, and humans emerge within the same relational system as coral, ocean, plants, animals, stars, land, and sky.</p>
+  <p>This makes the Kumulipo a living body of ancestral knowledge, not a narrow political text. It preserves layered insight into origins, ecological relationships, continuity of life, and humanity's place within creation.</p>
+</section>
 
-<h4>Reading the Wā as Living Knowledge</h4>
-<p>The 16 wā are not random episodes. They are layered knowledge-forms that describe how reality unfolds from pō into visible relationship. Read respectfully, they show how Kanaka Maoli thought about cosmic origin, the sequencing of life, the genealogy of beings, and the ethical place of people inside a larger living order. This is a living framework, not a closed historical relic.</p>
+<section class="kumu-section kumu-reveal">
+  <h4>Transition: The Wā as Layered Stages of Unfolding Reality</h4>
+  <p>The wā can be understood as layered stages of becoming. Each wā carries specific cultural meaning while also resonating with modern ideas in cosmology, evolution, ecology, systems thinking, and relational ethics. These parallels do not replace Hawaiian meaning. They help modern readers recognize the depth and sophistication of the knowledge system.</p>
+  <p>This lesson begins with Wā 1 as the interpretive foundation: darkness is generative, relationship is primary, and life begins in continuity rather than separation.</p>
+</section>
 
-<h4>Wā 1–4: Pō and the First Unfolding</h4>
-<ul>
-<li><strong>Wā 1 · Deep Pō:</strong> Traditional meaning: primordial darkness as a generative source, not an absence. Modern concept: cosmology. Similarity: this parallels modern cosmology's description of an early universe unfolding into energy, matter, and structure. Respectfully, the Kumulipo is not repeating Big Bang theory; it is offering an ancestral Hawaiian account of emergence.</li>
-<li><strong>Wā 2 · First marine life:</strong> Traditional meaning: the sea begins to populate with foundational beings. Modern concept: the staged appearance of life. Similarity: this resembles the way biology describes life arising through ordered transitions rather than all at once.</li>
-<li><strong>Wā 3 · Limu and sea growth:</strong> Traditional meaning: marine plants and algae establish the first webs of nourishment. Modern concept: ecology and biodiversity. Similarity: this reflects what modern ecology calls interdependence, where early life supports later complexity.</li>
-<li><strong>Wā 4 · Small connected beings:</strong> Traditional meaning: tiny forms of life create the first relational layers. Modern concept: systems thinking. Similarity: this shows a systems-based understanding of life — nothing exists alone, and each being prepares the conditions for the next.</li>
-</ul>
+<!-- KM_KUMULIPO_SOURCE_INSERT -->
 
-<h4>Wā 5–8: Differentiation and Ecological Relationship</h4>
-<ul>
-<li><strong>Wā 5 · Fish and reef worlds:</strong> Traditional meaning: ocean life diversifies into larger and more varied forms. Modern concept: biological evolution. Similarity: this resembles the staged development described in evolutionary biology, where complexity grows through time and relationship.</li>
-<li><strong>Wā 6 · Birds and boundary-crossing life:</strong> Traditional meaning: beings that move between sea, sky, and shore appear as mediators. Modern concept: ecological connectivity. Similarity: this reflects how ecosystems depend on species that link environments and carry nutrients, seeds, and balance across boundaries.</li>
-<li><strong>Wā 7 · Land plants:</strong> Traditional meaning: terrestrial life takes root and stabilizes the land. Modern concept: ecological succession. Similarity: this mirrors the way modern environmental science studies how life colonizes, anchors, and transforms habitats over time.</li>
-<li><strong>Wā 8 · Land animals:</strong> Traditional meaning: the land becomes inhabited by fuller animal life. Modern concept: diversification of species. Similarity: this resonates with the idea that life emerges in stages, moving from simpler forms into more complex relationships.</li>
-</ul>
+<section class="kumu-section kumu-reveal">
+  <h4>Modern Parallels</h4>
+  <div class="kumu-parallel-grid">
+    <article class="kumu-parallel-card">
+      <h5>Cosmology</h5>
+      <p><strong>This parallels modern cosmology</strong> in the movement from deep origin toward emergence, order, and structure. It can be respectfully compared with Big Bang era questions about early conditions of space-time, energy, and matter, without claiming equivalence.</p>
+    </article>
+    <article class="kumu-parallel-card">
+      <h5>Evolution</h5>
+      <p><strong>This resonates with evolutionary thinking</strong> because life appears through staged development rather than instant completion, moving from foundational forms toward increasing complexity.</p>
+    </article>
+    <article class="kumu-parallel-card">
+      <h5>Ecology</h5>
+      <p><strong>This can be compared to ecological interdependence</strong> as coral, sea life, plants, animals, land, and people are treated as connected relations rather than isolated objects.</p>
+    </article>
+    <article class="kumu-parallel-card">
+      <h5>Genealogy</h5>
+      <p><strong>This reflects continuity of life</strong> through moʻokūʻauhau. Human identity emerges inside ancestral and ecological continuity, not outside it.</p>
+    </article>
+    <article class="kumu-parallel-card">
+      <h5>Systems Thinking</h5>
+      <p><strong>This reflects a systems-based understanding of relationship and interdependence</strong> where each phase of emergence supports later phases and meaning comes from relational pattern.</p>
+    </article>
+    <article class="kumu-parallel-card">
+      <h5>Kuleana</h5>
+      <p><strong>This frames responsibility as integral to knowledge.</strong> To know creation is to carry obligation toward balance, stewardship, and right relationship.</p>
+    </article>
+  </div>
+</section>
 
-<h4>Wā 9–12: The Shift Toward Ao and Ancestral Order</h4>
-<ul>
-<li><strong>Wā 9 · Transition from pō to ao:</strong> Traditional meaning: the movement from darkness toward light and visibility. Modern concept: cosmic ordering. Similarity: this parallels the shift in cosmology from undifferentiated beginnings toward structured systems.</li>
-<li><strong>Wā 10 · Ancestors become visible:</strong> Traditional meaning: divine and ancestral lines are named within creation. Modern concept: genealogy. Similarity: this shows that identity is relational, not isolated, and that life is understood through inherited connection.</li>
-<li><strong>Wā 11 · High lines are ordered:</strong> Traditional meaning: the upper genealogies are stabilized and made legible. Modern concept: systems organization. Similarity: this shows how the Kumulipo treats lineage as a structured network of relations rather than a simple list of names.</li>
-<li><strong>Wā 12 · Chiefly lines are tied to source:</strong> Traditional meaning: aliʻi genealogy is connected back to sacred origin. Modern concept: social and ecological responsibility. Similarity: this reflects the idea that leadership must remain accountable to the living systems that sustain it.</li>
-</ul>
+<section class="kumu-section kumu-reveal">
+  <h4>Interactive Wā Timeline</h4>
+  <p class="kumu-section__intro">Explore each wā as a distinct knowledge layer. Every stage includes cultural meaning, emergence, modern dialogue, and present-day relevance.</p>
+  <div class="kumu-wa-timeline" data-kumu-wa-timeline>
+    <details class="kumu-wa-item" open>
+      <summary><span>Wā 1</span> Wā o ke Koʻa · Pō, Emergence, and Foundational Life</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Deep pō as generative source; koʻa as foundational life threshold.</p>
+        <p><strong>What emerges:</strong> Ordered life from concealed potential.</p>
+        <p><strong>Modern comparison:</strong> Early cosmology, foundational marine emergence, systems onset.</p>
+        <p><strong>Parallel:</strong> This parallels modern cosmology and resonates with staged life development, while remaining a distinct ancestral framework.</p>
+        <p><strong>Why it matters:</strong> Establishes relationship as origin principle and ethical baseline.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 2</span> Wā o nā Mea o ke Kai · Sea Multiplicity</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Marine life diversifies in relational sequence.</p>
+        <p><strong>What emerges:</strong> Expanding oceanic communities.</p>
+        <p><strong>Modern comparison:</strong> Early diversification in aquatic systems.</p>
+        <p><strong>Parallel:</strong> This can be compared to staged development of life in marine environments.</p>
+        <p><strong>Why it matters:</strong> Reinforces ocean as ancestral foundation.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 3</span> Wā o nā Limu · Marine Growth Systems</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Limu and growth webs establish nourishment systems.</p>
+        <p><strong>What emerges:</strong> Foundational ecological productivity.</p>
+        <p><strong>Modern comparison:</strong> Primary productivity and food-web beginnings.</p>
+        <p><strong>Parallel:</strong> This reflects ecological thinking about support systems and interdependence.</p>
+        <p><strong>Why it matters:</strong> Shows that life complexity depends on subtle foundations.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 4</span> Wā o nā Mea Kolo · Small and Transitional Forms</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Smaller life forms create transitional relational links.</p>
+        <p><strong>What emerges:</strong> Increased complexity through connection.</p>
+        <p><strong>Modern comparison:</strong> Networked biodiversity and adaptive niches.</p>
+        <p><strong>Parallel:</strong> This can be compared to systems-level emergence from many small interactions.</p>
+        <p><strong>Why it matters:</strong> Teaches that small forms are structurally essential.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 5</span> Wā o nā Iʻa Nui · Larger Sea Beings</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Marine orders expand in scale and relation.</p>
+        <p><strong>What emerges:</strong> Larger aquatic life systems.</p>
+        <p><strong>Modern comparison:</strong> Diversification and trophic complexity.</p>
+        <p><strong>Parallel:</strong> This resonates with evolutionary scaling in marine ecosystems.</p>
+        <p><strong>Why it matters:</strong> Shows that size and power still depend on earlier foundations.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 6</span> Wā o nā Manu Kai · Boundary-Crossing Life</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Beings crossing sea and sky expand relational worlds.</p>
+        <p><strong>What emerges:</strong> New ecological corridors.</p>
+        <p><strong>Modern comparison:</strong> Cross-biome linkages and migration dynamics.</p>
+        <p><strong>Parallel:</strong> This reflects systems-based thinking about connectivity across environments.</p>
+        <p><strong>Why it matters:</strong> Teaches that boundaries are connective, not absolute.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 7</span> Wā o nā Mea Ulu o ka ʻĀina · Land Growth</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Terrestrial plant worlds become central.</p>
+        <p><strong>What emerges:</strong> Stabilizing land ecologies.</p>
+        <p><strong>Modern comparison:</strong> Terrestrial ecological establishment.</p>
+        <p><strong>Parallel:</strong> This can be compared to major ecological transitions from marine to land systems.</p>
+        <p><strong>Why it matters:</strong> Grounds later life and human survival in plant systems.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 8</span> Wā o nā Holoholona o ka ʻĀina · Land Animals</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Land life matures through layered relation.</p>
+        <p><strong>What emerges:</strong> Greater terrestrial diversity.</p>
+        <p><strong>Modern comparison:</strong> Diversification of land-based life systems.</p>
+        <p><strong>Parallel:</strong> This resonates with staged development in evolution and ecology.</p>
+        <p><strong>Why it matters:</strong> Frames land life as part of shared genealogy, not hierarchy.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 9</span> Wā o ka Huli i ke Ao · Turning Toward Light</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Threshold from deep pō toward ao.</p>
+        <p><strong>What emerges:</strong> New phase of visibility and ordering.</p>
+        <p><strong>Modern comparison:</strong> Transitional phase shifts in complex systems.</p>
+        <p><strong>Parallel:</strong> This parallels movement from hidden conditions to emergent structure.</p>
+        <p><strong>Why it matters:</strong> Marks continuity, not rupture, between phases of being.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 10</span> Wā o nā Kūpuna Akua · Ancestral Divine Genealogies</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Sacred lineages are named and ordered.</p>
+        <p><strong>What emerges:</strong> Genealogical articulation of cosmic order.</p>
+        <p><strong>Modern comparison:</strong> Structured relational mapping.</p>
+        <p><strong>Parallel:</strong> This reflects systems ordering through named relational nodes.</p>
+        <p><strong>Why it matters:</strong> Places memory and identity within sacred continuity.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 11</span> Wā o nā Hanauna Kiʻekiʻe · High Lines</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Intensified genealogical structuring.</p>
+        <p><strong>What emerges:</strong> Advanced social-cosmic lineages.</p>
+        <p><strong>Modern comparison:</strong> Multi-layer relational systems.</p>
+        <p><strong>Parallel:</strong> This can be compared to nested systems where scale and meaning co-exist.</p>
+        <p><strong>Why it matters:</strong> Highlights responsibility within inherited structure.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 12</span> Wā o nā Pili Aliʻi · Chiefly Relational Lines</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Governance and genealogy are linked.</p>
+        <p><strong>What emerges:</strong> Authority as relational kuleana.</p>
+        <p><strong>Modern comparison:</strong> Social systems tied to ecological legitimacy.</p>
+        <p><strong>Parallel:</strong> This reflects an ethics of leadership grounded in continuity and obligation.</p>
+        <p><strong>Why it matters:</strong> Counters power without responsibility.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 13</span> Wā o ka Hānau Moʻokūʻauhau · Human Genealogical Emergence</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Human lines emerge within sacred continuity.</p>
+        <p><strong>What emerges:</strong> Human identity inside creation.</p>
+        <p><strong>Modern comparison:</strong> Relational identity and biological continuity.</p>
+        <p><strong>Parallel:</strong> This resonates with the idea that humans are embedded in life systems, not separate from them.</p>
+        <p><strong>Why it matters:</strong> Reorients identity toward kinship and humility.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 14</span> Wā o ka Hoʻonui Hanauna · Expansion of Descendant Lines</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Social worlds widen through kinship.</p>
+        <p><strong>What emerges:</strong> Expanded relational communities.</p>
+        <p><strong>Modern comparison:</strong> Complex social-ecological systems.</p>
+        <p><strong>Parallel:</strong> This can be compared to branching network growth in living systems.</p>
+        <p><strong>Why it matters:</strong> Shows belonging as relational practice, not abstraction.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 15</span> Wā o ke Kauoha a me ke Kuleana · Charge and Responsibility</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Lineage carries ethical mandate.</p>
+        <p><strong>What emerges:</strong> Responsibility as inherited obligation.</p>
+        <p><strong>Modern comparison:</strong> Sustainability ethics and stewardship frameworks.</p>
+        <p><strong>Parallel:</strong> This reflects that knowledge must guide behavior in living systems.</p>
+        <p><strong>Why it matters:</strong> Connects memory directly to action.</p>
+      </div>
+    </details>
+    <details class="kumu-wa-item">
+      <summary><span>Wā 16</span> Wā o ke Ao Kanaka · Human Realm in Light</summary>
+      <div class="kumu-wa-item__body">
+        <p><strong>Cultural meaning:</strong> Human life culminates in stewardship duty.</p>
+        <p><strong>What emerges:</strong> Conscious relational responsibility.</p>
+        <p><strong>Modern comparison:</strong> Systems stewardship across land, sea, and sky.</p>
+        <p><strong>Parallel:</strong> This can be compared to integrated sustainability frameworks, while remaining a distinct sacred genealogy.</p>
+        <p><strong>Why it matters:</strong> Defines humanity through mālama, not dominion.</p>
+      </div>
+    </details>
+  </div>
+</section>
 
-<h4>Wā 13–16: Humanity, Consciousness, and Kuleana</h4>
-<ul>
-<li><strong>Wā 13 · Human genealogy emerges:</strong> Traditional meaning: people arise within the same cosmic continuity as other beings. Modern concept: consciousness within a relational universe. Similarity: this shows that humans are not outside creation, but formed inside it.</li>
-<li><strong>Wā 14 · Descendant lines expand:</strong> Traditional meaning: human families multiply through kinship and continuity. Modern concept: genealogical systems. Similarity: this reflects the way identity is carried through relationship, memory, and obligation.</li>
-<li><strong>Wā 15 · Kuleana is placed on lineage:</strong> Traditional meaning: responsibility accompanies ancestry. Modern concept: ethical systems and stewardship. Similarity: this shows a systems-based understanding of life in which every action affects the whole.</li>
-<li><strong>Wā 16 · Human life in ao:</strong> Traditional meaning: the human realm of light carries the duty to maintain balance. Modern concept: sustainability and environmental care. Similarity: this aligns with modern thinking about resilience, but the Kumulipo expresses it as sacred responsibility to the world that gave us life.</li>
-</ul>
+<section class="kumu-section kumu-reveal">
+  <h4>Wā 1 and Cross-Cultural Resonance</h4>
+  <p>Wā 1 can be placed in respectful dialogue with other knowledge systems without collapsing difference. In Kemet thought, Nun names primordial waters before ordered creation. In the Kumulipo, pō and marine emergence hold a related structural role. The resonance is not identity. It is a shared insight that order emerges from primordial depth through distinct ancestral languages and protocols.</p>
+  <twocol left="Wā 1 in Kumulipo" right="Resonance in Kemet">Pō is generative darkness; koʻa marks foundational life; creation unfolds through genealogy and relation.||Nun is primordial depth before ordered form; creation emerges through named principles and cosmic ordering.</twocol>
+</section>
 
-<h4>Modern Parallels</h4>
-<p><strong>This parallels modern cosmology</strong> in its movement from pō into emergence, order, and visible structure. The Kumulipo does not claim to be Big Bang theory, yet it presents a profound ancestral Hawaiian model of creation unfolding from deep darkness into differentiation.</p>
-<p><strong>This resembles the staged development described in evolutionary biology</strong> as life moves from coral and other oceanic foundations toward plants, fish, birds, land animals, and human beings. The chant preserves a layered understanding that life develops through sequence, relationship, and continuity.</p>
-<p><strong>This reflects what modern ecology calls interdependence</strong> because coral, ocean, land, sky, plants, animals, and people are genealogically linked. The Kumulipo treats every being as part of a larger living fabric.</p>
-<p><strong>This shows a systems-based understanding of life</strong> in which nothing exists alone. Each wā prepares the conditions for the next, and each being is meaningful through relation, not isolation.</p>
-<p><strong>This does not reduce the Kumulipo to science; it shows that ancestral knowledge carried layered observations about existence, life, and relationship.</strong> Modern science gives us one framework. The Kumulipo gives us an ancestral Hawaiian framework. Where they overlap, the similarities reveal the depth and sophistication of Kanaka Maoli knowledge systems.</p>
+<timeline>
+Early 18th century::Traditional chiefly composition and transmission context associated with Kalaninuiamamao
+19th century::King Kalākaua preserves the chant in writing
+1897::Queen Liliʻuokalani publishes English translation while imprisoned after the overthrow
+20th century onward::The Kumulipo continues as genealogy, cosmology, ecological memory, and living Hawaiian knowledge
+</timeline>
 
-<h4>Why This Matters</h4>
-<callout>The Kumulipo is not mythology in the dismissive Western sense. It is a living genealogical and cosmological framework that teaches how the universe unfolds, how life stays connected, and why human beings carry kuleana rather than dominion. Read this way, the wā are not old stories sitting still in the past — they are active layers of knowledge that continue to guide how relationship, balance, and responsibility are understood today.</callout>
+<activity>Build a relationship map from Pō to coral, from coral to sea life, from sea life to land, and from land to people. The goal is not a human-only family tree. The goal is to trace kinship across creation.</activity>
 
-<p>For Culturalverse and Ikeverse, this matters because living knowledge should be encountered as living knowledge. The Kumulipo belongs to a tradition of Kanaka Maoli intelligence that is cultural, ecological, genealogical, and spiritual all at once. It deserves to be presented with precision, reverence, and clarity — not flattened into folklore, and not reduced to science alone.</p>
+<teacher-note>Ask learners to compare a standard Western timeline of evolution with the Kumulipo sequence, while explicitly reinforcing that the chant is not reducible to modern biology. Comparison is dialogical, not extractive.</teacher-note>
 
-<p>Within Ikeverse/Culturalverse, the Kumulipo stands as living knowledge, not static mythology. It is an ancestral account of cosmic emergence, ecological relation, consciousness, and human responsibility — a framework that invites readers to understand not only where life comes from, but how life must be carried forward.</p>
+<historian-note>The Kumulipo was used in aliʻi contexts to affirm chiefly genealogy and authority. That political use matters, but it should not be mistaken for the whole purpose of the chant. Its deeper function preserves cosmology, kinship, ecological relationship, sacred order, and cultural memory.</historian-note>
+
+<reflect title="Reflection Prompts">
+How does understanding darkness as generative change your view of beginnings?
+Where do you see relational thinking in your own community, ecology, or family history?
+What does kuleana look like when humans are understood as part of creation rather than above it?
+</reflect>
+
+<section class="kumu-section kumu-reveal kumu-section--final">
+  <h4>Why the Kumulipo Matters Today</h4>
+  <p>The Kumulipo is not a simple origin story. It is a living knowledge system that speaks directly to modern questions about identity, ecology, sustainability, ancestry, consciousness, and responsibility. It teaches that creation is relational, life unfolds through genealogy, and knowledge carries kuleana.</p>
+  <p>For Culturalverse and Ikeverse, the Kumulipo is both introduction and return point. Wā 1 opens the learning journey, and at the end of study it becomes the interpretive key again: humans are part of nature, not above it; relationship precedes hierarchy; and wisdom must become stewardship.</p>
+  <callout>This does not reduce the Kumulipo to science. It reveals the layered intelligence of Kanaka Maoli ancestral knowledge and its continuing relevance for the present and future.</callout>
+</section>
 `
             },
             {

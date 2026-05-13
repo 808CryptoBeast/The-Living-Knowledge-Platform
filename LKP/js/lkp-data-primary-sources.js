@@ -394,10 +394,18 @@ The source of the night that made night
         module.lessons.forEach(lesson => {
           const additions = LESSON_ADDITIONS[lesson.id];
           if (!additions) return;
+          const overviewInsertMarker = '<!-- KM_KUMULIPO_SOURCE_INSERT -->';
 
           /* Patch content */
           if (additions.contentPrefix) {
-            lesson.content = (additions.contentPrefix || '') + (lesson.content || '');
+            if (lesson.id === 'km-kumulipo' && String(lesson.content || '').includes(overviewInsertMarker)) {
+              lesson.content = String(lesson.content || '').replace(
+                overviewInsertMarker,
+                `${additions.contentPrefix || ''}\n${overviewInsertMarker}`
+              );
+            } else {
+              lesson.content = (additions.contentPrefix || '') + (lesson.content || '');
+            }
           }
           if (additions.contentSuffix) {
             lesson.content = (lesson.content || '') + (additions.contentSuffix || '');

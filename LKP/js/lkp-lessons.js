@@ -2125,6 +2125,10 @@
       if (state.mode === 'scholar' && !body.querySelector('.cv-reflection')) {
         body.insertAdjacentHTML('beforeend', renderReflectionAccordion(DEFAULT_REFLECTIONS, lesson, 'Reflection Prompts'));
       }
+
+      if (lesson.id === 'km-kumulipo') {
+        initKumulipoExperience(body);
+      }
     }
 
     updateHeroImage(lesson);
@@ -2143,12 +2147,6 @@
     renderLessonNav();
     renderMobileScrubber();
     renderRelatedLessons(lesson);
-    
-    // Render Kumulipo Wā expansion UI if this is the km-kumulipo lesson
-    if (lesson.id === 'km-kumulipo' && window.KUMULIPO_WA_UI) {
-      const actionStrip = document.getElementById('lessonActionStrip');
-      window.KUMULIPO_WA_UI.insert(actionStrip, state.mode);
-    }
     
     renderLessonTree();
     updateCompleteButton(lesson);
@@ -2180,6 +2178,49 @@
     }
 
     closeSidebarOnMobile();
+  }
+
+  function initKumulipoExperience(bodyEl) {
+    if (!bodyEl) return;
+
+    const revealItems = Array.from(bodyEl.querySelectorAll('.kumu-reveal'));
+
+    if (revealItems.length) {
+      if ('IntersectionObserver' in window) {
+        const revealObserver = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              revealObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+
+        revealItems.forEach(item => revealObserver.observe(item));
+      } else {
+        revealItems.forEach(item => item.classList.add('is-visible'));
+      }
+    }
+
+    const timeline = bodyEl.querySelector('[data-kumu-wa-timeline]');
+    if (!timeline) return;
+
+    const items = Array.from(timeline.querySelectorAll('.kumu-wa-item'));
+    if (!items.length) return;
+
+    let guard = false;
+
+    items.forEach(item => {
+      item.addEventListener('toggle', () => {
+        if (guard || !item.open) return;
+
+        guard = true;
+        items.forEach(other => {
+          if (other !== item) other.open = false;
+        });
+        guard = false;
+      });
+    });
   }
 
   function updateCompleteButton(lesson) {
@@ -2651,11 +2692,11 @@
     const opened = openLessonFromHash({ noScroll: true });
 
     if (!opened && state.lessons.length) {
-      const lastLessonId = localStorage.getItem(LAST_LESSON_KEY) || '';
-      const hasLastLesson = findLesson(lastLessonId);
+      const introLessonId = 'km-kumulipo';
+      const hasIntroLesson = findLesson(introLessonId);
 
-      if (hasLastLesson) {
-        renderLesson(lastLessonId, { noScroll: true });
+      if (hasIntroLesson) {
+        renderLesson(introLessonId, { noScroll: true });
       } else {
         renderLesson(state.lessons[0].id, { noScroll: true });
       }
