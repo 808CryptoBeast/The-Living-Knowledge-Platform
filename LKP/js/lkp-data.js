@@ -78,6 +78,32 @@ const CULTURALVERSE_DATA = {
 <h4>Wā 1: The First Life — Koʻa</h4>
 <p>The first wā opens in the deepest pō (darkness). The first paired living beings introduced are the <strong>koʻa</strong> (coral, the coral polyp) as the male form, paired with its female counterpart. From this single pairing, an unfolding cascade of life begins — each wā introducing new creatures, always in pairs, always building on what came before. The sea is the womb. Darkness is not absence — it is potential.</p>
 
+<h4>16 Wā Bilingual Companion (ʻŌlelo Hawaiʻi + English)</h4>
+<p>This companion gives a concise bilingual learning line for each wā so learners can study the sequence in both Hawaiian framing and English meaning. These are teaching lines and thematic aids, not a replacement for full chant recitation traditions.</p>
+
+<ul>
+<li><strong>Wā 1:</strong> <em>"Hānau ka koʻa i ka pō"</em> · Coral life is born in deep darkness.</li>
+<li><strong>Wā 2:</strong> <em>"Hānau nā mea o ke kai"</em> · Sea beings multiply and diversify.</li>
+<li><strong>Wā 3:</strong> <em>"Ulu nā limu o ke kai"</em> · Marine plants and algae establish life webs.</li>
+<li><strong>Wā 4:</strong> <em>"Pili nā mea liʻiliʻi"</em> · Small and creeping life forms connect ecological layers.</li>
+<li><strong>Wā 5:</strong> <em>"Nui nā iʻa o ke kai"</em> · Larger marine beings emerge in patterned pairings.</li>
+<li><strong>Wā 6:</strong> <em>"Lele nā manu kai"</em> · Sea birds and boundary-crossing life move between realms.</li>
+<li><strong>Wā 7:</strong> <em>"Ulu nā mea kanu o ka ʻāina"</em> · Land plants stabilize terrestrial ecosystems.</li>
+<li><strong>Wā 8:</strong> <em>"Hele nā holoholona o ka ʻāina"</em> · Land animals take their place in living relation.</li>
+<li><strong>Wā 9:</strong> <em>"Huli ka pō i ke ao"</em> · Darkness turns toward light.</li>
+<li><strong>Wā 10:</strong> <em>"Puka nā kūpuna akua"</em> · Ancestral divine genealogies come forward.</li>
+<li><strong>Wā 11:</strong> <em>"Paʻa nā hanauna kiʻekiʻe"</em> · High ancestral lines are ordered and secured.</li>
+<li><strong>Wā 12:</strong> <em>"Pili nā aliʻi i ke kumu"</em> · Chiefly lines are tied to sacred origins.</li>
+<li><strong>Wā 13:</strong> <em>"Hānau ka moʻokūʻauhau kanaka"</em> · Human genealogy is born within cosmic continuity.</li>
+<li><strong>Wā 14:</strong> <em>"Hoʻonui ʻia nā hanauna"</em> · Descendant lines expand through kinship.</li>
+<li><strong>Wā 15:</strong> <em>"Kau ʻia ke kuleana"</em> · Responsibility is placed upon lineage.</li>
+<li><strong>Wā 16:</strong> <em>"Ao kanaka, mālama honua"</em> · In the human realm of light, stewardship is the charge.</li>
+</ul>
+
+<compare left="ʻŌlelo Focus" right="English Focus">
+The Hawaiian lines center relationship, emergence, and genealogy as lived process. || The English lines provide an access lens for study, while preserving the chant's Hawaiian epistemology and sacred authority.
+</compare>
+
 <h4>Why This Matters</h4>
 <callout>The Kumulipo is not mythology in the dismissive Western sense. It is a sophisticated cosmological and genealogical system that encodes the Hawaiian understanding of the universe — that all life is related, that humans emerge from the same creative process as coral and fish and stars, and that the chiefs who govern carry the responsibility of that entire lineage within their bodies.</callout>
 `

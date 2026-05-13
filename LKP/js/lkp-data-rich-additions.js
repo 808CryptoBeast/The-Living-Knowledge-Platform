@@ -206,12 +206,12 @@
 
   const ENRICHMENTS = {
     'km-kumulipo': {
-      mana: 15,
-      xp: 40,
+      mana: 18,
+      xp: 48,
       sceneType: 'creation',
-      concepts: ['Pō', 'Ao', 'Koʻa', 'Genealogy', 'Ecology', 'Sacred darkness', 'Unfolding life'],
+      concepts: ['Pō', 'Ao', 'Koʻa', 'Moʻokūʻauhau', 'Kumulipo Wā 1–16', 'Sacred darkness', 'Emergence', 'Kinship ecology', 'Stewardship'],
       sources: SOURCE_SETS.kanakaCore,
-      related: ['km-wakea', 'ke-nun', 'bridge-darkness', 'bridge-genealogy-ecology'],
+      related: ['km-wakea', 'ke-nun', 'bridge-darkness', 'bridge-genealogy-ecology', 'br-cosmology-evolution', 'vd-nasadiya', 'dt-songlines-intro'],
       connections: [
         {
           cultureId: 'kemet',
@@ -226,9 +226,22 @@
           note: 'Use the bridge lens to compare pattern without collapsing difference.'
         },
         {
+          cultureId: 'bridge',
+          lessonId: 'br-cosmology-evolution',
+          axis: 'Epistemology',
+          note: 'Connect the 16 wā emergence sequence to bridge lessons on evolution and cosmology while preserving Hawaiian sovereignty.'
+        },
+        {
+          cultureId: 'vedic',
+          lessonId: 'vd-nasadiya',
+          axis: 'Philosophy',
+          note: 'Read dark generative beginning motifs in dialogue with Nasadiya questions about origin.'
+        },
+        {
           cultureId: 'dreamtime',
+          lessonId: 'dt-songlines-intro',
           axis: 'Future Thread',
-          note: 'Future expansion: link Songlines and place-memory cosmology.'
+          note: 'Relate chant-memory and place-memory as living cartographies of relation.'
         }
       ],
       kidVersion: {
@@ -307,6 +320,32 @@ Possible conversation points: staged emergence of complexity, oceanic origins of
 <activity>
 Bridge exercise: create a four-column notebook page titled Wā, Hawaiian phrase/theme, English meaning, and multi-level interpretation (ecological, genealogical, philosophical, scientific dialogue). Fill all 16 wā and then link at least three entries to bridge lessons without collapsing distinct traditions.
 </activity>
+
+<h4>Richer Wā Cluster Dataset (Study Layer)</h4>
+<p>Use this as a learning scaffold for deep study circles, annotation work, and chant dialogue sessions.</p>
+
+<twocol left="Pō Cluster (Wā 1–8)" right="Ao Cluster (Wā 9–16)">
+Primary movement: marine emergence, paired life forms, ecological relation, and staged complexity from sea toward land. Suggested annotations: oceanic birth, biodiversity emergence, relational duality, continuity of life systems.||Primary movement: transition to light, genealogical ordering, chiefly lines, and ethical kuleana. Suggested annotations: lineage and governance, memory as duty, human responsibility as stewardship.
+</twocol>
+
+<timeline>
+Wā 1–2::Earliest marine emergence and diversification in deep Pō
+Wā 3–4::Foundational growth systems and small life interrelations
+Wā 5–6::Larger sea beings and cross-boundary life (sea-sky links)
+Wā 7–8::Land plant and animal stabilization in relational order
+Wā 9–12::Transition to Ao and sacred genealogical structuring
+Wā 13–16::Human lineage, chiefly responsibility, and stewardship charge
+</timeline>
+
+<teacher-note>
+For each wā, ask learners to produce a bilingual annotation card with: (1) ʻŌlelo phrase, (2) direct English meaning, (3) ecological reading, (4) genealogical reading, (5) ethical implication for today. This creates a richer data archive for class-led interpretation.
+</teacher-note>
+
+<reflect>
+Which wā feels most urgent for the present ecological moment, and why?
+How does bilingual study change the meaning you receive from each wā?
+What changes when genealogy is understood as responsibility instead of status?
+</reflect>
 `
     },
 

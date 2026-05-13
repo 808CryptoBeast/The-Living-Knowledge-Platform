@@ -1338,6 +1338,268 @@ body.is-reading-mode .lkp-sidebar,
 body.is-reading-mode .lkp-footer,
 body.is-reading-mode .cv-sidebar-fab { display:none !important; }
 body.is-reading-mode .lkp-lessons-layout { display:block; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   KUMULIPO WĀ EXPANSION UI — SINGLE VIEW NAVIGATOR
+═══════════════════════════════════════════════════════════════════════════ */
+
+.kumulipo-wa-wrapper {
+  margin-top:3rem; padding-top:2rem; border-top:1px solid var(--border);
+}
+
+.kumulipo-wa-container {
+  width:100%; max-width:880px;
+}
+
+/* ── WĀ NAVIGATION LIST VIEW ── */
+.kumulipo-wa-nav {
+  display:flex; flex-direction:column; gap:1.5rem;
+}
+
+.kumulipo-wa-nav__intro {
+  margin-bottom:0.5rem;
+}
+.kumulipo-wa-nav__intro h4 {
+  font-size:1.3rem; font-weight:600; color:var(--text-1); margin:0;
+}
+
+.kumulipo-wa-nav__list {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+  gap:0.75rem;
+}
+
+.kumulipo-wa-nav-btn {
+  padding:0.9rem 1rem; border:1px solid var(--border); border-radius:6px;
+  background:rgba(5,12,32,0.5); cursor:pointer; transition:all 0.24s ease;
+  text-align:left; color:var(--text-1); font:inherit; appearance:none;
+  display:flex; align-items:center; gap:0.8rem;
+}
+.kumulipo-wa-nav-btn:hover {
+  border-color:rgba(240,201,106,0.4); background:rgba(5,12,32,0.7);
+  box-shadow:0 4px 12px rgba(240,201,106,0.12);
+}
+.kumulipo-wa-nav-btn:focus {
+  outline:2px solid var(--lkp-gold); outline-offset:2px;
+}
+
+.kumulipo-wa-nav-num {
+  font-family:var(--font-mono); font-size:1.4rem; font-weight:900;
+  color:var(--lkp-gold); opacity:0.7; min-width:42px; text-align:center;
+}
+
+.kumulipo-wa-nav-text {
+  flex:1; display:flex; flex-direction:column; gap:0.2rem;
+}
+
+.kumulipo-wa-nav-hawaiian {
+  font-size:0.95rem; font-weight:600; color:var(--text-1);
+  font-family:var(--font-serif);
+}
+
+.kumulipo-wa-nav-english {
+  font-size:0.8rem; color:var(--text-3);
+  font-family:var(--font-body);
+}
+
+/* ── WĀ SINGLE VIEW ── */
+.kumulipo-wa-single {
+  display:flex; flex-direction:column; gap:2rem;
+  animation:waViewReveal 0.4s ease forwards;
+}
+
+@keyframes waViewReveal {
+  0%{opacity:0;transform:translateY(12px)}
+  100%{opacity:1;transform:translateY(0)}
+}
+
+.kumulipo-wa-single__header {
+  display:flex; flex-direction:column; gap:1rem;
+}
+
+.kumulipo-wa-single__cluster {
+  display:flex; align-items:center; gap:1rem; font-size:0.9rem;
+}
+
+.kumulipo-wa-cluster-badge {
+  display:inline-block; padding:6px 12px; border-radius:999px;
+  background:var(--active-mid); border:1px solid var(--active-border);
+  color:var(--lkp-gold); font-weight:600; text-transform:uppercase;
+  letter-spacing:0.05em; font-size:0.75rem;
+}
+
+.kumulipo-wa-progress {
+  color:var(--text-3); font-size:0.85rem; font-family:var(--font-mono);
+}
+
+.kumulipo-wa-single__titles {
+  display:flex; flex-direction:column; gap:0.5rem;
+}
+
+.kumulipo-wa-single__hawaiian {
+  font-size:2rem; font-weight:700; color:var(--text-1);
+  font-family:var(--font-serif); margin:0;
+}
+
+.kumulipo-wa-single__english {
+  font-size:1.3rem; color:var(--text-2);
+  font-family:var(--font-body); margin:0; font-weight:500;
+}
+
+/* ── WĀ SINGLE CONTENT ── */
+.kumulipo-wa-single__content {
+  display:grid; grid-template-columns:1fr; gap:1.8rem;
+}
+
+.kumulipo-wa-phrase-block,
+.kumulipo-wa-translation-block,
+.kumulipo-wa-lens-block,
+.kumulipo-wa-concepts-block,
+.kumulipo-wa-related-block {
+  display:flex; flex-direction:column; gap:0.6rem;
+}
+
+.kumulipo-wa-phrase-label,
+.kumulipo-wa-translation-label,
+.kumulipo-wa-lens-label,
+.kumulipo-wa-concepts-label,
+.kumulipo-wa-related-label {
+  display:block; font-size:0.9rem; font-weight:700; color:var(--lkp-gold);
+  text-transform:uppercase; letter-spacing:0.03em;
+}
+
+.kumulipo-wa-phrase-text,
+.kumulipo-wa-translation-text,
+.kumulipo-wa-theme,
+.kumulipo-wa-english-lens {
+  margin:0; font-size:1rem; color:var(--text-1); line-height:1.7;
+}
+
+.kumulipo-wa-phrase-text {
+  font-style:italic; font-family:var(--font-serif); font-size:1.05rem;
+  padding:1rem 1.2rem; background:rgba(60,179,113,0.08);
+  border-left:4px solid var(--lkp-green); border-radius:4px;
+}
+
+.kumulipo-wa-translation-text {
+  padding:1rem 1.2rem; background:rgba(240,201,106,0.08);
+  border-left:4px solid var(--lkp-gold); border-radius:4px;
+}
+
+.kumulipo-wa-theme,
+.kumulipo-wa-english-lens {
+  color:var(--text-2); font-size:0.97rem; line-height:1.7;
+}
+
+/* ── CONCEPT TAGS ── */
+.kumulipo-wa-concept-tags {
+  display:flex; flex-wrap:wrap; gap:0.6rem;
+}
+
+.kumulipo-wa-tag {
+  display:inline-block; padding:6px 12px; font-size:0.8rem;
+  background:rgba(143,160,255,0.14); border:1px solid rgba(143,160,255,0.32);
+  border-radius:6px; color:var(--lkp-violet); font-weight:500;
+  transition:all 0.2s ease;
+}
+.kumulipo-wa-tag:hover {
+  background:rgba(143,160,255,0.22); border-color:rgba(143,160,255,0.5);
+}
+
+/* ── RELATED LESSONS ── */
+.kumulipo-wa-related-list {
+  list-style:none; margin:0; padding:0;
+  display:flex; flex-wrap:wrap; gap:0.8rem;
+}
+
+.kumulipo-wa-related-link {
+  display:inline-block; padding:7px 14px; font-size:0.85rem;
+  background:rgba(84,198,238,0.12); border:1px solid rgba(84,198,238,0.32);
+  border-radius:6px; color:var(--lkp-cyan); text-decoration:none;
+  transition:all 0.2s ease; cursor:pointer; font-weight:500;
+}
+.kumulipo-wa-related-link:hover {
+  background:rgba(84,198,238,0.22); border-color:rgba(84,198,238,0.6);
+  box-shadow:0 2px 8px rgba(84,198,238,0.2);
+}
+
+/* ── SINGLE VIEW NAVIGATION ── */
+.kumulipo-wa-single__nav {
+  display:grid; grid-template-columns:1fr auto 1fr; gap:1rem; margin-top:2rem;
+  padding-top:2rem; border-top:1px solid var(--border);
+  align-items:center;
+}
+
+.kumulipo-wa-single-nav-btn,
+.kumulipo-wa-single-nav-back {
+  padding:0.7rem 1.2rem; border:1px solid var(--border); border-radius:6px;
+  background:rgba(5,12,32,0.6); cursor:pointer; transition:all 0.24s ease;
+  color:var(--text-1); font:inherit; appearance:none;
+  display:inline-flex; align-items:center; gap:0.6rem;
+  font-weight:500;
+}
+
+.kumulipo-wa-single-nav-btn:hover,
+.kumulipo-wa-single-nav-back:hover {
+  border-color:rgba(240,201,106,0.4); background:rgba(5,12,32,0.8);
+  box-shadow:0 2px 8px rgba(240,201,106,0.12);
+}
+
+.kumulipo-wa-single-nav-btn:focus,
+.kumulipo-wa-single-nav-back:focus {
+  outline:2px solid var(--lkp-gold); outline-offset:2px;
+}
+
+.kumulipo-wa-single-nav-prev {
+  justify-content:flex-start;
+}
+
+.kumulipo-wa-single-nav-next {
+  justify-content:flex-end;
+}
+
+.kumulipo-wa-single-nav-back {
+  background:transparent; border-color:var(--text-3);
+  color:var(--text-2); font-size:0.9rem;
+}
+.kumulipo-wa-single-nav-back:hover {
+  border-color:var(--lkp-gold); color:var(--lkp-gold);
+  background:rgba(240,201,106,0.08);
+}
+
+.kumulipo-wa-single-nav-btn i,
+.kumulipo-wa-single-nav-back i {
+  font-size:0.95rem;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width:768px) {
+  .kumulipo-wa-nav__list {
+    grid-template-columns:1fr;
+  }
+
+  .kumulipo-wa-single__hawaiian {
+    font-size:1.6rem;
+  }
+
+  .kumulipo-wa-single__english {
+    font-size:1.1rem;
+  }
+
+  .kumulipo-wa-single__nav {
+    grid-template-columns:1fr;
+    gap:0.8rem;
+  }
+
+  .kumulipo-wa-single-nav-btn,
+  .kumulipo-wa-single-nav-back {
+    width:100%; justify-content:center;
+  }
+
+  .kumulipo-wa-phrase-text,
+  .kumulipo-wa-translation-text {
+    padding:0.8rem 1rem;
+  }
+}
 body.is-reading-mode .lkp-lesson-main { padding:clamp(14px,4vw,50px); }
 body.is-reading-mode .cv-lesson-article { width:min(880px,100%); }
 

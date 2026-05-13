@@ -163,11 +163,6 @@
       pos: 'center center',
       credit: 'Aloha & Maʻat — Ethics of Right Relationship'
     },
-    'bridge-genealogy-ecology': {
-      url: 'assets/images/bridge-genealogy-ecology.png',
-      pos: 'center center',
-      credit: 'Genealogy as Ecology — When Family Trees Include the Living World'
-    },
     'bridge-navigation-astronomy': {
       url: 'assets/images/bridge-navigation-astronomy.png',
       pos: 'center center',
@@ -212,11 +207,6 @@
       url: 'assets/images/dreamtime-culture.png',
       pos: 'center center',
       credit: 'Dreamtime knowledge system'
-    },
-    default: {
-      url: 'assets/images/default-culture.png',
-      pos: 'center center',
-      credit: 'Living Knowledge Platform'
     }
   };
 
@@ -2153,6 +2143,13 @@
     renderLessonNav();
     renderMobileScrubber();
     renderRelatedLessons(lesson);
+    
+    // Render Kumulipo Wā expansion UI if this is the km-kumulipo lesson
+    if (lesson.id === 'km-kumulipo' && window.KUMULIPO_WA_UI) {
+      const actionStrip = document.getElementById('lessonActionStrip');
+      window.KUMULIPO_WA_UI.insert(actionStrip, state.mode);
+    }
+    
     renderLessonTree();
     updateCompleteButton(lesson);
     updateUrlHash(lesson.id);
