@@ -849,51 +849,7 @@ function skyPos(azDeg, altDeg, r = 68) {
 // GALAXY DEFINITIONS
 // ─────────────────────────────────────────────────────────────────────────────
 
-const GALAXY_DEFS = [
-  {
-    id: "kanaka",
-    name: "K\u0101naka Maoli",
-    type: "spiral",
-    color: 0x3cb371,
-    hex: "#3cb371",
-    assetKey: "kanaka",
-    az: 54, alt: 44, r: 72,
-    particleCount: IS_MOBILE ? 420 : 1400,
-    concepts: [
-      { id: "kumulipo",  label: "Kumulipo",       lessonId: "km-kumulipo",   color: 0x5eeebb, hex: "#5eeebb", az: 48, alt: 56, r: 68, major: true  },
-      { id: "aloha",     label: "Aloha",           lessonId: "km-kumulipo",   color: 0x80ffbe, hex: "#80ffbe", az: 34, alt: 46, r: 70, major: true  },
-      { id: "wayfinding",label: "Wayfinding",      lessonId: "km-starcompass",color: 0x44ddaa, hex: "#44ddaa", az: 66, alt: 40, r: 71, major: false },
-      { id: "hokuleaa",  label: "H\u014dk\u016ble\u02bca", lessonId: "km-hokuleaa",  color: 0x5ce8c4, hex: "#5ce8c4", az: 42, alt: 62, r: 67, major: false },
-      { id: "ahupuaa",   label: "Ahupu\u02bca\u02bca",     lessonId: "km-ahupuaa",   color: 0x3cb371, hex: "#3cb371", az: 78, alt: 32, r: 73, major: false },
-      { id: "kalo",      label: "Kalo",            lessonId: "km-loikalo",    color: 0x44cc88, hex: "#44cc88", az: 88, alt: 26, r: 74, major: false },
-      { id: "mana",      label: "Mana",            lessonId: "km-kumulipo",   color: 0x54c6ee, hex: "#54c6ee", az: 58, alt: 50, r: 69, major: false },
-      { id: "pono",      label: "Pono",            lessonId: "km-kumulipo",   color: 0x3cb371, hex: "#3cb371", az: 28, alt: 38, r: 72, major: false },
-      { id: "olelo",     label: "\u02bco\u0301lelo Hawai\u02bbi", lessonId: "km-olelo", color: 0x44ddaa, hex: "#44ddaa", az: 70, alt: 48, r: 70, major: false },
-      { id: "laau",      label: "La\u02beau Lapa\u02beau", lessonId: "km-laau",      color: 0x44cc66, hex: "#44cc66", az: 96, alt: 20, r: 74, major: false }
-    ]
-  },
-  {
-    id: "kemet",
-    name: "Kemet",
-    type: "elliptical",
-    color: 0xf0c96a,
-    hex: "#f0c96a",
-    assetKey: "kemet",
-    az: 158, alt: 42, r: 72,
-    particleCount: IS_MOBILE ? 360 : 1200,
-    concepts: [
-      { id: "maat",       label: "Ma\u02beat",      lessonId: "ke-maat",        color: 0xf0c96a, hex: "#f0c96a", az: 152, alt: 54, r: 68, major: true  },
-      { id: "nun",        label: "Nun",             lessonId: "ke-nun",         color: 0x6699ff, hex: "#6699ff", az: 130, alt: 62, r: 67, major: true  },
-      { id: "ennead",     label: "Ennead",          lessonId: "ke-ennead",      color: 0xf0c96a, hex: "#f0c96a", az: 170, alt: 38, r: 71, major: false },
-      { id: "ptah",       label: "Ptah",            lessonId: "ke-ptah",        color: 0xd4ae5a, hex: "#d4ae5a", az: 142, alt: 34, r: 73, major: false },
-      { id: "medunetjer", label: "Medu Netjer",     lessonId: "ke-medunetjer",  color: 0xf0c96a, hex: "#f0c96a", az: 186, alt: 26, r: 74, major: false },
-      { id: "duat",       label: "Duat",            lessonId: "ke-maat",        color: 0x9272f5, hex: "#9272f5", az: 162, alt: 20, r: 74, major: false },
-      { id: "imhotep",    label: "Imhotep",         lessonId: "ke-medicine",    color: 0xd4ae5a, hex: "#d4ae5a", az: 120, alt: 42, r: 71, major: false },
-      { id: "kabakh",     label: "Ka \u00b7 Ba \u00b7 Akh", lessonId: "ke-maat", color: 0xf0c96a, hex: "#f0c96a", az: 198, alt: 30, r: 72, major: false },
-      { id: "isfet",      label: "Isfet",           lessonId: "ke-maat",        color: 0xe06868, hex: "#e06868", az: 174, alt: 16, r: 76, major: false }
-    ]
-  }
-];
+let GALAXY_DEFS = [];
 
 const BRIDGE_CONCEPTS = [
   { id: "br-creation",  label: "Creation from P\u014d",  lessonId: "bridge-darkness",   color: 0x8899ff, hex: "#8899ff", az: 350, alt: 72, r: 62, major: true  },
@@ -902,36 +858,40 @@ const BRIDGE_CONCEPTS = [
   { id: "br-star",      label: "Star Knowledge",          lessonId: "bridge-darkness",    color: 0x7b88ff, hex: "#7b88ff", az: 355, alt: 48, r: 65, major: false }
 ];
 
-const CONNECTIONS = [
-  ["kumulipo",  "aloha",        0.9],
-  ["kumulipo",  "hokuleaa",     0.7],
-  ["aloha",     "pono",         0.9],
-  ["aloha",     "mana",         0.7],
-  ["wayfinding","hokuleaa",     0.9],
-  ["ahupuaa",   "kalo",         0.9],
-  ["ahupuaa",   "laau",         0.6],
-  ["maat",      "ennead",       0.8],
-  ["maat",      "ptah",         0.7],
-  ["maat",      "isfet",        0.6],
-  ["nun",       "ennead",       0.8],
-  ["imhotep",   "medunetjer",   0.6],
-  ["duat",      "kabakh",       0.8],
-  ["kumulipo",  "br-creation",  0.5],
-  ["nun",       "br-creation",  0.6],
-  ["aloha",     "br-alohamaat", 0.7],
-  ["maat",      "br-alohamaat", 0.7],
-  ["hokuleaa",  "br-star",      0.5],
-  ["br-creation","br-pairs",    0.8]
+let CONNECTIONS = [
+  // Dynamically populated in init() from enrichment data
 ];
 
-const ALL_CONCEPTS = [
-  ...GALAXY_DEFS.flatMap((g) =>
-    g.concepts.map((c) => ({ ...c, culture: g.id, galaxyId: g.id }))
-  ),
-  ...BRIDGE_CONCEPTS.map((c) => ({ ...c, culture: "bridge", galaxyId: "bridge" }))
-];
+function buildIntraCultureConnections(galaxies) {
+  const links = [];
 
-const CONCEPT_MAP = new Map(ALL_CONCEPTS.map((c) => [c.id, c]));
+  galaxies.forEach((g) => {
+    const concepts = Array.isArray(g.concepts) ? g.concepts : [];
+    if (concepts.length < 2) return;
+
+    // Chain all lessons in a culture so every node has a same-culture path.
+    for (let i = 0; i < concepts.length - 1; i++) {
+      links.push({ aId: concepts[i].id, bId: concepts[i + 1].id, str: 0.72, type: "intra", cultureId: g.id });
+    }
+
+    // Close the loop for a galaxy-like ring feeling when there are enough nodes.
+    if (concepts.length > 2) {
+      links.push({ aId: concepts[concepts.length - 1].id, bId: concepts[0].id, str: 0.64, type: "intra", cultureId: g.id });
+    }
+
+    // Reinforce a culture hub from the major lesson node to nearby lessons.
+    const hub = concepts.find((c) => c.major) || concepts[0];
+    concepts.forEach((c, idx) => {
+      if (c.id === hub.id || idx % 2 !== 0) return;
+      links.push({ aId: hub.id, bId: c.id, str: 0.50, type: "intra", cultureId: g.id });
+    });
+  });
+
+  return links;
+}
+
+let ALL_CONCEPTS = [];
+let CONCEPT_MAP = new Map();
 
 // ─────────────────────────────────────────────────────────────────────────────
 // BACKGROUND STARFIELD
@@ -1296,12 +1256,27 @@ function makeAllConceptNodes() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const flowItems = [];
+const constellationLines = [];
 
 function makeConstellations() {
-  CONNECTIONS.forEach(([aId, bId, str]) => {
+  let foundConnections = 0;
+  let missingConnections = 0;
+
+  CONNECTIONS.forEach((conn) => {
+    const aId = conn.aId;
+    const bId = conn.bId;
+    const str = conn.str ?? 0.6;
+    const isIntra = conn.type === "intra";
+
     const ca = CONCEPT_MAP.get(aId);
     const cb = CONCEPT_MAP.get(bId);
-    if (!ca || !cb) return;
+    
+    if (!ca || !cb) {
+      missingConnections++;
+      return;
+    }
+    
+    foundConnections++;
 
     const pA  = skyPos(ca.az, ca.alt, ca.r);
     const pB  = skyPos(cb.az, cb.alt, cb.r);
@@ -1309,35 +1284,65 @@ function makeConstellations() {
     mid.add(mid.clone().normalize().multiplyScalar(mid.length() * 0.06));
 
     const curve = new THREE.CatmullRomCurve3([pA, mid, pB]);
-    const colAB = new THREE.Color(ca.color).lerp(new THREE.Color(cb.color), 0.5);
+    const colA = new THREE.Color(ca.color);
+    const colB = new THREE.Color(cb.color);
+    const colAB = isIntra ? colA.clone() : colA.clone().lerp(colB, 0.5);
 
-    skyDome.add(new THREE.Line(
+    const baseOpacity = isIntra
+      ? (str > 0.7 ? str * (IS_MOBILE ? 0.22 : 0.30) : str * (IS_MOBILE ? 0.16 : 0.22))
+      : (str > 0.7 ? str * (IS_MOBILE ? 0.16 : 0.24) : str * (IS_MOBILE ? 0.10 : 0.14));
+
+    const dormantOpacity = isIntra
+      ? (IS_MOBILE ? 0.035 : 0.022)
+      : (IS_MOBILE ? 0.028 : 0.016);
+
+    const lineMat = new THREE.LineBasicMaterial({
+      color: colAB,
+      transparent: true,
+      opacity: dormantOpacity,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending
+    });
+
+    const line = new THREE.Line(
       new THREE.BufferGeometry().setFromPoints(curve.getPoints(IS_MOBILE ? 24 : 40)),
-      new THREE.LineBasicMaterial({
-        color: colAB, transparent: true,
-        opacity: str > 0.7 ? str * (IS_MOBILE ? 0.16 : 0.24) : str * (IS_MOBILE ? 0.10 : 0.14),
-        depthWrite: false, blending: THREE.AdditiveBlending
-      })
-    ));
+      lineMat
+    );
 
-    if (str >= 0.6 && !REDUCED_MOTION && !IS_MOBILE) {
+    skyDome.add(line);
+
+    constellationLines.push({
+      mat: lineMat,
+      baseOpacity,
+      dormantOpacity,
+      aId,
+      bId,
+      isIntra,
+      cultureId: conn.cultureId || null,
+      aGalaxyId: ca.galaxyId,
+      bGalaxyId: cb.galaxyId
+    });
+
+    if (str >= 0.5 && !REDUCED_MOTION && !IS_MOBILE) {
       const col2 = colAB;
       const R2 = Math.round(col2.r*255), G2 = Math.round(col2.g*255), B2 = Math.round(col2.b*255);
       const tex = makeGlowTex(R2, G2, B2, 0.96, 32);
-      const N2  = str >= 0.8 ? 4 : 2;
+      const N2  = str >= 0.8 ? 4 : isIntra ? 3 : 2;
 
       for (let i = 0; i < N2; i++) {
         const dot = new THREE.Sprite(new THREE.SpriteMaterial({
           map: tex, transparent: true, opacity: 0,
           depthWrite: false, blending: THREE.AdditiveBlending
         }));
-        dot.scale.setScalar(0.24);
+        dot.scale.setScalar(isIntra ? 0.26 : 0.24);
         dot.userData = { curve, t: i / N2, speed: 0.0014 + Math.random() * 0.0012, maxOp: 0.60 * str };
         skyDome.add(dot);
         flowItems.push(dot);
       }
     }
   });
+
+  console.log(`[LKP Constellations] Found ${foundConnections} connections, ${missingConnections} missing`);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1698,6 +1703,7 @@ let hoveredId    = null;
 let miniHoveredId = null;
 let mobileHoveredId = null;
 let activeGalaxyId = null;
+let selectedGalaxyId = null;
 
 const CULTURE_LABELS = { kanaka: "K\u0101naka Maoli", kemet: "Kemet", bridge: "The Bridge" };
 const CULTURE_COLORS = { kanaka: "#3cb371", kemet: "#f0c96a", bridge: "#7b88ff" };
@@ -1765,19 +1771,41 @@ function setMobilePointerFromEvent(e) {
 renderer.domElement.addEventListener("pointermove", setPointerFromEvent, { passive: true });
 renderer.domElement.addEventListener("pointerdown", setPointerFromEvent, { passive: true });
 
-renderer.domElement.addEventListener("click", () => {
-  if (!hoveredId) return;
-  const c = CONCEPT_MAP.get(hoveredId);
-  if (c?.lessonId) window.location.href = LESSON_URL + c.lessonId;
-});
-
 let lastTap      = 0;
+let lastClickedId = null;
 let zoomTarget   = null;
 let zoomStart    = null;
 let zoomProgress = 0;
 let miniZoomTarget = null;
 let miniZoomStart = null;
 let miniZoomProgress = 0;
+
+renderer.domElement.addEventListener("click", () => {
+  if (!hoveredId) return;
+  
+  const c = CONCEPT_MAP.get(hoveredId);
+  if (!c) return;
+
+  const now = performance.now();
+  const isDoubleClick = lastClickedId === hoveredId && (now - lastTap) < 400;
+  lastClickedId = hoveredId;
+  lastTap = now;
+
+  // Find the galaxy this concept belongs to
+  const galaxy = GALAXY_DEFS.find(g => g.id === c.galaxyId);
+  if (!galaxy) return;
+
+  if (isDoubleClick && c.lessonId) {
+    // Double-click navigates to lesson
+    window.location.href = LESSON_URL + c.lessonId;
+  } else {
+    // Single-click zooms to the galaxy
+    const galaxyPos = skyPos(galaxy.az, galaxy.alt, galaxy.r);
+    startZoomTo(galaxyPos);
+    selectedGalaxyId = galaxy.id;
+    activeGalaxyId = galaxy.id;
+  }
+});
 
 function startZoomTo(pos) {
   if (!pos) return;
@@ -1839,6 +1867,8 @@ renderer.domElement.addEventListener("dblclick", () => {
     const c = CONCEPT_MAP.get(hoveredId);
     if (c) startZoomTo(skyPos(c.az, c.alt, c.r));
   } else {
+    selectedGalaxyId = null;
+    activeGalaxyId = null;
     zoomTarget   = getOverviewCameraPos();
     zoomStart    = camera.position.clone();
     zoomProgress = 0;
@@ -1945,7 +1975,6 @@ function updateTooltip() {
   const hit  = hits.length ? hits[0].object : null;
 
   hoveredId    = hit ? hit.userData.conceptId : null;
-  activeGalaxyId = hoveredId ? CONCEPT_MAP.get(hoveredId)?.galaxyId ?? null : null;
 
   renderer.domElement.style.cursor = hoveredId ? "pointer" : "default";
 
@@ -2015,6 +2044,10 @@ function onFrame() {
   const t   = clock.getElapsedTime();
   const now = performance.now();
   const spd = REDUCED_MOTION ? 0.14 : 1.0;
+  const hoveredGalaxyId = hoveredId ? (CONCEPT_MAP.get(hoveredId)?.galaxyId || null) : null;
+  const focusedGalaxyId = selectedGalaxyId || hoveredGalaxyId;
+
+  activeGalaxyId = focusedGalaxyId;
 
   compassGrp.rotation.y = -t * 0.038 * spd;
 
@@ -2026,16 +2059,42 @@ function onFrame() {
   }
 
   galaxyObjects.forEach((obj, gId) => {
-    const isActive = activeGalaxyId === gId;
+    const isActive = focusedGalaxyId === gId;
     const pulse = REDUCED_MOTION ? 0 : Math.sin(t * 0.9 + (gId === "kanaka" ? 0 : Math.PI)) * (IS_MOBILE ? 0.035 : 0.06);
+    
+    // Breathing effect: subtle scale expansion/contraction
+    const breathe = REDUCED_MOTION ? 0 : Math.sin(t * 0.4) * 0.015;
 
     obj.coreGlow.material.opacity  = THREE.MathUtils.lerp(obj.coreGlow.material.opacity,  isActive ? 0.88 : 0.70 + pulse,      0.06);
     obj.outerGlow.material.opacity = THREE.MathUtils.lerp(obj.outerGlow.material.opacity, isActive ? 0.54 : 0.38 + pulse * 0.5, 0.05);
     obj.mat.opacity                = THREE.MathUtils.lerp(obj.mat.opacity,                isActive ? 0.70 : 0.52,               0.04);
+    
+    // Galaxy core breathing
+    obj.grp.scale.setScalar(1 + breathe);
 
     if (!REDUCED_MOTION) {
       obj.grp.rotation.z += (IS_MOBILE ? 0.00014 : 0.00025) * spd * (gId === "kanaka" ? 1 : -1);
     }
+  });
+
+  constellationLines.forEach((ln) => {
+    let targetOpacity = ln.dormantOpacity;
+    const touchesHover = hoveredId && (ln.aId === hoveredId || ln.bId === hoveredId);
+
+    if (focusedGalaxyId) {
+      if (ln.isIntra) {
+        targetOpacity = ln.cultureId === focusedGalaxyId ? ln.baseOpacity : ln.dormantOpacity * 0.6;
+      } else {
+        const touchesFocused = ln.aGalaxyId === focusedGalaxyId || ln.bGalaxyId === focusedGalaxyId;
+        targetOpacity = touchesFocused ? ln.baseOpacity * 0.74 : ln.dormantOpacity * 0.55;
+      }
+    }
+
+    if (touchesHover) {
+      targetOpacity = Math.max(targetOpacity, ln.baseOpacity * 1.04);
+    }
+
+    ln.mat.opacity = THREE.MathUtils.lerp(ln.mat.opacity, targetOpacity, 0.11);
   });
 
   conceptNodes.forEach((cn, idx) => {
@@ -2046,17 +2105,44 @@ function onFrame() {
 
     const isHov  = hoveredId === cn.concept.id;
     const pulse  = REDUCED_MOTION ? 0 : Math.sin(t * 1.5 + cn.phase) * (IS_MOBILE ? 0.08 : 0.13);
+    
+    // Count incoming connections for this concept
+    let connectionCount = 0;
+    CONNECTIONS.forEach((conn) => {
+      const aId = conn.aId;
+      const bId = conn.bId;
+      if (aId === cn.concept.id || bId === cn.concept.id) connectionCount++;
+    });
+    const connectionGlow = (connectionCount / Math.max(1, CONNECTIONS.length)) * 0.15;
 
-    cn.crystal.material.emissiveIntensity = THREE.MathUtils.lerp(cn.crystal.material.emissiveIntensity, isHov ? 0.96 : cn.concept.major ? 0.62 : 0.50, 0.12);
-    cn.glow.material.opacity = THREE.MathUtils.lerp(cn.glow.material.opacity, cn.baseOpacity + pulse + (isHov ? 0.24 : 0), 0.10);
+    cn.crystal.material.emissiveIntensity = THREE.MathUtils.lerp(
+      cn.crystal.material.emissiveIntensity,
+      isHov ? 0.96 : cn.concept.major ? 0.62 : 0.50,
+      0.12
+    );
+    cn.glow.material.opacity = THREE.MathUtils.lerp(
+      cn.glow.material.opacity,
+      cn.baseOpacity + pulse + connectionGlow + (isHov ? 0.24 : 0),
+      0.10
+    );
     cn.grp.scale.setScalar(THREE.MathUtils.lerp(cn.grp.scale.x, isHov ? 1.30 : 1.0, 0.12));
+    
+    // Subtle breathing/pulsing based on concept importance
+    const breathe = REDUCED_MOTION ? 0 : Math.sin(t * 0.5 + idx) * 0.02;
+    cn.grp.scale.multiplyScalar(1 + breathe * 0.1);
   });
 
   flowItems.forEach((dot) => {
     dot.userData.t = (dot.userData.t + dot.userData.speed) % 1;
     dot.position.copy(dot.userData.curve.getPoint(dot.userData.t));
     const ft = dot.userData.t;
-    dot.material.opacity = dot.userData.maxOp * (ft < 0.08 ? ft / 0.08 : ft > 0.90 ? (1 - ft) / 0.10 : 1);
+    
+    // Pulsing along the connection line
+    const linePulse = Math.sin(t * 2.2 + dot.userData.t * 6) * 0.3;
+    const opacityBase = dot.userData.maxOp * (ft < 0.08 ? ft / 0.08 : ft > 0.90 ? (1 - ft) / 0.10 : 1);
+    
+    dot.material.opacity = opacityBase * (1 + linePulse * 0.5);
+    dot.scale.setScalar(1 + Math.sin(t * 1.8 + ft * 4) * 0.15); // Pulsing scale
   });
 
   if (iwaSpr) {
@@ -2202,6 +2288,52 @@ async function init() {
   armLoaderFailsafe();
 
   try {
+    // Generate galaxy definitions dynamically from CULTURALVERSE_DATA
+    if (window.LKP_GALAXY_BUILDER && window.CULTURALVERSE_DATA) {
+      GALAXY_DEFS = window.LKP_GALAXY_BUILDER.buildGalaxyDefsFromData(
+        window.CULTURALVERSE_DATA.cultures,
+        IS_MOBILE
+      );
+
+      const BRIDGE_CONCEPTS_DEFS = window.LKP_GALAXY_BUILDER.buildBridgeConstellationFromData(
+        window.CULTURALVERSE_DATA.cultures,
+        IS_MOBILE
+      );
+
+      BRIDGE_CONCEPTS.length = 0;
+      BRIDGE_CONCEPTS.push(...BRIDGE_CONCEPTS_DEFS);
+
+      ALL_CONCEPTS = [
+        ...GALAXY_DEFS.flatMap((g) =>
+          g.concepts.map((c) => ({ ...c, culture: g.id, galaxyId: g.id }))
+        ),
+        ...BRIDGE_CONCEPTS.map((c) => ({ ...c, culture: "bridge", galaxyId: "bridge" }))
+      ];
+
+      CONCEPT_MAP = new Map(ALL_CONCEPTS.map((c) => [c.id, c]));
+
+      // Generate dynamic connections from enrichment data
+      CONNECTIONS.length = 0;
+
+      const intraConnections = buildIntraCultureConnections(GALAXY_DEFS);
+      const crossConnectionsRaw = window.LKP_GALAXY_BUILDER.buildConnectionsFromData
+        ? window.LKP_GALAXY_BUILDER.buildConnectionsFromData(window.CULTURALVERSE_DATA.cultures)
+        : [];
+
+      const crossConnections = crossConnectionsRaw.map(([aId, bId, str]) => ({
+        aId,
+        bId,
+        str,
+        type: "cross"
+      }));
+
+      CONNECTIONS.push(...intraConnections, ...crossConnections);
+      console.log('[LKP Three] Generated', intraConnections.length, 'intra-culture and', crossConnections.length, 'cross-culture connections');
+
+      console.log('[LKP Three] Generated', GALAXY_DEFS.length, 'galaxies from CULTURALVERSE_DATA');
+    } else {
+      console.warn('[LKP Three] Galaxy builder or data unavailable; using legacy approach');
+    }
     await preloadImages();
 
     makeLights();

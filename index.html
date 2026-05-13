@@ -94,7 +94,7 @@
 
       document.documentElement.dataset.experience = isMobile ? 'mobile' : 'desktop';
 
-      function loadScript(src, options) {
+      window.LKP_LOAD_SCRIPT = function loadScript(src, options) {
         return new Promise(function (resolve, reject) {
           var s = document.createElement('script');
 
@@ -114,7 +114,7 @@
 
           document.head.appendChild(s);
         });
-      }
+      };
 
       window.LKP_LOAD_SHARED_DATA = function () {
         if (
@@ -124,7 +124,7 @@
           return Promise.resolve(window.CULTURALVERSE_DATA);
         }
 
-        return loadScript('LKP/js/lkp-data.js').then(function () {
+        return window.LKP_LOAD_SCRIPT('LKP/js/lkp-data.js').then(function () {
           if (
             typeof CULTURALVERSE_DATA !== 'undefined' &&
             CULTURALVERSE_DATA &&
@@ -147,7 +147,7 @@
       if (isMobile) {
         window.LKP_LOAD_SHARED_DATA()
           .then(function () {
-            return loadScript('LKP/js/lkp-mobile.js');
+            return window.LKP_LOAD_SCRIPT('LKP/js/lkp-mobile.js');
           })
           .catch(function (err) {
             console.error('[LKP] Mobile experience failed to load:', err);
@@ -170,6 +170,15 @@
     if (document.documentElement.dataset.experience === 'desktop') {
       window.LKP_LOAD_SHARED_DATA()
         .then(function () {
+          // Load enrichments (connections, metadata, etc.)
+          return window.LKP_LOAD_SCRIPT('LKP/js/lkp-data-rich-additions.js');
+        })
+        .then(function () {
+          // Load galaxy builder after enrichments are applied
+          return window.LKP_LOAD_SCRIPT('LKP/js/lkp-galaxy-builder.js');
+        })
+        .then(function () {
+          // Load Three.js app
           var s = document.createElement('script');
           s.type = 'module';
           s.src = 'LKP/js/lkp-three.js';
