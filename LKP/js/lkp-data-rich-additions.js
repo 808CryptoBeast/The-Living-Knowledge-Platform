@@ -122,7 +122,8 @@
       kidVersion: data.kidVersion || lesson.kidVersion || lesson.keikiVersion || undefined
     });
 
-    if (additions) {
+    // KM·01 structure is now authored directly in base data.
+    if (additions && id !== 'km-kumulipo') {
       appendContentOnce(lesson, marker, additions);
     }
   }

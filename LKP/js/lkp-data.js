@@ -27,6 +27,414 @@
        <concepts>Word · Word · Word</concepts>
 ═══════════════════════════════════════════════════════════════════ */
 
+const KUMULIPO_WA_1_LINES = [
+  'O ke au i kahuli wela ka honua',
+  'O ke au i kahuli lole ka lani',
+  'O ke au i kuka\'iaka ka la',
+  'E ho\'omalamalama i ka malama',
+  'O ke au i malamalama ka mahina',
+  'O ka lipolipo, o ka lipolipo',
+  'O ka lipolipo o ka la',
+  'O ka lipolipo o ka po'
+];
+
+const KUMULIPO_WA_1_TRANSLATIONS = [
+  'When the earth turned hot and transformed,',
+  'When the heavens turned and shifted,',
+  'When the sun was darkened in turning,',
+  'The moon was caused to shine forth,',
+  'When the moon became bright,',
+  'Deep darkness, layered darkness,',
+  'The dense darkness of day,',
+  'The dense darkness of night.'
+];
+
+const KUMULIPO_WA_2_LINES = [
+  'Hanau kama a ka Powehiwehi',
+  'Hanau ka i\'a, hanau ka Nai\'a i ke kai la holo',
+  'Hanau ka Mano, hanau ka Moano, i ke kai la holo',
+  'Hanau ke Aku, hanau ke \'Ahi i ke kai la holo',
+  'Hanau ka \'Ama\'ama, hanau ka \'Anae i ke kai la holo',
+  'Po--no'
+];
+
+const KUMULIPO_WA_2_TRANSLATIONS = [
+  'Born were the children of the profound deep darkness,',
+  'Born were the fishes, born the dolphin moving in the sea,',
+  'Born were the shark and the moano fish moving in the sea,',
+  'Born were the aku and the ahi moving in the sea,',
+  'Born were the amaama and the anae moving in the sea,',
+  'Darkness, then completion.'
+];
+
+const KUMULIPO_WA_3_LINES = [
+  'O kane ia, o ka wahine kela',
+  'Hanau ka Haha',
+  'Hanau ka Huhu he makua',
+  'Puka kana keiki he Huhulele, lele',
+  'Hanau manu ka \'aina',
+  'Hanau manu ke kai'
+];
+
+const KUMULIPO_WA_3_TRANSLATIONS = [
+  'This one is male, that one is female,',
+  'Born was the haha fish,',
+  'Born was the huhu as elder parent,',
+  'Its child emerged, the huhulele, leaping,',
+  'Bird life was born for the land,',
+  'Bird life was born for the sea.'
+];
+
+const KUMULIPO_WA_4_LINES = [
+  'E kukulu i ke \'ahi\'a a la\'a la',
+  'O kolo aku, o kolo mai',
+  'O ho\'ohua ka ohana o kolo',
+  'Hanau ka po ia honu kua nanaka',
+  'Hanau ka po ia mo\'onanea',
+  'Hanau ka ohana o Kolo i ka po'
+];
+
+const KUMULIPO_WA_4_TRANSLATIONS = [
+  'Raise up the young ohia growth,',
+  'Creeping forth, creeping back,',
+  'The creeping family multiplies,',
+  'Born in this darkness was the rough-backed turtle,',
+  'Born in this darkness was the smooth lizard form,',
+  'Born in darkness was the family of creeping beings.'
+];
+
+const KUMULIPO_WA_5_LINES = [
+  'O kuhele ke au ia Kapokanokano',
+  'O ka uli \'iliuli makamaka hou',
+  'O kama a pua\'a i hanau',
+  'Hanau ka pua\'a hiwahiwa i ke au',
+  'Hanau ka Mehe\'ula, he \'ula\'ula ia',
+  'Po--no'
+];
+
+const KUMULIPO_WA_5_TRANSLATIONS = [
+  'Flowed the current at Kapokanokano,',
+  'Deep dark blue appeared anew,',
+  'The offspring of pig-kind was born,',
+  'Born was the cherished black pig in that era,',
+  'Born was the reddish one, red in appearance,',
+  'Darkness, then completion.'
+];
+
+const KUMULIPO_WA_6_LINES = [
+  'O kupukupu kahili o Kua-ka-mano',
+  'Ka \'ai ana ka pi\'ipi\'i wai',
+  'Ka \'ai ana ka pi\'ipi\'i kai',
+  'Noho po\'opo\'o ka \'iole makua',
+  'He \'iole ko uka, he \'iole ko kai',
+  'Po--no'
+];
+
+const KUMULIPO_WA_6_TRANSLATIONS = [
+  'Sprouting plumes rose at Kua-ka-mano,',
+  'Feeding on the small freshwater snail,',
+  'Feeding on the small saltwater snail,',
+  'The elder rat sits crouched,',
+  'A rat of the uplands, a rat of the shore,',
+  'Darkness, then completion.'
+];
+
+const KUMULIPO_WA_7_LINES = [
+  'O kau ke anoano, ia\'u kualono',
+  'He \'ilio \'i\'i, he \'ilio, \'a\'a',
+  'O ka pe\'ape\'a lohelohe',
+  'Puka ka pe\'ape\'a huluhulu',
+  'Puka ka pe\'ape\'a lau manamana',
+  'Po--no'
+];
+
+const KUMULIPO_WA_7_TRANSLATIONS = [
+  'The seed-form settles upon the ridges,',
+  'A small dog, a barking dog, fierce,',
+  'The bat with listening ears,',
+  'The bat with feathers emerged,',
+  'The bat with many-fingered leaves emerged,',
+  'Darkness, then completion.'
+];
+
+const KUMULIPO_WA_8_LINES = [
+  'O kama auli\'i, auli\'i anei',
+  'Hanau kanaka o mehelau',
+  'Hanau kanaka ia Wai\'ololi',
+  'Hanau ka wahine ia Wai\'olola',
+  'Hanau o La\'ila\'i he wahine',
+  'Hanau Ki\'i he kane'
+];
+
+const KUMULIPO_WA_8_TRANSLATIONS = [
+  'A small child-form was born, yes, small indeed,',
+  'Born was the human of mehelau,',
+  'Born was the human at Waiololi,',
+  'Born was the woman at Waiolola,',
+  'Born was Lailai, a woman,',
+  'Born was Kii, a man.'
+];
+
+const KUMULIPO_WA_9_LINES = [
+  'O La\'ila\'i, o Ola\'i-ku-honua',
+  'O Wela, o Owe, o owa ka lani',
+  'Puka lele, lele pu i ka lani',
+  'Oia wahine no \'I\'iliponi, no loko o \'I\'ipakalani',
+  'Oia no ke ho\'i iluna',
+  'Ua--ao--'
+];
+
+const KUMULIPO_WA_9_TRANSLATIONS = [
+  'Lailai with Olai-ku-honua,',
+  'Wela and Owe, and the calling sky,',
+  'Leaping forth, leaping together into the heavens,',
+  'That woman of Iiliponi, from within Iipakalani,',
+  'She indeed returns upward,',
+  'It becomes daylight.'
+];
+
+const KUMULIPO_WA_10_LINES = [
+  'O mai la, o La\'ila\'i ka paia',
+  'Hanau Kamaha\'ina he kane',
+  'Hanau o Hali\'a he wahine',
+  'Hanau Hakea he kane',
+  'Moe ia Ki\'i no ke moe iaia',
+  'Puka--'
+];
+
+const KUMULIPO_WA_10_TRANSLATIONS = [
+  'Here came Lailai as the foundation,',
+  'Born was Kamahaina, a male,',
+  'Born was Halia, a female,',
+  'Born was Hakea, a male,',
+  'Kii lay with her in union,',
+  'Emergence came forth.'
+];
+
+const KUMULIPO_WA_11_LINES = [
+  'Oia wahine noho lani a pi\'o lani no',
+  'Hanau o Kamaha\'ina, he kane',
+  'Hanau o Kamamule, kona muli',
+  'Hanau o Kamamainau, o kona waena',
+  'Hanau o Kamakulua kona poki\'i, he wahine',
+  'O Loa\'a ke kane -- Nakelea ka wahine'
+];
+
+const KUMULIPO_WA_11_TRANSLATIONS = [
+  'That woman dwelt in heaven, bent in the heavens,',
+  'Born was Kamahaina, the male,',
+  'Born was Kamamule, the younger,',
+  'Born was Kamamainau, the middle one,',
+  'Born was Kamakulua, the younger sister, female,',
+  'Loaa the male, Nakelea the female.'
+];
+
+const KUMULIPO_WA_12_LINES = [
+  'Opu\'upu\'u ke kane -- La\'aniha ka wahine',
+  'Maunanui -- Makelewa\'a',
+  'Hanau Kihala\'aupoe he Wauke',
+  'Hanau o \'Ulu he \'Ulu',
+  'Hanau o Kupulanakehau he wahine',
+  'Hanau o Kulani\'ehu he kane'
+];
+
+const KUMULIPO_WA_12_TRANSLATIONS = [
+  'Opuupuu the male, Laaniha the female,',
+  'Maunanui with Makelewaa,',
+  'Born was Kihalaupoe, the wauke plant,',
+  'Born was Ulu, the breadfruit,',
+  'Born was Kupulanakehau, female,',
+  'Born was Kulaniehu, male.'
+];
+
+const KUMULIPO_WA_13_LINES = [
+  'Paliku ke kane -- Paliha\'i ka wahine',
+  'Kapapanuinuiauakea -- Ka\'ina\'inakea',
+  'Hanau o Kapapa-pahu ka mua',
+  'Hanau o Laumiha he wahine',
+  'Hanau o Haumea he wahine, i noho ia Kanaloa-akua',
+  'Haloa ulu hahaloa'
+];
+
+const KUMULIPO_WA_13_TRANSLATIONS = [
+  'Paliku the male, Palihai the female,',
+  'Kapapanuinuiauakea with Kainainakea,',
+  'Born first was Kapapa-pahu,',
+  'Born was Laumiha, a female,',
+  'Born was Haumea, a woman who dwelt with Kanaloa-akua,',
+  'Haloa, the long growing shoot.'
+];
+
+const KUMULIPO_WA_14_LINES = [
+  'Li\'aikuhonua ke kane -- Ke\'akahulihonua ka wahine',
+  'Hanau Hanala\'anui, hanau Hanala\'aiki',
+  'Hanau Paliku',
+  'Hanau Ololo -- Ololonu\'u',
+  'Hanau Kumuhonua -- Haloiho',
+  'Hanau o Haloa--no'
+];
+
+const KUMULIPO_WA_14_TRANSLATIONS = [
+  'Liaikuhonua the male, Keakahulihonua the female,',
+  'Born were Hanalaanui and Hanalaaiki,',
+  'Born was Paliku,',
+  'Born was Ololo, then Ololonu u,',
+  'Born were Kumuhonua and Haloiho,',
+  'Born was Haloa indeed.'
+];
+
+const KUMULIPO_WA_15_LINES = [
+  'O Haumea wahine o Nu\'umea i Kukuiha\'a',
+  'Komo i ka \'ulu, he \'ulu ia',
+  'O Haumea nui aiwaiwa',
+  'Moe mo\'opuna ia Haloa',
+  'Hanau o \'Ulu, hanau O Nana\'ulu',
+  'Maui-a-ka-malo'
+];
+
+const KUMULIPO_WA_15_TRANSLATIONS = [
+  'Haumea, woman of Nuumea at Kukuihaa,',
+  'Entering the breadfruit grove, it is breadfruit indeed,',
+  'Great Haumea of profound wonder,',
+  'The grandchild Haloa lay in union,',
+  'Born was Ulu, born was Nanaulu,',
+  'Maui of the loincloth.'
+];
+
+const KUMULIPO_WA_16_LINES = [
+  'Maui ke kane -- Hinakealohaila ka wahine',
+  '\'Aikanaka -- Hina\'aiakamalama',
+  'Hanau o Punaimua, o Hema, o Puna i muli',
+  'Hanau Kaha\'i-nui-a-Hema -- Hinaulu\'ohi\'a',
+  'Hanau o Kawauka\'ohele, o Kelea-nui-noho-ana-\'api\'api, he wahine',
+  'Ia Lono-i-ka-maka'
+];
+
+const KUMULIPO_WA_16_TRANSLATIONS = [
+  'Maui the male, Hinakealohaila the female,',
+  'Aikanaka with Hinaaiakamalama,',
+  'Born were Punaimua, Hema, and Puna-the-younger,',
+  'Born was Kaha i-nui-a-Hema with Hinauluohia,',
+  'Born was Kawaukaohele and Kelea-nui-noho-ana-apiapi, a female,',
+  'Until Lono-i-ka-maka.'
+];
+
+function buildKumulipoWaContent(config) {
+  const parallels = (config.parallels || [])
+    .map(item => `
+      <article class="kumu-parallel-card">
+        <h5>${item.title}</h5>
+        <p>${item.body}</p>
+      </article>
+    `)
+    .join('');
+
+  const chantExcerpt = Array.isArray(config.lines) && config.lines.length
+    ? `
+      <chant lang="'Olelo Hawaii" title="Selected Kumulipo Lines for ${config.waLabel}">
+${config.lines.join('\n')}
+      </chant>
+      ${Array.isArray(config.lineTranslations) && config.lineTranslations.length ? `
+      <chant lang="English" title="Interpretive English Translation for ${config.waLabel}">
+${config.lineTranslations.join('\n')}
+      </chant>
+      ` : ''}
+    `
+    : `
+      <div class="kumu-wa-chant-placeholder">
+        <p><strong>Selected Kumulipo lines for this Wa will be inserted here.</strong></p>
+      </div>
+    `;
+
+  const inquiryPrompts = (config.inquiryPrompts && config.inquiryPrompts.length
+    ? config.inquiryPrompts
+    : [
+      'What relationship is this wa naming that is often ignored in modern life?',
+      'Which modern parallel helps understanding without replacing Hawaiian meaning?',
+      'What is one kuleana this wa places on us now?'
+    ]
+  )
+    .map(prompt => `<li>${prompt}</li>`)
+    .join('');
+
+  return `
+<section class="kumu-wa-module">
+  <section class="kumu-wa-hero kumu-reveal">
+    <p class="kumu-wa-hero__eyebrow">Kumulipo Wa Deep Study</p>
+    <h2 class="kumu-wa-hero__title">${config.waLabel}</h2>
+    <p class="kumu-wa-hero__subtitle">${config.heroSubtitle}</p>
+    <p class="kumu-wa-hero__lead">${config.heroLead}</p>
+    <div class="kumu-wa-node-rail" aria-hidden="true">
+      <span class="kumu-wa-node is-active"></span>
+      <span class="kumu-wa-node"></span>
+      <span class="kumu-wa-node"></span>
+      <span class="kumu-wa-node"></span>
+    </div>
+  </section>
+
+  <section class="kumu-section kumu-wa-chant-card kumu-reveal">
+    <h4>Kumulipo Lines for This Wa</h4>
+    ${chantExcerpt}
+    <callout>These lines are part of a larger genealogical chant and should be read with respect, context, and protocol. The English text is an interpretive aid and does not replace the Hawaiian source. Modern science offers one framework, while the Kumulipo offers a Kanaka Maoli ancestral framework.</callout>
+  </section>
+
+  <section class="kumu-wa-flow kumu-reveal" aria-label="How to read this wa">
+    <h5>How to Read This Wa</h5>
+    <ul class="kumu-wa-flow__list">
+      <li><strong>Deeper Interpretation:</strong> Identify the core teaching in the chant layer.</li>
+      <li><strong>Modern Parallels:</strong> Use careful dialogue for clarity, not equivalence.</li>
+      <li><strong>Why This Wa Matters Today:</strong> Connect learning to present kuleana and practice.</li>
+    </ul>
+  </section>
+
+  <section class="kumu-wa-accordion kumu-reveal" data-kumu-wa-accordion>
+    <details class="kumu-wa-panel" open>
+      <summary>Cultural Meaning</summary>
+      <div class="kumu-wa-panel__body">
+        <p><strong>What is emerging:</strong> ${config.emergence}</p>
+        <p><strong>Forms and relationships introduced:</strong> ${config.relationships}</p>
+        <p><strong>Place in larger Kumulipo structure:</strong> ${config.structureRole}</p>
+      </div>
+    </details>
+
+    <details class="kumu-wa-panel">
+      <summary>Deeper Interpretation · Meaning Layer</summary>
+      <div class="kumu-wa-panel__body">
+        <p class="kumu-wa-panel__kicker">Interpretive lens</p>
+        <p>${config.deeper}</p>
+      </div>
+    </details>
+
+    <details class="kumu-wa-panel">
+      <summary>Modern Parallels · Careful Dialogue</summary>
+      <div class="kumu-wa-panel__body">
+        <p class="kumu-wa-panel__kicker">Read these as bridges for understanding, not replacements for Hawaiian source meaning.</p>
+        <div class="kumu-parallel-grid">
+          ${parallels}
+        </div>
+      </div>
+    </details>
+
+    <details class="kumu-wa-panel">
+      <summary>Why This Wa Matters Today · Kuleana Now</summary>
+      <div class="kumu-wa-panel__body">
+        <p>${config.whyNow}</p>
+      </div>
+    </details>
+
+    <details class="kumu-wa-panel">
+      <summary>Inquiry Prompts · Deepen Study</summary>
+      <div class="kumu-wa-panel__body">
+        <ul class="kumu-wa-panel__list">
+          ${inquiryPrompts}
+        </ul>
+      </div>
+    </details>
+  </section>
+</section>
+`;
+}
+
 const CULTURALVERSE_DATA = {
 
   /* ─────────────────────────────────────────────────────────────
@@ -65,7 +473,7 @@ const CULTURALVERSE_DATA = {
   <p class="kumu-hero__eyebrow">Kanaka Maoli Sacred Knowledge</p>
   <h2 class="kumu-hero__title">Kumulipo</h2>
   <p class="kumu-hero__subtitle">A Genealogy of Creation, Life, and Living Knowledge</p>
-  <p class="kumu-hero__lead">This lesson is designed as a guided Culturalverse/Ikeverse journey through Wā 1 and the wider Kumulipo knowledge architecture. The purpose is not to flatten the chant into modern categories, but to learn how ancestral Kanaka Maoli thought holds cosmology, ecology, genealogy, and kuleana in one relational framework.</p>
+  <p class="kumu-hero__lead">This lesson is designed as an immersive Culturalverse/Ikeverse entry into the Kumulipo, beginning with Wā 1 and extending outward into the chant's wider architecture of creation. The aim is to encounter the Kumulipo first as Kanaka Maoli ancestral knowledge, then to read its patterns in careful dialogue with modern questions about origin, life, relationship, and responsibility.</p>
 </section>
 
 <facts>2,102::Lines in the Chant|16 Wā::Epochs of Unfolding|Pō::Generative Darkness, Not Emptiness|1897::Liliʻuokalani Translation</facts>
@@ -96,196 +504,53 @@ const CULTURALVERSE_DATA = {
   <div class="kumu-parallel-grid">
     <article class="kumu-parallel-card">
       <h5>Cosmology</h5>
-      <p><strong>This parallels modern cosmology</strong> in the movement from deep origin toward emergence, order, and structure. It can be respectfully compared with Big Bang era questions about early conditions of space-time, energy, and matter, without claiming equivalence.</p>
+      <p><strong>This parallels modern cosmology</strong> in its movement from deep darkness toward emergence, order, and structure. It can be respectfully compared with questions about early conditions of space-time, heat, energy, and formation, without claiming that the Kumulipo is a scientific statement of Big Bang theory.</p>
     </article>
     <article class="kumu-parallel-card">
       <h5>Evolution</h5>
-      <p><strong>This resonates with evolutionary thinking</strong> because life appears through staged development rather than instant completion, moving from foundational forms toward increasing complexity.</p>
+      <p><strong>This resonates with evolutionary thinking</strong> because life appears through staged development rather than instant completion, moving from foundational marine forms toward increasingly differentiated worlds of growth, movement, and relation.</p>
     </article>
     <article class="kumu-parallel-card">
       <h5>Ecology</h5>
-      <p><strong>This can be compared to ecological interdependence</strong> as coral, sea life, plants, animals, land, and people are treated as connected relations rather than isolated objects.</p>
+      <p><strong>This can be compared to ecological interdependence</strong> because coral, sea life, plants, animals, land, and people are treated as connected relations rather than isolated objects. The chant maps living systems through kinship.</p>
     </article>
     <article class="kumu-parallel-card">
       <h5>Genealogy</h5>
-      <p><strong>This reflects continuity of life</strong> through moʻokūʻauhau. Human identity emerges inside ancestral and ecological continuity, not outside it.</p>
+      <p><strong>This reflects continuity of life</strong> through moʻokūʻauhau. Human identity emerges inside ancestral and ecological continuity, not outside it, which makes genealogy a structure of belonging as well as descent.</p>
     </article>
     <article class="kumu-parallel-card">
       <h5>Systems Thinking</h5>
-      <p><strong>This reflects a systems-based understanding of relationship and interdependence</strong> where each phase of emergence supports later phases and meaning comes from relational pattern.</p>
+      <p><strong>This reflects a systems-based understanding of relationship and interdependence</strong> in which each phase of emergence creates the conditions for what follows. Meaning comes from relational pattern, not isolated parts.</p>
     </article>
     <article class="kumu-parallel-card">
       <h5>Kuleana</h5>
-      <p><strong>This frames responsibility as integral to knowledge.</strong> To know creation is to carry obligation toward balance, stewardship, and right relationship.</p>
+      <p><strong>This frames responsibility as integral to knowledge.</strong> To know creation is to inherit obligation toward balance, stewardship, and right relationship. Knowledge does not end in insight; it becomes conduct.</p>
     </article>
   </div>
 </section>
 
 <section class="kumu-section kumu-reveal">
-  <h4>Interactive Wā Timeline</h4>
-  <p class="kumu-section__intro">Explore each wā as a distinct knowledge layer. Every stage includes cultural meaning, emergence, modern dialogue, and present-day relevance.</p>
-  <div class="kumu-wa-timeline" data-kumu-wa-timeline>
-    <details class="kumu-wa-item" open>
-      <summary><span>Wā 1</span> Wā o ke Koʻa · Pō, Emergence, and Foundational Life</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Deep pō as generative source; koʻa as foundational life threshold.</p>
-        <p><strong>What emerges:</strong> Ordered life from concealed potential.</p>
-        <p><strong>Modern comparison:</strong> Early cosmology, foundational marine emergence, systems onset.</p>
-        <p><strong>Parallel:</strong> This parallels modern cosmology and resonates with staged life development, while remaining a distinct ancestral framework.</p>
-        <p><strong>Why it matters:</strong> Establishes relationship as origin principle and ethical baseline.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 2</span> Wā o nā Mea o ke Kai · Sea Multiplicity</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Marine life diversifies in relational sequence.</p>
-        <p><strong>What emerges:</strong> Expanding oceanic communities.</p>
-        <p><strong>Modern comparison:</strong> Early diversification in aquatic systems.</p>
-        <p><strong>Parallel:</strong> This can be compared to staged development of life in marine environments.</p>
-        <p><strong>Why it matters:</strong> Reinforces ocean as ancestral foundation.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 3</span> Wā o nā Limu · Marine Growth Systems</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Limu and growth webs establish nourishment systems.</p>
-        <p><strong>What emerges:</strong> Foundational ecological productivity.</p>
-        <p><strong>Modern comparison:</strong> Primary productivity and food-web beginnings.</p>
-        <p><strong>Parallel:</strong> This reflects ecological thinking about support systems and interdependence.</p>
-        <p><strong>Why it matters:</strong> Shows that life complexity depends on subtle foundations.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 4</span> Wā o nā Mea Kolo · Small and Transitional Forms</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Smaller life forms create transitional relational links.</p>
-        <p><strong>What emerges:</strong> Increased complexity through connection.</p>
-        <p><strong>Modern comparison:</strong> Networked biodiversity and adaptive niches.</p>
-        <p><strong>Parallel:</strong> This can be compared to systems-level emergence from many small interactions.</p>
-        <p><strong>Why it matters:</strong> Teaches that small forms are structurally essential.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 5</span> Wā o nā Iʻa Nui · Larger Sea Beings</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Marine orders expand in scale and relation.</p>
-        <p><strong>What emerges:</strong> Larger aquatic life systems.</p>
-        <p><strong>Modern comparison:</strong> Diversification and trophic complexity.</p>
-        <p><strong>Parallel:</strong> This resonates with evolutionary scaling in marine ecosystems.</p>
-        <p><strong>Why it matters:</strong> Shows that size and power still depend on earlier foundations.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 6</span> Wā o nā Manu Kai · Boundary-Crossing Life</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Beings crossing sea and sky expand relational worlds.</p>
-        <p><strong>What emerges:</strong> New ecological corridors.</p>
-        <p><strong>Modern comparison:</strong> Cross-biome linkages and migration dynamics.</p>
-        <p><strong>Parallel:</strong> This reflects systems-based thinking about connectivity across environments.</p>
-        <p><strong>Why it matters:</strong> Teaches that boundaries are connective, not absolute.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 7</span> Wā o nā Mea Ulu o ka ʻĀina · Land Growth</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Terrestrial plant worlds become central.</p>
-        <p><strong>What emerges:</strong> Stabilizing land ecologies.</p>
-        <p><strong>Modern comparison:</strong> Terrestrial ecological establishment.</p>
-        <p><strong>Parallel:</strong> This can be compared to major ecological transitions from marine to land systems.</p>
-        <p><strong>Why it matters:</strong> Grounds later life and human survival in plant systems.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 8</span> Wā o nā Holoholona o ka ʻĀina · Land Animals</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Land life matures through layered relation.</p>
-        <p><strong>What emerges:</strong> Greater terrestrial diversity.</p>
-        <p><strong>Modern comparison:</strong> Diversification of land-based life systems.</p>
-        <p><strong>Parallel:</strong> This resonates with staged development in evolution and ecology.</p>
-        <p><strong>Why it matters:</strong> Frames land life as part of shared genealogy, not hierarchy.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 9</span> Wā o ka Huli i ke Ao · Turning Toward Light</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Threshold from deep pō toward ao.</p>
-        <p><strong>What emerges:</strong> New phase of visibility and ordering.</p>
-        <p><strong>Modern comparison:</strong> Transitional phase shifts in complex systems.</p>
-        <p><strong>Parallel:</strong> This parallels movement from hidden conditions to emergent structure.</p>
-        <p><strong>Why it matters:</strong> Marks continuity, not rupture, between phases of being.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 10</span> Wā o nā Kūpuna Akua · Ancestral Divine Genealogies</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Sacred lineages are named and ordered.</p>
-        <p><strong>What emerges:</strong> Genealogical articulation of cosmic order.</p>
-        <p><strong>Modern comparison:</strong> Structured relational mapping.</p>
-        <p><strong>Parallel:</strong> This reflects systems ordering through named relational nodes.</p>
-        <p><strong>Why it matters:</strong> Places memory and identity within sacred continuity.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 11</span> Wā o nā Hanauna Kiʻekiʻe · High Lines</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Intensified genealogical structuring.</p>
-        <p><strong>What emerges:</strong> Advanced social-cosmic lineages.</p>
-        <p><strong>Modern comparison:</strong> Multi-layer relational systems.</p>
-        <p><strong>Parallel:</strong> This can be compared to nested systems where scale and meaning co-exist.</p>
-        <p><strong>Why it matters:</strong> Highlights responsibility within inherited structure.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 12</span> Wā o nā Pili Aliʻi · Chiefly Relational Lines</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Governance and genealogy are linked.</p>
-        <p><strong>What emerges:</strong> Authority as relational kuleana.</p>
-        <p><strong>Modern comparison:</strong> Social systems tied to ecological legitimacy.</p>
-        <p><strong>Parallel:</strong> This reflects an ethics of leadership grounded in continuity and obligation.</p>
-        <p><strong>Why it matters:</strong> Counters power without responsibility.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 13</span> Wā o ka Hānau Moʻokūʻauhau · Human Genealogical Emergence</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Human lines emerge within sacred continuity.</p>
-        <p><strong>What emerges:</strong> Human identity inside creation.</p>
-        <p><strong>Modern comparison:</strong> Relational identity and biological continuity.</p>
-        <p><strong>Parallel:</strong> This resonates with the idea that humans are embedded in life systems, not separate from them.</p>
-        <p><strong>Why it matters:</strong> Reorients identity toward kinship and humility.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 14</span> Wā o ka Hoʻonui Hanauna · Expansion of Descendant Lines</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Social worlds widen through kinship.</p>
-        <p><strong>What emerges:</strong> Expanded relational communities.</p>
-        <p><strong>Modern comparison:</strong> Complex social-ecological systems.</p>
-        <p><strong>Parallel:</strong> This can be compared to branching network growth in living systems.</p>
-        <p><strong>Why it matters:</strong> Shows belonging as relational practice, not abstraction.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 15</span> Wā o ke Kauoha a me ke Kuleana · Charge and Responsibility</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Lineage carries ethical mandate.</p>
-        <p><strong>What emerges:</strong> Responsibility as inherited obligation.</p>
-        <p><strong>Modern comparison:</strong> Sustainability ethics and stewardship frameworks.</p>
-        <p><strong>Parallel:</strong> This reflects that knowledge must guide behavior in living systems.</p>
-        <p><strong>Why it matters:</strong> Connects memory directly to action.</p>
-      </div>
-    </details>
-    <details class="kumu-wa-item">
-      <summary><span>Wā 16</span> Wā o ke Ao Kanaka · Human Realm in Light</summary>
-      <div class="kumu-wa-item__body">
-        <p><strong>Cultural meaning:</strong> Human life culminates in stewardship duty.</p>
-        <p><strong>What emerges:</strong> Conscious relational responsibility.</p>
-        <p><strong>Modern comparison:</strong> Systems stewardship across land, sea, and sky.</p>
-        <p><strong>Parallel:</strong> This can be compared to integrated sustainability frameworks, while remaining a distinct sacred genealogy.</p>
-        <p><strong>Why it matters:</strong> Defines humanity through mālama, not dominion.</p>
-      </div>
-    </details>
-  </div>
+  <h4>Kumulipo Wā Study Pages</h4>
+  <p class="kumu-section__intro">Each wā now has its own dedicated lesson page with specific cultural framing, emergence focus, careful modern dialogue, and present-day relevance. Use this as the guided pathway instead of a single compressed timeline.</p>
+  <ul>
+    <li><a href="#km-wa-01">Wā 1 — Wā o ke Koʻa: Pō and Foundational Marine Emergence</a></li>
+    <li><a href="#km-wa-02">Wā 2 — Wā o nā Mea o ke Kai: Sea Multiplicity</a></li>
+    <li><a href="#km-wa-03">Wā 3 — Wā o nā Limu: Marine Growth Systems</a></li>
+    <li><a href="#km-wa-04">Wā 4 — Wā o nā Mea Kolo: Small and Transitional Forms</a></li>
+    <li><a href="#km-wa-05">Wā 5 — Wā o nā Iʻa Nui: Larger Sea Beings</a></li>
+    <li><a href="#km-wa-06">Wā 6 — Wā o nā Manu Kai: Boundary-Crossing Life</a></li>
+    <li><a href="#km-wa-07">Wā 7 — Wā o nā Mea Ulu o ka ʻĀina: Land Growth</a></li>
+    <li><a href="#km-wa-08">Wā 8 — Wā o nā Holoholona o ka ʻĀina: Land Animals</a></li>
+    <li><a href="#km-wa-09">Wā 9 — Wā o ka Huli i ke Ao: Turning Toward Light</a></li>
+    <li><a href="#km-wa-10">Wā 10 — Wā o nā Kūpuna Akua: Ancestral Divine Genealogies</a></li>
+    <li><a href="#km-wa-11">Wā 11 — Wā o nā Hanauna Kiʻekiʻe: High Genealogical Lines</a></li>
+    <li><a href="#km-wa-12">Wā 12 — Wā o nā Pili Aliʻi: Chiefly Relational Lines</a></li>
+    <li><a href="#km-wa-13">Wā 13 — Wā o ka Hānau Moʻokūʻauhau: Human Genealogical Emergence</a></li>
+    <li><a href="#km-wa-14">Wā 14 — Wā o ka Hoʻonui Hanauna: Expansion of Descendant Lines</a></li>
+    <li><a href="#km-wa-15">Wā 15 — Wā o ke Kauoha a me ke Kuleana: Charge and Responsibility</a></li>
+    <li><a href="#km-wa-16">Wā 16 — Wā o ke Ao Kanaka: Human Realm in Light</a></li>
+  </ul>
+  <callout type="bridge">Replacement learning flow: (1) Read KM·01 as cosmological framing, (2) move through each dedicated Wā page, (3) return to KM·01 final section to integrate the whole sequence.</callout>
 </section>
 
 <section class="kumu-section kumu-reveal">
@@ -294,18 +559,15 @@ const CULTURALVERSE_DATA = {
   <twocol left="Wā 1 in Kumulipo" right="Resonance in Kemet">Pō is generative darkness; koʻa marks foundational life; creation unfolds through genealogy and relation.||Nun is primordial depth before ordered form; creation emerges through named principles and cosmic ordering.</twocol>
 </section>
 
-<timeline>
-Early 18th century::Traditional chiefly composition and transmission context associated with Kalaninuiamamao
-19th century::King Kalākaua preserves the chant in writing
-1897::Queen Liliʻuokalani publishes English translation while imprisoned after the overthrow
-20th century onward::The Kumulipo continues as genealogy, cosmology, ecological memory, and living Hawaiian knowledge
-</timeline>
-
-<activity>Build a relationship map from Pō to coral, from coral to sea life, from sea life to land, and from land to people. The goal is not a human-only family tree. The goal is to trace kinship across creation.</activity>
-
-<teacher-note>Ask learners to compare a standard Western timeline of evolution with the Kumulipo sequence, while explicitly reinforcing that the chant is not reducible to modern biology. Comparison is dialogical, not extractive.</teacher-note>
-
-<historian-note>The Kumulipo was used in aliʻi contexts to affirm chiefly genealogy and authority. That political use matters, but it should not be mistaken for the whole purpose of the chant. Its deeper function preserves cosmology, kinship, ecological relationship, sacred order, and cultural memory.</historian-note>
+<section class="kumu-section kumu-reveal">
+  <h4>What Replaces the Timeline and Activity Blocks</h4>
+  <p>Instead of one interactive timeline and broad teacher activity stack, this lesson now serves as the orientation gateway. Detailed learning happens in dedicated Wā pages, each focused on a single stage with more depth and less repetition.</p>
+  <ul>
+    <li><strong>Wā-specific pages:</strong> one page per wā with targeted interpretation and modern dialogue.</li>
+    <li><strong>Comparative lens notes:</strong> focused comparison statements kept careful and non-reductive.</li>
+    <li><strong>Reflection studio:</strong> short reflective prompts at the end of each wā page rather than one large activity block.</li>
+  </ul>
+</section>
 
 <reflect title="Reflection Prompts">
 How does understanding darkness as generative change your view of beginnings?
@@ -342,6 +604,527 @@ What does kuleana look like when humans are understood as part of creation rathe
 <p>The islands themselves are children of Papahānaumoku and Wākea — born in sequence, each with its own name and personality. Hawaiʻi (the Big Island) is the eldest, then Maui, Kahoʻolawe, Lānaʻi, Molokaʻi, Oʻahu, Kauaʻi, Niʻihau. Each island is not a place — it is a being, a family member, an ancestor. <strong>Aloha ʻāina</strong> — love of the land — is not a sentiment. It is the natural expression of knowing that the land is your relative.</p>
 `
             },
+          ]
+        },
+
+        {
+          id:    'kanaka-kumulipo-wa',
+          title: 'Kumulipo Wā Deep Study',
+          emoji: '🌌',
+          desc:  'Dedicated lesson pages for each of the 16 Wā, each with its own focus and modern dialogue.',
+          lessons: [
+            {
+              id:       'km-wa-01',
+              num:      'KM·W01',
+              title:    'Wā 1 — Wā o ke Koʻa: Pō and Foundational Marine Emergence',
+              readTime: '8 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 1 — Wā Akahi: The First Era of Emergence',
+                heroSubtitle: 'Wā o ke Koʻa · Pō and Foundational Marine Emergence',
+                heroLead: 'Wā 1 opens in deep pō and establishes the first layer of becoming. It is the interpretive doorway to the entire Kumulipo: life emerges through relation, not isolation.',
+                lines: KUMULIPO_WA_1_LINES,
+                lineTranslations: KUMULIPO_WA_1_TRANSLATIONS,
+                emergence: 'Generative movement in pō, heat, turning, and early marine emergence associated with koʻa as foundational life threshold.',
+                relationships: 'This wā introduces relation between darkness, transformation, oceanic life, and ordered unfolding rather than instant completion.',
+                structureRole: 'Wā 1 grounds all later wā by establishing source-depth, emergence, and continuity as the governing pattern.',
+                deeper: 'As a knowledge layer, Wā 1 frames existence as genealogical process. The Kumulipo is not simply telling what happened; it is teaching how to understand origin, life, and responsibility through relational cosmology. Darkness is epistemic depth, not absence.',
+                parallels: [
+                  {
+                    title: 'Cosmology',
+                    body: 'This can be compared to modern cosmology and early questions of space-time, heat, matter, and emergence. The comparison is structural, not literal equivalence.'
+                  },
+                  {
+                    title: 'Energy and Pattern',
+                    body: 'This resembles modern ideas of patterned emergence where order unfolds from hidden conditions. As a metaphor, this can be placed beside discussions of energy fields and generative dynamics.'
+                  },
+                  {
+                    title: 'Systems Thinking',
+                    body: 'This parallels systems thinking because the first conditions shape all subsequent formations. Meaning comes from relation and sequence, not isolated parts.'
+                  }
+                ],
+                whyNow: 'Wā 1 matters today because it reorients identity toward ancestry and ecological humility. It teaches that human life begins within larger relational fields of ocean, earth, and sky, and therefore carries kuleana.'
+              })
+            },
+            {
+              id:       'km-wa-02',
+              num:      'KM·W02',
+              title:    'Wā 2 — Wā o nā Mea o ke Kai: Sea Multiplicity',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 2 — The Era of Sea Multiplicity',
+                heroSubtitle: 'Wā o nā Mea o ke Kai · Marine Diversification',
+                heroLead: 'Wā 2 deepens ocean genealogy through multiplicity. Life expands in sequence, relation, and complexity within the marine world.',
+                lines: KUMULIPO_WA_2_LINES,
+                lineTranslations: KUMULIPO_WA_2_TRANSLATIONS,
+                emergence: 'Sea beings multiply and diversify, expanding the living architecture of the ocean.',
+                relationships: 'This wā strengthens oceanic kinship by showing how many forms of life arise through relational unfolding rather than isolated events.',
+                structureRole: 'Wā 2 extends Wā 1 by turning foundational emergence into patterned marine abundance.',
+                deeper: 'Wā 2 functions as a knowledge layer of abundance-with-order. It teaches that complexity is not chaos; it is relationship becoming denser. The Kumulipo encodes life as genealogical interconnection rather than separate categories of species and resource.',
+                parallels: [
+                  {
+                    title: 'Evolution',
+                    body: 'This resonates with evolutionary diversification in aquatic systems, where multiplicity appears through successive emergence.'
+                  },
+                  {
+                    title: 'Biodiversity',
+                    body: 'This parallels modern biodiversity thinking by highlighting variety as strength within a living network.'
+                  },
+                  {
+                    title: 'Complexity Theory',
+                    body: 'This resembles complexity models in which interacting forms produce layered ecological structure over time.'
+                  }
+                ],
+                whyNow: 'Wā 2 matters today because it supports ocean-centered identity and sustainability ethics. It reminds communities that marine diversity is ancestral continuity, not expendable inventory.'
+              })
+            },
+            {
+              id:       'km-wa-03',
+              num:      'KM·W03',
+              title:    'Wā 3 — Wā o nā Limu: Marine Growth Systems',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 3 — The Era of Marine Growth Foundations',
+                heroSubtitle: 'Wā o nā Limu · Sea Growth and Nourishing Systems',
+                heroLead: 'Wā 3 centers limu and growth systems, highlighting the subtle foundations that sustain larger life.',
+                lines: KUMULIPO_WA_3_LINES,
+                lineTranslations: KUMULIPO_WA_3_TRANSLATIONS,
+                emergence: 'Marine growth forms and nutrient foundations become explicit within the unfolding sequence.',
+                relationships: 'This wā links nourishment, cycle, and interdependence across small and large life forms.',
+                structureRole: 'Wā 3 establishes support systems that make later complexity possible.',
+                deeper: 'Wā 3 reveals an ancestral ecological intelligence: what is often overlooked is structurally essential. In Kumulipo logic, foundation is sacred, and survival is relational. This is cosmology expressed as ecology and genealogy together.',
+                parallels: [
+                  {
+                    title: 'Ecology',
+                    body: 'This can be compared to primary productivity and marine food-web foundations in modern ecological science.'
+                  },
+                  {
+                    title: 'Systems Biology',
+                    body: 'This parallels systems-level thinking where invisible processes sustain visible outcomes.'
+                  },
+                  {
+                    title: 'Relational Fields',
+                    body: 'As a metaphor, this resembles modern ideas of relational fields in which support layers shape all later expression.'
+                  }
+                ],
+                whyNow: 'Wā 3 matters today because sustainability depends on protecting foundational systems first, from reef and limu zones to water quality and food webs.'
+              })
+            },
+            {
+              id:       'km-wa-04',
+              num:      'KM·W04',
+              title:    'Wā 4 — Wā o nā Mea Kolo: Small and Transitional Forms',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 4 — The Era of Small and Transitional Life',
+                heroSubtitle: 'Wā o nā Mea Kolo · Interlinked Transitional Forms',
+                heroLead: 'Wā 4 highlights creeping and smaller forms that connect phases of life and strengthen ecological continuity.',
+                lines: KUMULIPO_WA_4_LINES,
+                lineTranslations: KUMULIPO_WA_4_TRANSLATIONS,
+                emergence: 'Transitional forms, connective life pathways, and dense small-scale interactions.',
+                relationships: 'This wā shows relation across thresholds and scales, where small life forms link broader systems.',
+                structureRole: 'Wā 4 acts as the bridge layer between early foundations and larger emergent orders.',
+                deeper: 'Wā 4 teaches that scale does not determine significance. The Kumulipo encodes a philosophy of interconnection in which micro-relations hold macro-systems together. This is a living relational ontology, not a hierarchy of importance.',
+                parallels: [
+                  {
+                    title: 'Systems Thinking',
+                    body: 'This parallels systems thinking where many localized interactions generate larger emergent patterns.'
+                  },
+                  {
+                    title: 'Complex Adaptive Systems',
+                    body: 'This can be compared to complexity theory in which transitions are carried by interacting small-scale agents.'
+                  },
+                  {
+                    title: 'Pattern Emergence',
+                    body: 'This resembles the modern idea that pattern and order can arise from numerous low-level exchanges.'
+                  }
+                ],
+                whyNow: 'Wā 4 matters today because it teaches respect for foundational and often-overlooked life forms, essential for biodiversity resilience and ecological repair.'
+              })
+            },
+            {
+              id:       'km-wa-05',
+              num:      'KM·W05',
+              title:    'Wā 5 — Wā o nā Iʻa Nui: Larger Sea Beings',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 5 — The Era of Larger Sea Beings',
+                heroSubtitle: 'Wā o nā Iʻa Nui · Scale and Visibility in the Sea',
+                heroLead: 'Wā 5 introduces larger marine beings while preserving continuity with prior marine foundations.',
+                lines: KUMULIPO_WA_5_LINES,
+                lineTranslations: KUMULIPO_WA_5_TRANSLATIONS,
+                emergence: 'Larger sea forms and expanded marine presence within established genealogical order.',
+                relationships: 'This wā links visible power to invisible support, emphasizing continuity across ecological layers.',
+                structureRole: 'Wā 5 marks a scale shift without severing dependence on earlier stages.',
+                deeper: 'Wā 5 teaches that prominence does not erase dependency. In Kumulipo structure, larger forms remain genealogically tied to earlier and subtler systems, reinforcing relational accountability rather than dominance.',
+                parallels: [
+                  {
+                    title: 'Marine Ecology',
+                    body: 'This resonates with trophic layering and scale differentiation in marine ecosystems.'
+                  },
+                  {
+                    title: 'Biodiversity Networks',
+                    body: 'This can be compared to how larger organisms rely on complex support webs beneath them.'
+                  },
+                  {
+                    title: 'Systems Hierarchy',
+                    body: 'This parallels nested systems models where higher-order forms remain structurally dependent on foundational layers.'
+                  }
+                ],
+                whyNow: 'Wā 5 matters today because it discourages extractive thinking and reminds us that visible abundance is fragile when foundational systems are neglected.'
+              })
+            },
+            {
+              id:       'km-wa-06',
+              num:      'KM·W06',
+              title:    'Wā 6 — Wā o nā Manu Kai: Boundary-Crossing Life',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 6 — The Era of Boundary-Crossing Life',
+                heroSubtitle: 'Wā o nā Manu Kai · Sea-Sky Threshold Beings',
+                heroLead: 'Wā 6 centers life that moves across ocean and sky, revealing boundaries as living thresholds rather than fixed walls.',
+                lines: KUMULIPO_WA_6_LINES,
+                lineTranslations: KUMULIPO_WA_6_TRANSLATIONS,
+                emergence: 'Cross-boundary forms and movement pathways between ecological domains.',
+                relationships: 'This wā ties sea and sky into one relational continuum through migratory and threshold life.',
+                structureRole: 'Wā 6 broadens the geometry of relation by linking formerly discrete environmental zones.',
+                deeper: 'Wā 6 encodes a relational geography: environments are interwoven by movement, rhythm, and exchange. The Kumulipo presents life-worlds as porous and mutually constitutive, not compartmentalized domains.',
+                parallels: [
+                  {
+                    title: 'Ecological Connectivity',
+                    body: 'This can be compared to migration corridors and cross-biome connectivity in modern ecology.'
+                  },
+                  {
+                    title: 'Systems Integration',
+                    body: 'This parallels integrated systems models where flow between domains sustains resilience.'
+                  },
+                  {
+                    title: 'Relational Pattern',
+                    body: 'As a metaphor, this resembles pattern-based frameworks where movement itself carries intelligence and continuity.'
+                  }
+                ],
+                whyNow: 'Wā 6 matters today because climate and biodiversity challenges require boundary-crossing thinking, connecting land, sea, sky, and policy in one relational frame.'
+              })
+            },
+            {
+              id:       'km-wa-07',
+              num:      'KM·W07',
+              title:    'Wā 7 — Wā o nā Mea Ulu o ka ʻĀina: Land Growth',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 7 — The Era of Land Growth',
+                heroSubtitle: 'Wā o nā Mea Ulu o ka ʻĀina · Terrestrial Foundations',
+                heroLead: 'Wā 7 turns decisively toward land growth, introducing terrestrial nourishment and habitat foundations.',
+                lines: KUMULIPO_WA_7_LINES,
+                lineTranslations: KUMULIPO_WA_7_TRANSLATIONS,
+                emergence: 'Land-based plant systems and stabilized growth conditions for later life.',
+                relationships: 'This wā links ocean-origin continuity to terrestrial emergence through ecological succession.',
+                structureRole: 'Wā 7 is the terrestrial foundation layer that enables later animal and human genealogical stages.',
+                deeper: 'Wā 7 teaches that land fertility is not separate from oceanic origins; it is a continuation of relational unfolding. In Kumulipo logic, growth is genealogical and place-based, carrying ecological intelligence and obligation.',
+                parallels: [
+                  {
+                    title: 'Ecological Transition',
+                    body: 'This parallels major shifts from marine-dominant to terrestrial ecosystem development.'
+                  },
+                  {
+                    title: 'Biodiversity Foundations',
+                    body: 'This can be compared to modern ecological emphasis on plant systems as primary habitat and energy base.'
+                  },
+                  {
+                    title: 'Systems Continuity',
+                    body: 'This resonates with systems thinking where new domains emerge through continuity, not disconnection.'
+                  }
+                ],
+                whyNow: 'Wā 7 matters today because land regeneration, watershed care, and food resilience depend on recognizing plants and soils as ancestral infrastructure.'
+              })
+            },
+            {
+              id:       'km-wa-08',
+              num:      'KM·W08',
+              title:    'Wā 8 — Wā o nā Holoholona o ka ʻĀina: Land Animals',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 8 — The Era of Land Animals',
+                heroSubtitle: 'Wā o nā Holoholona o ka ʻĀina · Terrestrial Animal Worlds',
+                heroLead: 'Wā 8 brings broader terrestrial animal life into the unfolding genealogy and relational order.',
+                lines: KUMULIPO_WA_8_LINES,
+                lineTranslations: KUMULIPO_WA_8_TRANSLATIONS,
+                emergence: 'Land animal diversity, movement, and expanded terrestrial complexity.',
+                relationships: 'This wā places animal life within shared kinship continuity rather than beneath human identity.',
+                structureRole: 'Wā 8 completes the foundational land-life sequence before the transition toward ao-focused ordering.',
+                deeper: 'Wā 8 encodes a non-anthropocentric worldview. The Kumulipo teaches that humanity is not the beginning of value, but part of an already meaningful and relationally structured living world.',
+                parallels: [
+                  {
+                    title: 'Evolutionary Diversification',
+                    body: 'This resonates with modern evolutionary narratives of diversification in terrestrial environments.'
+                  },
+                  {
+                    title: 'Ecological Interdependence',
+                    body: 'This can be compared to ecosystem models where animals, plants, and habitats co-constitute resilience.'
+                  },
+                  {
+                    title: 'Consciousness Studies',
+                    body: 'As a metaphor, this can be placed beside contemporary inquiry into distributed intelligence across species relations.'
+                  }
+                ],
+                whyNow: 'Wā 8 matters today because ecological responsibility requires seeing animals as kin within shared life systems, not as external resources.'
+              })
+            },
+            {
+              id:       'km-wa-09',
+              num:      'KM·W09',
+              title:    'Wā 9 — Wā o ka Huli i ke Ao: Turning Toward Light',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 9 — The Turning Toward Ao',
+                heroSubtitle: 'Wā o ka Huli i ke Ao · Threshold of Visibility',
+                heroLead: 'Wā 9 marks a threshold movement toward ao. It is a transformation in state, not a rejection of pō.',
+                lines: KUMULIPO_WA_9_LINES,
+                lineTranslations: KUMULIPO_WA_9_TRANSLATIONS,
+                emergence: 'A visible phase of ordering unfolds from previously concealed generative depth.',
+                relationships: 'This wā binds pō and ao as continuous registers of one unfolding reality.',
+                structureRole: 'Wā 9 is the hinge between foundational life emergence and later genealogical ordering.',
+                deeper: 'Wā 9 teaches transitional intelligence: becoming is continuous, and source remains present in manifestation. The Kumulipo offers a model where transformation preserves ancestry rather than replacing it.',
+                parallels: [
+                  {
+                    title: 'Complex Systems',
+                    body: 'This can be compared to phase transitions where new order appears from prior conditions without severing continuity.'
+                  },
+                  {
+                    title: 'Pattern and Emergence',
+                    body: 'This parallels modern notions of emergence in which latent structures become observable through change in state.'
+                  },
+                  {
+                    title: 'Relational Ontology',
+                    body: 'This resonates with contemporary relational frameworks that interpret reality as layered and process-based.'
+                  }
+                ],
+                whyNow: 'Wā 9 matters today because social and ecological transitions require continuity-based thinking that honors source, memory, and responsibility during change.'
+              })
+            },
+            {
+              id:       'km-wa-10',
+              num:      'KM·W10',
+              title:    'Wā 10 — Wā o nā Kūpuna Akua: Ancestral Divine Genealogies',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 10 — The Era of Divine Ancestral Genealogies',
+                heroSubtitle: 'Wā o nā Kūpuna Akua · Sacred Lineal Ordering',
+                heroLead: 'Wā 10 names sacred ancestral lines, making cosmic order legible through genealogy.',
+                lines: KUMULIPO_WA_10_LINES,
+                lineTranslations: KUMULIPO_WA_10_TRANSLATIONS,
+                emergence: 'Divine ancestral relationships are articulated with greater structure and sequence.',
+                relationships: 'This wā links cosmos, ancestry, naming, and sacred continuity in one framework.',
+                structureRole: 'Wā 10 introduces explicit genealogical architecture that shapes later human and chiefly lines.',
+                deeper: 'Wā 10 shows that knowledge is relational placement. To name is to situate within sacred continuity. The Kumulipo therefore preserves cosmology through genealogy, and genealogy through disciplined memory.',
+                parallels: [
+                  {
+                    title: 'Systems Mapping',
+                    body: 'This reflects modern systems mapping where meaning and function arise from relational position.'
+                  },
+                  {
+                    title: 'Pattern Languages',
+                    body: 'This resembles structured pattern languages that encode complex order through linked naming.'
+                  },
+                  {
+                    title: 'Consciousness and Memory',
+                    body: 'As a metaphor, this can be placed beside consciousness studies that emphasize memory and relation as world-making processes.'
+                  }
+                ],
+                whyNow: 'Wā 10 matters today because cultural memory and naming practices remain crucial for identity, continuity, and respectful stewardship.'
+              })
+            },
+            {
+              id:       'km-wa-11',
+              num:      'KM·W11',
+              title:    'Wā 11 — Wā o nā Hanauna Kiʻekiʻe: High Genealogical Lines',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 11 — The Era of High Genealogical Lines',
+                heroSubtitle: 'Wā o nā Hanauna Kiʻekiʻe · Layered Lineage Structure',
+                heroLead: 'Wā 11 intensifies lineal ordering and inherited placement within sacred continuity.',
+                lines: KUMULIPO_WA_11_LINES,
+                lineTranslations: KUMULIPO_WA_11_TRANSLATIONS,
+                emergence: 'Higher genealogical lines and layered ancestral sequencing are clarified.',
+                relationships: 'This wā links rank with obligation, showing lineal position as ethical responsibility.',
+                structureRole: 'Wā 11 refines the social-cosmic architecture that informs later chiefly and human duties.',
+                deeper: 'Wā 11 resists status-only readings of lineage. In Kumulipo logic, elevated position means increased kuleana. Leadership and memory are inseparable; authority is accountable to genealogy, land, and future generations.',
+                parallels: [
+                  {
+                    title: 'Nested Systems',
+                    body: 'This can be compared to nested systems where levels of organization carry differentiated function and responsibility.'
+                  },
+                  {
+                    title: 'Governance Theory',
+                    body: 'This parallels contemporary stewardship models that tie legitimacy to accountability and continuity.'
+                  },
+                  {
+                    title: 'Complex Social Fields',
+                    body: 'This resembles relational field models where identity and duty emerge through networked placement.'
+                  }
+                ],
+                whyNow: 'Wā 11 matters today because it reframes leadership away from extraction and toward intergenerational accountability.'
+              })
+            },
+            {
+              id:       'km-wa-12',
+              num:      'KM·W12',
+              title:    'Wā 12 — Wā o nā Pili Aliʻi: Chiefly Relational Lines',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 12 — The Era of Chiefly Relational Lines',
+                heroSubtitle: 'Wā o nā Pili Aliʻi · Governance Through Genealogy',
+                heroLead: 'Wā 12 ties chiefly lines directly to ancestral source, centering authority as relational kuleana.',
+                lines: KUMULIPO_WA_12_LINES,
+                lineTranslations: KUMULIPO_WA_12_TRANSLATIONS,
+                emergence: 'Chiefly relational lines and governance obligations rooted in genealogy.',
+                relationships: 'This wā binds leadership to sacred continuity, land relationship, and social responsibility.',
+                structureRole: 'Wā 12 translates genealogical architecture into political and ethical practice.',
+                deeper: 'Wā 12 teaches that governance is never separate from ancestry. The Kumulipo frames political order as a sacred trust: to lead is to maintain balance among people, place, and genealogy.',
+                parallels: [
+                  {
+                    title: 'Stewardship Governance',
+                    body: 'This can be compared to modern stewardship-based governance models over extractive command structures.'
+                  },
+                  {
+                    title: 'Relational Ethics',
+                    body: 'This parallels ethics frameworks where duty arises from relationship, not individual assertion alone.'
+                  },
+                  {
+                    title: 'Systems Responsibility',
+                    body: 'This resembles systems governance ideas in which decision-makers are accountable to whole-network outcomes.'
+                  }
+                ],
+                whyNow: 'Wā 12 matters today because sustainable governance depends on relational legitimacy, cultural memory, and responsibility to land and community.'
+              })
+            },
+            {
+              id:       'km-wa-13',
+              num:      'KM·W13',
+              title:    'Wā 13 — Wā o ka Hānau Moʻokūʻauhau: Human Genealogical Emergence',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 13 — The Era of Human Genealogical Emergence',
+                heroSubtitle: 'Wā o ka Hānau Moʻokūʻauhau · Humans Within Continuity',
+                heroLead: 'Wā 13 introduces human genealogical lines within the same sacred continuity as earlier life forms.',
+                lines: KUMULIPO_WA_13_LINES,
+                lineTranslations: KUMULIPO_WA_13_TRANSLATIONS,
+                emergence: 'Human lineages emerge as continuation, not interruption, of creation.',
+                relationships: 'This wā places humans in kinship with ocean, land, plants, animals, and ancestors.',
+                structureRole: 'Wā 13 marks the transition from cosmic and chiefly structures into human genealogical identity.',
+                deeper: 'Wā 13 is a corrective to human exceptionalism. The Kumulipo teaches personhood as relational belonging. Human identity inherits responsibility precisely because it is embedded in pre-existing ancestral and ecological networks.',
+                parallels: [
+                  {
+                    title: 'Evolution and Continuity',
+                    body: 'This resonates with modern understandings that humans emerge within broader biological continuity.'
+                  },
+                  {
+                    title: 'Ecological Identity',
+                    body: 'This can be compared to ecological identity frameworks where selfhood is constituted through relations.'
+                  },
+                  {
+                    title: 'Consciousness Studies',
+                    body: 'As a metaphor, this can be placed beside inquiries into consciousness as relationally situated, not isolated.'
+                  }
+                ],
+                whyNow: 'Wā 13 matters today because identity crises, ecological crises, and social fragmentation all call for kinship-based understandings of humanity.'
+              })
+            },
+            {
+              id:       'km-wa-14',
+              num:      'KM·W14',
+              title:    'Wā 14 — Wā o ka Hoʻonui Hanauna: Expansion of Descendant Lines',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 14 — The Era of Expanding Descendant Lines',
+                heroSubtitle: 'Wā o ka Hoʻonui Hanauna · Widening Relational Communities',
+                heroLead: 'Wā 14 expands descendant lines into wider social worlds while maintaining genealogical continuity.',
+                lines: KUMULIPO_WA_14_LINES,
+                lineTranslations: KUMULIPO_WA_14_TRANSLATIONS,
+                emergence: 'Branching descendant relations and expanded peoplehood through continuity of lineage.',
+                relationships: 'This wā connects family, community, and ecology as one widening field of relation.',
+                structureRole: 'Wā 14 scales genealogy outward into social organization and collective identity.',
+                deeper: 'Wā 14 frames expansion as responsibility, not separation. Growth in descendants increases relational obligations to place, memory, and future life. The Kumulipo presents belonging as active practice across generations.',
+                parallels: [
+                  {
+                    title: 'Network Theory',
+                    body: 'This can be compared to branching network models where growth increases relational density and interdependence.'
+                  },
+                  {
+                    title: 'Complex Social Systems',
+                    body: 'This parallels complexity perspectives in which community resilience depends on connected lineage pathways.'
+                  },
+                  {
+                    title: 'Relational Fields',
+                    body: 'As a metaphor, this resembles relational field concepts where identity expands through patterned connection.'
+                  }
+                ],
+                whyNow: 'Wā 14 matters today because sustainable futures require renewed kinship, community memory, and intergenerational cooperation.'
+              })
+            },
+            {
+              id:       'km-wa-15',
+              num:      'KM·W15',
+              title:    'Wā 15 — Wā o ke Kauoha a me ke Kuleana: Charge and Responsibility',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 15 — The Era of Charge and Kuleana',
+                heroSubtitle: 'Wā o ke Kauoha a me ke Kuleana · Ethics of Inherited Duty',
+                heroLead: 'Wā 15 makes explicit that genealogy carries ethical charge: inheritance is obligation, not entitlement.',
+                lines: KUMULIPO_WA_15_LINES,
+                lineTranslations: KUMULIPO_WA_15_TRANSLATIONS,
+                emergence: 'Kuleana appears as integral feature of lineage and memory.',
+                relationships: 'This wā links ancestry, conduct, stewardship, and intergenerational responsibility.',
+                structureRole: 'Wā 15 converts genealogical knowledge into ethical instruction for lived practice.',
+                deeper: 'Wā 15 is the ethical pivot of the sequence. The Kumulipo teaches that knowing one\'s place in creation must become action that protects balance. Knowledge without responsibility is incomplete.',
+                parallels: [
+                  {
+                    title: 'Sustainability Ethics',
+                    body: 'This reflects modern sustainability ethics where current decisions are evaluated by intergenerational impact.'
+                  },
+                  {
+                    title: 'Systems Stewardship',
+                    body: 'This can be compared to stewardship models that prioritize long-term system health over short-term extraction.'
+                  },
+                  {
+                    title: 'Moral Ecology',
+                    body: 'This resonates with emerging frameworks that connect ecological integrity and ethical responsibility.'
+                  }
+                ],
+                whyNow: 'Wā 15 matters today because climate, resource, and social crises demand cultures of responsibility rooted in ancestry and care for future generations.'
+              })
+            },
+            {
+              id:       'km-wa-16',
+              num:      'KM·W16',
+              title:    'Wā 16 — Wā o ke Ao Kanaka: Human Realm in Light',
+              readTime: '7 min',
+              content: buildKumulipoWaContent({
+                waLabel: 'Wā 16 — The Human Realm in Ao',
+                heroSubtitle: 'Wā o ke Ao Kanaka · Culmination in Living Responsibility',
+                heroLead: 'Wā 16 culminates the sequence in human life under light, defined not by dominion but by stewardship and relational intelligence.',
+                lines: KUMULIPO_WA_16_LINES,
+                lineTranslations: KUMULIPO_WA_16_TRANSLATIONS,
+                emergence: 'Human social-ethical accountability across land, sea, sky, and community.',
+                relationships: 'This wā integrates ancestry, ecology, governance, and spiritual responsibility into lived human practice.',
+                structureRole: 'Wā 16 completes the unfolding sequence by defining humanity through kuleana within creation.',
+                deeper: 'Wā 16 is culmination-as-commitment. The Kumulipo does not end with human superiority; it ends with responsibility. Humanity is the stage where relational knowledge must be enacted to sustain balance.',
+                parallels: [
+                  {
+                    title: 'Integrated Systems',
+                    body: 'This can be compared to integrated systems stewardship that links social, ecological, and ethical domains.'
+                  },
+                  {
+                    title: 'Complexity and Governance',
+                    body: 'This parallels complexity-aware governance where long-term resilience depends on relational decision making.'
+                  },
+                  {
+                    title: 'Consciousness and Responsibility',
+                    body: 'As a metaphor, this resonates with consciousness studies that connect awareness with ethical action.'
+                  }
+                ],
+                whyNow: 'Wā 16 matters today because it offers a profound framework for identity, sustainability, and cultural memory: to be human is to mālama relationships that make life possible.'
+              })
+            }
           ]
         },
 

@@ -2126,7 +2126,7 @@
         body.insertAdjacentHTML('beforeend', renderReflectionAccordion(DEFAULT_REFLECTIONS, lesson, 'Reflection Prompts'));
       }
 
-      if (lesson.id === 'km-kumulipo') {
+      if (lesson.id === 'km-kumulipo' || lesson.id.startsWith('km-wa-')) {
         initKumulipoExperience(body);
       }
     }
@@ -2183,6 +2183,37 @@
   function initKumulipoExperience(bodyEl) {
     if (!bodyEl) return;
 
+    const hero = bodyEl.querySelector('.kumu-hero');
+
+    if (hero) {
+      const resetHeroMotion = () => {
+        hero.style.setProperty('--kumu-shift-x', '0px');
+        hero.style.setProperty('--kumu-shift-y', '0px');
+        hero.style.setProperty('--kumu-glow-y', '0px');
+      };
+
+      resetHeroMotion();
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        hero.classList.add('is-visible');
+      } else {
+        const updateHeroMotion = () => {
+          const rect = hero.getBoundingClientRect();
+          const viewportHeight = window.innerHeight || 1;
+          const centerOffset = (rect.top + rect.height * 0.5) - viewportHeight * 0.5;
+          const normalized = Math.max(-1, Math.min(1, centerOffset / viewportHeight));
+
+          hero.style.setProperty('--kumu-shift-x', `${normalized * -10}px`);
+          hero.style.setProperty('--kumu-shift-y', `${normalized * 14}px`);
+          hero.style.setProperty('--kumu-glow-y', `${normalized * 18}px`);
+        };
+
+        updateHeroMotion();
+        window.requestAnimationFrame(updateHeroMotion);
+        window.addEventListener('scroll', updateHeroMotion, { passive: true });
+      }
+    }
+
     const revealItems = Array.from(bodyEl.querySelectorAll('.kumu-reveal'));
 
     if (revealItems.length) {
@@ -2201,6 +2232,25 @@
         revealItems.forEach(item => item.classList.add('is-visible'));
       }
     }
+
+    const accordionGroups = Array.from(bodyEl.querySelectorAll('[data-kumu-wa-accordion]'));
+    accordionGroups.forEach(group => {
+      const items = Array.from(group.querySelectorAll('.kumu-wa-panel'));
+      if (!items.length) return;
+
+      let guard = false;
+      items.forEach(item => {
+        item.addEventListener('toggle', () => {
+          if (guard || !item.open) return;
+
+          guard = true;
+          items.forEach(other => {
+            if (other !== item) other.open = false;
+          });
+          guard = false;
+        });
+      });
+    });
 
     const timeline = bodyEl.querySelector('[data-kumu-wa-timeline]');
     if (!timeline) return;
