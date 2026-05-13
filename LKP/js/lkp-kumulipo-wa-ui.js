@@ -417,7 +417,11 @@
     container.innerHTML = html;
 
     // Reinitialize event listeners for the new view
-    initWaInteractivity(container, lessonMode, () => state?.mode || lessonMode);
+    initWaInteractivity(container, lessonMode, () => {
+      if (window.LESSON_MODE) return window.LESSON_MODE;
+      const modeBtn = document.querySelector('[data-lesson-mode].is-active');
+      return modeBtn ? modeBtn.getAttribute('data-lesson-mode') : lessonMode;
+    });
     
     // Scroll to top of Wā content
     container.scrollIntoView({ behavior: 'smooth', block: 'start' });
