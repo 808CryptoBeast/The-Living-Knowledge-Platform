@@ -611,7 +611,7 @@ const KUMULIPO_WA_PEDAGOGY = {
 };
 
 const KUMULIPO_WA_DEEP_MAP = {
-  1:  { hawaiianTitle: 'Wā o ke Koʻa', englishTitle: 'Pō and Foundational Marine Emergence', movement: 'Breathing the Deep Fold', metaphor: 'the deep fold', crisis: 'Treating origin as empty darkness instead of fertile ancestral depth erases the obligations carried by every later emergence.', intelligence: 'source-attunement', issue: 'climate origin stories', caution: 'A common reduction is to romanticize pō as vague mysticism. This wā names pō as living origin-depth with obligations.', arc: 'This is the first of 16 thresholds. By the end, you will not have learned about the Kumulipo. You will have crossed through it: from the deep breathing of Pō alone, through coral and sea and shoot and root, to the human standing in Ao with Lono in the eye — carrying the dark within, seeing consequence as obligation, and knowing that to be human is to be small among animals and responsible for everything.' },
+  1:  { hawaiianTitle: 'Wā o ke Koʻa', englishTitle: 'Pō and Foundational Marine Emergence', movement: 'Breathing the Deep Fold', metaphor: 'the deep fold', crisis: 'Treating origin as empty darkness instead of fertile ancestral depth erases the obligations carried by every later emergence.', intelligence: 'source-attunement', issue: 'climate origin stories', caution: 'A common reduction is to romanticize pō as vague mysticism. This wā names pō as living origin-depth with obligations.', arc: 'This is the first of 16 wā movements. By the end, you will not have learned about the Kumulipo. You will have crossed through it: from the deep breathing of Pō alone, through coral and sea and shoot and root, to the human standing in Ao with Lono in the eye — carrying the dark within, seeing consequence as obligation, and knowing that to be human is to be small among animals and responsible for everything.' },
   2:  { hawaiianTitle: 'Wā o nā Mea o ke Kai', englishTitle: 'Sea Multiplicity', movement: 'Parting into Relation', metaphor: 'the first parting', crisis: 'If multiplicity is read as inventory for extraction, marine kinship collapses into resource logic.', intelligence: 'patterned abundance discernment', issue: 'ocean exploitation', caution: 'Well-intentioned biodiversity language can still treat beings as data points. This wā insists they are kin in genealogy.' },
   3:  { hawaiianTitle: 'Wā o nā Limu', englishTitle: 'Marine Growth Systems', movement: 'Hardening into Foundation', metaphor: 'the coral foundation', crisis: 'When support layers are ignored, visible abundance fails because nourishment systems are broken first.', intelligence: 'foundation-awareness', issue: 'reef and food-web collapse', caution: 'Another reduction is to celebrate visible species while neglecting limu and nutrient foundations.' },
   4:  { hawaiianTitle: 'Wā o nā Mea Kolo', englishTitle: 'Small and Transitional Forms', movement: 'Crawling into Sensation', metaphor: 'the sea creatures becoming movement', crisis: 'If small and transitional life is dismissed as minor, the chain of continuity is severed at its connective joints.', intelligence: 'threshold attention', issue: 'habitat fragmentation', caution: 'A frequent misread is to rank beings by size and charisma. This wā trains attention to connective life.' },
@@ -626,7 +626,7 @@ const KUMULIPO_WA_DEEP_MAP = {
   13: { hawaiianTitle: 'Wā o ka Hānau Moʻokūʻauhau', englishTitle: 'Human Genealogical Emergence', movement: 'Rooting Humans in Kinship', metaphor: 'the root and shoot', crisis: 'If human emergence is read as crowning achievement, kinship contracts and obligation weakens.', intelligence: 'smallness before grandeur', issue: 'human exceptionalism in technology', caution: 'A frequent misread is to convert genealogy into DNA-only identity and erase ethical relation.' },
   14: { hawaiianTitle: 'Wā o ka Hoʻonui Hanauna', englishTitle: 'Expansion of Descendant Lines', movement: 'Weaving Care at Scale', metaphor: 'the woven roof', crisis: 'Scaling descendants without scaling care produces fragmentation, extraction, and inherited instability.', intelligence: 'scalable care', issue: 'community fragmentation', caution: 'Growth metrics alone misread this wā; expansion must widen responsibility, not just numbers.' },
   15: { hawaiianTitle: 'Wā o ke Kauoha a me ke Kuleana', englishTitle: 'Charge and Responsibility', movement: 'Carrying Weight into Conduct', metaphor: 'the hearth', crisis: 'When inheritance is framed as entitlement, charge becomes possession and kuleana is abandoned.', intelligence: 'discernment of weight', issue: 'intergenerational justice', caution: 'A common misread is moralizing duty as guilt; this wā frames duty as relational clarity and action.' },
-  16: { hawaiianTitle: 'Wā o ke Ao Kanaka', englishTitle: 'Human Realm in Light', movement: 'Seeing Consequence in the Eye', metaphor: 'the eye in the gable', crisis: 'If consequence is ignored, human agency becomes blind force and the full arc is betrayed.', intelligence: 'consequence as vision', issue: 'governance and climate accountability', caution: 'The final reduction is to read culmination as endpoint. This wā begins lived obligation.', arc: 'This is the 16th threshold. You have crossed from the deep breathing of Pō alone, through coral and sea and shoot and root, to this moment: the human standing in Ao with Lono in the eye — carrying the dark within, seeing consequence as obligation, and knowing that to be human is to be small among animals and responsible for everything. This page does not end the learning. It begins the living.' }
+  16: { hawaiianTitle: 'Wā o ke Ao Kanaka', englishTitle: 'Human Realm in Light', movement: 'Seeing Consequence in the Eye', metaphor: 'the eye in the gable', crisis: 'If consequence is ignored, human agency becomes blind force and the full arc is betrayed.', intelligence: 'consequence as vision', issue: 'governance and climate accountability', caution: 'The final reduction is to read culmination as endpoint. This wā begins lived obligation.', arc: 'This is the 16th wā movement. You have crossed from the deep breathing of Pō alone, through coral and sea and shoot and root, to this moment: the human standing in Ao with Lono in the eye — carrying the dark within, seeing consequence as obligation, and knowing that to be human is to be small among animals and responsible for everything. This page does not end the learning. It begins the living.' }
 };
 
 const KUMULIPO_WA_SCIENCE_MAP = {
@@ -705,12 +705,19 @@ function buildScientificResonanceSection({ waNumber, deep, config }) {
     ? ''
     : '<p>This wā is carried primarily through genealogical and ethical description. Scientific resonance is intentionally minimal here to avoid forced comparison and preserve epistemic integrity.</p>';
 
+  const contextualBridge = `<p><strong>Context in this wā:</strong> ${config.waLabel} is working through ${deep.movement.toLowerCase()} with a specific warning: ${deep.crisis} Resonance is useful only if it helps protect ${deep.intelligence} in lived decisions.</p>`;
+  const methodBoundary = '<p><strong>Method boundary:</strong> Scientific frameworks aim for formal explanation and predictive scope, while the Kumulipo here provides genealogical orientation, protocol memory, and kuleana-bearing conduct.</p>';
+  const readingGuidance = '<p><strong>Reading guidance:</strong> Use these parallels to sharpen pattern recognition, then return to the chant line, language, and place-based obligations as the primary interpretive authority.</p>';
+
   return `
   <section class="kumu-section kumu-reveal">
     <h4>Scientific Resonances · Parallel Descriptions</h4>
     <p><em>The following comparisons are not claims of equivalence or prediction. They are invitations to see how different epistemologies, genealogical and scientific, describe related phenomena of emergence, differentiation, and entanglement. Each framework honors its own methods and purposes.</em></p>
+    ${contextualBridge}
     ${scopeNote}
     ${renderedBlocks}
+    ${methodBoundary}
+    ${readingGuidance}
     <h5>Caution · What These Resonances Do Not Mean</h5>
     <p>These resonances do not mean the Kumulipo predicted evolution, quantum theory, or string theory. They do not mean science proves the Kumulipo. They indicate parallel descriptions across distinct epistemologies that can deepen understanding of both without reducing either one.</p>
   </section>
@@ -807,7 +814,7 @@ function buildKumulipoWaContent(config) {
 
   const objectives = [
     `Name the central movement in this wā and explain how it transforms relation without implying linear progress.`,
-    `Recognize the specific crisis in this threshold and describe what is lost when it is ignored or misused.`,
+    `Recognize the specific crisis in this wā and describe what is lost when it is ignored or misused.`,
     `Practice ${deep.intelligence} by connecting this wā to a real decision in community, governance, family, or place.`,
     `Follow how this wā carries pō into ao while preparing ${nextDeep ? `Wā ${waNumber + 1}` : 'ongoing lived kuleana beyond the chant'}.`
   ].slice(0, 5);
@@ -827,7 +834,7 @@ function buildKumulipoWaContent(config) {
   ];
 
   const objectiveContext = [
-    'How this threshold shifts orientation',
+    'How this wā shifts orientation',
     'Where failure modes become visible',
     'How capacity becomes lived conduct',
     'How this wā links backward and forward'
@@ -845,7 +852,7 @@ function buildKumulipoWaContent(config) {
   const selectionNote = config.selectionNote || `These lines were selected because they illuminate ${deep.metaphor} and show how ${config.waLabel} holds both emergence and risk. The Hawaiian lines remain the primary source; the English is an interpretive aid for orientation.`;
 
   const foundationLenses = [
-    `${config.waLabel} should be approached as a threshold in one unbroken genealogical arc, not a standalone episode.`,
+    `${config.waLabel} should be approached as one movement in an unbroken genealogical arc, not a standalone episode.`,
     `This wā is not a story of human ascent; it trains ${deep.intelligence} inside a living more-than-human chain.`,
     `${previousDeep ? `It continues Wā ${waNumber - 1} by carrying ${previousDeep.movement.toLowerCase()} into ${deep.movement.toLowerCase()}.` : 'It opens the sequence by naming pure beginning in pō before visible differentiation.'}`,
     `${nextDeep ? `It prepares Wā ${waNumber + 1} by making possible ${nextDeep.movement.toLowerCase()}.` : 'It prepares the learner to leave the page and begin lived kuleana.'}`,
@@ -938,7 +945,7 @@ function buildKumulipoWaContent(config) {
       <p>${sourceTag('Continuity')} Wā 1 is pure beginning in the deep fold of pō: not emptiness, but charged ancestral potential where relation is born before hierarchy.</p>
       <ul>
         <li><strong>Forward to Wā 2:</strong> The first parting of sea multiplicity becomes possible because Wā 1 establishes generative depth and ordered emergence.</li>
-        <li><strong>Threshold reflection:</strong> At pure beginning, responsibility is seed-form: to witness origin without claiming ownership of it.</li>
+        <li><strong>Origin reflection:</strong> At pure beginning, responsibility is seed-form: to witness origin without claiming ownership of it.</li>
       </ul>
     `
     : waNumber === 16
@@ -953,12 +960,12 @@ function buildKumulipoWaContent(config) {
         <p>${sourceTag('Continuity')} This wā sits between ${previousDeep.metaphor} and ${nextDeep.metaphor}, carrying forward cumulative continuity rather than linear progress.</p>
         <ul>
           <li><strong>From Wā ${waNumber - 1}:</strong> ${previousDeep.movement} gives the structural conditions this wā receives.</li>
-          <li><strong>Toward Wā ${waNumber + 1}:</strong> ${deep.movement} prepares the next threshold of ${nextDeep.movement.toLowerCase()}.</li>
+          <li><strong>Toward Wā ${waNumber + 1}:</strong> ${deep.movement} prepares the next movement of ${nextDeep.movement.toLowerCase()}.</li>
           <li><strong>Arc reminder:</strong> Pō remains active within ao here; genealogy names obligation, not entitlement.</li>
         </ul>
       `;
 
-  const culturalContext = `${sourceTag('Cultural reading')} In ${config.waLabel}, ${config.emergence} ${config.relationships} Within the wider Kumulipo arc, ${config.structureRole} The embedded crisis is explicit: ${deep.crisis} This threshold prepares ${nextDeep ? `Wā ${waNumber + 1} by training ${deep.intelligence} before the next emergence.` : 'the learner to move from study into lived kuleana beyond this page.'}`;
+  const culturalContext = `${sourceTag('Cultural reading')} In ${config.waLabel}, ${config.emergence} ${config.relationships} Within the wider Kumulipo arc, ${config.structureRole} The embedded crisis is explicit: ${deep.crisis} This wā prepares ${nextDeep ? `Wā ${waNumber + 1} by training ${deep.intelligence} before the next emergence.` : 'the learner to move from study into lived kuleana beyond this page.'}`;
 
   const whyAction = config.kuleanaQuestion || `Name one concrete decision you will change this week so ${deep.intelligence} becomes visible in your own place, family, or work.`;
   const whyNow = `${sourceTag('Kuleana now')} ${config.whyNow} In contemporary ${deep.issue}, this wā warns that knowledge without relation becomes extraction. Its intelligence is practical: ${deep.intelligence} as a collective capacity for consequence-aware action. Genealogy here is not memory alone; it is governance, care, and restraint in real decisions. ${whyAction}`;
@@ -986,7 +993,7 @@ ${config.lineTranslations.join('\n')}
   return `
 <section class="kumu-wa-module">
   <section class="kumu-wa-hero kumu-reveal">
-    <p class="kumu-wa-hero__eyebrow">Kumulipo Wā Deep Threshold Study</p>
+    <p class="kumu-wa-hero__eyebrow">Kumulipo Wā Deep Relational Study</p>
     <h2 class="kumu-wa-hero__title">Wā ${waNumber} — ${deep.hawaiianTitle}</h2>
     <p class="kumu-wa-hero__subtitle">${deep.englishTitle} · ${deep.movement}</p>
     <p class="kumu-wa-hero__lead">${config.heroLead}</p>
@@ -994,9 +1001,9 @@ ${config.lineTranslations.join('\n')}
   </section>
 
   <section class="kumu-section kumu-reveal">
-    <h4>Threshold Orientation</h4>
+    <h4>Foundational Orientation</h4>
     <p><strong>Wā ${waNumber} — ${deep.hawaiianTitle}</strong><br>${deep.englishTitle} · ${deep.movement}</p>
-    <p>${sourceTag('Orientation')} This threshold centers ${config.emergence} It should be read through ${deep.metaphor} as a living movement that deepens relation and responsibility. The embedded risk is clear: ${deep.crisis} The capacity this wā cultivates is ${deep.intelligence}, which prepares the learner for ${nextDeep ? `Wā ${waNumber + 1}` : 'living this arc in practice'}.</p>
+    <p>${sourceTag('Orientation')} This wā centers ${config.emergence} It should be read through ${deep.metaphor} as a living movement that deepens relation and responsibility. The embedded risk is clear: ${deep.crisis} The capacity this wā cultivates is ${deep.intelligence}, which prepares the learner for ${nextDeep ? `Wā ${waNumber + 1}` : 'living this arc in practice'}.</p>
     <p class="kumu-wa-provenance">Provenance note: This title movement is an interpretive compass for learning, not a replacement for the chant itself.</p>
   </section>
 

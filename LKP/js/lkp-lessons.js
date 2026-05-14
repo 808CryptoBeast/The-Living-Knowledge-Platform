@@ -288,6 +288,251 @@
     }
   };
 
+  const KEMET_DEEP_FRAMEWORK = {
+    'ke-nun': {
+      movement: 'Holding Primordial Potential',
+      crisis: 'Reducing Nun to emptiness erases the Kemetic understanding of fertile potential and cyclical renewal.',
+      intelligence: 'potential literacy',
+      continuity: 'This lesson grounds the sequence: before order, there is charged depth that remains active in every cycle.',
+      pathways: [
+        'Track how modern institutions confuse emptiness with potential and identify one area where fertile groundwork is being ignored.',
+        'Apply potential literacy to planning by naming what must be protected before visible outputs appear.',
+        'Map how flood, recession, and renewal cycles still shape contemporary ecological and social systems.'
+      ]
+    },
+    'ke-ennead': {
+      movement: 'Differentiating Through Principle Pairs',
+      crisis: 'Treating the Ennead as a pantheon list instead of a process model hides the logic of complementary emergence.',
+      intelligence: 'paired-force discernment',
+      continuity: 'This stage translates primordial depth into patterned differentiation through interdependent principles.',
+      pathways: [
+        'Identify one policy, family, or organizational tension that needs complementary balancing rather than winner-take-all logic.',
+        'Use paired-force discernment to name what each side contributes to long-term order.',
+        'Trace how unresolved pairing tensions become structural instability over time.'
+      ]
+    },
+    'ke-ptah': {
+      movement: 'Bringing Thought into Form Through Word',
+      crisis: 'If speech is treated as neutral, language can generate disorder rather than ordered reality.',
+      intelligence: 'speech-responsibility',
+      continuity: 'Memphite theology deepens the sequence by showing creation as intentional thought enacted through disciplined naming.',
+      pathways: [
+        'Audit one sphere of language in your context where naming is currently producing confusion or harm.',
+        'Apply speech-responsibility by defining one phrase or policy term with precision and ethical intent.',
+        'Track how language choices alter trust, coordination, and collective direction.'
+      ]
+    },
+    'ke-duat': {
+      movement: 'Crossing Night Toward Renewal',
+      crisis: 'Treating the Duat as superstition hides its disciplined model of transformation through trial.',
+      intelligence: 'transformational endurance',
+      continuity: 'This lesson carries Maʻat into liminal space where renewal is earned through passage, not granted automatically.',
+      pathways: [
+        'Map one ongoing transition where endurance and ethical navigation matter more than speed.',
+        'Define what must be released and what must be preserved during your current night-journey phase.',
+        'Practice transformational endurance by setting one recurring ritual that stabilizes passage.'
+      ]
+    },
+    'ke-maat': {
+      movement: 'Balancing Cosmic and Social Order',
+      crisis: 'When Maʻat is reduced to morality slogans, systemic justice and ecological accountability disappear.',
+      intelligence: 'integrated justice reasoning',
+      continuity: 'Maʻat converts cosmology into lived ethics across person, polity, ecology, and afterlife orientation.',
+      pathways: [
+        'Identify one area where truth, justice, and ecology are being separated and integrate them into one accountability frame.',
+        'Apply integrated justice reasoning to one real conflict and document the tradeoffs clearly.',
+        'Trace how small ethical distortions scale into institutional disorder.'
+      ]
+    },
+    'ke-maat-politics': {
+      movement: 'Submitting Rule to Principle',
+      crisis: 'When rulers claim to define truth, principle is inverted and governance becomes extraction.',
+      intelligence: 'principle-first governance',
+      continuity: 'This lesson extends Maʻat by insisting authority remains accountable to a prior ethical order.',
+      pathways: [
+        'Assess one leadership structure in your context and identify whether principle serves power or power serves principle.',
+        'Design one governance safeguard that protects ethical order from personality capture.',
+        'Track how humility practices alter leadership legitimacy over time.'
+      ]
+    },
+    'ke-medunetjer': {
+      movement: 'Encoding Reality in Sacred Sign',
+      crisis: 'Reducing medu netjer to decorative script severs language from memory, power, and continuity.',
+      intelligence: 'symbolic precision',
+      continuity: 'Writing becomes a technology of continuity: recording thought, law, ritual, and identity across millennia.',
+      pathways: [
+        'Identify one modern communication channel where symbolic precision has degraded and causes recurring misunderstanding.',
+        'Apply symbolic precision by redesigning one message for clarity, memory, and consequence.',
+        'Trace what is lost when a culture cannot read its own archive.'
+      ]
+    },
+    'ke-medicine': {
+      movement: 'Healing Through Integrated Order',
+      crisis: 'Splitting body and spirit frameworks can produce treatment without restoration of balance.',
+      intelligence: 'whole-system healing logic',
+      continuity: 'Kemetic medicine carries Maʻat into diagnosis and care, integrating procedure, remedy, and ethical orientation.',
+      pathways: [
+        'Map one health challenge using physical, relational, and structural factors instead of a single-cause model.',
+        'Apply whole-system healing logic by identifying one preventive intervention and one restorative intervention together.',
+        'Track how ethical conditions shape health outcomes in your community context.'
+      ]
+    },
+    'ke-seshat': {
+      movement: 'Measuring to Sustain Civilization',
+      crisis: 'When measurement is detached from meaning, data can optimize harm instead of order.',
+      intelligence: 'meaningful measurement',
+      continuity: 'Seshat ties writing, architecture, and recordkeeping into a civilizational memory infrastructure.',
+      pathways: [
+        'Audit one metric system in your work/community and identify what important reality it currently excludes.',
+        'Redesign one measure so it reflects long-term stability rather than short-term output only.',
+        'Track how better records improve accountability across generations.'
+      ]
+    },
+    'ke-nile-stars': {
+      movement: 'Synchronizing Earth Cycles and Sky Time',
+      crisis: 'Ignoring seasonal and celestial timing breaks planning, storage, and collective resilience.',
+      intelligence: 'temporal alignment',
+      continuity: 'This lesson aligns cosmology and agriculture through calendar intelligence and environmental observation.',
+      pathways: [
+        'Map one recurring cycle in your context and align planning to cycle reality rather than arbitrary deadlines.',
+        'Apply temporal alignment by setting one decision checkpoint to seasonal indicators.',
+        'Track the cost of mistimed coordination across one full cycle.'
+      ]
+    }
+  };
+
+  function buildKemetDeepScaffold(lesson) {
+    const meta = KEMET_DEEP_FRAMEWORK[lesson.id] || {
+      movement: 'Interpreting Through Kemetic Relational Logic',
+      crisis: 'Flattening this lesson into trivia obscures its civilizational intelligence and practical implications.',
+      intelligence: 'contextual discernment',
+      continuity: 'This lesson should be read as part of a coherent Kemetic architecture linking cosmology, ethics, knowledge, and governance.',
+      pathways: [
+        'Identify one practical domain where this lesson offers clearer orientation than default modern assumptions.',
+        'Apply the lesson intelligence in one concrete decision and document consequence.',
+        'Track what changes when relation and responsibility are centered.'
+      ]
+    };
+
+    const objectiveCards = [
+      {
+        title: 'Movement Clarity',
+        context: 'How this lesson transforms orientation',
+        objective: `Name the core movement in ${lesson.title} and explain how it changes relation, not just belief.`,
+        reveal: `Knowledge reveal: The core movement is ${meta.movement.toLowerCase()}, which reframes knowledge as a living discipline rather than static information.`
+      },
+      {
+        title: 'Crisis Visibility',
+        context: 'Where failure mode appears',
+        objective: 'Recognize the lesson-specific crisis and describe what collapses when it is ignored, misread, or weaponized.',
+        reveal: `Knowledge reveal: The crisis is ${meta.crisis.toLowerCase()} The loss appears in ethics, governance, memory, and social resilience.`
+      },
+      {
+        title: 'Practice Intelligence',
+        context: 'How capacity becomes conduct',
+        objective: `Practice ${meta.intelligence} in one contemporary context such as leadership, education, health, or community coordination.`,
+        reveal: `Knowledge reveal: ${meta.intelligence} becomes visible when principle and consequence are held together in decision-making.`
+      },
+      {
+        title: 'Continuity Thread',
+        context: 'How this lesson joins the larger arc',
+        objective: 'Connect this lesson to the wider Kemetic architecture so cosmology, ethics, and institutions are read as one system.',
+        reveal: `Knowledge reveal: ${meta.continuity}`
+      }
+    ].map(item => `
+      <article class="kumu-wa-objective-card">
+        <h5>${item.title}</h5>
+        <p class="kumu-wa-objective-card__context">${item.context}</p>
+        <p><strong>${item.objective}</strong></p>
+        <p>${item.reveal}</p>
+      </article>
+    `).join('');
+
+    const pathways = (meta.pathways || [])
+      .map(item => `<li>${item}</li>`)
+      .join('');
+
+    const scientificIntro = `These resonances are descriptive bridges only. They help learners compare patterns without collapsing distinct knowledge systems.`;
+    const scientificAlignment = `A contemporary systems lens can describe this lesson as an account of patterned relation and emergent order, especially through ${meta.movement.toLowerCase()}.`;
+    const scientificDifference = `Kemetic framing keeps ethical and sacred accountability at the center, while many modern models remain descriptive, model-bound, and method-scoped.`;
+    const scientificContext = `In this lesson, the practical emphasis is ${meta.intelligence}: resonance is useful only if it clarifies conduct, responsibility, and social consequence.`;
+    const scientificMethodBoundary = `Modern science seeks formal explanation and testable prediction; Kemetic knowledge here orients relational life, civic ethics, and continuity practices.`;
+    const scientificCaution = `Parallel description does not imply equivalence, prediction, origin-claim, or replacement of Kemetic knowledge by modern science.`;
+
+    return `
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Foundational Orientation</h4>
+        <p><strong>${lesson.num} · ${lesson.title}</strong></p>
+        <p><span class="kumu-wa-source-tag">Orientation</span> This lesson centers ${meta.movement.toLowerCase()} and should be read as a living Kemetic knowledge foundation. The embedded risk is clear: ${meta.crisis} The intelligence cultivated here is ${meta.intelligence}.</p>
+        <p class="kumu-wa-provenance">Provenance note: This scaffold is an interpretive guide. Primary lesson material below remains the source ground.</p>
+      </section>
+
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Learning Objectives</h4>
+        <div class="kumu-wa-objective-grid">
+          ${objectiveCards}
+        </div>
+      </section>
+
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Deepen Study Pathways</h4>
+        <ul>${pathways}</ul>
+      </section>
+
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Cultural Meaning in Kemetic Context</h4>
+        <p>This lesson should be held inside Kemetic relational intelligence: cosmology, governance, language, healing, and memory are interdependent domains rather than isolated subjects.</p>
+        <p>The practical instruction is to read principle and consequence together. Knowledge is complete only when it can sustain balance in lived systems.</p>
+      </section>
+
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Deeper Interpretation</h4>
+        <p><strong>Core movement:</strong> ${meta.movement}.</p>
+        <p><strong>Core crisis:</strong> ${meta.crisis}</p>
+        <p><strong>Cultivated intelligence:</strong> ${meta.intelligence} as disciplined action across personal, social, and institutional life.</p>
+      </section>
+
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Modern Parallels</h4>
+        <ul>
+          <li>Systems governance: stable institutions require principle constraints, not only technical efficiency.</li>
+          <li>Knowledge stewardship: archives, naming, and records shape what a society can remember, repair, and transmit.</li>
+          <li>Civic resilience: long-term order depends on balancing ethical, ecological, and social realities together.</li>
+        </ul>
+      </section>
+
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Scientific Resonances · Parallel Descriptions</h4>
+        <p><span class="kumu-wa-source-tag">Purpose</span> ${scientificIntro}</p>
+        <p><span class="kumu-wa-source-tag">Alignment</span> ${scientificAlignment}</p>
+        <p><span class="kumu-wa-source-tag">Difference</span> ${scientificDifference}</p>
+        <p><span class="kumu-wa-source-tag">Lesson context</span> ${scientificContext}</p>
+        <p><span class="kumu-wa-source-tag">Method boundary</span> ${scientificMethodBoundary}</p>
+        <p><span class="kumu-wa-source-tag">Caution</span> ${scientificCaution}</p>
+      </section>
+
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Common Misreadings</h4>
+        <ul>
+          <li>Reading the material as mythic ornament instead of civilizational method.</li>
+          <li>Separating cosmology from ethics and governance.</li>
+          <li>Treating symbolic language as decorative rather than operational.</li>
+        </ul>
+      </section>
+
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Why This Lesson Matters Today</h4>
+        <p>This lesson matters because it trains discernment under complexity: how to align meaning, action, and consequence without collapsing into reduction or fragmentation.</p>
+        <p>Its contemporary value is practical: communities, institutions, and learners can use this intelligence to restore continuity where disorder has been normalized.</p>
+      </section>
+
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Continuity Anchor</h4>
+        <p>${meta.continuity}</p>
+      </section>
+    `;
+  }
+
   const DEFAULT_REFLECTIONS = [
     'What is the deepest idea this lesson preserves — and for whom?',
     'How does this knowledge connect land, sea, sky, family, or community?',
@@ -2118,9 +2363,16 @@
     const body = document.getElementById('lessonBody');
 
     if (body) {
-      body.innerHTML = state.mode === 'keiki'
-        ? renderKeikiContent(lesson)
-        : transformContent(lesson.content, lesson);
+      if (state.mode === 'keiki') {
+        body.innerHTML = renderKeikiContent(lesson);
+      } else {
+        const baseContent = transformContent(lesson.content, lesson);
+        const kemetScaffold = lesson.id.startsWith('ke-')
+          ? buildKemetDeepScaffold(lesson)
+          : '';
+
+        body.innerHTML = kemetScaffold + baseContent;
+      }
 
       if (state.mode === 'scholar' && !body.querySelector('.cv-reflection')) {
         body.insertAdjacentHTML('beforeend', renderReflectionAccordion(DEFAULT_REFLECTIONS, lesson, 'Reflection Prompts'));
