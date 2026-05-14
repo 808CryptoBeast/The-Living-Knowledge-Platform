@@ -629,6 +629,94 @@ const KUMULIPO_WA_DEEP_MAP = {
   16: { hawaiianTitle: 'Wā o ke Ao Kanaka', englishTitle: 'Human Realm in Light', movement: 'Seeing Consequence in the Eye', metaphor: 'the eye in the gable', crisis: 'If consequence is ignored, human agency becomes blind force and the full arc is betrayed.', intelligence: 'consequence as vision', issue: 'governance and climate accountability', caution: 'The final reduction is to read culmination as endpoint. This wā begins lived obligation.', arc: 'This is the 16th threshold. You have crossed from the deep breathing of Pō alone, through coral and sea and shoot and root, to this moment: the human standing in Ao with Lono in the eye — carrying the dark within, seeing consequence as obligation, and knowing that to be human is to be small among animals and responsible for everything. This page does not end the learning. It begins the living.' }
 };
 
+const KUMULIPO_WA_SCIENCE_MAP = {
+  1: ['quantum', 'string'],
+  2: ['quantum', 'string'],
+  3: ['string'],
+  4: ['darwin'],
+  5: ['darwin'],
+  6: [],
+  7: [],
+  8: ['darwin'],
+  9: ['quantum'],
+  10: ['quantum', 'string'],
+  11: ['string'],
+  12: [],
+  13: ['darwin'],
+  14: ['darwin', 'quantum'],
+  15: ['darwin'],
+  16: ['darwin', 'quantum', 'string']
+};
+
+function buildScientificResonanceSection({ waNumber, deep, config }) {
+  const frameworks = KUMULIPO_WA_SCIENCE_MAP[waNumber] || [];
+
+  const blocks = {
+    darwin: {
+      title: 'Resonance with Charles Darwin · Evolution by Descent',
+      paragraphs: [
+        `${config.waLabel} resonates with Darwinian descent where branching continuity matters: forms emerge through deep time, and no being stands outside lineage. The Kumulipo holds this as genealogical relation rather than mechanism language.`,
+        'Darwinian frameworks explain diversification through natural selection and inherited variation. This wā adds an ethical register: descent carries kuleana, so genealogy is obligation, not entitlement.'
+      ],
+      alignment: 'Both frameworks place humans within a broader lineage rather than above other beings.',
+      difference: 'Darwinian theory explains mechanism; this wā centers relational and ethical consequence.'
+    },
+    quantum: {
+      title: 'Resonance with Quantum Theory · Entanglement and Observation',
+      paragraphs: [
+        `${config.waLabel} resonates with quantum non-separability in how relation precedes isolated units. The chant framework treats beings as already interconnected within one unfolding field of emergence.`,
+        waNumber === 16
+          ? 'At Wā 16, Lono-i-ka-maka sharpens this resonance: seeing is participatory. Observation is not detached; it changes what becomes actionable and binds witness to response.'
+          : waNumber === 9
+            ? 'At Wā 9, the turn toward ao resonates with threshold observation: visibility changes the field, yet pō remains active as source-depth within what appears.'
+            : 'Quantum descriptions often model measurement and collapse mathematically. This wā frames participation genealogically and ethically, emphasizing conduct rather than instrument readout.'
+      ],
+      alignment: 'Both frameworks reject a fully detached observer and emphasize relation over isolation.',
+      difference: 'Quantum theory seeks predictive formalism; this wā seeks relational orientation and kuleana in practice.'
+    },
+    string: {
+      title: 'Resonance with String Theory · Vibrational Emergence and Hidden Dimensions',
+      paragraphs: [
+        `${config.waLabel} resonates with string-theory intuitions where visible form emerges from deeper, less-visible structure. The chant describes emergence from folded or hidden substrata in ways that invite parallel description, not equivalence.`,
+        waNumber === 16
+          ? 'The naming of Kelea-nui-noho-ana-ʻapiʻapi in this threshold aligns with the image of folded structure: what appears in ao depends on what remains concealed and compressed in depth.'
+          : waNumber === 11
+            ? 'The bent geometry of piʻo in this threshold echoes curved and folded spatial imagination. The Kumulipo treats this as cosmological relation, while string theory treats it as mathematical structure.'
+            : 'String frameworks pursue mathematically constrained models of hidden dimensions and vibration. This wā contributes genealogical meaning and relational consequence to that pattern language.'
+      ],
+      alignment: 'Both describe visible reality as dependent on deeper folded or hidden structures.',
+      difference: 'String theory is mathematical and test-oriented; this wā is genealogical, ethical, and place-anchored.'
+    }
+  };
+
+  const renderedBlocks = frameworks.map(key => {
+    const item = blocks[key];
+    if (!item) return '';
+    return `
+      <h5>${item.title}</h5>
+      <p>${item.paragraphs[0]}</p>
+      <p>${item.paragraphs[1]}</p>
+      <p><strong>Key alignment:</strong> ${item.alignment}</p>
+      <p><strong>Key difference:</strong> ${item.difference}</p>
+    `;
+  }).join('');
+
+  const scopeNote = frameworks.length
+    ? ''
+    : '<p>This wā is carried primarily through genealogical and ethical description. Scientific resonance is intentionally minimal here to avoid forced comparison and preserve epistemic integrity.</p>';
+
+  return `
+  <section class="kumu-section kumu-reveal">
+    <h4>Scientific Resonances · Parallel Descriptions</h4>
+    <p><em>The following comparisons are not claims of equivalence or prediction. They are invitations to see how different epistemologies, genealogical and scientific, describe related phenomena of emergence, differentiation, and entanglement. Each framework honors its own methods and purposes.</em></p>
+    ${scopeNote}
+    ${renderedBlocks}
+    <h5>Caution · What These Resonances Do Not Mean</h5>
+    <p>These resonances do not mean the Kumulipo predicted evolution, quantum theory, or string theory. They do not mean science proves the Kumulipo. They indicate parallel descriptions across distinct epistemologies that can deepen understanding of both without reducing either one.</p>
+  </section>
+  `;
+}
+
 function getDefaultIntracrisesForWa(waNumber) {
   const map = {
     1: [
@@ -874,6 +962,7 @@ function buildKumulipoWaContent(config) {
 
   const whyAction = config.kuleanaQuestion || `Name one concrete decision you will change this week so ${deep.intelligence} becomes visible in your own place, family, or work.`;
   const whyNow = `${sourceTag('Kuleana now')} ${config.whyNow} In contemporary ${deep.issue}, this wā warns that knowledge without relation becomes extraction. Its intelligence is practical: ${deep.intelligence} as a collective capacity for consequence-aware action. Genealogy here is not memory alone; it is governance, care, and restraint in real decisions. ${whyAction}`;
+  const scientificResonancesSection = buildScientificResonanceSection({ waNumber, deep, config });
 
   const chantExcerpt = Array.isArray(config.lines) && config.lines.length
     ? `
@@ -983,6 +1072,8 @@ ${config.lineTranslations.join('\n')}
     </table>
     <callout type="bridge"><strong>Caution:</strong> ${deep.caution}</callout>
   </section>
+
+  ${scientificResonancesSection}
 
   <section class="kumu-section kumu-reveal">
     <h4>Why This Wā Matters Today · Kuleana Now</h4>
