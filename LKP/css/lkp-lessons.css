@@ -689,6 +689,51 @@ strong { color: rgba(255,239,198,0.96); }
   margin-top: 4px;
 }
 
+.kumu-wa-bridge {
+  margin: 4px 0 10px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(143,160,255,0.22);
+  background:
+    radial-gradient(110% 110% at 100% 0%, rgba(143,160,255,0.10), transparent 42%),
+    rgba(6,12,31,0.76);
+}
+
+.kumu-wa-bridge h5 {
+  margin: 0 0 9px;
+  color: rgba(220,229,255,0.95);
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.kumu-wa-bridge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 9px;
+}
+
+.kumu-wa-bridge-card {
+  padding: 10px 11px;
+  border-radius: 10px;
+  border: 1px solid rgba(143,160,255,0.18);
+  background: rgba(143,160,255,0.06);
+}
+
+.kumu-wa-bridge-card h5 {
+  margin: 0 0 6px;
+  color: rgba(255,234,176,0.95);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.kumu-wa-bridge-card p {
+  margin: 0;
+  color: rgba(205,225,246,0.9);
+  line-height: 1.63;
+}
+
 .kumu-wa-vocab {
   margin: 2px 0 10px;
   padding: 11px 14px;
@@ -711,6 +756,10 @@ strong { color: rgba(255,239,198,0.96); }
   gap: 7px;
 }
 
+.kumu-wa-vocab__item {
+  margin: 0;
+}
+
 .kumu-wa-vocab__chip {
   display: inline-flex;
   align-items: center;
@@ -723,6 +772,30 @@ strong { color: rgba(255,239,198,0.96); }
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.02em;
+  cursor: pointer;
+  list-style: none;
+}
+
+.kumu-wa-vocab__chip::-webkit-details-marker {
+  display: none;
+}
+
+.kumu-wa-vocab__item[open] .kumu-wa-vocab__chip {
+  border-color: rgba(240,201,106,0.4);
+  background: rgba(240,201,106,0.12);
+  color: rgba(255,238,193,0.96);
+}
+
+.kumu-wa-vocab__meaning {
+  margin-top: 6px;
+  max-width: 240px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(84,198,238,0.2);
+  background: rgba(6,12,31,0.92);
+  color: rgba(205,225,246,0.9);
+  font-size: 0.78rem;
+  line-height: 1.55;
 }
 
 .kumu-wa-panel {
@@ -827,6 +900,12 @@ strong { color: rgba(255,239,198,0.96); }
   margin-top: 6px;
 }
 
+.kumu-wa-panel__list--context {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
 .kumu-wa-misreadings {
   margin-top: 10px;
 }
@@ -869,6 +948,10 @@ strong { color: rgba(255,239,198,0.96); }
 
 @media (max-width: 860px) {
   .kumu-parallel-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kumu-wa-bridge-grid {
     grid-template-columns: 1fr;
   }
 

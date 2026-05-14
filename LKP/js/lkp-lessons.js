@@ -2552,6 +2552,28 @@
         return;
       }
 
+      const vocabSummary = event.target.closest('.kumu-wa-vocab__item > summary');
+      if (vocabSummary) {
+        event.preventDefault();
+
+        const item = vocabSummary.parentElement;
+        const list = item?.closest('.kumu-wa-vocab__chips');
+
+        if (item) {
+          const nextOpen = !item.open;
+
+          if (list) {
+            list.querySelectorAll('.kumu-wa-vocab__item').forEach(entry => {
+              entry.open = false;
+            });
+          }
+
+          item.open = nextOpen;
+        }
+
+        return;
+      }
+
       const cultureFilter = event.target.closest('[data-culture-filter]');
 
       if (cultureFilter) {

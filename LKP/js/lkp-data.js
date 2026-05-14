@@ -319,7 +319,300 @@ const KUMULIPO_WA_16_TRANSLATIONS = [
   'Until Lono-i-ka-maka.'
 ];
 
+const KUMULIPO_WA_PEDAGOGY = {
+  1: {
+    vocabulary: [
+      { term: 'Pō', meaning: 'The fertile darkness of origin, not emptiness but the source condition of becoming.' },
+      { term: 'Koʻa', meaning: 'Coral or coral-form emergence, often read as one of the first foundational thresholds of life.' },
+      { term: 'Kumulipo', meaning: 'The sacred creation chant whose name evokes the deep source, foundation, and night of origin.' },
+      { term: 'Kuleana', meaning: 'The responsibility inherited through relationship, knowledge, and belonging.' }
+    ],
+    foundationCards: [
+      { title: 'Source-Depth', body: 'Read Wā 1 as origin in fertile depth. Darkness here is a source condition from which becoming emerges.' },
+      { title: 'Heat and Turning', body: 'The opening emphasizes motion, heat, and turning. Creation begins as transformation before stable form appears.' },
+      { title: 'Relational Beginning', body: 'Existence begins in relation. The first lesson is not separation, but interdependence.' }
+    ],
+    commonMisreadings: [
+      'Treating pō as emptiness instead of generative depth.',
+      'Reading the opening as static description rather than active becoming.',
+      'Missing that Wā 1 establishes the ethical basis for later kuleana.'
+    ]
+  },
+  2: {
+    vocabulary: [
+      { term: 'Kai', meaning: 'The sea or ocean domain, not background space but a living genealogical field.' },
+      { term: 'Iʻa', meaning: 'Fish or marine beings named as kin within the unfolding genealogy of ocean life.' },
+      { term: 'Powehiwehi', meaning: 'A profound depth of darkness associated here with the generative sea-born emergence of life.' },
+      { term: 'Moʻokūʻauhau', meaning: 'Genealogical continuity, the lineal thread linking marine multiplicity into one living order.' }
+    ],
+    foundationCards: [
+      { title: 'Abundance with Order', body: 'Multiplicity here is structured emergence within an ocean genealogy, not random excess.' },
+      { title: 'Marine Kinship', body: 'Sea life appears as related presences in one unfolding field, not separate resource categories.' },
+      { title: 'Ocean Memory', body: 'The sea acts as a living archive of continuity, diversification, and ancestral relation.' }
+    ],
+    commonMisreadings: [
+      'Reducing this wā to a species list instead of a genealogy.',
+      'Treating abundance as permission for extraction.',
+      'Missing that marine diversity is framed as ancestral continuity.'
+    ]
+  },
+  3: {
+    vocabulary: [
+      { term: 'Limu', meaning: 'Sea growths and algae-like foundational life that nourish and sustain later abundance.' },
+      { term: 'Hānau', meaning: 'To be born or brought forth, marking emergence as genealogical process.' },
+      { term: 'ʻĀina', meaning: 'Land, but also that which feeds; a relational concept of sustenance and place.' },
+      { term: 'Kai', meaning: 'The sea as a nourishing system whose support layers matter as much as visible creatures.' }
+    ],
+    foundationCards: [
+      { title: 'Small Foundations', body: 'Wā 3 asks readers to value the sustaining layers that make later life possible.' },
+      { title: 'Nourishment', body: 'Growth systems are central. What feeds and supports life is sacred, not secondary.' },
+      { title: 'Invisible Support', body: 'The least visible processes may carry the greatest structural importance.' }
+    ],
+    commonMisreadings: [
+      'Skipping over limu and support systems as less important.',
+      'Reading nourishment as only material rather than relational.',
+      'Ignoring foundational ecological intelligence.'
+    ]
+  },
+  4: {
+    vocabulary: [
+      { term: 'Kolo', meaning: 'Creeping or crawling life, signaling transitional forms and connective movement.' },
+      { term: 'Pili', meaning: 'Connection, closeness, or relation; a useful lens for understanding linked life forms.' },
+      { term: 'Honu', meaning: 'Sea turtle, a being of threshold and relation between ecological zones.' },
+      { term: 'Moʻo', meaning: 'Lizard or reptilian form, often tied to transitional presence and storied relation in Hawaiian thought.' }
+    ],
+    foundationCards: [
+      { title: 'Threshold Life', body: 'This wā centers beings that connect zones, scales, and phases of emergence.' },
+      { title: 'Small Does Not Mean Minor', body: 'The chant resists the idea that value follows size.' },
+      { title: 'Pattern from Many Motions', body: 'Small movements generate larger continuity and system coherence.' }
+    ],
+    commonMisreadings: [
+      'Treating smaller forms as lesser in meaning.',
+      'Overlooking thresholds and transitional life.',
+      'Reading interconnection as hierarchy instead of reciprocity.'
+    ]
+  },
+  5: {
+    vocabulary: [
+      { term: 'Iʻa Nui', meaning: 'Larger sea beings whose visibility grows while dependence on earlier layers remains.' },
+      { term: 'Kai', meaning: 'The oceanic field that continues to hold and condition all later marine abundance.' },
+      { term: 'Puaʻa', meaning: 'Pig, appearing here as a named life form within the chant’s expanding genealogical ordering.' },
+      { term: 'ʻUla', meaning: 'Redness or red form, a marker of appearance, distinction, and named variation.' }
+    ],
+    foundationCards: [
+      { title: 'Visibility and Dependence', body: 'Larger beings become more visible, but visibility never cancels dependence.' },
+      { title: 'Scale Within Continuity', body: 'Bigger forms still belong to the genealogical layers beneath them.' },
+      { title: 'Prominence Without Dominance', body: 'Size is not superiority. Relation still governs meaning.' }
+    ],
+    commonMisreadings: [
+      'Mistaking larger forms for independent power.',
+      'Treating visible life as more important than support systems.',
+      'Reading scale as dominance rather than interdependence.'
+    ]
+  },
+  6: {
+    vocabulary: [
+      { term: 'Manu Kai', meaning: 'Sea-associated birds or boundary-crossing beings linking ocean and sky.' },
+      { term: 'Uka', meaning: 'Upland or inland space, often paired with shore to show relational geography.' },
+      { term: 'Kai', meaning: 'Sea-space understood not in isolation but in exchange with other domains.' },
+      { term: 'Pili', meaning: 'Relation and connection, especially across thresholds that might seem separate.' }
+    ],
+    foundationCards: [
+      { title: 'Boundary-Crossing', body: 'Life moves across ocean and sky, linking what might seem like separate domains.' },
+      { title: 'Porous Worlds', body: 'Sea, land, and sky are interactive, not sealed compartments.' },
+      { title: 'Movement as Knowledge', body: 'Routes and crossings reveal the intelligence of relation.' }
+    ],
+    commonMisreadings: [
+      'Seeing land, sea, and sky as isolated compartments.',
+      'Ignoring movement as a source of ecological meaning.',
+      'Reducing boundary-crossing life to scenery.'
+    ]
+  },
+  7: {
+    vocabulary: [
+      { term: 'ʻĀina', meaning: 'Land as nourishing relation, not merely territory or surface.' },
+      { term: 'Ulu', meaning: 'Growth, sprouting, and later also breadfruit in Hawaiian knowledge worlds.' },
+      { term: 'Anoano', meaning: 'Seed-form, generative beginning, or subtle formative potential.' },
+      { term: 'Kualono', meaning: 'Ridge or upland line, a place marker for where emergence settles into form.' }
+    ],
+    foundationCards: [
+      { title: 'Land Emergence', body: 'Terrestrial growth appears here as a continuation of earlier oceanic becoming.' },
+      { title: 'Plant Intelligence', body: 'Plant worlds are active, sustaining presences rather than passive background.' },
+      { title: 'Fertility as Relation', body: 'Healthy land is the result of aligned relationships, not isolated control.' }
+    ],
+    commonMisreadings: [
+      'Treating land growth as disconnected from marine ancestry.',
+      'Reducing plants to scenery instead of primary support.',
+      'Reading fertility as property rather than ancestral infrastructure.'
+    ]
+  },
+  8: {
+    vocabulary: [
+      { term: 'Holoholona', meaning: 'Animals or moving terrestrial life, understood within kinship rather than outside it.' },
+      { term: 'ʻĀina', meaning: 'Land as living context and sustaining ground for terrestrial relation.' },
+      { term: 'Laʻilaʻi', meaning: 'A foundational female figure in Kumulipo genealogy, central to later human emergence.' },
+      { term: 'Kiʻi', meaning: 'A male figure named in the genealogical sequence, important in the emergence of human lines.' }
+    ],
+    foundationCards: [
+      { title: 'Animal Worlds', body: 'Animal life expands terrestrial relation without breaking kinship logic.' },
+      { title: 'More Than Human-Centered', body: 'Meaning exists before humans arrive; value is already distributed across life.' },
+      { title: 'Shared Living Field', body: 'Habitats and movements matter more than human ranking.' }
+    ],
+    commonMisreadings: [
+      'Reading this stage as setup for human superiority.',
+      'Treating animals as external resources rather than kin.',
+      'Missing the already meaningful world before human emergence.'
+    ]
+  },
+  9: {
+    vocabulary: [
+      { term: 'Ao', meaning: 'Light, visibility, and the humanly inhabited realm that emerges in continuity with pō.' },
+      { term: 'Pō', meaning: 'Source-depth that remains present even as ao unfolds.' },
+      { term: 'Huli', meaning: 'Turning, transformation, or change in state rather than abrupt rupture.' },
+      { term: 'Lani', meaning: 'Heaven, sky, or elevated domain, often signaling cosmic relation and ordering.' }
+    ],
+    foundationCards: [
+      { title: 'Turning, Not Rupture', body: 'Ao emerges from pō without rejecting its source.' },
+      { title: 'Visibility from Depth', body: 'What becomes visible remains rooted in what came before.' },
+      { title: 'Continuity Through Change', body: 'Transformation is continuity in a new register, not severance.' }
+    ],
+    commonMisreadings: [
+      'Treating ao as a total break from pō.',
+      'Reading transition as replacement rather than continuity.',
+      'Missing that visibility still depends on generative depth.'
+    ]
+  },
+  10: {
+    vocabulary: [
+      { term: 'Akua', meaning: 'Divine or sacred ancestral presences within the genealogical ordering of the chant.' },
+      { term: 'Inoa', meaning: 'Name; in Hawaiian thought, naming can locate beings within relation and significance.' },
+      { term: 'Hānau', meaning: 'Birth or emergence, signaling genealogical becoming.' },
+      { term: 'Moʻokūʻauhau', meaning: 'Genealogy as remembered continuity and ordered relationship.' }
+    ],
+    foundationCards: [
+      { title: 'Genealogy as Ordering', body: 'Sacred order becomes legible through named ancestral relations.' },
+      { title: 'Naming as Placement', body: 'Names do more than label; they place beings within a structured field of relation.' },
+      { title: 'Memory as Structure', body: 'Genealogy preserves cosmology through disciplined sequence.' }
+    ],
+    commonMisreadings: [
+      'Reducing divine genealogy to a list of names.',
+      'Treating naming as decorative rather than structural.',
+      'Missing memory as a core knowledge system.'
+    ]
+  },
+  11: {
+    vocabulary: [
+      { term: 'Hanauna', meaning: 'Generation, descendant line, or lineage grouping within a larger ancestral sequence.' },
+      { term: 'Aliʻi', meaning: 'Chiefly rank or leadership, ideally tied to responsibility, not mere privilege.' },
+      { term: 'Kuleana', meaning: 'Obligation, duty, and accountable relation carried by inherited placement.' },
+      { term: 'Lani', meaning: 'Sky, heaven, or elevated sacred orientation that frames high genealogical lines.' }
+    ],
+    foundationCards: [
+      { title: 'Higher Duty', body: 'Elevated lineages mean intensified responsibility, not mere prestige.' },
+      { title: 'Rank with Accountability', body: 'Lineal distinction carries ethical weight and reciprocal obligation.' },
+      { title: 'Leadership in Relation', body: 'Authority has meaning only when tied to land, ancestry, and future life.' }
+    ],
+    commonMisreadings: [
+      'Reading high lineage as status alone.',
+      'Confusing genealogy with entitlement.',
+      'Ignoring duties embedded in elevated position.'
+    ]
+  },
+  12: {
+    vocabulary: [
+      { term: 'Pili Aliʻi', meaning: 'Chiefly relational ties, linking authority to lineage and obligation.' },
+      { term: 'Kauoha', meaning: 'Charge, command, or entrusted direction, often implying duty and transmission.' },
+      { term: 'Wauke', meaning: 'Paper mulberry, a significant plant in Hawaiian material and cultural practice.' },
+      { term: 'ʻUlu', meaning: 'Breadfruit or growth; a term that carries both botanical and generative significance.' }
+    ],
+    foundationCards: [
+      { title: 'Governance Through Relation', body: 'Leadership appears as a relational trust grounded in genealogy and place.' },
+      { title: 'Political Order as Sacred', body: 'Authority is part of ancestral and ecological balance, not detached administration.' },
+      { title: 'Rule by Balance', body: 'The measure of leadership is how well it keeps relationships aligned.' }
+    ],
+    commonMisreadings: [
+      'Treating chiefly lines as mere political succession.',
+      'Separating governance from sacred responsibility.',
+      'Reading leadership as control rather than stewardship.'
+    ]
+  },
+  13: {
+    vocabulary: [
+      { term: 'Kanaka', meaning: 'Human being or person, understood in the Kumulipo through relation rather than separation.' },
+      { term: 'Haumea', meaning: 'A powerful female ancestral figure in Hawaiian genealogy and generative traditions.' },
+      { term: 'Hāloa', meaning: 'A foundational ancestor name associated with long breath, lineage, and human continuity.' },
+      { term: 'Kanaloa', meaning: 'A major akua often associated with oceanic depth, power, and sacred relation.' }
+    ],
+    foundationCards: [
+      { title: 'Human Continuity', body: 'Humans emerge as continuation, not interruption, of the living genealogy.' },
+      { title: 'Personhood as Belonging', body: 'To be human is to belong within pre-existing webs of ancestry and ecology.' },
+      { title: 'Kinship Over Exception', body: 'Human meaning comes from embeddedness, not separation.' }
+    ],
+    commonMisreadings: [
+      'Treating humans as separate from the rest of creation.',
+      'Reading human arrival as the beginning of value.',
+      'Ignoring kinship obligations carried by personhood.'
+    ]
+  },
+  14: {
+    vocabulary: [
+      { term: 'Hanauna', meaning: 'Generational branching or descendant lines expanding through time.' },
+      { term: 'Pilina', meaning: 'Relationship, connection, or binding tie between people, places, and ancestral lines.' },
+      { term: 'Kumuhonua', meaning: 'A named ancestral figure whose name evokes foundational relation to earth or source.' },
+      { term: 'Hāloa', meaning: 'A key ancestral name signaling continuity across descendant communities.' }
+    ],
+    foundationCards: [
+      { title: 'Branching Lineages', body: 'Descent widens into social complexity while preserving genealogical coherence.' },
+      { title: 'Community as Expansion', body: 'More descendants means denser relation, not greater separation.' },
+      { title: 'Belonging Across Generations', body: 'Collective identity is sustained through continuity and care.' }
+    ],
+    commonMisreadings: [
+      'Reading expansion as dilution of relation.',
+      'Reducing descendants to numbers instead of obligations.',
+      'Missing the communal dimension of genealogical growth.'
+    ]
+  },
+  15: {
+    vocabulary: [
+      { term: 'Kauoha', meaning: 'Entrusted instruction or charge carried forward through genealogy.' },
+      { term: 'Kuleana', meaning: 'Responsibility that must be enacted, not merely recognized.' },
+      { term: 'Haumea', meaning: 'Ancestral female source figure tied to generation, continuity, and transformation.' },
+      { term: 'Nānāulu', meaning: 'A named descendant line linked to human and social expansion in Hawaiian genealogy.' }
+    ],
+    foundationCards: [
+      { title: 'Ethics of Inheritance', body: 'Genealogy carries duty, not just identity.' },
+      { title: 'Knowledge into Conduct', body: 'Insight must become practice; memory without action is incomplete.' },
+      { title: 'Care for What Follows', body: 'Responsibility is intergenerational and future-facing.' }
+    ],
+    commonMisreadings: [
+      'Treating inheritance as entitlement rather than duty.',
+      'Separating spiritual knowledge from conduct.',
+      'Ignoring the future-facing nature of kuleana.'
+    ]
+  },
+  16: {
+    vocabulary: [
+      { term: 'Ao Kanaka', meaning: 'The human realm in light, where living responsibility becomes explicit.' },
+      { term: 'Mālama', meaning: 'To care for, preserve, and sustain in right relationship.' },
+      { term: 'Lono', meaning: 'A major akua associated with fertility, seasonality, peace, and abundance in Hawaiian tradition.' },
+      { term: 'Pilina', meaning: 'Relationship or relational bond, central to understanding human kuleana.' }
+    ],
+    foundationCards: [
+      { title: 'Human Realm as Responsibility', body: 'Culmination means stewardship, not supremacy.' },
+      { title: 'Embodied Relation', body: 'Ancestry, ecology, governance, and spirit converge as lived human conduct.' },
+      { title: 'Mālama as Outcome', body: 'The final lesson is that to be human is to mālama the relations that sustain life.' }
+    ],
+    commonMisreadings: [
+      'Reading culmination as human domination over creation.',
+      'Treating the final wā as an endpoint rather than ongoing practice.',
+      'Missing that human meaning is defined by mālama, not control.'
+    ]
+  }
+};
+
 function buildKumulipoWaContent(config) {
+  const waNumber = Number((String(config.waLabel || '').match(/Wā\s+(\d+)/) || [])[1] || 0);
+  const pedagogy = KUMULIPO_WA_PEDAGOGY[waNumber] || {};
   const parallels = (config.parallels || [])
     .map(item => `
       <article class="kumu-parallel-card">
@@ -346,16 +639,57 @@ ${config.lineTranslations.join('\n')}
       </div>
     `;
 
+  const foundationCards = (config.foundationCards && config.foundationCards.length
+    ? config.foundationCards
+    : pedagogy.foundationCards && pedagogy.foundationCards.length
+      ? pedagogy.foundationCards
+    : [
+      {
+        title: 'Interconnection',
+        body: 'This wa should be read as part of a relational web. Nothing emerges alone; beings, forces, places, and phases of life come forth through connection.'
+      },
+      {
+        title: 'Resonance and Alignment',
+        body: 'A helpful modern bridge is resonance: what is strongest is not isolated power, but right alignment within a larger field of relationship. In Hawaiian terms, this is closer to kuleana and balance than domination.'
+      },
+      {
+        title: 'Participatory Knowing',
+        body: 'The Kumulipo is not only something to analyze. It teaches that how we observe, remember, chant, and live changes how we stand within the world it describes.'
+      }
+    ]
+  )
+    .map(card => `
+      <article class="kumu-wa-bridge-card">
+        <h5>${card.title}</h5>
+        <p>${card.body}</p>
+      </article>
+    `)
+    .join('');
+
   const vocab = (config.vocabulary && config.vocabulary.length
     ? config.vocabulary
-    : ['Po', 'Ao', 'Mo\'oku\'auhau', 'Kuleana']
+    : pedagogy.vocabulary && pedagogy.vocabulary.length
+      ? pedagogy.vocabulary
+    : [
+        { term: 'Pō', meaning: 'Generative darkness, fertile source-depth, and the realm from which becoming emerges.' },
+        { term: 'Ao', meaning: 'The realm of light, visibility, and human life, always in continuity with pō.' },
+        { term: 'Moʻokūʻauhau', meaning: 'Genealogy, lineage, and the relational continuity that binds beings across time.' },
+        { term: 'Kuleana', meaning: 'Responsibility, obligation, and the ethical work that comes with relationship and knowledge.' }
+      ]
   )
     .slice(0, 4)
-    .map(term => `<span class="kumu-wa-vocab__chip">${term}</span>`)
+    .map(item => `
+      <details class="kumu-wa-vocab__item">
+        <summary class="kumu-wa-vocab__chip">${item.term}</summary>
+        <div class="kumu-wa-vocab__meaning">${item.meaning}</div>
+      </details>
+    `)
     .join('');
 
   const misreadings = (config.commonMisreadings && config.commonMisreadings.length
     ? config.commonMisreadings
+    : pedagogy.commonMisreadings && pedagogy.commonMisreadings.length
+      ? pedagogy.commonMisreadings
     : [
       'Reading this wa as "myth only" instead of living ancestral knowledge.',
       'Treating modern science parallels as exact equivalence rather than interpretive bridges.',
@@ -410,13 +744,11 @@ ${config.lineTranslations.join('\n')}
     <callout>These lines are part of a larger genealogical chant and should be read with respect, context, and protocol. The English text is an interpretive aid and does not replace the Hawaiian source. Modern science offers one framework, while the Kumulipo offers a Kanaka Maoli ancestral framework.</callout>
   </section>
 
-  <section class="kumu-wa-flow kumu-reveal" aria-label="How to read this wa">
-    <h5>How to Read This Wa</h5>
-    <ul class="kumu-wa-flow__list">
-      <li><strong>Deeper Interpretation:</strong> Identify the core teaching in the chant layer.</li>
-      <li><strong>Modern Parallels:</strong> Use careful dialogue for clarity, not equivalence.</li>
-      <li><strong>Why This Wa Matters Today:</strong> Connect learning to present kuleana and practice.</li>
-    </ul>
+  <section class="kumu-wa-bridge kumu-reveal" aria-label="Foundation lens for reading this wa">
+    <h5>Foundation Lens for Reading This Wa</h5>
+    <div class="kumu-wa-bridge-grid">
+      ${foundationCards}
+    </div>
   </section>
 
   <section class="kumu-wa-vocab kumu-reveal" aria-label="Vocabulary in context">
@@ -430,9 +762,15 @@ ${config.lineTranslations.join('\n')}
     <details class="kumu-wa-panel" open>
       <summary>Cultural Meaning</summary>
       <div class="kumu-wa-panel__body">
+        <p class="kumu-wa-panel__kicker">Context for this wa</p>
         <p><strong>What is emerging:</strong> ${config.emergence}</p>
         <p><strong>Forms and relationships introduced:</strong> ${config.relationships}</p>
         <p><strong>Place in larger Kumulipo structure:</strong> ${config.structureRole}</p>
+        <ul class="kumu-wa-panel__list kumu-wa-panel__list--context">
+          <li><strong>How to situate it:</strong> Read this wa as one movement within a longer genealogy, not as an isolated episode.</li>
+          <li><strong>What to notice:</strong> Ask how this wa expands relationship, not just what new beings or forms appear.</li>
+          <li><strong>What it prepares for:</strong> Carry this context into the next wa so the sequence feels cumulative rather than fragmented.</li>
+        </ul>
       </div>
     </details>
 
@@ -560,6 +898,27 @@ const CULTURALVERSE_DATA = {
   <p>This lesson begins with Wā 1 as the interpretive foundation: darkness is generative, relationship is primary, and life begins in continuity rather than separation.</p>
 </section>
 
+<section class="kumu-section kumu-reveal">
+  <h4>Reading the Kumulipo Through Interconnection, Resonance, and Participation</h4>
+  <p>Many modern readers need a way to feel the Kumulipo as a living pattern rather than a distant text. A careful bridge is to notice that the chant describes reality as deeply interconnected, layered, and participatory. It begins in pō, a fertile depth of becoming, and unfolds through relationships rather than isolated things.</p>
+  <p>This does not mean the Kumulipo is "really quantum physics" in disguise. That would flatten Hawaiian knowledge into another system's vocabulary. But modern ideas about non-isolation, resonance, emergence, and observer participation can help contemporary learners recognize what Hawaiian ancestors already preserved in chant form: life is relational, power is alignment, and knowing carries consequences.</p>
+  <div class="kumu-parallel-grid">
+    <article class="kumu-parallel-card">
+      <h5>Interconnection</h5>
+      <p>The Kumulipo teaches that coral, sea life, plants, animals, celestial forces, ancestors, and humans belong to one genealogical continuum. A useful modern comparison is the idea that reality is not made of isolated parts, but of relationships and fields of influence.</p>
+    </article>
+    <article class="kumu-parallel-card">
+      <h5>Resonance and Mana</h5>
+      <p>A respectful bridge is resonance: strength comes through alignment within a larger pattern. Hawaiian teachings on mana point less toward domination and more toward the quality of one\'s relation, integrity, and presence within the living web.</p>
+    </article>
+    <article class="kumu-parallel-card">
+      <h5>Participatory Knowledge</h5>
+      <p>The Kumulipo is not merely observed from outside. Chant, protocol, memory, and conduct all matter. A modern learner might say that awareness participates in reality; the Kumulipo would add that this participation must be guided by kuleana, humility, and ancestral respect.</p>
+    </article>
+  </div>
+  <callout type="bridge">Use modern frameworks as orientation aids, not as replacements. The point is not to prove that Hawaiian ancestors were secretly using the language of physics. The point is to help modern readers recover the depth of a knowledge system built on relation, emergence, and responsibility.</callout>
+</section>
+
 <!-- KM_KUMULIPO_SOURCE_INSERT -->
 
 <section class="kumu-section kumu-reveal">
@@ -567,15 +926,19 @@ const CULTURALVERSE_DATA = {
   <div class="kumu-parallel-grid">
     <article class="kumu-parallel-card">
       <h5>Cosmology</h5>
-      <p><strong>This parallels modern cosmology</strong> in its movement from deep darkness toward emergence, order, and structure. It can be respectfully compared with questions about early conditions of space-time, heat, energy, and formation, without claiming that the Kumulipo is a scientific statement of Big Bang theory.</p>
+      <p><strong>This parallels modern cosmology</strong> in its movement from hidden depth toward emergence, order, and structure. The opening emphasis on heat, turning, and becoming can help modern readers think about early conditions, formation, and unfolding process, without claiming that the Kumulipo is a scientific statement of Big Bang theory.</p>
     </article>
     <article class="kumu-parallel-card">
-      <h5>Evolution</h5>
-      <p><strong>This resonates with evolutionary thinking</strong> because life appears through staged development rather than instant completion, moving from foundational marine forms toward increasingly differentiated worlds of growth, movement, and relation.</p>
+      <h5>Emergence and Development</h5>
+      <p><strong>This resonates with staged emergence</strong> because life appears through ordered phases rather than instant completion. Complexity grows through relation, sequence, and continuity, which gives modern learners a careful bridge to discussions of development and evolving life systems.</p>
     </article>
     <article class="kumu-parallel-card">
       <h5>Ecology</h5>
       <p><strong>This can be compared to ecological interdependence</strong> because coral, sea life, plants, animals, land, and people are treated as connected relations rather than isolated objects. The chant maps living systems through kinship.</p>
+    </article>
+    <article class="kumu-parallel-card">
+      <h5>Interconnection</h5>
+      <p><strong>A useful contemporary bridge is relational interconnection</strong>: reality is not best understood as isolated parts, but as linked presences influencing one another. This does not reduce the chant to physics language; it helps modern readers recognize the depth of Hawaiian relational thought.</p>
     </article>
     <article class="kumu-parallel-card">
       <h5>Genealogy</h5>
@@ -586,10 +949,15 @@ const CULTURALVERSE_DATA = {
       <p><strong>This reflects a systems-based understanding of relationship and interdependence</strong> in which each phase of emergence creates the conditions for what follows. Meaning comes from relational pattern, not isolated parts.</p>
     </article>
     <article class="kumu-parallel-card">
+      <h5>Resonance and Participation</h5>
+      <p><strong>Another careful bridge is resonance and participatory knowing</strong>. Presence, chant, memory, intention, and conduct all matter in Hawaiian thought. Modern readers may hear an echo of participation here, but the Kumulipo frames that participation through protocol, humility, and kuleana.</p>
+    </article>
+    <article class="kumu-parallel-card">
       <h5>Kuleana</h5>
       <p><strong>This frames responsibility as integral to knowledge.</strong> To know creation is to inherit obligation toward balance, stewardship, and right relationship. Knowledge does not end in insight; it becomes conduct.</p>
     </article>
   </div>
+  <callout type="bridge">These parallels are orientation aids for contemporary readers. They are most useful when they clarify interconnection, resonance, emergence, and participatory knowing without replacing Hawaiian meanings, sources, or protocols.</callout>
 </section>
 
 <section class="kumu-section kumu-reveal">
