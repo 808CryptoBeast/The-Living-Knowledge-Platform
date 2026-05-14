@@ -593,11 +593,34 @@ strong { color: rgba(255,239,198,0.96); }
 
 .kumu-wa-hero__title {
   margin: 0;
-  color: var(--lkp-gold-hi);
+  color: transparent;
   font-family: var(--font-title);
-  font-size: clamp(2rem, 5vw, 3.4rem);
-  line-height: 0.95;
-  text-shadow: 0 0 24px rgba(240,201,106,0.22);
+  font-size: clamp(2.45rem, 6.9vw, 4.8rem);
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+  background: linear-gradient(180deg, rgba(255,244,210,0.98) 0%, rgba(240,201,106,0.96) 58%, rgba(213,163,61,0.9) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow:
+    0 0 14px rgba(240,201,106,0.22),
+    0 0 34px rgba(240,201,106,0.16),
+    0 10px 24px rgba(0,0,0,0.34);
+  animation: kumuWaHeroGlow 5.5s ease-in-out infinite;
+}
+
+@keyframes kumuWaHeroGlow {
+  0%, 100% {
+    text-shadow:
+      0 0 14px rgba(240,201,106,0.20),
+      0 0 30px rgba(240,201,106,0.14),
+      0 10px 24px rgba(0,0,0,0.32);
+  }
+  50% {
+    text-shadow:
+      0 0 18px rgba(255,228,154,0.32),
+      0 0 40px rgba(255,214,106,0.24),
+      0 12px 28px rgba(0,0,0,0.38);
+  }
 }
 
 .kumu-wa-hero__subtitle {
@@ -796,6 +819,120 @@ strong { color: rgba(255,239,198,0.96); }
   color: rgba(205,225,246,0.9);
   font-size: 0.78rem;
   line-height: 1.55;
+}
+
+.kumu-wa-source-tag {
+  display: inline-flex;
+  margin: 0 0 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(84,198,238,0.34);
+  background: rgba(84,198,238,0.10);
+  color: rgba(220,241,255,0.95);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.kumu-wa-provenance {
+  margin: 8px 0 0;
+  padding: 8px 10px;
+  border-left: 3px solid rgba(240,201,106,0.55);
+  border-radius: 8px;
+  background: rgba(240,201,106,0.08);
+  color: rgba(220,234,246,0.9);
+  font-size: 0.84rem;
+  line-height: 1.62;
+}
+
+.kumu-wa-objective-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+}
+
+.kumu-wa-objective-card {
+  padding: 10px 11px;
+  border-radius: 12px;
+  border: 1px solid rgba(84,198,238,0.22);
+  background:
+    radial-gradient(120% 120% at 100% 0%, rgba(84,198,238,0.08), transparent 40%),
+    rgba(6,12,31,0.78);
+}
+
+.kumu-wa-objective-card h5 {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 6px;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(240,201,106,0.35);
+  background: rgba(240,201,106,0.10);
+  color: rgba(255,238,193,0.96);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.kumu-wa-objective-card__context {
+  margin: 0 0 7px;
+  color: rgba(167,203,233,0.9);
+  font-size: 0.76rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.kumu-wa-objective-card p {
+  margin: 0;
+  color: rgba(206,225,245,0.92);
+  line-height: 1.64;
+}
+
+.kumu-wa-objective-card p + p {
+  margin-top: 7px;
+  padding-top: 7px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.kumu-wa-arc-statement {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(240,201,106,0.30);
+  background: linear-gradient(180deg, rgba(240,201,106,0.12), rgba(84,198,238,0.10));
+  color: rgba(242,247,255,0.96);
+}
+
+.kumu-wa-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 0;
+  border: 1px solid rgba(255,255,255,0.13);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.kumu-wa-table thead th {
+  text-align: left;
+  padding: 9px 10px;
+  font-size: 0.76rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(255,236,187,0.95);
+  background: rgba(240,201,106,0.14);
+}
+
+.kumu-wa-table tbody td {
+  padding: 9px 10px;
+  color: rgba(210,228,245,0.9);
+  line-height: 1.62;
+  vertical-align: top;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.kumu-wa-table tbody tr:nth-child(even) td {
+  background: rgba(255,255,255,0.02);
 }
 
 .kumu-wa-panel {
