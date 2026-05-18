@@ -1232,10 +1232,6 @@
 
     const query = state.sidebarSearch.trim().toLowerCase();
 
-    const visibleCultures = state.activeCulture === 'all'
-      ? state.cultures
-      : state.cultures.filter(culture => culture.id === state.activeCulture);
-
     if (!state.cultures.length) {
       tree.innerHTML = `
         <div class="cv-tree-empty">
@@ -1246,17 +1242,28 @@
       return;
     }
 
-    tree.innerHTML = visibleCultures.map(culture => {
+    tree.innerHTML = state.cultures.map(culture => {
       const progress = getCultureProgress(culture);
+      const cultureColor = getCultureColor(culture.theme);
+      const cultureHasActiveLesson = culture.modules.some(module =>
+        module.lessons.some(lesson => lesson.id === state.activeLessonId)
+      );
+      const allComplete = progress.total > 0 && progress.done === progress.total;
+      const isFocusedCulture = state.activeCulture === culture.id;
+      const shouldOpen = Boolean(query || cultureHasActiveLesson || isFocusedCulture);
+      const progressLabel = progress.total
+        ? `${progress.done} of ${progress.total} lessons complete`
+        : 'Lessons coming soon';
+      const statusLabel = allComplete ? 'Complete' : `${progress.percent}%`;
 
       const progressBar = `
         <div class="cv-culture-progress">
           <div class="cv-culture-progress__meta">
-            <span>${progress.done}/${progress.total} complete</span>
-            <span>${progress.percent}%</span>
+            <span>${escapeHTML(progressLabel)}</span>
+            <span>${escapeHTML(statusLabel)}</span>
           </div>
           <div class="cv-culture-progress__bar">
-            <span style="width:${progress.percent}%;background:${getCultureColor(culture.theme)}"></span>
+            <span style="width:${progress.percent}%;background:${cultureColor}"></span>
           </div>
         </div>
       `;
@@ -1279,56 +1286,77 @@
 
       if (!filteredModules.length) {
         return `
-          <section class="cv-tree-culture">
-            <div class="cv-tree-culture__title" style="--culture-color:${getCultureColor(culture.theme)}">
-              <span>${escapeHTML(culture.emoji)}</span>
-              ${escapeHTML(culture.name)}
+          <details class="cv-tree-culture" style="--culture-color:${cultureColor}" ${shouldOpen ? 'open' : ''}>
+            <summary class="cv-tree-culture__title" aria-label="Toggle ${escapeHTML(culture.name)} lessons">
+              <span class="cv-tree-culture__identity">
+                <span class="cv-tree-culture__emoji">${escapeHTML(culture.emoji)}</span>
+                <span>${escapeHTML(culture.name)}</span>
+              </span>
+              <span class="cv-tree-culture__status" aria-label="${escapeHTML(progressLabel)}">${allComplete ? '✓' : escapeHTML(statusLabel)}</span>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </summary>
+            <div class="cv-tree-culture__body">
+              <div class="cv-tree-culture__body-inner">
+                ${progressBar}
+                <div class="cv-tree-module">
+                  <div class="cv-tree-module__title">Coming Soon</div>
+                  <button class="cv-tree-lesson" type="button" disabled>
+                    <strong>${escapeHTML(query ? 'No matching lessons.' : culture.tagline || 'Lessons being prepared.')}</strong>
+                  </button>
+                </div>
+              </div>
             </div>
-            ${progressBar}
-            <div class="cv-tree-module">
-              <div class="cv-tree-module__title">Coming Soon</div>
-              <button class="cv-tree-lesson" type="button" disabled>
-                <strong>${escapeHTML(query ? 'No matching lessons.' : culture.tagline || 'Lessons being prepared.')}</strong>
-              </button>
-            </div>
-          </section>
+          </details>
         `;
       }
 
       return `
-        <section class="cv-tree-culture">
-          <div class="cv-tree-culture__title" style="--culture-color:${getCultureColor(culture.theme)}">
-            <span>${escapeHTML(culture.emoji)}</span>
-            ${escapeHTML(culture.name)}
-          </div>
+        <details class="cv-tree-culture" style="--culture-color:${cultureColor}" ${shouldOpen ? 'open' : ''}>
+          <summary class="cv-tree-culture__title" aria-label="Toggle ${escapeHTML(culture.name)} lessons">
+            <span class="cv-tree-culture__identity">
+              <span class="cv-tree-culture__emoji">${escapeHTML(culture.emoji)}</span>
+              <span>${escapeHTML(culture.name)}</span>
+            </span>
+            <span class="cv-tree-culture__status" aria-label="${escapeHTML(progressLabel)}">${allComplete ? '✓' : escapeHTML(statusLabel)}</span>
+            <i class="fas fa-chevron-down" aria-hidden="true"></i>
+          </summary>
 
-          ${progressBar}
+          <div class="cv-tree-culture__body">
+            <div class="cv-tree-culture__body-inner">
+              ${progressBar}
 
-          ${filteredModules.map(module => `
-            <div class="cv-tree-module">
-              <div class="cv-tree-module__title">
-                <span>${escapeHTML(module.emoji)}</span>
-                ${escapeHTML(module.title)}
-              </div>
+              ${filteredModules.map(module => `
+                <div class="cv-tree-module">
+                  <div class="cv-tree-module__title">
+                    <span>${escapeHTML(module.emoji)}</span>
+                    ${escapeHTML(module.title)}
+                  </div>
 
-              ${module.lessons.map(lesson => {
-                const done = isCompleted(lesson.id);
-                const active = lesson.id === state.activeLessonId;
+                  ${module.lessons.map(lesson => {
+                    const done = isCompleted(lesson.id);
+                    const active = lesson.id === state.activeLessonId;
 
-                return `
-                  <button
-                    class="cv-tree-lesson${active ? ' is-active' : ''}${done ? ' is-complete' : ''}"
-                    type="button"
-                    data-lesson-id="${escapeHTML(lesson.id)}"
-                  >
-                    <strong>${done ? '✓ ' : ''}${escapeHTML(lesson.num || 'LESSON')} · ${escapeHTML(lesson.title)}</strong>
-                    <small>${escapeHTML(culture.name)} · ${escapeHTML(lesson.readTime || 'Lesson')}</small>
-                  </button>
-                `;
-              }).join('')}
+                    return `
+                      <button
+                        class="cv-tree-lesson${active ? ' is-active' : ''}${done ? ' is-complete' : ''}"
+                        type="button"
+                        data-lesson-id="${escapeHTML(lesson.id)}"
+                        aria-current="${active ? 'page' : 'false'}"
+                      >
+                        <span class="cv-tree-lesson__dot" aria-hidden="true"></span>
+                        <span class="cv-tree-lesson__text">
+                          <strong>${escapeHTML(lesson.num || 'LESSON')} · ${escapeHTML(lesson.title)}</strong>
+                          <small>${escapeHTML(culture.name)} · ${escapeHTML(lesson.readTime || 'Lesson')}</small>
+                        </span>
+                        <span class="cv-tree-lesson__check" aria-hidden="true">${done ? '✓' : ''}</span>
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+              `).join('')}
             </div>
-          `).join('')}
-        </section>
+          </div>
+        </details>
       `;
     }).join('') || `
       <div class="cv-tree-empty">

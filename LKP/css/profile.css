@@ -1368,6 +1368,16 @@ body.profile-theme-light .profile-badge {
   transform: translate(-50%, -132%);
 }
 
+.profile-galaxy-tooltip small {
+  display: block;
+  margin-top: 5px;
+  color: var(--profile-gold);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 .profile-galaxy-selection {
   position: absolute;
   right: 16px;

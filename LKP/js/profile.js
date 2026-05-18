@@ -61,6 +61,7 @@
   const PROFILE_CACHE_KEY = 'lkp_profile_v1';
   const LEGACY_PROFILE_CACHE_KEY = 'piko_profile_v1';
   const COMPLETED_KEY = 'cv_completed';
+  const STARTED_KEY = 'lkp_started_lessons_v1';
   const MANA_KEY = 'cv_mana';
   const THEME_KEY = 'lkp_profile_theme';
   const BACKGROUND_VARIANT_KEY = 'lkp_profile_bg_variant';
@@ -74,7 +75,7 @@
     lkp:
       'The Living Knowledge Platform turns lessons into constellations, using star maps, galaxies, rewards, and shared learning paths.',
     lessons:
-      'Deep Lessons is the full living library where lessons, culture modules, and constellation paths are explored.',
+      'Cultural Journeys is the full living library where lessons, culture modules, and constellation paths are explored.',
     admin:
       'Admin Deck is the command layer for adding, editing, publishing, and managing lessons, galaxies, cultures, modules, and sources.',
     ikeverse:
@@ -105,8 +106,8 @@
     },
     {
       id: 'lessons',
-      name: 'Deep Lessons',
-      shortName: 'Lessons',
+      name: 'Cultural Journeys',
+      shortName: 'Journeys',
       desc: 'The full cultural lesson library and constellation learning path.',
       href: 'lessons.html',
       color: '#54c6ee',
@@ -316,6 +317,7 @@
     isAdmin: false,
 
     completed: [],
+    started: [],
     mana: 0,
     lessons: [],
     contentData: null,
@@ -857,6 +859,103 @@
     });
 
     return lessons;
+  }
+
+  function getStartedLessons() {
+    const explicit = readJSON(STARTED_KEY, []);
+    const started = Array.isArray(explicit) ? explicit : [];
+    const lastLesson = localStorage.getItem('lkp_last_lesson_id_v1');
+    return [...new Set([...started, ...(lastLesson ? [lastLesson] : []), ...(state.completed || [])].filter(Boolean))];
+  }
+
+  function getCultureProgressItems() {
+    const lessons = state.lessons || [];
+    const started = getStartedLessons();
+    const completed = state.completed || [];
+    const startedSet = new Set(started);
+    const completedSet = new Set(completed);
+    const byCulture = new Map();
+
+    lessons.forEach(lesson => {
+      if (!lesson.cultureId) return;
+      if (!byCulture.has(lesson.cultureId)) {
+        byCulture.set(lesson.cultureId, {
+          id: lesson.cultureId,
+          name: lesson.cultureName || lesson.cultureId,
+          shortName: lesson.cultureName || lesson.cultureId,
+          emoji: lesson.cultureEmoji || '\u2736',
+          theme: lesson.cultureTheme || 'default',
+          color: lesson.cultureColor || themeColor(lesson.cultureTheme),
+          secondaryColor: '#f0c96a',
+          paletteName: 'Young culture planet',
+          desc: 'A culture path waiting to be awakened by learning.',
+          href: buildLessonUrl(lesson),
+          lessons: [],
+          startedLessons: [],
+          completedLessons: [],
+          modules: new Map(),
+          nextLesson: null
+        });
+      }
+
+      const item = byCulture.get(lesson.cultureId);
+      item.lessons.push(lesson);
+      if (!item.modules.has(lesson.moduleId)) {
+        item.modules.set(lesson.moduleId, {
+          id: lesson.moduleId,
+          title: lesson.moduleTitle || 'Topic',
+          lessons: [],
+          completed: 0
+        });
+      }
+      const module = item.modules.get(lesson.moduleId);
+      module.lessons.push(lesson);
+
+      if (startedSet.has(lesson.id)) item.startedLessons.push(lesson);
+      if (completedSet.has(lesson.id)) {
+        item.completedLessons.push(lesson);
+        module.completed += 1;
+      } else if (!item.nextLesson) {
+        item.nextLesson = lesson;
+      }
+    });
+
+    return [...byCulture.values()]
+      .map(item => {
+        const total = item.lessons.length || 1;
+        const completedCount = item.completedLessons.length;
+        const startedCount = item.startedLessons.length;
+        const progress = Math.round((completedCount / total) * 100);
+        const masteredModules = [...item.modules.values()].filter(module =>
+          module.lessons.length && module.completed === module.lessons.length
+        );
+        const level =
+          progress >= 90 ? 5 :
+          progress >= 65 ? 4 :
+          progress >= 35 ? 3 :
+          completedCount > 0 ? 2 :
+          1;
+
+        return {
+          ...item,
+          startedCount,
+          completedCount,
+          totalLessons: total,
+          progress,
+          level,
+          moonCount: Math.max(0, Math.min(6, masteredModules.length || Math.floor(completedCount / 3))),
+          masteredTopics: masteredModules.map(module => module.title),
+          hasStar: completedCount > 0,
+          hasRings: level >= 4,
+          hasCompanion: level >= 5,
+          nebulaOpacity: level === 1 ? 0.32 : Math.max(0.06, 0.28 - level * 0.05),
+          atmosphere: 0.18 + level * 0.07,
+          paletteName: `${completedCount}/${total} lessons complete`,
+          desc: `${startedCount || completedCount ? 'Learning has begun.' : 'Not started yet.'} ${completedCount}/${total} lessons complete.`,
+          href: buildLessonUrl(item.nextLesson || item.lessons[0])
+        };
+      })
+      .filter(item => item.startedCount > 0 || item.completedCount > 0);
   }
 
   /* CHANGE 2: bootRewards — always passes supabase + userId to LKPRewards.init()
@@ -1403,6 +1502,7 @@
       const merged = [...new Set([...state.completed, ...remoteCompleted])];
 
       state.completed = merged;
+      state.started = getStartedLessons();
       writeJSON(COMPLETED_KEY, merged);
 
       if (
@@ -1568,6 +1668,7 @@
     }
 
     writeJSON(COMPLETED_KEY, state.completed);
+    state.started = getStartedLessons();
 
     let rewardResult = null;
 
@@ -1604,6 +1705,7 @@
     renderRewardsPanel();
     renderLessonPath();
     updateGalaxySelectionMeta();
+    rebuildProfileGalaxyForRole();
 
     if (shouldComplete && rewardResult?.already_completed) {
       showToast('Already completed on another device. \u2713');
@@ -2560,7 +2662,14 @@
     const activeNode = state.three.activeNode;
 
     state.three.nodes.forEach((node, index) => {
-      if (!node.mesh) return;
+    if (!node.mesh) return;
+
+      if (node.isGuide) {
+        if (node.label) {
+          node.label.position.y = (node.baseY || -3.25) + Math.sin(t * 1.2) * 0.12;
+        }
+        return;
+      }
 
       if (node.isSun) {
         animateSun(node, t);
@@ -2681,6 +2790,31 @@
 
     if (node.satelliteSystem) {
       node.satelliteSystem.position.copy(pos);
+    }
+
+    if (node.star) {
+      const starAngle = t * 0.38 + index;
+      node.star.position.set(
+        pos.x + Math.cos(starAngle) * 2.1,
+        pos.y + 0.72 + Math.sin(starAngle * 0.8) * 0.24,
+        pos.z + Math.sin(starAngle) * 2.1
+      );
+      node.star.material.opacity = 0.34 + Math.sin(t * 1.9 + index) * 0.08 + (isFocused ? 0.14 : 0);
+    }
+
+    if (node.ringSystem) {
+      node.ringSystem.position.copy(pos);
+      node.ringSystem.rotation.y += 0.004;
+    }
+
+    if (node.companion) {
+      const companionAngle = t * 0.72 + index * 1.3;
+      node.companion.position.set(
+        pos.x + Math.cos(companionAngle) * 1.85,
+        pos.y + Math.sin(companionAngle * 0.7) * 0.25,
+        pos.z + Math.sin(companionAngle) * 1.85
+      );
+      node.companion.rotation.y += 0.01;
     }
 
     if (node.satellitePivots?.length) {
@@ -2859,15 +2993,17 @@
       return;
     }
 
-    state.three.hoveredNode = node;
+      state.three.hoveredNode = node;
 
-    const holderRect = holder.getBoundingClientRect();
+      const holderRect = holder.getBoundingClientRect();
+      const progress = Number(node.item.progress || 0);
 
-    tooltip.innerHTML = `
-      <strong style="color:${node.item.color};display:block;margin-bottom:3px;">
-        ${escapeHTML(node.item.name)}
-      </strong>
+      tooltip.innerHTML = `
+        <strong style="color:${node.item.color};display:block;margin-bottom:3px;">
+          ${escapeHTML(node.item.name)}
+        </strong>
       <span>${escapeHTML(node.item.desc)}</span>
+      ${node.item.totalLessons ? `<small>${progress}% complete · ${node.item.completedCount}/${node.item.totalLessons} lessons</small>` : ''}
     `;
 
     tooltip.style.left = `${event.clientX - holderRect.left}px`;
@@ -2905,7 +3041,7 @@
     showGalaxySelection(node);
 
     if (!options.keepPanel) {
-      showToast(`Focused ${node.item.name}. Use Enter Realm to open it.`);
+      showToast(`Focused ${node.item.name}. Continue the path from this planet.`);
     }
   }
 
@@ -2949,13 +3085,32 @@
     const panel = state.three.selectionEl || $('#profileGalaxySelection');
     if (!panel || !node?.item) return;
 
-    const completedCount = state.completed.length || 0;
-    const totalLessons = state.lessons.length || 0;
-    const progress = totalLessons ? Math.round((completedCount / totalLessons) * 100) : 0;
+    if (node.isGuide) {
+      setText('#profileGalaxySelectionKicker', 'The User\'s Galaxy');
+      setText('#profileGalaxySelectionTitle', node.item.name);
+      setText('#profileGalaxySelectionDesc', node.item.desc);
+      setHTML('#profileGalaxySelectionMeta', '<strong>No culture planets yet</strong><span>Start any lesson and its culture planet will appear here.</span>');
+      const openLink = $('#profileGalaxySelectionOpen');
+      if (openLink) {
+        openLink.href = node.item.href || 'LKP/lessons.html';
+        openLink.textContent = 'Start a Lesson';
+      }
+      panel.style.borderColor = hexToRgba(node.item.color, 0.42);
+      panel.classList.add('is-visible');
+      panel.setAttribute('aria-hidden', 'false');
+      return;
+    }
+
+    const completedCount = node.item.completedCount || 0;
+    const totalLessons = node.item.totalLessons || 0;
+    const progress = node.item.progress || 0;
+    const topicText = node.item.masteredTopics?.length
+      ? `${node.item.masteredTopics.length} mastered topic${node.item.masteredTopics.length === 1 ? '' : 's'}`
+      : 'No mastered topics yet';
 
     setText(
       '#profileGalaxySelectionKicker',
-      node.item.adminOnly ? 'Admin Realm' : `${node.item.paletteName || 'Realm Nebula'}`
+      `Culture Planet · Level ${node.item.level || 1}`
     );
 
     setText('#profileGalaxySelectionTitle', node.item.name);
@@ -2966,10 +3121,12 @@
       `
         <strong>${escapeHTML(node.item.shortName || node.item.name)}</strong>
         <span>
-          ${escapeHTML(node.item.paletteName || 'Realm palette')} \u00b7
-          ${completedCount}/${totalLessons} LKP lessons complete \u00b7
-          ${progress}% current learning progress.
+          ${completedCount}/${totalLessons} lessons complete ·
+          ${progress}% culture progress ·
+          ${escapeHTML(topicText)} ·
+          ${node.item.hasStar ? 'orbit active' : 'young planet forming'}
         </span>
+        ${node.item.nextLesson ? `<small>Next: ${escapeHTML(node.item.nextLesson.title)}</small>` : '<small>Culture path complete.</small>'}
       `
     );
 
@@ -2985,6 +3142,8 @@
         openLink.removeAttribute('target');
         openLink.removeAttribute('rel');
       }
+
+      openLink.textContent = node.item.nextLesson ? 'Continue Learning' : 'Review Culture';
     }
 
     panel.style.borderColor = hexToRgba(node.item.color, 0.42);
@@ -3042,6 +3201,9 @@
         node.nebula,
         node.gasCloud,
         node.label,
+        node.star,
+        node.ringSystem,
+        node.companion,
         node.line,
         node.orbitLine,
         node.satelliteSystem
@@ -3109,26 +3271,50 @@
       isSun: true
     });
 
-    const items = ecosystemItems.filter(item => !item.adminOnly || state.isAdmin);
-    const baseRadius = state.isAdmin ? 12.4 : 10.8;
+    state.started = getStartedLessons();
+    const items = getCultureProgressItems();
+    const baseRadius = 8.8;
     const isDesktopGalaxy = window.matchMedia('(min-width: 1024px)').matches;
+
+    if (!items.length) {
+      const emptyLabel = makeTextSprite('Begin a lesson to awaken your first culture planet', '#f0c96a');
+      emptyLabel.position.set(0, -3.25, 0);
+      emptyLabel.scale.set(7.2, 1.25, 1);
+      emptyLabel.userData.profileGalaxyGenerated = true;
+      scene.add(emptyLabel);
+      state.three.nodes.push({
+        mesh: emptyLabel,
+        label: emptyLabel,
+        item: {
+          name: 'Your Galaxy Is Waiting',
+          shortName: 'Empty Galaxy',
+          desc: 'Start a lesson and the first culture planet will appear here.',
+          href: 'LKP/lessons.html',
+          color: '#f0c96a'
+        },
+        baseY: -3.25,
+        isGuide: true
+      });
+      return;
+    }
 
     items.forEach((item, index) => {
       const primaryColor = item.color;
       const secondaryColor = item.secondaryColor || item.color;
       const color = new THREE.Color(primaryColor);
+      const level = item.level || 1;
 
-      const orbitRadius = baseRadius + (index % 4) * 2.05;
+      const orbitRadius = baseRadius + (index % 4) * 2.0;
       const orbitTiltX = -0.34 + (index % 5) * 0.16;
       const orbitTiltZ = -0.22 + (index % 4) * 0.14;
-      const orbitSpeed = 0.082 + (index % 4) * 0.013;
+      const orbitSpeed = item.hasStar ? 0.064 + (index % 4) * 0.011 : 0.018;
       const baseAngle = -Math.PI / 2 + (Math.PI * 2 * index) / items.length;
       const baseY = Math.sin(index * 1.7) * 0.55;
 
       const orbitLine = makeOrbitRing(
         orbitRadius,
         primaryColor,
-        item.adminOnly ? 0.13 : 0.065,
+        item.hasStar ? 0.06 + level * 0.014 : 0.018,
         orbitTiltX,
         orbitTiltZ
       );
@@ -3141,7 +3327,7 @@
         new THREE.MeshPhysicalMaterial({
           color,
           emissive: color,
-          emissiveIntensity: item.adminOnly ? 1.0 : 0.68,
+          emissiveIntensity: 0.42 + level * 0.14,
           metalness: 0.08,
           roughness: 0.24,
           transparent: true,
@@ -3155,8 +3341,8 @@
 
       const glow = makeGlowSprite(
         primaryColor,
-        item.adminOnly ? 4.9 : 3.6,
-        item.adminOnly ? 0.42 : 0.28
+        2.8 + level * 0.48,
+        item.atmosphere || 0.24
       );
 
       glow.userData.profileGalaxyGenerated = true;
@@ -3166,8 +3352,8 @@
       const nebula = makeRealmNebulaCluster(
         primaryColor,
         secondaryColor,
-        item.adminOnly ? 3.35 : 2.7,
-        item.adminOnly ? 0.25 : 0.18
+        2.4 + level * 0.28,
+        item.nebulaOpacity ?? 0.22
       );
 
       nebula.userData.profileGalaxyGenerated = true;
@@ -3175,9 +3361,9 @@
       const gasCloud = makeGasCloud(
         primaryColor,
         secondaryColor,
-        item.adminOnly ? 3.4 : 2.7,
-        item.adminOnly ? 210 : 160,
-        item.adminOnly ? 0.28 : 0.20
+        2.2 + level * 0.32,
+        90 + level * 34,
+        item.nebulaOpacity ?? 0.18
       );
 
       gasCloud.userData.profileGalaxyGenerated = true;
@@ -3185,8 +3371,8 @@
       const satellite = makeSatelliteSystem(
         primaryColor,
         secondaryColor,
-        item.adminOnly ? 2.15 : 1.75,
-        item.adminOnly ? 3 : 2
+        1.2 + level * 0.22,
+        item.moonCount
       );
 
       satellite.group.userData.profileGalaxyGenerated = true;
@@ -3199,8 +3385,39 @@
       scene.add(glow);
       scene.add(nebula);
       scene.add(gasCloud);
-      scene.add(satellite.group);
+      if (item.moonCount > 0) scene.add(satellite.group);
       scene.add(label);
+
+      let star = null;
+      let ringSystem = null;
+      let companion = null;
+      if (item.hasStar) {
+        star = makeGlowSprite('#fff0b8', 1.2 + level * 0.24, 0.44);
+        star.userData.profileGalaxyGenerated = true;
+        scene.add(star);
+      }
+      if (item.hasRings) {
+        ringSystem = new THREE.Group();
+        const ringA = makeOrbitRing(0.92 + level * 0.1, primaryColor, 0.28, Math.PI / 2.6, Math.PI / 10);
+        const ringB = makeOrbitRing(1.12 + level * 0.12, secondaryColor, 0.18, Math.PI / 2.6, -Math.PI / 12);
+        ringSystem.add(ringA);
+        ringSystem.add(ringB);
+        ringSystem.userData.profileGalaxyGenerated = true;
+        scene.add(ringSystem);
+      }
+      if (item.hasCompanion) {
+        companion = new THREE.Mesh(
+          new THREE.SphereGeometry(0.18, 18, 18),
+          new THREE.MeshPhysicalMaterial({
+            color: new THREE.Color(secondaryColor),
+            emissive: new THREE.Color(secondaryColor),
+            emissiveIntensity: 0.48,
+            roughness: 0.28
+          })
+        );
+        companion.userData.profileGalaxyGenerated = true;
+        scene.add(companion);
+      }
 
       /* FIX: verticalFloat had missing colon — was `verticalFloat 0.12` */
       state.three.nodes.push({
@@ -3210,6 +3427,9 @@
         gasCloud,
         label,
         orbitLine,
+        star,
+        ringSystem,
+        companion,
         satelliteSystem: satellite.group,
         satellitePivots: satellite.pivots,
         item,
@@ -3651,6 +3871,7 @@
     document.body.classList.add('profile-loading');
 
     state.completed = readJSON(COMPLETED_KEY, []);
+    state.started = getStartedLessons();
     state.mana = parseInt(localStorage.getItem(MANA_KEY) || '0', 10) || 0;
 
     startBackgroundClock();
