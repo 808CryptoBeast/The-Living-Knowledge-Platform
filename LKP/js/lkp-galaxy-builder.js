@@ -72,10 +72,21 @@
       'bridge':   { main: 0xaa99ff, dim: 0x8877dd, border: 0xcc88ff },
       'amber':    { main: 0xcd8c00, dim: 0xa36e00, border: 0xff9933 },
       'saffron':  { main: 0xf4a460, dim: 0xd97f3f, border: 0xffb347 },
-      'rust':     { main: 0xa0522d, dim: 0x704020, border: 0xd2691e }
+      'rust':     { main: 0xa0522d, dim: 0x704020, border: 0xd2691e },
+      'cyan':     { main: 0x54c6ee, dim: 0x247d9b, border: 0x8be8ff },
+      'violet':   { main: 0x8fa0ff, dim: 0x5e6ed8, border: 0xc7b8ff }
     };
-    
-    return themeMap[culture.theme] || { main: 0x666666, dim: 0x444444, border: 0x999999 };
+
+    const cultureMap = {
+      kanaka: themeMap.emerald,
+      kemet: themeMap.gold,
+      bridge: themeMap.bridge,
+      dogon: themeMap.amber,
+      vedic: themeMap.saffron,
+      dreamtime: themeMap.rust
+    };
+
+    return themeMap[culture.theme] || cultureMap[culture.id] || { main: 0x54c6ee, dim: 0x247d9b, border: 0x8be8ff };
   }
 
   /**
@@ -92,9 +103,9 @@
 
       for (const lesson of module.lessons) {
         const seed = hashSeed(`${culture.id}-concept-${conceptIndex}`);
-        const az = seededUnit(seed, 0) * 360;
-        const alt = 20 + seededUnit(seed, 1) * 60;
-        const r = 65 + seededUnit(seed, 2) * 8;
+        const az = (culture._galaxyAz || 0) + (seededUnit(seed, 0) - 0.5) * 22;
+        const alt = (culture._galaxyAlt || 45) + (seededUnit(seed, 1) - 0.5) * 16;
+        const r = (culture._galaxyRadius || 70) + (seededUnit(seed, 2) - 0.5) * 10;
         
         concepts.push({
           id: lesson.id || `${culture.id}-${conceptIndex}`,
@@ -132,16 +143,20 @@
       const planetCount = ecosystemPlanetCount(culture);
       const signature = getCultureGalaxySignature(culture, cultureIndex);
 
-      // Distribute cultures around the sky (azimuth/altitude positions)
       const totalCultures = cultures.filter(c => c.status !== 'soon').length;
       const az = (cultureIndex / Math.max(1, totalCultures)) * 360;
-      const alt = 35 + Math.sin(cultureIndex * 0.7) * 25;
-      const r = 70;
+      const alt = 32 + Math.sin(cultureIndex * 1.17) * 24;
+      const r = 68 + Math.cos(cultureIndex * 0.83) * 6;
+      const cultureForConcepts = Object.assign({}, culture, {
+        _galaxyAz: az,
+        _galaxyAlt: alt,
+        _galaxyRadius: r
+      });
 
       galaxyDefs.push({
         id: culture.id,
         name: culture.name,
-        type: cultureIndex % 2 === 0 ? 'spiral' : 'elliptical',
+        type: cultureIndex % 3 === 0 ? 'spiral' : cultureIndex % 3 === 1 ? 'elliptical' : 'spiral',
         color: themeColors.main,
         hex: '#' + themeColors.main.toString(16).padStart(6, '0'),
         theme: culture.theme,
@@ -150,10 +165,15 @@
         alt,
         r,
         particleCount: IS_MOBILE ? Math.round(planetCount * 105) : Math.round(planetCount * 350),
-        concepts: generateConceptsForCulture(culture, themeColors),
+        concepts: generateConceptsForCulture(cultureForConcepts, themeColors),
         ecosystem: {
           planetCount,
-          signature
+          signature,
+          nebula: {
+            density: signature.dustDensity,
+            pulse: 0.85 + signature.moonRichness * 0.35,
+            spread: 12 + planetCount * 1.65
+          }
         }
       });
 

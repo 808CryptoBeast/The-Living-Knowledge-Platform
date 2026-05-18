@@ -32,7 +32,7 @@ const KUMULIPO_WA_1_LINES = [
   'O ke au i kahuli lole ka lani',
   'O ke au i kuka\'iaka ka la',
   'E ho\'omalamalama i ka malama',
-  'O ke au i malamalama ka mahina',
+  'O ke au o Makali\'i ka po',
   'O ka lipolipo, o ka lipolipo',
   'O ka lipolipo o ka la',
   'O ka lipolipo o ka po'
@@ -43,7 +43,7 @@ const KUMULIPO_WA_1_TRANSLATIONS = [
   'When the heavens turned and shifted,',
   'When the sun was darkened in turning,',
   'The moon was caused to shine forth,',
-  'When the moon became bright,',
+  'The time of the rise of the Pleiades,',
   'Deep darkness, layered darkness,',
   'The dense darkness of day,',
   'The dense darkness of night.'
@@ -358,20 +358,20 @@ const KUMULIPO_WA_PEDAGOGY = {
   },
   3: {
     vocabulary: [
-      { term: 'Limu', meaning: 'Sea growths and algae-like foundational life that nourish and sustain later abundance.' },
-      { term: 'Hānau', meaning: 'To be born or brought forth, marking emergence as genealogical process.' },
-      { term: 'ʻĀina', meaning: 'Land, but also that which feeds; a relational concept of sustenance and place.' },
-      { term: 'Kai', meaning: 'The sea as a nourishing system whose support layers matter as much as visible creatures.' }
+      { term: 'Mea Lele', meaning: 'Flying creatures — insects and birds — who emerge through transformation in Wā 3.' },
+      { term: 'Hānau', meaning: 'To be born or brought forth; each parent here gives birth to a child that transforms and flies.' },
+      { term: 'Lele', meaning: 'To fly or leap; the defining motion of Wā 3, marking the emergence of flight as a new form of life.' },
+      { term: 'Puka', meaning: 'To come forth or emerge; the word repeated as each transformed child breaks free and takes wing.' }
     ],
     foundationCards: [
-      { title: 'Small Foundations', body: 'Wā 3 asks readers to value the sustaining layers that make later life possible.' },
-      { title: 'Nourishment', body: 'Growth systems are central. What feeds and supports life is sacred, not secondary.' },
-      { title: 'Invisible Support', body: 'The least visible processes may carry the greatest structural importance.' }
+      { title: 'Transformation as Genealogy', body: 'Wā 3 presents metamorphosis as a genealogical act — parent gives birth to child of a different, flying form.' },
+      { title: 'Flight as Emergence', body: 'The repeated phrase "puka kana keiki, lele" marks flight itself as a new threshold of becoming in the chant.' },
+      { title: 'Land and Sea Birds Together', body: 'The wā closes by naming both land birds and sea birds, showing that the flying world spans all domains.' }
     ],
     commonMisreadings: [
-      'Skipping over limu and support systems as less important.',
-      'Reading nourishment as only material rather than relational.',
-      'Ignoring foundational ecological intelligence.'
+      'Treating the insect-to-bird sequence as a species list rather than a genealogy of transformation.',
+      'Missing the significance of "lele" (flew) as the repeating marker of a new threshold of life.',
+      'Overlooking insects as the foundational parent-forms from which the bird world emerges.'
     ]
   },
   4: {
@@ -394,74 +394,74 @@ const KUMULIPO_WA_PEDAGOGY = {
   },
   5: {
     vocabulary: [
-      { term: 'Iʻa Nui', meaning: 'Larger sea beings whose visibility grows while dependence on earlier layers remains.' },
-      { term: 'Kai', meaning: 'The oceanic field that continues to hold and condition all later marine abundance.' },
-      { term: 'Puaʻa', meaning: 'Pig, appearing here as a named life form within the chant’s expanding genealogical ordering.' },
-      { term: 'ʻUla', meaning: 'Redness or red form, a marker of appearance, distinction, and named variation.' }
+      { term: 'Puaʻa', meaning: 'Pig; the central figure of Wā 5, born of chiefly lineage and tied to land, cultivation, and abundance.' },
+      { term: 'Poʻo', meaning: 'Head; Wā 5 names many human types by head-shape and temperament, showing the diversity of humanity at its emergence.' },
+      { term: 'Kapokanokano', meaning: 'The Night-digger; the ancestral figure whose union with Pō-lalo-uli produces the pig and the first human social diversity.' },
+      { term: 'Hanauna', meaning: 'Generation or descendant line; the night gives birth to many types, each named and placed within ancestral sequence.' }
     ],
     foundationCards: [
-      { title: 'Visibility and Dependence', body: 'Larger beings become more visible, but visibility never cancels dependence.' },
-      { title: 'Scale Within Continuity', body: 'Bigger forms still belong to the genealogical layers beneath them.' },
-      { title: 'Prominence Without Dominance', body: 'Size is not superiority. Relation still governs meaning.' }
+      { title: 'Pigs as Sacred Lineage', body: 'Wā 5 presents the pig not as animal resource but as a being of chiefly bloodline, born within genealogical order.' },
+      { title: 'Human Diversity Emerges', body: 'The chant names peaked-heads, flat-heads, fair-haired, dark-heads, war leaders, and many more — diversity is ancestral, not accidental.' },
+      { title: 'Land and Cultivation Begin', body: 'The pig lodges inland, cultivates taro patches, and begins the tenfold increase of land — linking animal life to the opening of agriculture.' }
     ],
     commonMisreadings: [
-      'Mistaking larger forms for independent power.',
-      'Treating visible life as more important than support systems.',
-      'Reading scale as dominance rather than interdependence.'
+      'Reading Wā 5 as a continuation of sea life rather than recognizing the shift to land animals and human social emergence.',
+      'Treating the list of head-types as racial classification rather than as a genealogical naming of human diversity within the chant.',
+      'Missing the pig as a figure of sacred chiefly lineage, not merely livestock.'
     ]
   },
   6: {
     vocabulary: [
-      { term: 'Manu Kai', meaning: 'Sea-associated birds or boundary-crossing beings linking ocean and sky.' },
-      { term: 'Uka', meaning: 'Upland or inland space, often paired with shore to show relational geography.' },
-      { term: 'Kai', meaning: 'Sea-space understood not in isolation but in exchange with other domains.' },
-      { term: 'Pili', meaning: 'Relation and connection, especially across thresholds that might seem separate.' }
+      { term: 'ʻIole', meaning: 'Rat; the primary creature of Wā 6, appearing upland and by the sea as a sign of habitation and fertility.' },
+      { term: 'Kupukupu', meaning: 'To spring up or multiply; the opening of Wā 6 describes new chiefly lines sprouting like growth.' },
+      { term: 'Mahimahi', meaning: 'Cultivation or tillage; Wā 6 marks the emergence of agriculture alongside the expansion of chiefly lines.' },
+      { term: 'Aliʻi', meaning: 'Chief or chiefly line; the wā opens with many new lines of chiefs springing forth, linking social growth to animal emergence.' }
     ],
     foundationCards: [
-      { title: 'Boundary-Crossing', body: 'Life moves across ocean and sky, linking what might seem like separate domains.' },
-      { title: 'Porous Worlds', body: 'Sea, land, and sky are interactive, not sealed compartments.' },
-      { title: 'Movement as Knowledge', body: 'Routes and crossings reveal the intelligence of relation.' }
+      { title: 'Chiefly Lines Multiply', body: 'Wā 6 opens by naming the proliferation of new chiefly lines — social structure expanding alongside animal life.' },
+      { title: 'Rats as Presence of Habitation', body: 'The ʻiole (rat) appears upland and by the sea, marking inhabited land and the spread of life into settled places.' },
+      { title: 'Cultivation Enters the Chant', body: 'Food grown by water and by sea is named here — the beginning of human agriculture as part of the genealogical unfolding.' }
     ],
     commonMisreadings: [
-      'Seeing land, sea, and sky as isolated compartments.',
-      'Ignoring movement as a source of ecological meaning.',
-      'Reducing boundary-crossing life to scenery.'
+      'Skipping Wā 6 as minor or transitional — it marks the critical entry of cultivation and social structure into the genealogy.',
+      'Treating the rat as incidental rather than as the named creature of this wā whose presence signals inhabited land.',
+      'Missing the connection between the multiplication of chiefly lines and the ecological expansion of animal life in the same era.'
     ]
   },
   7: {
     vocabulary: [
-      { term: 'ʻĀina', meaning: 'Land as nourishing relation, not merely territory or surface.' },
-      { term: 'Ulu', meaning: 'Growth, sprouting, and later also breadfruit in Hawaiian knowledge worlds.' },
-      { term: 'Anoano', meaning: 'Seed-form, generative beginning, or subtle formative potential.' },
-      { term: 'Kualono', meaning: 'Ridge or upland line, a place marker for where emergence settles into form.' }
+      { term: 'ʻĪlio', meaning: 'Dog; the central creature of Wā 7, appearing as dark red, brindled, and hairless, sacred as an offering.' },
+      { term: 'Peʻapeʻa', meaning: 'Bat; the Hawaiian hoary bat appears in Wā 7 alongside dogs as a creature of the night and threshold.' },
+      { term: 'Weliweli', meaning: 'Dread or awe; the opening of Wā 7 is saturated with sacred fear of the night, the offering place, and the law.' },
+      { term: 'Anoano', meaning: 'Fear or dread here, not seed-form — the mountain-top feeling of sacred awe before the unknown.' }
     ],
     foundationCards: [
-      { title: 'Land Emergence', body: 'Terrestrial growth appears here as a continuation of earlier oceanic becoming.' },
-      { title: 'Plant Intelligence', body: 'Plant worlds are active, sustaining presences rather than passive background.' },
-      { title: 'Fertility as Relation', body: 'Healthy land is the result of aligned relationships, not isolated control.' }
+      { title: 'Sacred Dread Opens the Wā', body: 'Wā 7 begins not with birth but with fear — awe of the night, the law, and the place of offering. This is knowledge approached with reverence.' },
+      { title: 'Dogs as Sacred Beings', body: 'The ʻīlio (dog) appears as a being of multiple forms — dark red, brindled, hairless — and as an offering, linking animal life to sacred practice.' },
+      { title: 'Bats at the Threshold', body: 'The peʻapeʻa (bat) joins the dog as a creature of night and boundary, named within the genealogical sequence as a distinct form of life.' }
     ],
     commonMisreadings: [
-      'Treating land growth as disconnected from marine ancestry.',
-      'Reducing plants to scenery instead of primary support.',
-      'Reading fertility as property rather than ancestral infrastructure.'
+      'Reading the opening fear-language as poetic ornament rather than as a core teaching about sacred approach to knowledge.',
+      'Treating dogs as domestic animals rather than as sacred beings with specific forms and ritual significance in this wā.',
+      'Overlooking bats as named genealogical creatures, not background scenery.'
     ]
   },
   8: {
     vocabulary: [
-      { term: 'Holoholona', meaning: 'Animals or moving terrestrial life, understood within kinship rather than outside it.' },
-      { term: 'ʻĀina', meaning: 'Land as living context and sustaining ground for terrestrial relation.' },
-      { term: 'Laʻilaʻi', meaning: 'A foundational female figure in Kumulipo genealogy, central to later human emergence.' },
-      { term: 'Kiʻi', meaning: 'A male figure named in the genealogical sequence, important in the emergence of human lines.' }
+      { term: 'Laʻilaʻi', meaning: 'The foundational female figure whose birth marks human emergence in the Kumulipo genealogy.' },
+      { term: 'Kiʻi', meaning: 'The foundational male figure born alongside Laʻilaʻi, forming the first human pair in the chant.' },
+      { term: 'Kanaka', meaning: 'Human being; Wā 8 marks the moment humans are born into the genealogical sequence — not as rulers but as kin.' },
+      { term: 'Waiʻololi / Waiʻolola', meaning: 'The narrow stream and the broad stream; the recurring refrain pairing male and female at every threshold of emergence.' }
     ],
     foundationCards: [
-      { title: 'Animal Worlds', body: 'Animal life expands terrestrial relation without breaking kinship logic.' },
-      { title: 'More Than Human-Centered', body: 'Meaning exists before humans arrive; value is already distributed across life.' },
-      { title: 'Shared Living Field', body: 'Habitats and movements matter more than human ranking.' }
+      { title: 'Humans Are Born, Not Appointed', body: 'Wā 8 presents human emergence through the same genealogical language as coral, fish, and birds — humans arrive within, not above, creation.' },
+      { title: 'Laʻilaʻi as Foundational Ancestor', body: 'The named female figure Laʻilaʻi is the pivotal human ancestral presence, with Kiʻi as her male counterpart — human origin is named and relational.' },
+      { title: 'Continuity Not Rupture', body: 'The arrival of humans does not break the chant\'s pattern — the same birth-language continues, placing human life within the long genealogy of all living things.' }
     ],
     commonMisreadings: [
-      'Reading this stage as setup for human superiority.',
-      'Treating animals as external resources rather than kin.',
-      'Missing the already meaningful world before human emergence.'
+      'Reading human emergence as a culminating achievement rather than as one more birth within the ongoing genealogical sequence.',
+      'Treating Laʻilaʻi and Kiʻi as mythic symbols rather than as named ancestors who anchor human identity within the chant.',
+      'Missing that "kanaka" is introduced through the same relational language used for every other creature in the Kumulipo.'
     ]
   },
   9: {
@@ -613,12 +613,12 @@ const KUMULIPO_WA_PEDAGOGY = {
 const KUMULIPO_WA_DEEP_MAP = {
   1:  { hawaiianTitle: 'Wā o ke Koʻa', englishTitle: 'Pō and Foundational Marine Emergence', movement: 'Breathing the Deep Fold', metaphor: 'the deep fold', crisis: 'Treating origin as empty darkness instead of fertile ancestral depth erases the obligations carried by every later emergence.', intelligence: 'source-attunement', issue: 'climate origin stories', caution: 'A common reduction is to romanticize pō as vague mysticism. This wā names pō as living origin-depth with obligations.', arc: 'This is the first of 16 wā movements. By the end, you will not have learned about the Kumulipo. You will have crossed through it: from the deep breathing of Pō alone, through coral and sea and shoot and root, to the human standing in Ao with Lono in the eye — carrying the dark within, seeing consequence as obligation, and knowing that to be human is to be small among animals and responsible for everything.' },
   2:  { hawaiianTitle: 'Wā o nā Mea o ke Kai', englishTitle: 'Sea Multiplicity', movement: 'Parting into Relation', metaphor: 'the first parting', crisis: 'If multiplicity is read as inventory for extraction, marine kinship collapses into resource logic.', intelligence: 'patterned abundance discernment', issue: 'ocean exploitation', caution: 'Well-intentioned biodiversity language can still treat beings as data points. This wā insists they are kin in genealogy.' },
-  3:  { hawaiianTitle: 'Wā o nā Limu', englishTitle: 'Marine Growth Systems', movement: 'Hardening into Foundation', metaphor: 'the coral foundation', crisis: 'When support layers are ignored, visible abundance fails because nourishment systems are broken first.', intelligence: 'foundation-awareness', issue: 'reef and food-web collapse', caution: 'Another reduction is to celebrate visible species while neglecting limu and nutrient foundations.' },
+  3:  { hawaiianTitle: 'Wā o nā Mea Lele', englishTitle: 'Insects, Birds, and the Flying World', movement: 'Transforming into Flight', metaphor: 'the parent and the child that flies', crisis: 'When transformation is ignored or flattened into taxonomy, the genealogical meaning of metamorphosis — parent giving birth to a flying child — is lost.', intelligence: 'transformation-attunement', issue: 'loss of native bird species and insect populations', caution: 'A common reduction is to treat the insect-to-bird sequence as a species catalogue rather than as a genealogy of transformation and flight.' },
   4:  { hawaiianTitle: 'Wā o nā Mea Kolo', englishTitle: 'Small and Transitional Forms', movement: 'Crawling into Sensation', metaphor: 'the sea creatures becoming movement', crisis: 'If small and transitional life is dismissed as minor, the chain of continuity is severed at its connective joints.', intelligence: 'threshold attention', issue: 'habitat fragmentation', caution: 'A frequent misread is to rank beings by size and charisma. This wā trains attention to connective life.' },
-  5:  { hawaiianTitle: 'Wā o nā Iʻa Nui', englishTitle: 'Larger Sea Beings', movement: 'Enlarging into Balance', metaphor: 'the rising body in the sea', crisis: 'Mistaking visibility for supremacy makes larger beings seem independent of the smaller systems that feed them.', intelligence: 'scale-with-humility', issue: 'apex-species policy blind spots', caution: 'Modern conservation can over-focus on iconic species and under-protect foundational relations.' },
-  6:  { hawaiianTitle: 'Wā o nā Manu Kai', englishTitle: 'Boundary-Crossing Life', movement: 'Leaping across Horizons', metaphor: 'the sky-leap', crisis: 'If boundaries are treated as walls, cross-domain intelligence is lost and stewardship becomes fragmented.', intelligence: 'boundary literacy', issue: 'siloed land-sea governance', caution: 'A common flattening is to reduce this wā to migration facts instead of relational geography.' },
-  7:  { hawaiianTitle: 'Wā o nā Mea Ulu o ka ʻĀina', englishTitle: 'Land Growth', movement: 'Singing the Boundary', metaphor: 'the birds at the edge', crisis: 'If terrestrial growth is separated from prior ocean genealogies, land stewardship becomes ahistorical and extractive.', intelligence: 'continuity tracing', issue: 'soil and watershed neglect', caution: 'A well-meaning error is to treat land emergence as a fresh start rather than continuation.' },
-  8:  { hawaiianTitle: 'Wā o nā Holoholona o ka ʻĀina', englishTitle: 'Land Animals', movement: 'Rooting Smallness in Ground', metaphor: 'the ground and leaf', crisis: 'Human-centered reading turns animal kinship into hierarchy and normalizes domination.', intelligence: 'more-than-human orientation', issue: 'biodiversity ethics', caution: 'This wā is often reduced to a pre-human setup. It names already-meaningful life before human emergence.' },
+  5:  { hawaiianTitle: 'Wā o ka Puaʻa', englishTitle: 'Pigs and Human Social Diversity', movement: 'Digging into the Land', metaphor: 'the pig rooting in the earth', crisis: 'Reading Wā 5 as a continuation of sea life misses the fundamental shift to land animals and the emergence of human social diversity named through head-types and classes.', intelligence: 'social-diversity awareness', issue: 'land use, animal kinship, and human plurality', caution: 'The list of human head-types is easily misread as racial taxonomy; it is instead a genealogical naming of human diversity as part of the night\'s abundance.' },
+  6:  { hawaiianTitle: 'Wā o ka ʻIole', englishTitle: 'Chiefly Lines, Cultivation, and Rats', movement: 'Sprouting into Habitation', metaphor: 'the rat in the upland and by the sea', crisis: 'If the rat and the chiefly lines are skipped as minor, the emergence of cultivation and inhabited land is erased from the genealogy.', intelligence: 'habitation awareness', issue: 'food sovereignty and chiefly succession', caution: 'A common error is to treat Wā 6 as a filler between animals and humans — it is the wā where agriculture and social structure enter the genealogy.' },
+  7:  { hawaiianTitle: 'Wā o ka ʻĪlio', englishTitle: 'Dogs, Bats, and Sacred Dread', movement: 'Standing in Fear on the Ridge', metaphor: 'the mountain top and the offering place', crisis: 'If the opening dread-language is treated as decoration, the wā\'s core teaching about sacred approach to knowledge is lost.', intelligence: 'sacred-approach attunement', issue: 'sacred protocols and ecological reverence', caution: 'Wā 7 is easily flattened into a catalogue of animals — it is equally a teaching about the proper feeling-tone for approaching what is sacred and unknown.' },
+  8:  { hawaiianTitle: 'Wā o Laʻilaʻi', englishTitle: 'Human Emergence', movement: 'Being Born into Relation', metaphor: 'the narrow stream and the broad stream', crisis: 'Human-centered reading converts the arrival of Laʻilaʻi and Kiʻi into a crowning event, erasing that humans are born into — not above — the living genealogy.', intelligence: 'relational-selfhood orientation', issue: 'human exceptionalism and ecological disconnection', caution: 'This wā is often read as the climax of creation. In the Kumulipo it is one more birth, named the same way as coral, fish, and birds — continuous, not supreme.' },
   9:  { hawaiianTitle: 'Wā o ka Huli i ke Ao', englishTitle: 'Turning Toward Light', movement: 'Turning Courage toward Light', metaphor: 'the door', crisis: 'If ao is framed as escape from pō, learners lose ancestral depth and mistake visibility for truth.', intelligence: 'the courage to turn and wait', issue: 'social transitions', caution: 'Modern narratives of progress misread this as linear ascent. The chant names a hinge, not a graduation.' },
   10: { hawaiianTitle: 'Wā o nā Kūpuna Akua', englishTitle: 'Ancestral Divine Genealogies', movement: 'Building the Calm Wall', metaphor: 'the wall', crisis: 'Without disciplined naming, genealogy becomes abstraction and authority detaches from accountability.', intelligence: 'genealogical orientation', issue: 'memory loss and disinformation', caution: 'A common reduction is to treat divine lines as mythic ornament rather than structural governance.' },
   11: { hawaiianTitle: 'Wā o nā Hanauna Kiʻekiʻe', englishTitle: 'High Genealogical Lines', movement: 'Bending Heaven toward Duty', metaphor: 'the bent arch', crisis: 'If height is read as entitlement, leadership becomes extraction and the arch of responsibility collapses.', intelligence: 'positional awareness', issue: 'leadership ethics', caution: 'This wā forbids linear superiority thinking; high returns to low through obligation.' },
@@ -812,6 +812,13 @@ function buildKumulipoWaContent(config) {
     return config.lines[index] || config.lines[0];
   };
 
+  const escapeKumu = value => String(value == null ? '' : value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
   const objectives = [
     `Name the central movement in this wā and explain how it transforms relation without implying linear progress.`,
     `Recognize the specific crisis in this wā and describe what is lost when it is ignored or misused.`,
@@ -990,6 +997,46 @@ ${config.lineTranslations.join('\n')}
       </div>
     `;
 
+  const expectedLineCount = Number(config.startLine) && Number(config.endLine)
+    ? (Number(config.endLine) - Number(config.startLine) + 1)
+    : 0;
+
+  const pairedLines = Array.isArray(config.versePairs) && config.versePairs.length
+    ? config.versePairs.map((pair, index) => ({
+        number: pair.number || pair.num || String(index + 1).padStart(4, '0'),
+        hawaiian: pair.hawaiian || pair.line || '',
+        english: pair.english || pair.translation || ''
+      }))
+    : (Array.isArray(config.lines) ? config.lines : []).map((line, index) => ({
+        number: String(Number(config.startLine || 1) + index).padStart(4, '0'),
+        hawaiian: line,
+        english: Array.isArray(config.lineTranslations) ? (config.lineTranslations[index] || '') : ''
+      }));
+
+  const fullChantExcerpt = pairedLines.length
+    ? `
+      ${sourceTag('Primary chant first')}
+      <div class="kumu-wa-source-meta">
+        <span>Wā ${waNumber}</span>
+        <span>${pairedLines.length}${expectedLineCount ? ` of ${expectedLineCount}` : ''} numbered line${pairedLines.length === 1 ? '' : 's'}</span>
+        ${Number(config.startLine) && Number(config.endLine) ? `<span>Source range ${String(config.startLine).padStart(4, '0')}–${String(config.endLine).padStart(4, '0')}</span>` : ''}
+        <span>Hawaiian with English meaning underneath</span>
+      </div>
+      <div class="kumu-wa-full-chant" data-kumulipo-wa-lines="${waNumber}">
+        ${pairedLines.map(pair => `
+          <article class="kumu-wa-line-pair">
+            <div class="kumu-wa-line-pair__num">${escapeKumu(pair.number)}</div>
+            <div class="kumu-wa-line-pair__body">
+              <p class="kumu-wa-line-pair__hawaiian">${escapeKumu(pair.hawaiian)}</p>
+              ${pair.english ? `<p class="kumu-wa-line-pair__english">${escapeKumu(pair.english)}</p>` : ''}
+            </div>
+          </article>
+        `).join('')}
+      </div>
+      <p class="kumu-wa-full-chant__note">${config.isCompleteVerse ? `This is the full numbered chant text currently entered for Wā ${waNumber}.` : `This Wā page is formatted for the full chant. It is currently showing the numbered source lines available in the data file; add the remaining line pairs to versePairs to complete this Wā.`}</p>
+    `
+    : chantExcerpt;
+
   return `
 <section class="kumu-wa-module">
   <section class="kumu-wa-hero kumu-reveal">
@@ -1014,9 +1061,10 @@ ${config.lineTranslations.join('\n')}
     </div>
   </section>
 
-  <section class="kumu-section kumu-wa-chant-card kumu-reveal">
-    <h4>Kumulipo Lines (Bilingual)</h4>
-    ${chantExcerpt}
+  <section class="kumu-section kumu-wa-chant-card kumu-wa-chant-card--primary kumu-reveal">
+    <h4>Full Kumulipo Verse</h4>
+    <p class="kumu-section__intro">Read the chant first. Each source line appears in Hawaiian, with its English meaning directly underneath, before the interpretation and breakdown.</p>
+    ${fullChantExcerpt}
     <p><strong>Selection note:</strong> ${selectionNote}</p>
   </section>
 
@@ -1268,14 +1316,14 @@ const CULTURALVERSE_DATA = {
   <h4>Kumulipo Wā Study Pages</h4>
   <p class="kumu-section__intro">Each wā now has its own dedicated lesson page with specific cultural framing, emergence focus, careful modern dialogue, and present-day relevance. Use this as the guided pathway instead of a single compressed timeline.</p>
   <ul>
-    <li><a href="#km-wa-01">Wā 1 — Wā o ke Koʻa: Pō and Foundational Marine Emergence</a></li>
-    <li><a href="#km-wa-02">Wā 2 — Wā o nā Mea o ke Kai: Sea Multiplicity</a></li>
-    <li><a href="#km-wa-03">Wā 3 — Wā o nā Limu: Marine Growth Systems</a></li>
-    <li><a href="#km-wa-04">Wā 4 — Wā o nā Mea Kolo: Small and Transitional Forms</a></li>
-    <li><a href="#km-wa-05">Wā 5 — Wā o nā Iʻa Nui: Larger Sea Beings</a></li>
-    <li><a href="#km-wa-06">Wā 6 — Wā o nā Manu Kai: Boundary-Crossing Life</a></li>
-    <li><a href="#km-wa-07">Wā 7 — Wā o nā Mea Ulu o ka ʻĀina: Land Growth</a></li>
-    <li><a href="#km-wa-08">Wā 8 — Wā o nā Holoholona o ka ʻĀina: Land Animals</a></li>
+    <li><a href="#km-wa-01">Wā 1 — Wā o ke Koʻa: Pō, Coral, and Foundational Marine Emergence</a></li>
+    <li><a href="#km-wa-02">Wā 2 — Wā o nā Iʻa: The Great Fish Genealogy</a></li>
+    <li><a href="#km-wa-03">Wā 3 — Wā o nā Mea Lele: Insects, Birds, and the Flying World</a></li>
+    <li><a href="#km-wa-04">Wā 4 — Wā o nā Mea Kolo: Crawlers — Turtles, Geckos, and Transitional Forms</a></li>
+    <li><a href="#km-wa-05">Wā 5 — Wā o ka Puaʻa: Pigs and Human Social Diversity</a></li>
+    <li><a href="#km-wa-06">Wā 6 — Wā o ka ʻIole: Chiefly Lines, Cultivation, and Rats</a></li>
+    <li><a href="#km-wa-07">Wā 7 — Wā o ka ʻĪlio: Dogs, Bats, and Sacred Dread</a></li>
+    <li><a href="#km-wa-08">Wā 8 — Wā o Laʻilaʻi: Human Emergence</a></li>
     <li><a href="#km-wa-09">Wā 9 — Wā o ka Huli i ke Ao: Turning Toward Light</a></li>
     <li><a href="#km-wa-10">Wā 10 — Wā o nā Kūpuna Akua: Ancestral Divine Genealogies</a></li>
     <li><a href="#km-wa-11">Wā 11 — Wā o nā Hanauna Kiʻekiʻe: High Genealogical Lines</a></li>
@@ -1360,6 +1408,8 @@ What does kuleana look like when humans are understood as part of creation rathe
                 heroLead: 'Wā 1 opens in deep pō and establishes the first layer of becoming. It is the interpretive doorway to the entire Kumulipo: life emerges through relation, not isolation.',
                 lines: KUMULIPO_WA_1_LINES,
                 lineTranslations: KUMULIPO_WA_1_TRANSLATIONS,
+                startLine: 1,
+                endLine: 122,
                 emergence: 'Generative movement in pō, heat, turning, and early marine emergence associated with koʻa as foundational life threshold.',
                 relationships: 'This wā introduces relation between darkness, transformation, oceanic life, and ordered unfolding rather than instant completion.',
                 structureRole: 'Wā 1 grounds all later wā by establishing source-depth, emergence, and continuity as the governing pattern.',
@@ -1393,6 +1443,8 @@ What does kuleana look like when humans are understood as part of creation rathe
                 heroLead: 'Wā 2 deepens ocean genealogy through multiplicity. Life expands in sequence, relation, and complexity within the marine world.',
                 lines: KUMULIPO_WA_2_LINES,
                 lineTranslations: KUMULIPO_WA_2_TRANSLATIONS,
+                startLine: 123,
+                endLine: 272,
                 emergence: 'Sea beings multiply and diversify, expanding the living architecture of the ocean.',
                 relationships: 'This wā strengthens oceanic kinship by showing how many forms of life arise through relational unfolding rather than isolated events.',
                 structureRole: 'Wā 2 extends Wā 1 by turning foundational emergence into patterned marine abundance.',
@@ -1417,34 +1469,36 @@ What does kuleana look like when humans are understood as part of creation rathe
             {
               id:       'km-wa-03',
               num:      'KM·W03',
-              title:    'Wā 3 — Wā o nā Limu: Marine Growth Systems',
+              title:    'Wā 3 — Wā o nā Mea Lele: Insects, Birds, and the Flying World',
               readTime: '7 min',
               image:    'assets/images/kumulipo/wa-3',
               content: buildKumulipoWaContent({
-                waLabel: 'Wā 3 — The Era of Marine Growth Foundations',
-                heroSubtitle: 'Wā o nā Limu · Sea Growth and Nourishing Systems',
-                heroLead: 'Wā 3 centers limu and growth systems, highlighting the subtle foundations that sustain larger life.',
+                waLabel: 'Wā 3 — The Era of Insects and Birds',
+                heroSubtitle: 'Wā o nā Mea Lele · Transformation, Flight, and the Birth of the Bird World',
+                heroLead: 'Wā 3 is the wā of transformation. Every parent gives birth to a child that flies. Insects become moths, dragonflies, grasshoppers, and birds — the chant names this crossing as genealogy, not metamorphosis alone.',
                 lines: KUMULIPO_WA_3_LINES,
                 lineTranslations: KUMULIPO_WA_3_TRANSLATIONS,
-                emergence: 'Marine growth forms and nutrient foundations become explicit within the unfolding sequence.',
-                relationships: 'This wā links nourishment, cycle, and interdependence across small and large life forms.',
-                structureRole: 'Wā 3 establishes support systems that make later complexity possible.',
-                deeper: 'Wā 3 reveals an ancestral ecological intelligence: what is often overlooked is structurally essential. In Kumulipo logic, foundation is sacred, and survival is relational. This is cosmology expressed as ecology and genealogy together.',
+                startLine: 273,
+                endLine: 377,
+                emergence: 'Insects emerge as parents, and their children take flight — the wā moves from crawling to flying, from grub to bird, in a sustained genealogical sequence.',
+                relationships: 'This wā links every insect parent to its flying child, and closes by pairing sea birds with land birds — the flying world spans all domains.',
+                structureRole: 'Wā 3 marks the first great threshold of transformation in the chant: from creatures of the earth and sea to creatures of the air.',
+                deeper: 'Wā 3 teaches transformation as a genealogical act. In the Kumulipo, a woodborer does not simply become a moth — it gives birth to one. This is the chant\'s way of saying that all transformation is relational: something ancestral holds the new form into being. The repeated "puka kana keiki, lele" — out came its child, and flew — is one of the chant\'s great rhythmic teachings about emergence, change, and the continuity of lineage through radical transformation.',
                 parallels: [
                   {
-                    title: 'Ecology',
-                    body: 'This can be compared to primary productivity and marine food-web foundations in modern ecological science.'
+                    title: 'Metamorphosis and Evolution',
+                    body: 'This resonates with modern biology\'s understanding of metamorphosis — the radical transformation of form within a single lineage — framed here as genealogy rather than mechanism.'
                   },
                   {
-                    title: 'Systems Biology',
-                    body: 'This parallels systems-level thinking where invisible processes sustain visible outcomes.'
+                    title: 'Ecology of Birds',
+                    body: 'The detailed naming of Hawaiian birds reflects deep ecological knowledge. Many of these birds are now endangered or extinct, making this wā an ancestral record of biodiversity.'
                   },
                   {
-                    title: 'Relational Fields',
-                    body: 'As a metaphor, this resembles modern ideas of relational fields in which support layers shape all later expression.'
+                    title: 'Transformation as Continuity',
+                    body: 'This parallels modern systems thinking about phase transitions: new forms emerge from prior states without severing the thread of continuity.'
                   }
                 ],
-                whyNow: 'Wā 3 matters today because sustainability depends on protecting foundational systems first, from reef and limu zones to water quality and food webs.'
+                whyNow: 'Wā 3 matters today because Hawaiʻi has lost more bird species than almost anywhere on earth. This wā is both an ancestral record of that world and a reminder that transformation — even radical change — carries lineage forward.'
               })
             },
             {
@@ -1459,6 +1513,8 @@ What does kuleana look like when humans are understood as part of creation rathe
                 heroLead: 'Wā 4 highlights creeping and smaller forms that connect phases of life and strengthen ecological continuity.',
                 lines: KUMULIPO_WA_4_LINES,
                 lineTranslations: KUMULIPO_WA_4_TRANSLATIONS,
+                startLine: 378,
+                endLine: 480,
                 emergence: 'Transitional forms, connective life pathways, and dense small-scale interactions.',
                 relationships: 'This wā shows relation across thresholds and scales, where small life forms link broader systems.',
                 structureRole: 'Wā 4 acts as the bridge layer between early foundations and larger emergent orders.',
@@ -1483,133 +1539,141 @@ What does kuleana look like when humans are understood as part of creation rathe
             {
               id:       'km-wa-05',
               num:      'KM·W05',
-              title:    'Wā 5 — Wā o nā Iʻa Nui: Larger Sea Beings',
+              title:    'Wā 5 — Wā o ka Puaʻa: Pigs and Human Social Diversity',
               readTime: '7 min',
               image:    'assets/images/kumulipo/wa-5',
               content: buildKumulipoWaContent({
-                waLabel: 'Wā 5 — The Era of Larger Sea Beings',
-                heroSubtitle: 'Wā o nā Iʻa Nui · Scale and Visibility in the Sea',
-                heroLead: 'Wā 5 introduces larger marine beings while preserving continuity with prior marine foundations.',
+                waLabel: 'Wā 5 — The Era of the Pig and Human Diversity',
+                heroSubtitle: 'Wā o ka Puaʻa · The Pig of Chiefly Blood and the Many Forms of Humanity',
+                heroLead: 'Wā 5 moves from the sea to the land. The pig is born of sacred chiefly lineage, roots in the earth, and cultivates the taro patches. Then the night gives birth to the vast diversity of human types — naming them all within the genealogical sequence.',
                 lines: KUMULIPO_WA_5_LINES,
                 lineTranslations: KUMULIPO_WA_5_TRANSLATIONS,
-                emergence: 'Larger sea forms and expanded marine presence within established genealogical order.',
-                relationships: 'This wā links visible power to invisible support, emphasizing continuity across ecological layers.',
-                structureRole: 'Wā 5 marks a scale shift without severing dependence on earlier stages.',
-                deeper: 'Wā 5 teaches that prominence does not erase dependency. In Kumulipo structure, larger forms remain genealogically tied to earlier and subtler systems, reinforcing relational accountability rather than dominance.',
+                startLine: 481,
+                endLine: 538,
+                emergence: 'The pig is born and lodges inland; then the night gives birth to the many human types — peaked-heads, flat-heads, dark-heads, fair-haired, war leaders, high chiefs, and many more.',
+                relationships: 'This wā links the pig to chiefly lineage and land cultivation, then extends that same genealogical logic to the diversity of humanity — all named, all ancestral.',
+                structureRole: 'Wā 5 marks the decisive shift from marine and aerial life to land animals and the first emergence of human social variety.',
+                deeper: 'Wā 5 teaches that human diversity is genealogical, not accidental. The night does not produce one human type — it produces many, each named and placed within the chant\'s sequence. This is the Kumulipo\'s way of saying that plurality is ancestral: difference among humans is as ancient and as sacred as the coral born in Wā 1. The pig — "ka puaʻa hiwahiwa" (the pig of highest rank) — opens the wā as a being of chiefly blood, connecting animal life to the sacred social order that will follow.',
                 parallels: [
                   {
-                    title: 'Marine Ecology',
-                    body: 'This resonates with trophic layering and scale differentiation in marine ecosystems.'
+                    title: 'Human Diversity and Ancestry',
+                    body: 'The naming of many human types resonates with modern understandings that human diversity is ancient, deep, and part of one shared lineage — not a deviation from a single norm.'
                   },
                   {
-                    title: 'Biodiversity Networks',
-                    body: 'This can be compared to how larger organisms rely on complex support webs beneath them.'
+                    title: 'Animal Kinship and Land',
+                    body: 'The pig\'s role in cultivation and its connection to chiefly lineage parallels contemporary understandings of human-animal co-evolution and the deep ties between domesticated animals and land stewardship.'
                   },
                   {
-                    title: 'Systems Hierarchy',
-                    body: 'This parallels nested systems models where higher-order forms remain structurally dependent on foundational layers.'
+                    title: 'Social Complexity',
+                    body: 'The emergence of named social roles — war leaders, chanters, chiefs, workers — parallels modern anthropological accounts of social differentiation arising within genealogical communities.'
                   }
                 ],
-                whyNow: 'Wā 5 matters today because it discourages extractive thinking and reminds us that visible abundance is fragile when foundational systems are neglected.'
+                whyNow: 'Wā 5 matters today because it frames human social diversity as ancestral and sacred — not as division but as the night\'s abundance — and because the pig\'s tie to land and cultivation echoes contemporary conversations about food sovereignty and indigenous agriculture.'
               })
             },
             {
               id:       'km-wa-06',
               num:      'KM·W06',
-              title:    'Wā 6 — Wā o nā Manu Kai: Boundary-Crossing Life',
+              title:    'Wā 6 — Wā o ka ʻIole: Chiefly Lines, Cultivation, and Rats',
               readTime: '7 min',
               image:    'assets/images/kumulipo/wa-6',
               content: buildKumulipoWaContent({
-                waLabel: 'Wā 6 — The Era of Boundary-Crossing Life',
-                heroSubtitle: 'Wā o nā Manu Kai · Sea-Sky Threshold Beings',
-                heroLead: 'Wā 6 centers life that moves across ocean and sky, revealing boundaries as living thresholds rather than fixed walls.',
+                waLabel: 'Wā 6 — The Era of Chiefly Lines, Cultivation, and Rats',
+                heroSubtitle: 'Wā o ka ʻIole · Many Lines of Chiefs Sprout; the Rat Inhabits the Land',
+                heroLead: 'Wā 6 opens with new chiefly lines multiplying like growth, moves into the emergence of cultivation and food, and names the rat — upland and by the sea — as the creature of this era of habitation and spread.',
                 lines: KUMULIPO_WA_6_LINES,
                 lineTranslations: KUMULIPO_WA_6_TRANSLATIONS,
-                emergence: 'Cross-boundary forms and movement pathways between ecological domains.',
-                relationships: 'This wā ties sea and sky into one relational continuum through migratory and threshold life.',
-                structureRole: 'Wā 6 broadens the geometry of relation by linking formerly discrete environmental zones.',
-                deeper: 'Wā 6 encodes a relational geography: environments are interwoven by movement, rhythm, and exchange. The Kumulipo presents life-worlds as porous and mutually constitutive, not compartmentalized domains.',
+                startLine: 539,
+                endLine: 565,
+                emergence: 'Chiefly lines proliferate; cultivation appears alongside the rat as a marker of inhabited and productive land.',
+                relationships: 'This wā connects social expansion — new chiefly lines — with ecological expansion: food grown by water, food grown by the sea, and the rat as a sign of settled life.',
+                structureRole: 'Wā 6 is where agriculture, social structure, and the inhabited landscape enter the genealogical sequence together.',
+                deeper: 'Wā 6 teaches that social and ecological emergence happen together. The sprouting of chiefly lines and the appearance of the ʻiole (rat) in the upland and by the sea are part of the same moment: the land is now inhabited, tended, and alive with multiplying life. The rat in Hawaiian tradition is not merely pest — it is a creature whose presence marks a living, inhabited place. Cultivation arises full of kapu (taboo), meaning that food production is not secular — it is sacred from the start.',
                 parallels: [
                   {
-                    title: 'Ecological Connectivity',
-                    body: 'This can be compared to migration corridors and cross-biome connectivity in modern ecology.'
+                    title: 'Agriculture and Social Complexity',
+                    body: 'This resonates with anthropological accounts of how agriculture and social differentiation emerge together — cultivation and chiefly hierarchy are co-arising, not sequential.'
                   },
                   {
-                    title: 'Systems Integration',
-                    body: 'This parallels integrated systems models where flow between domains sustains resilience.'
+                    title: 'Commensal Species',
+                    body: 'The rat as a companion species of human habitation parallels modern understandings of commensal animals — creatures whose range expands with human settlement.'
                   },
                   {
-                    title: 'Relational Pattern',
-                    body: 'As a metaphor, this resembles pattern-based frameworks where movement itself carries intelligence and continuity.'
+                    title: 'Sacred Food Systems',
+                    body: 'Cultivation arising "full of kapu" parallels indigenous food sovereignty frameworks in which growing food is a spiritual and relational practice, not merely economic production.'
                   }
                 ],
-                whyNow: 'Wā 6 matters today because climate and biodiversity challenges require boundary-crossing thinking, connecting land, sea, sky, and policy in one relational frame.'
+                whyNow: 'Wā 6 matters today because food sovereignty, agricultural sustainability, and the integrity of chiefly traditions are all live questions in Hawaiʻi — and this wā places them within the same ancestral breath.'
               })
             },
             {
               id:       'km-wa-07',
               num:      'KM·W07',
-              title:    'Wā 7 — Wā o nā Mea Ulu o ka ʻĀina: Land Growth',
+              title:    'Wā 7 — Wā o ka ʻĪlio: Dogs, Bats, and Sacred Dread',
               readTime: '7 min',
               image:    'assets/images/kumulipo/wa-7',
               content: buildKumulipoWaContent({
-                waLabel: 'Wā 7 — The Era of Land Growth',
-                heroSubtitle: 'Wā o nā Mea Ulu o ka ʻĀina · Terrestrial Foundations',
-                heroLead: 'Wā 7 turns decisively toward land growth, introducing terrestrial nourishment and habitat foundations.',
+                waLabel: 'Wā 7 — The Era of Dogs, Bats, and Sacred Dread',
+                heroSubtitle: 'Wā o ka ʻĪlio · Fear on the Mountain Top, Dogs as Sacred Beings',
+                heroLead: 'Wā 7 opens not with birth but with fear — dread of the night, the offering place, and the law. Then dogs appear in many forms: dark red, brindled, hairless, sacred. The bat joins them as a creature of threshold and night.',
                 lines: KUMULIPO_WA_7_LINES,
                 lineTranslations: KUMULIPO_WA_7_TRANSLATIONS,
-                emergence: 'Land-based plant systems and stabilized growth conditions for later life.',
-                relationships: 'This wā links ocean-origin continuity to terrestrial emergence through ecological succession.',
-                structureRole: 'Wā 7 is the terrestrial foundation layer that enables later animal and human genealogical stages.',
-                deeper: 'Wā 7 teaches that land fertility is not separate from oceanic origins; it is a continuation of relational unfolding. In Kumulipo logic, growth is genealogical and place-based, carrying ecological intelligence and obligation.',
+                startLine: 566,
+                endLine: 594,
+                emergence: 'Sacred awe precedes the named creatures: dogs in multiple forms and the bat appear as genealogical beings within this era of sacred approach.',
+                relationships: 'This wā links the emotional register of sacred dread to the specific animals — dog and bat — who inhabit the boundary between night and inhabited land.',
+                structureRole: 'Wā 7 teaches the proper stance before sacred knowledge: fear and reverence are not obstacles but openings. The dog and the bat are the creatures who live closest to that threshold.',
+                deeper: 'Wā 7 is unique in the Kumulipo for opening with the feeling of standing before the sacred — "kau ke anoano, iaʻu kualono" (fear falls upon me on the mountain top). This is not terror but awe: the recognition that some knowledge requires a particular approach. The ʻīlio (dog) is named in multiple forms — dark red, brindled, hairless — and appears as an offering, a sacred animal whose life is given over to the akua. The peʻapeʻa (bat), the only native land mammal of Hawaiʻi, appears here as a creature of the night and the forest edge, named within the genealogy as a being of its own standing.',
                 parallels: [
                   {
-                    title: 'Ecological Transition',
-                    body: 'This parallels major shifts from marine-dominant to terrestrial ecosystem development.'
+                    title: 'Sacred Ecology',
+                    body: 'The opening dread-language parallels indigenous sacred ecology frameworks in which approaching certain places, species, or knowledge requires protocol, preparation, and appropriate feeling.'
                   },
                   {
-                    title: 'Biodiversity Foundations',
-                    body: 'This can be compared to modern ecological emphasis on plant systems as primary habitat and energy base.'
+                    title: 'Dogs and Human Culture',
+                    body: 'The detailed naming of dog types reflects the deep human-dog relationship in Polynesian culture — dogs as companions, offerings, and sacred figures, not merely domestic animals.'
                   },
                   {
-                    title: 'Systems Continuity',
-                    body: 'This resonates with systems thinking where new domains emerge through continuity, not disconnection.'
+                    title: 'Bats and Ecosystems',
+                    body: 'The ʻōpeʻapeʻa (Hawaiian hoary bat) is Hawaiʻiʻs only native land mammal and an essential pollinator — its appearance in the Kumulipo as a named genealogical being reflects an ancestral awareness of its ecological importance.'
                   }
                 ],
-                whyNow: 'Wā 7 matters today because land regeneration, watershed care, and food resilience depend on recognizing plants and soils as ancestral infrastructure.'
+                whyNow: 'Wā 7 matters today because it teaches the emotional and ethical preparation required for encountering sacred knowledge — and because the Hawaiian hoary bat and native dog traditions are both part of an ancestral ecological memory worth protecting.'
               })
             },
             {
               id:       'km-wa-08',
               num:      'KM·W08',
-              title:    'Wā 8 — Wā o nā Holoholona o ka ʻĀina: Land Animals',
+              title:    'Wā 8 — Wā o Laʻilaʻi: Human Emergence',
               readTime: '7 min',
               image:    'assets/images/kumulipo/wa-8',
               content: buildKumulipoWaContent({
-                waLabel: 'Wā 8 — The Era of Land Animals',
-                heroSubtitle: 'Wā o nā Holoholona o ka ʻĀina · Terrestrial Animal Worlds',
-                heroLead: 'Wā 8 brings broader terrestrial animal life into the unfolding genealogy and relational order.',
+                waLabel: 'Wā 8 — The Era of Human Emergence',
+                heroSubtitle: 'Wā o Laʻilaʻi · Born Was Laʻilaʻi, a Woman; Born Was Kiʻi, a Man',
+                heroLead: 'Wā 8 is the wā of human emergence. Through the same genealogical language used for coral, fish, and birds, the chant names the first humans: Laʻilaʻi, a woman, and Kiʻi, a man. Humanity arrives within creation, not above it.',
                 lines: KUMULIPO_WA_8_LINES,
                 lineTranslations: KUMULIPO_WA_8_TRANSLATIONS,
-                emergence: 'Land animal diversity, movement, and expanded terrestrial complexity.',
-                relationships: 'This wā places animal life within shared kinship continuity rather than beneath human identity.',
-                structureRole: 'Wā 8 completes the foundational land-life sequence before the transition toward ao-focused ordering.',
-                deeper: 'Wā 8 encodes a non-anthropocentric worldview. The Kumulipo teaches that humanity is not the beginning of value, but part of an already meaningful and relationally structured living world.',
+                startLine: 595,
+                endLine: 643,
+                emergence: 'Humans are born — Laʻilaʻi and Kiʻi named as the foundational human pair — through the same birth-language used for every creature in the Kumulipo.',
+                relationships: 'This wā places human emergence inside the ongoing genealogy of coral, sea, insects, birds, crawlers, pigs, and dogs — humanity as kin, not crown.',
+                structureRole: 'Wā 8 completes the long arc of pō-born life by naming the first humans, setting the stage for the genealogical and chiefly lines that follow in Wā 9–16.',
+                deeper: 'Wā 8 is the Kumulipo\'s most powerful teaching against human exceptionalism. Laʻilaʻi and Kiʻi are born with the same "hanau" — the same birth-word — used for the coral polyp in Wā 1. This is deliberate. Humans are not a different kind of emergence; they are one more generation within the same ancestral continuum that began in the deep pō. The chant insists that to be human is to be late-born within a vast, already-meaningful creation — which means that human identity carries the weight of everything that came before.',
                 parallels: [
                   {
-                    title: 'Evolutionary Diversification',
-                    body: 'This resonates with modern evolutionary narratives of diversification in terrestrial environments.'
+                    title: 'Human Origins and Kinship',
+                    body: 'This resonates with modern evolutionary biology\'s understanding that humans emerge within — not apart from — the long history of life on earth, sharing ancestry with all living things.'
                   },
                   {
-                    title: 'Ecological Interdependence',
-                    body: 'This can be compared to ecosystem models where animals, plants, and habitats co-constitute resilience.'
+                    title: 'Relational Identity',
+                    body: 'This parallels contemporary relational and indigenous frameworks that ground human identity in ecological and ancestral belonging rather than individual autonomy.'
                   },
                   {
-                    title: 'Consciousness Studies',
-                    body: 'As a metaphor, this can be placed beside contemporary inquiry into distributed intelligence across species relations.'
+                    title: 'Gender and Genealogy',
+                    body: 'The naming of Laʻilaʻi as female first, with Kiʻi as male, reflects a genealogical tradition in which the female ancestral line is foundational — consistent with Hawaiian moʻokūʻauhau practice.'
                   }
                 ],
-                whyNow: 'Wā 8 matters today because ecological responsibility requires seeing animals as kin within shared life systems, not as external resources.'
+                whyNow: 'Wā 8 matters today because the foundational questions of human identity — who are we, where do we come from, what do we owe? — are answered here not with dominion but with kinship. Laʻilaʻi and Kiʻi are born into a world already full of ancestors.'
               })
             },
             {
@@ -1624,6 +1688,8 @@ What does kuleana look like when humans are understood as part of creation rathe
                 heroLead: 'Wā 9 marks a threshold movement toward ao. It is a transformation in state, not a rejection of pō.',
                 lines: KUMULIPO_WA_9_LINES,
                 lineTranslations: KUMULIPO_WA_9_TRANSLATIONS,
+                startLine: 644,
+                endLine: 672,
                 emergence: 'A visible phase of ordering unfolds from previously concealed generative depth.',
                 relationships: 'This wā binds pō and ao as continuous registers of one unfolding reality.',
                 structureRole: 'Wā 9 is the hinge between foundational life emergence and later genealogical ordering.',
@@ -1657,6 +1723,8 @@ What does kuleana look like when humans are understood as part of creation rathe
                 heroLead: 'Wā 10 names sacred ancestral lines, making cosmic order legible through genealogy.',
                 lines: KUMULIPO_WA_10_LINES,
                 lineTranslations: KUMULIPO_WA_10_TRANSLATIONS,
+                startLine: 673,
+                endLine: 707,
                 emergence: 'Divine ancestral relationships are articulated with greater structure and sequence.',
                 relationships: 'This wā links cosmos, ancestry, naming, and sacred continuity in one framework.',
                 structureRole: 'Wā 10 introduces explicit genealogical architecture that shapes later human and chiefly lines.',
@@ -1690,6 +1758,8 @@ What does kuleana look like when humans are understood as part of creation rathe
                 heroLead: 'Wā 11 intensifies lineal ordering and inherited placement within sacred continuity.',
                 lines: KUMULIPO_WA_11_LINES,
                 lineTranslations: KUMULIPO_WA_11_TRANSLATIONS,
+                startLine: 708,
+                endLine: 1545,
                 emergence: 'Higher genealogical lines and layered ancestral sequencing are clarified.',
                 relationships: 'This wā links rank with obligation, showing lineal position as ethical responsibility.',
                 structureRole: 'Wā 11 refines the social-cosmic architecture that informs later chiefly and human duties.',
@@ -1723,6 +1793,8 @@ What does kuleana look like when humans are understood as part of creation rathe
                 heroLead: 'Wā 12 ties chiefly lines directly to ancestral source, centering authority as relational kuleana.',
                 lines: KUMULIPO_WA_12_LINES,
                 lineTranslations: KUMULIPO_WA_12_TRANSLATIONS,
+                startLine: 1546,
+                endLine: 1734,
                 emergence: 'Chiefly relational lines and governance obligations rooted in genealogy.',
                 relationships: 'This wā binds leadership to sacred continuity, land relationship, and social responsibility.',
                 structureRole: 'Wā 12 translates genealogical architecture into political and ethical practice.',
@@ -1756,6 +1828,8 @@ What does kuleana look like when humans are understood as part of creation rathe
                 heroLead: 'Wā 13 introduces human genealogical lines within the same sacred continuity as earlier life forms.',
                 lines: KUMULIPO_WA_13_LINES,
                 lineTranslations: KUMULIPO_WA_13_TRANSLATIONS,
+                startLine: 1735,
+                endLine: 1813,
                 emergence: 'Human lineages emerge as continuation, not interruption, of creation.',
                 relationships: 'This wā places humans in kinship with ocean, land, plants, animals, and ancestors.',
                 structureRole: 'Wā 13 marks the transition from cosmic and chiefly structures into human genealogical identity.',
@@ -1789,6 +1863,8 @@ What does kuleana look like when humans are understood as part of creation rathe
                 heroLead: 'Wā 14 expands descendant lines into wider social worlds while maintaining genealogical continuity.',
                 lines: KUMULIPO_WA_14_LINES,
                 lineTranslations: KUMULIPO_WA_14_TRANSLATIONS,
+                startLine: 1814,
+                endLine: 1929,
                 emergence: 'Branching descendant relations and expanded peoplehood through continuity of lineage.',
                 relationships: 'This wā connects family, community, and ecology as one widening field of relation.',
                 structureRole: 'Wā 14 scales genealogy outward into social organization and collective identity.',
@@ -1822,6 +1898,8 @@ What does kuleana look like when humans are understood as part of creation rathe
                 heroLead: 'Wā 15 makes explicit that genealogy carries ethical charge: inheritance is obligation, not entitlement.',
                 lines: KUMULIPO_WA_15_LINES,
                 lineTranslations: KUMULIPO_WA_15_TRANSLATIONS,
+                startLine: 1930,
+                endLine: 2048,
                 emergence: 'Kuleana appears as integral feature of lineage and memory.',
                 relationships: 'This wā links ancestry, conduct, stewardship, and intergenerational responsibility.',
                 structureRole: 'Wā 15 converts genealogical knowledge into ethical instruction for lived practice.',
@@ -1855,6 +1933,8 @@ What does kuleana look like when humans are understood as part of creation rathe
                 heroLead: 'Wā 16 culminates the sequence in human life under light, defined not by dominion but by stewardship and relational intelligence.',
                 lines: KUMULIPO_WA_16_LINES,
                 lineTranslations: KUMULIPO_WA_16_TRANSLATIONS,
+                startLine: 2049,
+                endLine: 2102,
                 emergence: 'Human social-ethical accountability across land, sea, sky, and community.',
                 relationships: 'This wā integrates ancestry, ecology, governance, and spiritual responsibility into lived human practice.',
                 structureRole: 'Wā 16 completes the unfolding sequence by defining humanity through kuleana within creation.',

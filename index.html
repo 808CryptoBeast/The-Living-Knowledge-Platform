@@ -983,6 +983,122 @@
       });
     }
 
+    /* Live culture surface: keep main page aligned with CULTURALVERSE_DATA */
+    function lkpEscape(text) {
+      var div = document.createElement("div");
+      div.textContent = text == null ? "" : String(text);
+      return div.innerHTML;
+    }
+
+    function lkpCultureColor(culture) {
+      var byTheme = {
+        emerald: "#3cb371",
+        gold: "#f0c96a",
+        bridge: "#8fa0ff",
+        amber: "#e4ad48",
+        saffron: "#f4a460",
+        rust: "#d98545",
+        cyan: "#54c6ee",
+        violet: "#8fa0ff"
+      };
+      var byId = {
+        kanaka: "#3cb371",
+        kemet: "#f0c96a",
+        bridge: "#8fa0ff",
+        dogon: "#e4ad48",
+        vedic: "#f4a460",
+        dreamtime: "#d98545"
+      };
+      return byTheme[culture.theme] || byId[culture.id] || "#54c6ee";
+    }
+
+    function lkpFirstLessonHref(culture) {
+      var modules = Array.isArray(culture.modules) ? culture.modules : [];
+      for (var i = 0; i < modules.length; i++) {
+        var lessons = Array.isArray(modules[i].lessons) ? modules[i].lessons : [];
+        if (lessons[0] && lessons[0].id) return "LKP/lessons.html#" + lessons[0].id;
+      }
+      return "LKP/lessons.html";
+    }
+
+    function lkpLessonCount(culture) {
+      return (Array.isArray(culture.modules) ? culture.modules : []).reduce(function (sum, module) {
+        return sum + (Array.isArray(module.lessons) ? module.lessons.length : 0);
+      }, 0);
+    }
+
+    function lkpCultureConcepts(culture) {
+      var concepts = [];
+      (Array.isArray(culture.modules) ? culture.modules : []).forEach(function (module) {
+        if (module && module.title) concepts.push(module.title);
+        (Array.isArray(module.lessons) ? module.lessons : []).slice(0, 2).forEach(function (lesson) {
+          if (lesson && lesson.title) concepts.push(lesson.title.replace(/\s+—[\s\S]*$/, ""));
+        });
+      });
+      return concepts.filter(Boolean).slice(0, 7);
+    }
+
+    function renderLiveCultures(data) {
+      var cultures = Array.isArray(data && data.cultures) ? data.cultures : [];
+      var live = cultures.filter(function (culture) { return culture.status !== "soon"; });
+      if (!live.length) return;
+
+      var heroPills = document.querySelector(".lkp-hero__cultures");
+      if (heroPills) {
+        heroPills.innerHTML = live.map(function (culture) {
+          return '<span class="lkp-culture-pill lkp-culture-pill--dynamic" style="--culture-color:' + lkpCultureColor(culture) + '">' +
+            '<span class="lkp-culture-pill__dot"></span>' +
+            lkpEscape(culture.name) +
+            '</span>';
+        }).join("");
+      }
+
+      var cultureGrid = document.querySelector(".lkp-culture-grid");
+      if (cultureGrid) {
+        cultureGrid.innerHTML = live.map(function (culture, index) {
+          var color = lkpCultureColor(culture);
+          var concepts = lkpCultureConcepts(culture);
+          var count = lkpLessonCount(culture);
+          return '<div class="lkp-culture-card lkp-culture-card--dynamic lkp-reveal is-visible" id="' + lkpEscape(culture.id) + '" style="--culture-color:' + color + '">' +
+            '<div class="lkp-culture-card__accent"></div>' +
+            '<div class="lkp-culture-card__glyph"><span>' + lkpEscape(culture.emoji || "✦") + '</span></div>' +
+            '<div class="lkp-culture-card__badge">Module ' + (index + 1) + ' · ' + count + ' Lessons · Nebula Live</div>' +
+            '<h2 class="lkp-culture-card__title">' + lkpEscape(culture.name) + '</h2>' +
+            '<p class="lkp-culture-card__tagline">' + lkpEscape(culture.tagline || "Living knowledge tradition") + '</p>' +
+            '<p class="lkp-culture-card__intro">' + lkpEscape(culture.intro || "").slice(0, 460) + (culture.intro && culture.intro.length > 460 ? "..." : "") + '</p>' +
+            '<div class="lkp-culture-card__concepts">' +
+              concepts.map(function (concept) { return '<span class="lkp-concept-tag">' + lkpEscape(concept) + '</span>'; }).join("") +
+            '</div>' +
+            '<div class="lkp-culture-card__actions">' +
+              '<a href="' + lkpFirstLessonHref(culture) + '" class="lkp-btn lkp-btn--secondary">' +
+                '<i class="fas fa-star"></i> Enter ' + lkpEscape(culture.name) +
+              '</a>' +
+            '</div>' +
+          '</div>';
+        }).join("");
+      }
+
+      var sectionTitle = document.querySelector("#cultures .lkp-section-title");
+      var sectionDesc = document.querySelector("#cultures .lkp-section-desc");
+      if (sectionTitle) sectionTitle.innerHTML = "Many Traditions.<br><em>One Living Sky.</em>";
+      if (sectionDesc) {
+        sectionDesc.textContent = "Each culture now has its own nebula in the knowledge galaxy, with lessons clustered as stars around its living cosmology, ethics, ecology, and ancestral science.";
+      }
+
+      var soonHeader = document.querySelector("#cultures .lkp-section-header[style]");
+      var soonGrid = document.querySelector(".lkp-soon-grid");
+      if (soonHeader) soonHeader.style.display = "none";
+      if (soonGrid) soonGrid.style.display = "none";
+    }
+
+    if (window.LKP_LOAD_SHARED_DATA) {
+      window.LKP_LOAD_SHARED_DATA().then(renderLiveCultures).catch(function (err) {
+        console.warn("[LKP] Could not render live culture cards:", err);
+      });
+    } else if (window.CULTURALVERSE_DATA) {
+      renderLiveCultures(window.CULTURALVERSE_DATA);
+    }
+
     /* Smooth anchor scroll */
     document.querySelectorAll("a[href^='#']").forEach(function (anchor) {
       anchor.addEventListener("click", function (e) {

@@ -38,9 +38,34 @@ const ASSET_CANDIDATES = {
   ],
 
   kemet: [
+    "LKP/assets/images/kemet.png",
     "assets/images/kemet.png",
     "assets/k/kemet.png",
     "assets/k/kemet-icon.png"
+  ],
+
+  bridge: [
+    "LKP/assets/images/bridge-culture.png",
+    "LKP/assets/images/Culturalverse-icon.png",
+    "assets/images/bridge-culture.png"
+  ],
+
+  dogon: [
+    "LKP/assets/images/br-skyknowledge.png",
+    "LKP/assets/images/cosmic-weave.png",
+    "assets/images/br-skyknowledge.png"
+  ],
+
+  vedic: [
+    "LKP/assets/images/bridge-word-creation.png",
+    "LKP/assets/images/cosmic-weave.png",
+    "assets/images/bridge-word-creation.png"
+  ],
+
+  dreamtime: [
+    "LKP/assets/images/bridge-darkness.png",
+    "LKP/assets/images/cosmic-weave.png",
+    "assets/images/bridge-darkness.png"
   ],
 
   compass: [
@@ -955,6 +980,7 @@ function makeBackgroundStars() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const galaxyObjects = new Map();
+const nebulaObjects = [];
 
 function buildSpiralParticles(color, N, scale) {
   const col    = new THREE.Color(color);
@@ -1098,9 +1124,27 @@ function makeGalaxy(def) {
   outerGlow.scale.setScalar(IS_MOBILE ? 12 : 26);
   grp.add(outerGlow);
 
+  const nebula = new THREE.Sprite(new THREE.SpriteMaterial({
+    map: makeGlowTex(R, G, B, 0.22, 128),
+    transparent: true,
+    opacity: IS_MOBILE ? 0.18 : 0.26,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending
+  }));
+  const nebulaSpread = def.ecosystem?.nebula?.spread || (IS_MOBILE ? 16 : 24);
+  nebula.scale.set(nebulaSpread * 1.6, nebulaSpread, 1);
+  nebula.rotation.z = THREE.MathUtils.degToRad(def.az * 0.37 + def.alt);
+  nebula.userData = {
+    baseOpacity: IS_MOBILE ? 0.18 : 0.26,
+    pulse: def.ecosystem?.nebula?.pulse || 1,
+    phase: def.az * 0.017
+  };
+  grp.add(nebula);
+  nebulaObjects.push(nebula);
+
   const mat = grp.children[0].material;
   skyDome.add(grp);
-  galaxyObjects.set(def.id, { grp, coreGlow, outerGlow, mat });
+  galaxyObjects.set(def.id, { grp, coreGlow, outerGlow, nebula, mat });
 }
 
 function makeGalaxies() {
@@ -1821,6 +1865,20 @@ const CULTURE_LABELS = { kanaka: "K\u0101naka Maoli", kemet: "Kemet", bridge: "T
 const CULTURE_COLORS = { kanaka: "#3cb371", kemet: "#f0c96a", bridge: "#7b88ff" };
 const LESSON_URL     = "LKP/lessons.html#";
 
+function syncCultureMapsFromData(cultures) {
+  if (!Array.isArray(cultures)) return;
+  cultures.forEach((culture) => {
+    if (!culture?.id) return;
+    const colors = window.LKP_GALAXY_BUILDER?.getCultureThemeColors
+      ? window.LKP_GALAXY_BUILDER.getCultureThemeColors(culture)
+      : null;
+    CULTURE_LABELS[culture.id] = culture.name || culture.id;
+    CULTURE_COLORS[culture.id] = colors
+      ? `#${colors.main.toString(16).padStart(6, "0")}`
+      : CULTURE_COLORS[culture.id] || "#54c6ee";
+  });
+}
+
 function getConceptFromEvent(e, domEl, cam, ray) {
   if (!domEl || !cam) return null;
   const b = domEl.getBoundingClientRect();
@@ -2190,6 +2248,15 @@ function onFrame() {
 
     obj.coreGlow.material.opacity  = THREE.MathUtils.lerp(obj.coreGlow.material.opacity,  isActive ? 0.88 : 0.70 + pulse,      0.06);
     obj.outerGlow.material.opacity = THREE.MathUtils.lerp(obj.outerGlow.material.opacity, isActive ? 0.54 : 0.38 + pulse * 0.5, 0.05);
+    if (obj.nebula) {
+      const nPulse = REDUCED_MOTION ? 0 : Math.sin(t * 0.38 * obj.nebula.userData.pulse + obj.nebula.userData.phase) * 0.04;
+      obj.nebula.material.opacity = THREE.MathUtils.lerp(
+        obj.nebula.material.opacity,
+        isActive ? obj.nebula.userData.baseOpacity + 0.14 : obj.nebula.userData.baseOpacity + nPulse,
+        0.045
+      );
+      if (!REDUCED_MOTION) obj.nebula.rotation.z += 0.00045 * obj.nebula.userData.pulse * spd;
+    }
     obj.mat.opacity                = THREE.MathUtils.lerp(obj.mat.opacity,                isActive ? 0.70 : 0.52,               0.04);
     
     // Galaxy core breathing
@@ -2459,6 +2526,8 @@ async function init() {
   try {
     // Generate galaxy definitions dynamically from CULTURALVERSE_DATA
     if (window.LKP_GALAXY_BUILDER && window.CULTURALVERSE_DATA) {
+      syncCultureMapsFromData(window.CULTURALVERSE_DATA.cultures);
+
       GALAXY_DEFS = window.LKP_GALAXY_BUILDER.buildGalaxyDefsFromData(
         window.CULTURALVERSE_DATA.cultures,
         IS_MOBILE

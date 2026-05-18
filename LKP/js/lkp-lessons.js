@@ -2380,6 +2380,9 @@
 
       if (lesson.id === 'km-kumulipo' || lesson.id.startsWith('km-wa-')) {
         initKumulipoExperience(body);
+        if (window.KUMULIPO_WA_UI && typeof window.KUMULIPO_WA_UI.insert === 'function') {
+          window.KUMULIPO_WA_UI.insert(document.getElementById('lessonActionStrip'), state.mode);
+        }
       }
     }
 
@@ -3110,6 +3113,15 @@
       setTimeout(attempt, retryMs);
     })();
   }
+
+  window.LESSON_RENDERER = {
+    navigateTo: function (lessonId) {
+      if (!lessonId) return false;
+      if (!findLesson(lessonId)) return false;
+      renderLesson(lessonId);
+      return true;
+    }
+  };
 
   document.addEventListener('DOMContentLoaded', waitForDataAndBuild);
 })();

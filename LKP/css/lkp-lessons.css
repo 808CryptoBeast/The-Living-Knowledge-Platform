@@ -2143,6 +2143,87 @@ body.is-reading-mode .lkp-footer,
 body.is-reading-mode .cv-sidebar-fab { display:none !important; }
 body.is-reading-mode .lkp-lessons-layout { display:block; }
 
+.kumu-wa-chant-card--primary {
+  border-color: color-mix(in srgb, var(--active-color, #3cb371) 32%, rgba(255,255,255,0.10));
+  background:
+    linear-gradient(135deg, rgba(60,179,113,0.08), rgba(84,198,238,0.045)),
+    rgba(4,10,26,0.76);
+}
+
+.kumu-wa-source-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 1rem 0 1.1rem;
+}
+
+.kumu-wa-source-meta span {
+  padding: 0.34rem 0.62rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.11);
+  background: rgba(255,255,255,0.045);
+  color: var(--text-2);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.kumu-wa-full-chant {
+  display: grid;
+  gap: 0.85rem;
+  max-height: min(72vh, 820px);
+  overflow: auto;
+  padding: 0.2rem 0.35rem 0.2rem 0;
+  scrollbar-color: var(--active-color, #3cb371) rgba(255,255,255,0.06);
+}
+
+.kumu-wa-line-pair {
+  display: grid;
+  grid-template-columns: 4.2rem minmax(0, 1fr);
+  gap: 0.9rem;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  background: rgba(1,3,10,0.34);
+}
+
+.kumu-wa-line-pair__num {
+  color: var(--active-color, #3cb371);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 900;
+  line-height: 1.45;
+}
+
+.kumu-wa-line-pair__body {
+  min-width: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.kumu-wa-line-pair__hawaiian {
+  color: var(--text-1);
+  font-family: var(--font-serif);
+  font-size: clamp(1rem, 1.8vw, 1.18rem);
+  line-height: 1.55;
+  margin: 0;
+}
+
+.kumu-wa-line-pair__english {
+  color: var(--text-2);
+  font-size: 0.92rem;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.kumu-wa-full-chant__note {
+  margin-top: 1rem;
+  color: var(--text-3);
+  font-size: 0.82rem;
+  line-height: 1.6;
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    KUMULIPO WĀ EXPANSION UI — SINGLE VIEW NAVIGATOR
 ═══════════════════════════════════════════════════════════════════════════ */

@@ -470,6 +470,7 @@ button { font: inherit; cursor: pointer; border: none; }
 .lkp-culture-card--kanaka .lkp-culture-card__accent { background: linear-gradient(90deg, transparent, var(--emerald), transparent); }
 .lkp-culture-card--kemet  .lkp-culture-card__accent { background: linear-gradient(90deg, transparent, var(--gold),   transparent); }
 .lkp-culture-card--bridge .lkp-culture-card__accent { background: linear-gradient(90deg, transparent, var(--violet), transparent); }
+.lkp-culture-card--dynamic .lkp-culture-card__accent { background: linear-gradient(90deg, transparent, var(--culture-color), transparent); }
 
 /* Crystal glyph in card header */
 .lkp-culture-card__glyph {
@@ -497,6 +498,7 @@ button { font: inherit; cursor: pointer; border: none; }
 .lkp-culture-card--kanaka .lkp-culture-card__glyph { color: var(--emerald); }
 .lkp-culture-card--kemet  .lkp-culture-card__glyph { color: var(--gold); }
 .lkp-culture-card--bridge .lkp-culture-card__glyph { color: var(--violet); }
+.lkp-culture-card--dynamic .lkp-culture-card__glyph { color: var(--culture-color); }
 
 .lkp-culture-card__badge {
   display: inline-flex;
@@ -519,6 +521,20 @@ button { font: inherit; cursor: pointer; border: none; }
 }
 .lkp-culture-card--bridge .lkp-culture-card__badge {
   color: var(--violet);  background: rgba(123,136,255,0.08); border: 1px solid rgba(123,136,255,0.22);
+}
+.lkp-culture-card--dynamic .lkp-culture-card__badge {
+  color: var(--culture-color);
+  background: color-mix(in srgb, var(--culture-color) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--culture-color) 32%, transparent);
+}
+
+.lkp-culture-card--dynamic .lkp-culture-card__title {
+  color: color-mix(in srgb, var(--culture-color) 34%, var(--text));
+}
+
+.lkp-culture-pill--dynamic .lkp-culture-pill__dot {
+  background: var(--culture-color);
+  box-shadow: 0 0 18px var(--culture-color);
 }
 
 .lkp-culture-card__title {
