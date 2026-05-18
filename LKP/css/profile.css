@@ -35,6 +35,11 @@
   --profile-rust: #d98545;
   --profile-red: #ff7676;
 
+  --profile-scrollbar-track: rgba(255, 255, 255, 0.045);
+  --profile-scrollbar-thumb: rgba(240, 201, 106, 0.36);
+  --profile-scrollbar-thumb-hover: rgba(84, 198, 238, 0.54);
+  --profile-scrollbar-corner: rgba(1, 3, 10, 0.82);
+
   --profile-radius-lg: 30px;
   --profile-radius-md: 22px;
   --profile-radius-sm: 16px;
@@ -88,6 +93,8 @@ html {
   min-height: 100%;
   scroll-behavior: smooth;
   background: var(--profile-bg);
+  scrollbar-color: var(--profile-scrollbar-thumb) var(--profile-scrollbar-track);
+  scrollbar-width: thin;
 }
 
 body {
@@ -1368,6 +1375,40 @@ body.profile-theme-light .profile-badge {
   transform: translate(-50%, -132%);
 }
 
+* {
+  scrollbar-color: var(--profile-scrollbar-thumb) var(--profile-scrollbar-track);
+  scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.02));
+}
+
+*::-webkit-scrollbar-thumb {
+  min-height: 44px;
+  border: 2px solid rgba(1,3,10,0.72);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, var(--profile-scrollbar-thumb), rgba(84,198,238,0.26));
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background:
+    linear-gradient(180deg, var(--profile-scrollbar-thumb-hover), rgba(240,201,106,0.48));
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--profile-scrollbar-corner);
+}
+
 .profile-galaxy-tooltip small {
   display: block;
   margin-top: 5px;
@@ -1890,20 +1931,20 @@ body.profile-theme-light .profile-admin-card {
   max-height: 620px;
   overflow: auto;
   padding-right: 4px;
+  scrollbar-gutter: stable;
 }
 
 .profile-lesson-path::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 
 .profile-lesson-path::-webkit-scrollbar-track {
-  background: rgba(255,255,255,0.04);
-  border-radius: 999px;
+  background: rgba(255,255,255,0.025);
 }
 
 .profile-lesson-path::-webkit-scrollbar-thumb {
-  background: rgba(240, 201, 106, 0.34);
-  border-radius: 999px;
+  border-color: rgba(5, 12, 32, 0.86);
+  background: linear-gradient(180deg, rgba(240, 201, 106, 0.38), rgba(84, 198, 238, 0.28));
 }
 
 .lesson-row {
