@@ -15,6 +15,7 @@
 
   const COMPLETED_KEY   = 'cv_completed';
   const MANA_KEY        = 'cv_mana';
+  const STARTED_KEY     = 'lkp_started_lessons_v1';
   const REFLECTIONS_KEY = 'lkp_lesson_reflections_v2';
   const MODE_KEY        = 'lkp_lesson_mode_v1';
   const FONT_SCALE_KEY  = 'lkp_lesson_font_scale_v1';
@@ -2333,6 +2334,15 @@
 
     state.activeLessonId = lesson.id;
     localStorage.setItem(LAST_LESSON_KEY, lesson.id);
+    try {
+      const started = JSON.parse(localStorage.getItem(STARTED_KEY) || '[]');
+      if (Array.isArray(started) && !started.includes(lesson.id)) {
+        started.push(lesson.id);
+        localStorage.setItem(STARTED_KEY, JSON.stringify(started));
+      }
+    } catch (_err) {
+      localStorage.setItem(STARTED_KEY, JSON.stringify([lesson.id]));
+    }
 
     document.body.dataset.culture = lesson.cultureId || 'default';
     document.body.dataset.lessonMode = state.mode;
@@ -2380,7 +2390,7 @@
 
       if (lesson.id === 'km-kumulipo' || lesson.id.startsWith('km-wa-')) {
         initKumulipoExperience(body);
-        if (window.KUMULIPO_WA_UI && typeof window.KUMULIPO_WA_UI.insert === 'function') {
+        if (lesson.id === 'km-kumulipo' && window.KUMULIPO_WA_UI && typeof window.KUMULIPO_WA_UI.insert === 'function') {
           window.KUMULIPO_WA_UI.insert(document.getElementById('lessonActionStrip'), state.mode);
         }
       }

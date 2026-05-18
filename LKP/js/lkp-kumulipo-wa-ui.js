@@ -226,10 +226,14 @@
   function renderWaNavigation(selectedWa = 1) {
     let html = renderWaOpeningHeader(selectedWa);
     html += `
-      <div class="kumulipo-wa-nav">
-        <div class="kumulipo-wa-nav__intro">
-          <h4>16 Wā Epochs</h4>
-        </div>
+      <details class="kumulipo-wa-nav kumulipo-wa-nav-toggle">
+        <summary class="kumulipo-wa-nav__summary">
+          <span>
+            <strong>16 Wā Epochs</strong>
+            <small>Open the chant map</small>
+          </span>
+          <i class="fas fa-chevron-down" aria-hidden="true"></i>
+        </summary>
         <div class="kumulipo-wa-nav__list">
     `;
 
@@ -247,7 +251,7 @@
 
     html += `
         </div>
-      </div>
+      </details>
     `;
 
     return html;

@@ -1001,8 +1001,14 @@ ${config.lineTranslations.join('\n')}
     ? (Number(config.endLine) - Number(config.startLine) + 1)
     : 0;
 
-  const pairedLines = Array.isArray(config.versePairs) && config.versePairs.length
-    ? config.versePairs.map((pair, index) => ({
+  const sourceVersePairs = Array.isArray(config.versePairs) && config.versePairs.length
+    ? config.versePairs
+    : (window.KUMULIPO_FULL_VERSE_PAIRS && Array.isArray(window.KUMULIPO_FULL_VERSE_PAIRS[String(waNumber)])
+      ? window.KUMULIPO_FULL_VERSE_PAIRS[String(waNumber)]
+      : []);
+
+  const pairedLines = sourceVersePairs.length
+    ? sourceVersePairs.map((pair, index) => ({
         number: pair.number || pair.num || String(index + 1).padStart(4, '0'),
         hawaiian: pair.hawaiian || pair.line || '',
         english: pair.english || pair.translation || ''
@@ -1033,7 +1039,7 @@ ${config.lineTranslations.join('\n')}
           </article>
         `).join('')}
       </div>
-      <p class="kumu-wa-full-chant__note">${config.isCompleteVerse ? `This is the full numbered chant text currently entered for Wā ${waNumber}.` : `This Wā page is formatted for the full chant. It is currently showing the numbered source lines available in the data file; add the remaining line pairs to versePairs to complete this Wā.`}</p>
+      <p class="kumu-wa-full-chant__note">${config.isCompleteVerse || (expectedLineCount && pairedLines.length >= expectedLineCount) ? `Complete Wā ${waNumber} source chant loaded before the interpretive breakdown.` : `This Wā page is formatted for the complete chant, with ${pairedLines.length}${expectedLineCount ? ` of ${expectedLineCount}` : ''} line pairs currently loaded.`}</p>
     `
     : chantExcerpt;
 
@@ -1045,6 +1051,12 @@ ${config.lineTranslations.join('\n')}
     <p class="kumu-wa-hero__subtitle">${deep.englishTitle} · ${deep.movement}</p>
     <p class="kumu-wa-hero__lead">${config.heroLead}</p>
     ${deep.arc ? `<p class="kumu-wa-arc-statement">${deep.arc}</p>` : ''}
+  </section>
+
+  <section class="kumu-section kumu-wa-chant-card kumu-wa-chant-card--primary kumu-reveal">
+    <h4>Full Kumulipo Verse</h4>
+    <p class="kumu-section__intro">Read the chant first. Each source line appears in Hawaiian, with its English meaning directly underneath, before the interpretation and breakdown.</p>
+    ${fullChantExcerpt}
   </section>
 
   <section class="kumu-section kumu-reveal">
@@ -1059,13 +1071,6 @@ ${config.lineTranslations.join('\n')}
     <div class="kumu-wa-objective-grid">
       ${objectiveRows}
     </div>
-  </section>
-
-  <section class="kumu-section kumu-wa-chant-card kumu-wa-chant-card--primary kumu-reveal">
-    <h4>Full Kumulipo Verse</h4>
-    <p class="kumu-section__intro">Read the chant first. Each source line appears in Hawaiian, with its English meaning directly underneath, before the interpretation and breakdown.</p>
-    ${fullChantExcerpt}
-    <p><strong>Selection note:</strong> ${selectionNote}</p>
   </section>
 
   <section class="kumu-section kumu-reveal">
