@@ -604,6 +604,65 @@ Map your own neighborhood as if it were an ahupuaʻa. Identify high ground, wate
       }
     },
 
+    'ke-creation-deep': {
+      mana: 18,
+      xp: 50,
+      sceneType: 'primordial',
+      concepts: ['Nun', 'Ogdoad', 'Atum', 'Ennead', 'Ptah', 'Maʻat', 'Primordial waters', 'Creation through speech'],
+      sources: SOURCE_SETS.kemetCore,
+      related: ['km-kumulipo', 'ke-nun', 'ke-ennead', 'ke-ptah', 'bridge-darkness', 'bridge-word-creation'],
+      connections: [
+        {
+          cultureId: 'kanaka',
+          lessonId: 'km-kumulipo',
+          axis: 'Creation',
+          note: 'Compare generative darkness, depth, naming, and responsibility without collapsing the traditions.'
+        },
+        {
+          cultureId: 'bridge',
+          lessonId: 'bridge-darkness',
+          axis: 'Bridge',
+          note: 'Use bridge language carefully: similarity should sharpen respect for difference.'
+        },
+        {
+          cultureId: 'kemet',
+          lessonId: 'ke-maat',
+          axis: 'Kemet',
+          note: 'Follow how creation requires ongoing maintenance through Maʻat.'
+        }
+      ],
+      kidVersion: {
+        summary: 'Kemetic creation has more than one sacred way of telling how the world began. The stories often begin with deep dark water called Nun, then show how order, names, sky, earth, and life appear.',
+        bigIdeas: [
+          'Darkness and water can mean hidden potential, not emptiness.',
+          'Different sacred cities remembered creation in different but connected ways.',
+          'Creation is also responsibility: people must help protect balance and truth.'
+        ],
+        vocabulary: [
+          { term: 'Nun', meaning: 'The deep primordial waters before the ordered world.' },
+          { term: 'Atum', meaning: 'A self-created creator connected with the first emergence.' },
+          { term: 'Maʻat', meaning: 'Truth, balance, justice, and right order.' },
+          { term: 'Ptah', meaning: 'A creator connected with heart, speech, craft, and naming.' }
+        ],
+        activity: 'Draw a dark blue water space. Add a first mound, the sun, sky, earth, and one word that should be spoken carefully.',
+        reflection: [
+          'Why can there be more than one true way to remember creation?',
+          'How are Nun and Pō similar, and how are they different?'
+        ]
+      },
+      additions: `
+<reflect>
+Which Kemetic creation lens feels most important for your learning right now: Nun, Ogdoad, Atum, Ennead, Ptah, or Maʻat?
+How does the Kumulipo comparison help you see both similarity and difference more clearly?
+Where does speech create order or disorder in your own community?
+</reflect>
+
+<compare left="Kumulipo" right="Kemet">
+The Kumulipo unfolds creation through Hawaiian genealogical chant, Pō, birth sequence, and kuleana. || Kemetic creation unfolds through Nun, temple traditions, divine principles, speech, Maʻat, and the ongoing maintenance of order.
+</compare>
+`
+    },
+
     'ke-nun': {
       mana: 14,
       xp: 38,

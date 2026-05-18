@@ -2248,6 +2248,37 @@ What does kuleana look like when humans are understood as part of creation rathe
           desc:  'The multiple creation traditions of Kemet — from Nun to the Ennead.',
           lessons: [
             {
+              id:       'ke-creation-deep',
+              num:      'KE·00',
+              title:    'Kemetic Creation Deep Study — Nun, Atum, Ogdoad, Ennead & Ptah',
+              readTime: '18 min',
+              content: `
+<p class="lead"><strong>Kemetic creation is not one flat story.</strong> It is a living constellation of temple traditions that ask the same deep questions from different sacred centers: What existed before form? How does darkness become world? How does hidden potential become speech, order, relation, and responsibility?</p>
+
+<callout type="gold">Read these creation traditions as complementary lenses, not as contradictions. Heliopolis, Hermopolis, and Memphis each preserve a different part of the architecture: emergence from Nun, hidden pre-creation forces, divine differentiation, creative speech, and the maintenance of Maʻat.</callout>
+
+<h4>Why Kemet Has Multiple Creation Accounts</h4>
+<p>Ancient Kemet was not organized around a single forced doctrine. Sacred cities carried local temple knowledge, ritual memory, and philosophical emphasis. Iunu / Heliopolis centered Atum and the Ennead. Khmun / Hermopolis centered the Ogdoad and the hidden conditions before creation. Mennefer / Memphis centered Ptah, heart, tongue, craft, and name. These are not random myths competing for attention. They are different ways of reading the same mystery of emergence.</p>
+
+<h4>The Deep Pattern</h4>
+<p>The pattern begins in <strong>Nun</strong>, the dark primordial waters. Nun is not nothingness; it is full potential before visible form. From this hidden depth comes a first standing place, often imagined as the primeval mound. <strong>Atum</strong> emerges as self-generated completeness, then differentiation begins through pairs: Shu and Tefnut, Geb and Nut, and the later forces of life, death, disruption, restoration, and protection.</p>
+
+<twocol left="Ogdoad · Hidden Conditions" right="Ennead · Relational Differentiation">The Ogdoad names what is present before creation becomes visible: water, infinity, darkness, and hiddenness. These conditions are not dead background; they are active preconditions for emergence.||The Ennead names how creation differentiates into relational principles. Air, moisture, earth, sky, renewal, magic, disruption, and protection all become part of the ordered field.</twocol>
+
+<h4>Ptah and Creation Through Word</h4>
+<p>The Memphite tradition deepens the question by asking how form becomes effective. Ptah creates through <strong>heart</strong> and <strong>tongue</strong>: inward conception and spoken articulation. In this worldview, language is not decoration. Naming places a being within reality. Speech can uphold Maʻat or damage it.</p>
+
+<h4>How This Speaks With the Kumulipo</h4>
+<p>The Kumulipo and Kemetic creation traditions both begin in generative darkness and depth. Both refuse the idea that darkness is only emptiness. Both use sequence, naming, and relation to show how worlds become livable. But they must not be collapsed into each other. The Kumulipo is Kānaka Maoli genealogical chant grounded in Pō, moʻokūʻauhau, and kuleana. Kemetic creation is rooted in Nun, divine principles, temple traditions, Maʻat, and ritual maintenance of cosmic order.</p>
+
+<reflect>
+Where do you see hidden potential being mistaken for emptiness?
+How does a culture protect multiple creation lenses without forcing one to erase the others?
+What changes when creation is read as responsibility rather than only origin?
+</reflect>
+`
+            },
+            {
               id:       'ke-nun',
               num:      'KE·01',
               title:    'Nun & the Primordial Waters — Before the Beginning',

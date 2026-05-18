@@ -102,6 +102,11 @@
       pos: 'center center',
       credit: 'Nun & the Primordial Waters — Before the Beginning'
     },
+    'ke-creation-deep': {
+      url: 'assets/images/ke-nun.png',
+      pos: 'center center',
+      credit: 'Kemetic Creation Deep Study — Nun, Atum, Ogdoad, Ennead, and Ptah'
+    },
     'ke-ennead': {
       url: 'assets/images/ke-ennead.png',
       pos: 'center center',
@@ -290,6 +295,17 @@
   };
 
   const KEMET_DEEP_FRAMEWORK = {
+    'ke-creation-deep': {
+      movement: 'Ordering the Hidden Deep into Living Cosmos',
+      crisis: 'Flattening Kemetic creation into one simple myth erases the way multiple temple traditions preserve complementary creation logics.',
+      intelligence: 'multi-origin relational discernment',
+      continuity: 'Kemetic creation is not a single flat story; Nun, the Ogdoad, Atum, the Ennead, Ptah, Maʻat, and the Duat form a layered architecture of emergence, speech, order, renewal, and responsibility.',
+      pathways: [
+        'Trace one movement from hidden potential into named order without treating darkness as absence.',
+        'Compare Heliopolitan, Hermopolitan, and Memphite creation as complementary lenses rather than contradictions.',
+        'Apply multi-origin relational discernment by holding two valid origin accounts together without forcing one to erase the other.'
+      ]
+    },
     'ke-nun': {
       movement: 'Holding Primordial Potential',
       crisis: 'Reducing Nun to emptiness erases the Kemetic understanding of fertile potential and cyclical renewal.',
@@ -402,7 +418,216 @@
     }
   };
 
+  const KEMET_CREATION_DEEP_STUDIES = {
+    'ke-creation-deep': {
+      title: 'Kemetic Creation Deep Study',
+      subtitle: 'Nun, the First Mound, Atum, the Ogdoad, the Ennead, Ptah, and Maʻat',
+      sourceNote: 'Primary witnesses include the Pyramid Texts, Coffin Texts, Memphite Theology / Shabaka Stone tradition, and later temple cosmologies. The lesson reads these as related creation architectures, not as one flattened story.',
+      sources: [
+        {
+          label: 'Pyramid Texts · Atum emerging from Nun',
+          body: 'Atum comes into being upon Nun before sky, earth, and ordered ground have fully appeared. The source language frames creation as emergence from primordial waters, not creation from emptiness.'
+        },
+        {
+          label: 'Coffin Texts · self-creation and the first gods',
+          body: 'Atum is remembered as the one who brings forth Shu and Tefnut, the first differentiated pair. The creator is complete, but creation becomes visible through relation.'
+        },
+        {
+          label: 'Memphite Theology · heart and tongue',
+          body: 'Ptah creates through heart and tongue: conception, naming, and spoken articulation. Thought becomes world through disciplined speech.'
+        }
+      ],
+      sequence: [
+        ['Nun', 'The dark primordial waters, not empty but full of unformed potential.'],
+        ['Hidden conditions', 'The Ogdoad names pre-creation qualities: water, limitlessness, darkness, and hiddenness.'],
+        ['First mound', 'The benben or primeval mound rises as the first stable place where form can stand.'],
+        ['Atum', 'Self-conscious completeness emerges and begins differentiation.'],
+        ['Shu and Tefnut', 'Air/space and moisture appear as the first relational pair.'],
+        ['Geb and Nut', 'Earth and sky are separated so the living world can unfold between them.'],
+        ['Osiris, Isis, Set, Nephthys', 'Life, death, disruption, magic, restoration, and social drama enter the cosmic field.'],
+        ['Ptah', 'Creation is understood as thought shaped by speech, craft, and naming.'],
+        ['Maʻat', 'Creation must be maintained through truth, balance, justice, and right relation.']
+      ],
+      parallels: [
+        ['Pō / Nun', 'Both traditions refuse to treat darkness as mere absence. Darkness/depth is generative. Difference remains: Pō is embedded in Hawaiian genealogy and chant sequence; Nun is the primordial water condition in Kemetic cosmology.'],
+        ['Birth sequence / divine differentiation', 'The Kumulipo unfolds through birth lines; Kemet often unfolds through divine principles, paired forces, and temple-specific creation accounts.'],
+        ['Chant / word', 'The Kumulipo preserves creation through genealogical chant. Memphite theology emphasizes heart and tongue as creation through thought and speech. Both honor language as world-shaping, but through distinct protocols.'],
+        ['Kuleana / Maʻat', 'Both frameworks connect origin to responsibility. Kumulipo binds humans into genealogy and kuleana; Kemet binds creation into Maʻat and the ongoing maintenance of order.']
+      ],
+      misreadings: [
+        'Do not reduce Nun to empty nothingness.',
+        'Do not read the Ogdoad, Ennead, and Ptah traditions as contradictions that cancel each other.',
+        'Do not treat Kemetic creation as a simple list of gods.',
+        'Do not use Kumulipo parallels to claim sameness or replacement.',
+        'Do not remove Maʻat from creation; order must be maintained after emergence.'
+      ]
+    },
+    'ke-nun': {
+      title: 'Nun Deep Study',
+      subtitle: 'Primordial Waters Before Ordered Form',
+      sourceNote: 'Read Nun as fertile depth, not as emptiness. The created world emerges from a charged condition that remains around and beneath creation.',
+      sources: [
+        {
+          label: 'Pyramid Texts · before sky and earth',
+          body: 'The source tradition places Atum/Re in a time before sky and earth were established, locating creation in a pre-ordered watery depth.'
+        },
+        {
+          label: 'Coffin Texts · boundless waters',
+          body: 'The creator identifies with the waters and with self-limitation. Creation begins when boundlessness takes form.'
+        }
+      ],
+      sequence: [
+        ['Dark water', 'The first condition is not a blank void but the deep medium of all possibility.'],
+        ['Stillness', 'Nothing is yet differentiated, but everything is latent.'],
+        ['Self-awareness', 'Atum becomes conscious within Nun.'],
+        ['First standing place', 'The mound gives creation a place to appear.'],
+        ['First pair', 'Shu and Tefnut begin the relational unfolding of world.']
+      ],
+      parallels: [
+        ['Pō and Nun', 'Both are source-depths. Pō is Hawaiian generative darkness within genealogy; Nun is Kemetic primordial water before ordered creation.'],
+        ['Oceanic emergence', 'Both traditions use depth as a way to think origin, but each belongs to its own land, language, and ritual world.']
+      ],
+      misreadings: [
+        'Do not translate Nun as nothing.',
+        'Do not make Atum an external maker standing outside creation.',
+        'Do not forget that Nun remains present after creation as surrounding depth and renewal.'
+      ]
+    },
+    'ke-ennead': {
+      title: 'Ennead Deep Study',
+      subtitle: 'Nine Principles of Differentiation and Relation',
+      sourceNote: 'The Heliopolitan Ennead is best read as a process model: reality differentiates through paired principles and relational tension.',
+      sources: [
+        {
+          label: 'Heliopolitan tradition · Atum and the nine',
+          body: 'Atum generates the first pair, Shu and Tefnut; from them come Geb and Nut; from earth and sky come Osiris, Isis, Set, and Nephthys.'
+        }
+      ],
+      sequence: [
+        ['Atum', 'Completeness becomes the source of differentiation.'],
+        ['Shu and Tefnut', 'Air/space and moisture make life possible.'],
+        ['Geb and Nut', 'Earth and sky are separated into a livable field.'],
+        ['Osiris and Isis', 'Regeneration, kingship, healing, and restoration enter the story.'],
+        ['Set and Nephthys', 'Disruption, edge, desert, hiddenness, and protection of the dead complete the field.']
+      ],
+      parallels: [
+        ['Genealogy and principle', 'The Kumulipo names births in chant sequence; the Ennead names divine principles in a creation genealogy.'],
+        ['Difference without separation', 'Both systems show many forms emerging without severing connection to source.']
+      ],
+      misreadings: [
+        'Do not treat the Ennead as a random pantheon list.',
+        'Do not make Set simply evil; disruption has a place in the ordered field.',
+        'Do not miss the paired-force logic.'
+      ]
+    },
+    'ke-ptah': {
+      title: 'Ptah Deep Study',
+      subtitle: 'Creation Through Heart, Tongue, Craft, and Name',
+      sourceNote: 'The Memphite Theology frames creation as intelligence articulated: heart conceives, tongue speaks, and form becomes established.',
+      sources: [
+        {
+          label: 'Memphite Theology / Shabaka Stone tradition',
+          body: 'Ptah is associated with heart and tongue. The names of things are pronounced, and through naming the ordered world becomes effective.'
+        }
+      ],
+      sequence: [
+        ['Heart', 'Conception, intention, and inner design.'],
+        ['Tongue', 'Speech, naming, and activation.'],
+        ['Craft', 'The world is shaped like a made and measured work.'],
+        ['Name', 'To name something is to stabilize its place in reality.'],
+        ['Maʻat', 'Speech must sustain order rather than disorder.']
+      ],
+      parallels: [
+        ['Chant and speech', 'The Kumulipo carries origin through chant; Ptah creates through articulated thought and word. Both honor language as generative.'],
+        ['Name and relation', 'Both systems treat naming as placement within a larger order, not as a decorative label.']
+      ],
+      misreadings: [
+        'Do not treat speech as neutral.',
+        'Do not reduce Ptah to a craftsman only; craft here is cosmological intelligence.',
+        'Do not separate word from ethical consequence.'
+      ]
+    }
+  };
+
+  function buildKemetCreationDeepStudy(lesson) {
+    const study = KEMET_CREATION_DEEP_STUDIES[lesson.id];
+    if (!study) return '';
+
+    const sourceBlocks = study.sources.map(source => `
+      <article class="kumu-wa-panel">
+        <div class="kumu-wa-panel__body">
+          <p class="kumu-wa-panel__kicker">${source.label}</p>
+          <p>${source.body}</p>
+        </div>
+      </article>
+    `).join('');
+
+    const sequenceRows = study.sequence.map(([term, meaning]) => `
+      <tr>
+        <td><strong>${term}</strong></td>
+        <td>${meaning}</td>
+      </tr>
+    `).join('');
+
+    const parallelRows = study.parallels.map(([term, meaning]) => `
+      <tr>
+        <td><strong>${term}</strong></td>
+        <td>${meaning}</td>
+      </tr>
+    `).join('');
+
+    const misreadings = study.misreadings.map(item => `<li>${item}</li>`).join('');
+
+    return `
+      <section class="kumu-section kumu-wa-chant-card kumu-wa-chant-card--primary kumu-reveal is-visible">
+        <h4>${study.title}</h4>
+        <p class="kumu-wa-source-meta">
+          <span>Primary sources first</span>
+          <span>Kemetic creation architecture</span>
+          <span>Careful Kumulipo dialogue</span>
+        </p>
+        <p class="lead">${study.subtitle}</p>
+        <p>${study.sourceNote}</p>
+      </section>
+
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Primary Creation Witnesses</h4>
+        <p class="kumu-wa-provenance">These are short source-grounded orientation notes, not replacements for the original Kemetic texts or specialist translations.</p>
+        <div class="kumu-wa-accordion">
+          ${sourceBlocks}
+        </div>
+      </section>
+
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Creation Sequence</h4>
+        <table class="kumu-wa-table">
+          <thead>
+            <tr><th>Moment</th><th>Meaning</th></tr>
+          </thead>
+          <tbody>${sequenceRows}</tbody>
+        </table>
+      </section>
+
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Kumulipo Dialogue · Similarity Without Collapse</h4>
+        <table class="kumu-wa-table">
+          <thead>
+            <tr><th>Resonance</th><th>Boundary</th></tr>
+          </thead>
+          <tbody>${parallelRows}</tbody>
+        </table>
+        <p class="kumu-wa-provenance">Bridge protocol: parallels help us see shared human inquiry into darkness, water, birth, word, order, and responsibility. They do not make Kemet and Kumulipo the same tradition.</p>
+      </section>
+
+      <section class="kumu-section kumu-reveal is-visible">
+        <h4>Common Misreadings to Avoid</h4>
+        <ul>${misreadings}</ul>
+      </section>
+    `;
+  }
+
   function buildKemetDeepScaffold(lesson) {
+    const creationDeepStudy = buildKemetCreationDeepStudy(lesson);
     const meta = KEMET_DEEP_FRAMEWORK[lesson.id] || {
       movement: 'Interpreting Through Kemetic Relational Logic',
       crisis: 'Flattening this lesson into trivia obscures its civilizational intelligence and practical implications.',
@@ -467,6 +692,8 @@
         <p><span class="kumu-wa-source-tag">Orientation</span> This lesson centers ${meta.movement.toLowerCase()} and should be read as a living Kemetic knowledge foundation. The embedded risk is clear: ${meta.crisis} The intelligence cultivated here is ${meta.intelligence}.</p>
         <p class="kumu-wa-provenance">Provenance note: This scaffold is an interpretive guide. Primary lesson material below remains the source ground.</p>
       </section>
+
+      ${creationDeepStudy}
 
       <section class="kumu-section kumu-reveal is-visible">
         <h4>Learning Objectives</h4>
