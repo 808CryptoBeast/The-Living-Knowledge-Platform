@@ -1,140 +1,93 @@
-<!-- Kumulipo Wā UI Preview -->
-<!-- This shows the structure and appearance of the new Wā expansion interface -->
+# Kumulipo Wā UI Preview
 
-<section id="wa-preview-guide">
-  <!-- AFTER Mark Complete + Scholar/Keiki buttons, users see: -->
-  
-  <div class="kumulipo-wa-wrapper">
-    <div class="kumulipo-wa-container">
-      
-      <!-- Intro Section -->
-      <div class="kumulipo-wa-intro">
-        <h4>Explore Each Wā</h4>
-        <p>Click any wā below to expand its section. Each wā shows the Hawaiian phrase, English meaning, themes, and key concepts.</p>
-        <div class="kumulipo-wa-toggle-info">
-          <small>📜 Scholar mode: full depth</small>
-        </div>
-      </div>
+This document describes the current Kumulipo Wā learning interface.
 
-      <!-- Wā Cards (16 total, 1-16) -->
-      <div class="kumulipo-wa-sections">
-        
-        <!-- Example: Wā 1 (Pō Cluster - Green Border Left) -->
-        <div class="kumulipo-wa-card" data-wa-num="1">
-          <button class="kumulipo-wa-button" type="button" aria-expanded="false">
-            <div class="kumulipo-wa-header">
-              <span class="kumulipo-wa-num">01</span>
-              <div class="kumulipo-wa-titles">
-                <span class="kumulipo-wa-hawaiian">Wā o ke Koʻa</span>
-                <span class="kumulipo-wa-english">Era of Coral</span>
-              </div>
-              <i class="fas fa-chevron-down"></i>
-            </div>
-          </button>
-          
-          <!-- COLLAPSED: button shows only header + chevron -->
-          <!-- ON CLICK: expands to show -->
-          <div class="kumulipo-wa-content" hidden>
-            <div class="kumulipo-wa-body">
-              
-              <div class="kumulipo-wa-phrase">
-                <strong>ʻŌlelo Hawaiʻi:</strong>
-                <p>"Hānau ka koʻa i ka pō"</p>
-              </div>
+## Current Structure
 
-              <div class="kumulipo-wa-translation">
-                <strong>English Meaning:</strong>
-                <p>Coral life is born in deep darkness.</p>
-              </div>
+The Kumulipo experience has two related layers:
 
-              <div class="kumulipo-wa-lens">
-                <strong>Theme:</strong>
-                <p>First life in deep pō: coral and earliest sea forms.</p>
-                <strong style="display:block;margin-top:0.5rem;">English Learning Lens:</strong>
-                <p>Life begins in oceanic darkness.</p>
-              </div>
+1. **Main Kumulipo lesson**
+   - includes the Kumulipo opening orientation
+   - includes the 16 Wā navigation dropdown
+   - lets the learner choose which Wā to study next
 
-              <div class="kumulipo-wa-concepts">
-                <strong>Key Concepts:</strong>
-                <div class="kumulipo-wa-concept-tags">
-                  <span class="kumulipo-wa-tag">Koʻa (coral)</span>
-                  <span class="kumulipo-wa-tag">First paired life</span>
-                  <span class="kumulipo-wa-tag">Sacred darkness</span>
-                  <span class="kumulipo-wa-tag">Marine genesis</span>
-                </div>
-              </div>
+2. **Individual Wā pages**
+   - one page for each Wā, 1-16
+   - begins with the full chant section
+   - shows Hawaiian source lines with English meanings underneath
+   - follows with interpretation, vocabulary, context, resonances, and reflection
 
-              <!-- Scholar mode only -->
-              <div class="kumulipo-wa-related">
-                <strong>Related Lessons:</strong>
-                <ul class="kumulipo-wa-related-list">
-                  <li><a class="kumulipo-wa-related-link">ke-nun</a></li>
-                  <li><a class="kumulipo-wa-related-link">bridge-darkness</a></li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
+## Wā Navigation
 
-        <!-- Wā 2-8: Similar structure (Pō cluster, green border) -->
-        <!-- Wā 9-16: Similar structure (Ao cluster, gold border) -->
-        
-      </div>
+The 16 Wā chooser should appear on the main Kumulipo lesson only. It should not be repeated at the top of every individual Wā page.
 
-      <!-- Cluster Info Box -->
-      <div class="kumulipo-wa-cluster-info">
-        <p><strong>Pō Cluster (Wā 1–8):</strong> Marine emergence, ecology, and life unfolding from darkness.</p>
-        <p><strong>Ao Cluster (Wā 9–16):</strong> Genealogy, lineage, light, and human responsibility.</p>
-      </div>
-    </div>
-  </div>
+Each Wā item includes:
 
-</section>
+- Wā number
+- Hawaiian title
+- English title
+- short movement/meaning
+- link to the dedicated Wā lesson page
 
-<!-- KEY FEATURES:
+## Individual Wā Page Layout
 
-1. VISUAL HIERARCHY
-   - Wā number in monospace (01-16)
-   - Hawaiian name in serif font (primary)
-   - English name in sans-serif (secondary)
-   - Chevron icon indicates collapse/expand state
+Recommended order:
 
-2. COLOR CODING
-   - Wā 1-8: LEFT BORDER = Green (#3cb371) — Pō epoch
-   - Wā 9-16: LEFT BORDER = Gold (#f0c96a) — Ao epoch
+1. Full Kumulipo Verse
+2. Foundational Orientation
+3. Learning Objectives
+4. Foundation Lens for Reading
+5. Vocabulary in Context
+6. Cultural Context
+7. Deeper Interpretation
+8. Intracrises and tensions
+9. Modern Parallels
+10. Scientific Resonances
+11. Kuleana Now
+12. Study Pathways
+13. Common Misreadings
+14. Continuity Anchor
+15. Reflection Prompts
 
-3. INTERACTIVITY
-   - Click button to expand/collapse smoothly
-   - Related lesson links navigate to that lesson
-   - Scholar/Keiki mode toggle updates all sections instantly
-   - Hover effects highlight the card
+## Full Verse Section
 
-4. CONTENT AREAS (when expanded)
-   ✓ ʻŌlelo Hawaiʻi (boxed, green background)
-   ✓ English Meaning (boxed, gold background)
-   ✓ Theme (plain text)
-   ✓ English Learning Lens (Scholar only)
-   ✓ Key Concepts (tag-based layout)
-   ✓ Related Lessons (Scholar only, clickable)
+The full verse section is the primary source anchor.
 
-5. RESPONSIVE
-   - Mobile: Reduced padding, adjusted fonts, full width
-   - Desktop: Full layout with all features
-   - Animations work on all devices
+Each line pair should render as:
 
-6. MODE SENSITIVITY
-   Scholar mode (📜):
-     - Shows 4+ concepts per Wā
-     - Shows learning lens
-     - Shows related lessons (clickable)
-   
-   Keiki mode (🌺):
-     - Shows 2 concepts per Wā
-     - Hides learning lens
-     - Hides related lessons
+```text
+0001
+O ke au i kahuli wela ka honua
 
-7. POSITION IN LESSON
-   After:  [Mark Complete] [Scholar] [Keiki] buttons
-   Before: Connections section
+At the time when the earth became hot
+```
 
--->
+The Hawaiian line remains the source. The English line is an orientation aid.
+
+## Visual Guidance
+
+- Keep source lines in one immersive container.
+- Do not visually scatter each line into separate cards.
+- Use a readable scroll container for long Wā sections.
+- Maintain the dark cosmic style with gold/cyan highlights.
+- Keep the chant first so interpretation does not replace source encounter.
+
+## Interaction Guidance
+
+- Wā chooser: dropdown/navigation list on the main Kumulipo page.
+- Individual Wā pages: focus on reading, interpretation, and continuity.
+- Scholar mode: full interpretive depth.
+- Keiki mode: simpler language and lighter scaffolding.
+- Related links should move the learner without losing the Wā context.
+
+## Implementation Notes
+
+Related files:
+
+- `LKP/js/lkp-kumulipo-wa-ui.js`
+- `LKP/js/lkp-kumulipo-full-verses.js`
+- `LKP/js/lkp-data.js`
+- `LKP/js/lkp-lessons.js`
+- `LKP/css/lkp-lessons.css`
+
+The Wā full verse data is loaded before `lkp-data.js`, then read into each Wā lesson during content generation.

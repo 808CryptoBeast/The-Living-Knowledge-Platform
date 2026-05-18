@@ -1,96 +1,151 @@
-# Ka Paepae ʻIke Ola — App Report
+# Ka Paepae `Ike Ola - App Report
 
-**Report date:** 2026-05-12
+**Original report date:** 2026-05-12  
+**Updated:** 2026-05-18
 
 ## Summary
-Ka Paepae ʻIke Ola is a living knowledge platform for cultural learning, lesson navigation, and identity-driven progress tracking. The current build combines a desktop Three.js knowledge galaxy, a mobile-first explorer, a deep lessons engine, profile sync, and reward systems into one static-site experience that works across desktop and mobile.
+
+Ka Paepae `Ike Ola is a living knowledge platform for cultural learning, lesson navigation, profile progress, and identity-driven exploration. The current build combines an interactive galaxy interface, the Cultural Journeys lesson engine, full Kumulipo Wā deep study pages, a Wayfinder Passport profile, a personal user galaxy, and reward/progress systems into one static-site experience.
 
 ## Current Public Description
-A living cultural knowledge platform that blends interactive 3D navigation, deep lesson paths, profile progress, and Indigenous knowledge systems across the Ikeverse.
+
+A living cultural knowledge platform that blends interactive galaxy navigation, Cultural Journeys, full Kumulipo Wā study, profile progress, and Indigenous knowledge systems across the Ikeverse.
 
 ## What the App Does
-The platform lets users explore living knowledge systems through a star-map style interface, open lesson pages, track completion, and store learning progress across devices when signed in. It is designed to feel like an active learning environment rather than a static archive.
+
+The platform lets users explore living knowledge systems through a star-map style interface, open lessons, read source-grounded cultural material, track completion, and visualize learning progress. It is designed to feel like a living learning environment rather than a static archive.
 
 ## Core Experience
-- Desktop 3D knowledge galaxy with hover, click, zoom, and pan controls.
-- Mini live preview viewer in the navigation section.
-- Mobile fullscreen 3D explorer with its own viewer, controls, and help sheet.
-- Deep lessons page with culture filters, lesson search, related concepts, visuals, sources, and lesson navigation.
-- Lesson hero fullscreen viewer for larger artwork viewing.
-- Swipe navigation and a compact mobile lesson scrubber.
-- Profile and rewards system with Mana, badges, streaks, and cloud sync.
 
-## Lesson System
-The lessons engine renders lessons from structured cultural data. It now supports:
+- Homepage knowledge galaxy with interactive navigation.
+- Cultural Journeys lesson page with culture dropdown navigation.
+- Full Kumulipo Wā Deep Study pages for Wā 1-16.
+- Hawaiian source lines paired with English meanings before interpretation.
+- Scholar and Keiki learning modes.
+- Reflection prompts and saved responses.
+- Lesson completion, Mana, badges, and local progress.
+- Wayfinder Passport profile with editable identity.
+- Personal user galaxy where started cultures appear as planets.
+- Responsive top navigation, side navigation, and themed scrollbars.
+
+## Cultural Journeys
+
+The former "Deep Lessons" experience has been renamed and reframed as **Cultural Journeys**. The side navigation now lists cultures as collapsible sections. Each culture section can contain modules and lessons, with progress shown at the culture level and active lessons highlighted.
+
+The lesson system supports:
+
 - culture and module grouping
-- learning objectives
-- scholar and keiki modes
-- reflection prompts saved locally and synced when available
-- lesson hero image resolution with fallback placeholders
-- per-lesson image strips
-- concept-based related lessons
-- source badges with inferred or explicit metadata
-- lesson completion and progress tracking
-- resume-last-opened-lesson behavior on return visits
+- dropdown culture navigation
+- progress labels and completion indicators
+- active lesson highlighting
+- search
+- lesson objectives
+- Scholar and Keiki modes
+- reflection prompts
+- hero images and fullscreen viewing
+- related concepts and related lessons
+- previous/next navigation
+- mobile swipe and scrubber behavior
 
-## Navigation and Viewer System
-The homepage navigation section now includes:
-- a live mini viewer mirroring the main 3D scene
-- zoom, reset, and pause controls
-- a mobile fullscreen viewer launcher
-- an onboarding help sheet for mobile viewer gestures
+## Kumulipo Wā System
 
-The main viewer uses Three.js with orbit controls, bloom, picking, and an expanded camera range so the galaxy starts farther out and allows broader zooming and panning.
+The Kumulipo section now includes complete Wā pages for all 16 Wā. The recent data update added full verse pairs for each Wā using:
 
-## Mobile Experience
-The mobile experience is no longer a reduced fallback. It now includes:
-- a dedicated mobile galaxy interface
-- a mobile fullscreen 3D viewer
-- its own loader and upload animation
-- swipe navigation between lessons
-- a sticky mobile lesson scrubber
-- a hero fullscreen viewer for lesson images
-- responsive sidebar and lesson layout behavior
+- numbered source line
+- Hawaiian line
+- English meaning
+- source range metadata
+- expected line count metadata
 
-## Branding and Icons
-The app is now aligned around the nav brand mark image:
-- favicon and app icons point to the nav brand image
-- manifest and browser tile assets use the same mark
-- loading screens use the same icon with an animated uploading effect
-- social metadata points to the same brand image for a consistent public identity
+The full chant section appears at the top of each Wā page, before the interpretation and breakdown. This keeps the primary source as the first point of contact.
 
-## Data and Content
+## User Galaxy
+
+The profile galaxy has been reworked into **The User's Galaxy - A Living Map of Cultural Learning**.
+
+The galaxy starts as a dark field with distant stars. When the learner starts lessons in a culture, that culture appears as a planet. As learning deepens, the planet evolves:
+
+- nebula clears around the planet
+- moons appear for mastered topics
+- a star and orbit become visible
+- rings, atmosphere glow, and companion bodies can appear with deeper progress
+
+The galaxy communicates two kinds of learning:
+
+- many young planets: broad exploration across cultures
+- fewer evolved planets: deep study within specific cultures
+
+## Navigation and UI
+
+Recent interface updates include:
+
+- top navigation polish
+- animated mobile navigation menu
+- outside-click, Escape, and link-click close behavior
+- culture side navigation dropdowns using explicit button controls
+- accessibility attributes for dropdowns and menus
+- improved active states and hover states
+- themed scrollbars across the lesson and profile surfaces
+- cache-busting query strings for updated CSS/JS assets
+
+## Profile and Rewards
+
+The Wayfinder Passport includes:
+
+- profile identity fields
+- lesson progress
+- Mana and reward state
+- badges and ranks
+- started lessons
+- completed lessons
+- culture progress
+- personal galaxy visualization
+
+The profile form fields now include stable `name` attributes to improve browser behavior and reduce autofill warnings.
+
+## Content and Data
+
 The data layer is file-driven and merged from:
+
 - `LKP/js/lkp-data.js`
+- `LKP/js/lkp-kumulipo-full-verses.js`
 - `LKP/js/lkp-data-rich-additions.js`
 - `LKP/js/lkp-data-primary-sources.js`
 
-This keeps the site static-file friendly while still allowing richer lesson metadata, sources, and cross-culture connections.
+This keeps the site static-file friendly while supporting richer lesson metadata, sources, and cross-culture connections.
 
 ## Technology Stack
+
 - HTML5
 - CSS3
 - JavaScript
 - Three.js
-- Supabase
+- Supabase-ready profile/sync code
 - LocalStorage
 - Font Awesome
 - Google Fonts
 
 ## File Map
-- `index.html` — homepage and 3D navigation entry point
-- `about.html` — project overview
-- `profile.html` — Wayfinder Passport and rewards
-- `admin.html` — admin deck
-- `LKP/lessons.html` — deep lessons page
-- `LKP/js/lkp-three.js` — desktop 3D galaxy and loaders
-- `LKP/js/lkp-mobile.js` — mobile experience and loader
-- `LKP/js/lkp-lessons.js` — lesson rendering engine
-- `LKP/css/lkp.css` — homepage and viewer styling
-- `LKP/css/lkp-mobile.css` — mobile app styling
-- `LKP/css/lkp-lessons.css` — lessons styling
-- `site.webmanifest` — app icon and install metadata
-- `browserconfig.xml` — Windows tile icon metadata
 
-## Notes
-This report reflects the current implementation after the latest mobile, branding, and documentation updates. It can be used as a handoff note for future work, releases, or GitHub documentation.
+- `index.html` - homepage and galaxy entry point
+- `about.html` - project overview
+- `profile.html` - Wayfinder Passport and user galaxy
+- `admin.html` - admin deck
+- `LKP/lessons.html` - Cultural Journeys page
+- `LKP/js/lkp-lessons.js` - lesson rendering engine
+- `LKP/js/lkp-data.js` - lesson and Wā data
+- `LKP/js/lkp-kumulipo-full-verses.js` - Kumulipo source line pairs
+- `LKP/js/profile.js` - profile and user galaxy logic
+- `LKP/css/lkp-lessons.css` - Cultural Journeys styling
+- `LKP/css/profile.css` - profile styling
+- `LKP/css/lkp.css` - homepage styling
+
+## Current Status
+
+The current implementation is static-site friendly and ready for continued content expansion. The strongest near-term opportunities are:
+
+- adding more culture modules
+- adding more source notes and media assets
+- expanding the profile galaxy dashboard summaries
+- preparing a guided demo route for public presentations
+- connecting admin publishing flows to persistent storage
