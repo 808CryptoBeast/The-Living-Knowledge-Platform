@@ -42,7 +42,7 @@
   />
 
   <link rel="stylesheet" href="css/lkp-brand.css" />
-  <link rel="stylesheet" href="css/lkp-lessons.css" />
+  <link rel="stylesheet" href="css/lkp-lessons.css?v=cultural-journeys-4" />
 
   <!-- Supabase browser config.
        Replace these with your real project values.
@@ -120,11 +120,13 @@
       <button
         class="lkp-nav__hamburger"
         id="lkpMobileToggle"
-        aria-label="Toggle Cultural Journeys menu"
+        aria-label="Toggle site navigation"
+        aria-controls="lkpNavLinks"
         aria-expanded="false"
         type="button"
       >
         <span></span><span></span><span></span>
+        <span class="lkp-nav__hamburger-label">Menu</span>
       </button>
     </div>
   </nav>
@@ -265,7 +267,7 @@
 
   <!-- Data files: load before lesson renderer -->
   <script src="js/lkp-kumulipo-full-verses.js?v=full-wa-2" defer></script>
-  <script src="js/lkp-data.js?v=base-15-full-wa-flow" defer></script>
+  <script src="js/lkp-data.js?v=base-16-wa-image-paths" defer></script>
   <script src="js/lkp-data-rich-additions.js?v=rich-4-wa-modules" defer></script>
   <script src="js/lkp-data-primary-sources.js?v=ps-1" defer></script>
 
@@ -280,7 +282,7 @@
   <script src="js/lkp-kumulipo-wa-ui.js?v=wa-ui-dropdown-1" defer></script>
 
   <!-- Lesson renderer with cloud sync -->
-  <script src="js/lkp-lessons.js?v=v16-kumulipo-full-wa-flow" defer></script>
+  <script src="js/lkp-lessons.js?v=v20-nav-polish" defer></script>
 
 </body>
 </html>

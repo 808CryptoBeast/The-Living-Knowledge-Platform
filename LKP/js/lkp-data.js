@@ -1406,7 +1406,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W01',
               title:    'Wā 1 — Wā o ke Koʻa: Pō and Foundational Marine Emergence',
               readTime: '8 min',
-              image:    'assets/images/kumulipo/wa-1',
+              image:    'assets/images/kumulipo/wa-1.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 1 — Wā Akahi: The First Era of Emergence',
                 heroSubtitle: 'Wā o ke Koʻa · Pō and Foundational Marine Emergence',
@@ -1441,7 +1441,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W02',
               title:    'Wā 2 — Wā o nā Mea o ke Kai: Sea Multiplicity',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-2',
+              image:    'assets/images/kumulipo/wa-2.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 2 — The Era of Sea Multiplicity',
                 heroSubtitle: 'Wā o nā Mea o ke Kai · Marine Diversification',
@@ -1476,7 +1476,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W03',
               title:    'Wā 3 — Wā o nā Mea Lele: Insects, Birds, and the Flying World',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-3',
+              image:    'assets/images/kumulipo/wa-3.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 3 — The Era of Insects and Birds',
                 heroSubtitle: 'Wā o nā Mea Lele · Transformation, Flight, and the Birth of the Bird World',
@@ -1511,7 +1511,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W04',
               title:    'Wā 4 — Wā o nā Mea Kolo: Small and Transitional Forms',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-4',
+              image:    'assets/images/kumulipo/wa-4.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 4 — The Era of Small and Transitional Life',
                 heroSubtitle: 'Wā o nā Mea Kolo · Interlinked Transitional Forms',
@@ -1546,7 +1546,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W05',
               title:    'Wā 5 — Wā o ka Puaʻa: Pigs and Human Social Diversity',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-5',
+              image:    'assets/images/kumulipo/wa-5.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 5 — The Era of the Pig and Human Diversity',
                 heroSubtitle: 'Wā o ka Puaʻa · The Pig of Chiefly Blood and the Many Forms of Humanity',
@@ -1581,7 +1581,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W06',
               title:    'Wā 6 — Wā o ka ʻIole: Chiefly Lines, Cultivation, and Rats',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-6',
+              image:    'assets/images/kumulipo/wa-6.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 6 — The Era of Chiefly Lines, Cultivation, and Rats',
                 heroSubtitle: 'Wā o ka ʻIole · Many Lines of Chiefs Sprout; the Rat Inhabits the Land',
@@ -1616,7 +1616,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W07',
               title:    'Wā 7 — Wā o ka ʻĪlio: Dogs, Bats, and Sacred Dread',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-7',
+              image:    'assets/images/kumulipo/wa-7.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 7 — The Era of Dogs, Bats, and Sacred Dread',
                 heroSubtitle: 'Wā o ka ʻĪlio · Fear on the Mountain Top, Dogs as Sacred Beings',
@@ -1651,7 +1651,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W08',
               title:    'Wā 8 — Wā o Laʻilaʻi: Human Emergence',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-8',
+              image:    'assets/images/kumulipo/wa-8.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 8 — The Era of Human Emergence',
                 heroSubtitle: 'Wā o Laʻilaʻi · Born Was Laʻilaʻi, a Woman; Born Was Kiʻi, a Man',
@@ -1686,7 +1686,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W09',
               title:    'Wā 9 — Wā o ka Huli i ke Ao: Turning Toward Light',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-9',
+              image:    'assets/images/kumulipo/wa-9.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 9 — The Turning Toward Ao',
                 heroSubtitle: 'Wā o ka Huli i ke Ao · Threshold of Visibility',
@@ -1721,7 +1721,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W10',
               title:    'Wā 10 — Wā o nā Kūpuna Akua: Ancestral Divine Genealogies',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-10',
+              image:    'assets/images/kumulipo/wa-10.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 10 — The Era of Divine Ancestral Genealogies',
                 heroSubtitle: 'Wā o nā Kūpuna Akua · Sacred Lineal Ordering',
@@ -1756,7 +1756,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W11',
               title:    'Wā 11 — Wā o nā Hanauna Kiʻekiʻe: High Genealogical Lines',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-11',
+              image:    'assets/images/kumulipo/wa-11.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 11 — The Era of High Genealogical Lines',
                 heroSubtitle: 'Wā o nā Hanauna Kiʻekiʻe · Layered Lineage Structure',
@@ -1791,7 +1791,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W12',
               title:    'Wā 12 — Wā o nā Pili Aliʻi: Chiefly Relational Lines',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-12',
+              image:    'assets/images/kumulipo/wa-12.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 12 — The Era of Chiefly Relational Lines',
                 heroSubtitle: 'Wā o nā Pili Aliʻi · Governance Through Genealogy',
@@ -1826,7 +1826,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W13',
               title:    'Wā 13 — Wā o ka Hānau Moʻokūʻauhau: Human Genealogical Emergence',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-13',
+              image:    'assets/images/kumulipo/wa-13.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 13 — The Era of Human Genealogical Emergence',
                 heroSubtitle: 'Wā o ka Hānau Moʻokūʻauhau · Humans Within Continuity',
@@ -1861,7 +1861,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W14',
               title:    'Wā 14 — Wā o ka Hoʻonui Hanauna: Expansion of Descendant Lines',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-14',
+              image:    'assets/images/kumulipo/wa-14.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 14 — The Era of Expanding Descendant Lines',
                 heroSubtitle: 'Wā o ka Hoʻonui Hanauna · Widening Relational Communities',
@@ -1896,7 +1896,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W15',
               title:    'Wā 15 — Wā o ke Kauoha a me ke Kuleana: Charge and Responsibility',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-15',
+              image:    'assets/images/kumulipo/wa-15.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 15 — The Era of Charge and Kuleana',
                 heroSubtitle: 'Wā o ke Kauoha a me ke Kuleana · Ethics of Inherited Duty',
@@ -1931,7 +1931,7 @@ What does kuleana look like when humans are understood as part of creation rathe
               num:      'KM·W16',
               title:    'Wā 16 — Wā o ke Ao Kanaka: Human Realm in Light',
               readTime: '7 min',
-              image:    'assets/images/kumulipo/wa-16',
+              image:    'assets/images/kumulipo/wa-16.png',
               content: buildKumulipoWaContent({
                 waLabel: 'Wā 16 — The Human Realm in Ao',
                 heroSubtitle: 'Wā o ke Ao Kanaka · Culmination in Living Responsibility',

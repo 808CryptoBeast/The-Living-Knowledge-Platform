@@ -159,6 +159,7 @@
           <label for="authDisplayName">Display Name</label>
           <input
             id="authDisplayName"
+            name="authDisplayName"
             type="text"
             autocomplete="name"
             placeholder="Wayfinder name"
@@ -167,6 +168,7 @@
           <label for="authEmail">Email</label>
           <input
             id="authEmail"
+            name="authEmail"
             type="email"
             autocomplete="email"
             placeholder="you@email.com"
@@ -175,6 +177,7 @@
           <label for="authPassword">Password</label>
           <input
             id="authPassword"
+            name="authPassword"
             type="password"
             autocomplete="current-password"
             placeholder="Your password"
@@ -424,13 +427,13 @@
 
             <form id="profileEditForm" class="profile-edit-form">
               <label for="editDisplayName">Display Name</label>
-              <input id="editDisplayName" type="text" maxlength="80" placeholder="Your display name" />
+              <input id="editDisplayName" name="editDisplayName" type="text" maxlength="80" placeholder="Your display name" />
 
               <label for="editHandle">Handle</label>
-              <input id="editHandle" type="text" maxlength="40" placeholder="your-handle" />
+              <input id="editHandle" name="editHandle" type="text" maxlength="40" placeholder="your-handle" />
 
               <label for="editHomeRealm">Home Realm</label>
-              <select id="editHomeRealm">
+              <select id="editHomeRealm" name="editHomeRealm">
                 <option value="lkp">The Living Knowledge Platform</option>
                 <option value="ikeverse">Ikeverse</option>
                 <option value="digitalverse">Digitalverse</option>
@@ -440,11 +443,12 @@
               </select>
 
               <label for="editAvatarUrl">Avatar URL</label>
-              <input id="editAvatarUrl" type="url" placeholder="https://..." />
+              <input id="editAvatarUrl" name="editAvatarUrl" type="url" placeholder="https://..." />
 
               <label for="editBio">Bio / Moʻolelo</label>
               <textarea
                 id="editBio"
+                name="editBio"
                 rows="4"
                 maxlength="500"
                 placeholder="Tell the story of your learning path..."
@@ -491,11 +495,11 @@
           </div>
 
           <div class="profile-filter-row">
-            <input id="lessonSearch" type="search" placeholder="Search lessons..." />
-            <select id="lessonCultureFilter">
+            <input id="lessonSearch" name="lessonSearch" type="search" placeholder="Search lessons..." />
+            <select id="lessonCultureFilter" name="lessonCultureFilter">
               <option value="all">All Cultures</option>
             </select>
-            <select id="lessonStatusFilter">
+            <select id="lessonStatusFilter" name="lessonStatusFilter">
               <option value="all">All Status</option>
               <option value="completed">Completed</option>
               <option value="open">Open</option>

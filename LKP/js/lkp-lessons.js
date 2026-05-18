@@ -550,7 +550,9 @@
     fontScale: Number(localStorage.getItem(FONT_SCALE_KEY) || '1') || 1,
     completed: readJSON(COMPLETED_KEY, []),
     reflections: readJSON(REFLECTIONS_KEY, {}),
-    sidebarSearch: ''
+    sidebarSearch: '',
+    openCultures: new Set(),
+    closedCultures: new Set()
   };
 
   function $(selector) {
@@ -1163,7 +1165,7 @@
     tools.innerHTML = `
       <label class="lkp-tree-search">
         <i class="fas fa-search"></i>
-        <input id="lessonTreeSearch" type="search" placeholder="Search lessons…" autocomplete="off"/>
+        <input id="lessonTreeSearch" name="lessonTreeSearch" type="search" placeholder="Search lessons…" autocomplete="off"/>
       </label>
     `;
 
@@ -1250,7 +1252,12 @@
       );
       const allComplete = progress.total > 0 && progress.done === progress.total;
       const isFocusedCulture = state.activeCulture === culture.id;
-      const shouldOpen = Boolean(query || cultureHasActiveLesson || isFocusedCulture);
+      const shouldOpen = !state.closedCultures.has(culture.id) && Boolean(
+        query ||
+        cultureHasActiveLesson ||
+        isFocusedCulture ||
+        state.openCultures.has(culture.id)
+      );
       const progressLabel = progress.total
         ? `${progress.done} of ${progress.total} lessons complete`
         : 'Lessons coming soon';
@@ -1286,16 +1293,22 @@
 
       if (!filteredModules.length) {
         return `
-          <details class="cv-tree-culture" style="--culture-color:${cultureColor}" ${shouldOpen ? 'open' : ''}>
-            <summary class="cv-tree-culture__title" aria-label="Toggle ${escapeHTML(culture.name)} lessons">
+          <section class="cv-tree-culture${shouldOpen ? ' is-open' : ''}" style="--culture-color:${cultureColor}">
+            <button
+              class="cv-tree-culture__title"
+              type="button"
+              data-culture-toggle="${escapeHTML(culture.id)}"
+              aria-expanded="${shouldOpen ? 'true' : 'false'}"
+              aria-controls="culture-panel-${escapeHTML(culture.id)}"
+            >
               <span class="cv-tree-culture__identity">
                 <span class="cv-tree-culture__emoji">${escapeHTML(culture.emoji)}</span>
                 <span>${escapeHTML(culture.name)}</span>
               </span>
               <span class="cv-tree-culture__status" aria-label="${escapeHTML(progressLabel)}">${allComplete ? '✓' : escapeHTML(statusLabel)}</span>
               <i class="fas fa-chevron-down" aria-hidden="true"></i>
-            </summary>
-            <div class="cv-tree-culture__body">
+            </button>
+            <div class="cv-tree-culture__body" id="culture-panel-${escapeHTML(culture.id)}" ${shouldOpen ? '' : 'hidden'}>
               <div class="cv-tree-culture__body-inner">
                 ${progressBar}
                 <div class="cv-tree-module">
@@ -1306,22 +1319,28 @@
                 </div>
               </div>
             </div>
-          </details>
+          </section>
         `;
       }
 
       return `
-        <details class="cv-tree-culture" style="--culture-color:${cultureColor}" ${shouldOpen ? 'open' : ''}>
-          <summary class="cv-tree-culture__title" aria-label="Toggle ${escapeHTML(culture.name)} lessons">
+        <section class="cv-tree-culture${shouldOpen ? ' is-open' : ''}" style="--culture-color:${cultureColor}">
+          <button
+            class="cv-tree-culture__title"
+            type="button"
+            data-culture-toggle="${escapeHTML(culture.id)}"
+            aria-expanded="${shouldOpen ? 'true' : 'false'}"
+            aria-controls="culture-panel-${escapeHTML(culture.id)}"
+          >
             <span class="cv-tree-culture__identity">
               <span class="cv-tree-culture__emoji">${escapeHTML(culture.emoji)}</span>
               <span>${escapeHTML(culture.name)}</span>
             </span>
             <span class="cv-tree-culture__status" aria-label="${escapeHTML(progressLabel)}">${allComplete ? '✓' : escapeHTML(statusLabel)}</span>
             <i class="fas fa-chevron-down" aria-hidden="true"></i>
-          </summary>
+          </button>
 
-          <div class="cv-tree-culture__body">
+          <div class="cv-tree-culture__body" id="culture-panel-${escapeHTML(culture.id)}" ${shouldOpen ? '' : 'hidden'}>
             <div class="cv-tree-culture__body-inner">
               ${progressBar}
 
@@ -1356,7 +1375,7 @@
               `).join('')}
             </div>
           </div>
-        </details>
+        </section>
       `;
     }).join('') || `
       <div class="cv-tree-empty">
@@ -1734,7 +1753,13 @@
             ${prompts.map((prompt, index) => `
               <label class="cv-reflection-card">
                 <span class="cv-reflection-card__prompt">${escapeHTML(prompt)}</span>
-                <textarea data-reflection-index="${index}" placeholder="Write your reflection…" rows="3">${escapeHTML(existing[index] || '')}</textarea>
+                <textarea
+                  id="reflection-${escapeHTML(lesson.id)}-${index}"
+                  name="reflection-${escapeHTML(lesson.id)}-${index}"
+                  data-reflection-index="${index}"
+                  placeholder="Write your reflection…"
+                  rows="3"
+                >${escapeHTML(existing[index] || '')}</textarea>
               </label>
             `).join('')}
           </div>
@@ -1815,7 +1840,13 @@
               ${prompts.map((prompt, index) => `
                 <label class="cv-reflection-card">
                   <span class="cv-reflection-card__prompt">${escapeHTML(prompt)}</span>
-                  <textarea data-reflection-index="${index}" placeholder="Write here…" rows="3">${escapeHTML(existing[index] || '')}</textarea>
+                  <textarea
+                    id="reflection-${escapeHTML(lesson.id)}-${index}"
+                    name="reflection-${escapeHTML(lesson.id)}-${index}"
+                    data-reflection-index="${index}"
+                    placeholder="Write here…"
+                    rows="3"
+                  >${escapeHTML(existing[index] || '')}</textarea>
                 </label>
               `).join('')}
             </div>
@@ -2880,6 +2911,36 @@
         return;
       }
 
+      const cultureToggle = event.target.closest('[data-culture-toggle]');
+      if (cultureToggle) {
+        event.preventDefault();
+
+        const cultureId = cultureToggle.dataset.cultureToggle || '';
+        const section = cultureToggle.closest('.cv-tree-culture');
+        const panelId = cultureToggle.getAttribute('aria-controls');
+        const panel = panelId ? document.getElementById(panelId) : null;
+        const nextOpen = cultureToggle.getAttribute('aria-expanded') !== 'true';
+
+        cultureToggle.setAttribute('aria-expanded', nextOpen ? 'true' : 'false');
+        section?.classList.toggle('is-open', nextOpen);
+
+        if (panel) {
+          panel.hidden = !nextOpen;
+        }
+
+        if (cultureId) {
+          if (nextOpen) {
+            state.openCultures.add(cultureId);
+            state.closedCultures.delete(cultureId);
+          } else {
+            state.closedCultures.add(cultureId);
+            state.openCultures.delete(cultureId);
+          }
+        }
+
+        return;
+      }
+
       const lessonBtn = event.target.closest('[data-lesson-id]');
       if (lessonBtn) {
         renderLesson(lessonBtn.dataset.lessonId);
@@ -2998,11 +3059,41 @@
   function initNavAndProgress() {
     const toggle = document.getElementById('lkpMobileToggle');
     const navLinks = document.getElementById('lkpNavLinks');
+    const nav = document.getElementById('lkpNav');
 
     if (toggle && navLinks) {
-      toggle.addEventListener('click', () => {
-        const open = navLinks.classList.toggle('is-open');
+      const setNavOpen = open => {
+        navLinks.classList.toggle('is-open', open);
         toggle.setAttribute('aria-expanded', String(open));
+      };
+
+      toggle.addEventListener('click', () => {
+        const open = toggle.getAttribute('aria-expanded') !== 'true';
+        setNavOpen(open);
+      });
+
+      navLinks.addEventListener('click', event => {
+        if (event.target.closest('a')) {
+          setNavOpen(false);
+        }
+      });
+
+      document.addEventListener('click', event => {
+        if (toggle.getAttribute('aria-expanded') !== 'true') return;
+        if (nav?.contains(event.target)) return;
+        setNavOpen(false);
+      });
+
+      document.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          setNavOpen(false);
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        if (!window.matchMedia('(max-width:1080px)').matches) {
+          setNavOpen(false);
+        }
       });
     }
 
