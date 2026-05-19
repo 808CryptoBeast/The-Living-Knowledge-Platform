@@ -2300,6 +2300,21 @@ What changes when creation is read as responsibility rather than only origin?
 <li><strong>Amun & Amaunet</strong> — the hidden, invisible principle; the cause before the effect</li>
 </ul>
 <p>These eight existed in dynamic suspension within Nun until the moment of creation — when they collectively generated the Isle of Flame, the first mound of earth rising from the primordial waters, upon which the first sun rose. Creation was not an act of a single god imposing order on chaos — it was the natural unfolding of conditions that had always existed within the darkness.</p>
+
+<h4>Nun as Continuing Presence</h4>
+<p>Nun does not disappear once creation begins. Ordered world rises from Nun and remains surrounded by it, like land appearing after floodwater withdraws. This matters because Kemetic creation is not a one-time event locked in the past. Dawn, flood, temple ritual, royal renewal, burial, and rebirth all repeat the first emergence in smaller cycles. The world must keep being ordered.</p>
+
+<h4>The Story Flow</h4>
+<ol>
+<li><strong>Before solidity</strong> — no firm earth, no separated sky, no stable direction, no visible light.</li>
+<li><strong>Watery expanse</strong> — Nun holds potential before form, while paired forces name infinity, darkness, hiddenness, and lack of direction.</li>
+<li><strong>First emergence</strong> — the creator appears from the waters on the first mound, lotus, heron, or fiery island depending on the tradition.</li>
+<li><strong>Self-generation</strong> — Atum is complete within himself and brings forth Shu and Tefnut, the first differentiated pair.</li>
+<li><strong>World-space opens</strong> — Geb and Nut become earth and sky; Shu creates the breathing space between them.</li>
+<li><strong>Order must be maintained</strong> — Maʻat keeps creation from dissolving back into disorder.</li>
+</ol>
+
+<callout type="bridge">Similarity note: Nun and Pō both teach that darkness/depth is generative rather than empty. But Nun is Kemetic primordial water and cosmic precondition; Pō is Kanaka Maoli generative night carried through genealogical chant. The resonance is real, but the traditions remain distinct.</callout>
 `
             },
             {
@@ -2619,11 +2634,42 @@ What changes when creation is read as responsibility rather than only origin?
           desc:  'The Dogon understanding of the stars, particularly the Sirius system, and the cosmic architecture of the universe.',
           lessons: [
             {
+              id:       'dg-po-creation',
+              num:      'DG·00',
+              title:    'Po, Amma & Nommo — Dogon Creation Deep Study',
+              readTime: '16 min',
+              content: `
+<p class="lead">Dogon creation teaching, as recorded most famously through Marcel Griaule and Germaine Dieterlen, begins with <strong>Amma</strong>, a creator intelligence, and with <strong>Po</strong>, the smallest seed of potential. Po is not simply a star name. It is a compact symbol of hidden density, beginning, contraction, and the power of the very small to unfold into worlds.</p>
+
+<callout type="gold">Source care: Dogon cosmology is mostly known to outsiders through fieldwork, oral transmission, initiation contexts, and later scholarly debate. This lesson treats Griaule and Dieterlen as important witnesses, not as final owners of Dogon knowledge. It also names later critiques, especially around the Sirius material, so depth does not become overclaim.</callout>
+
+<h4>Po as the Smallest Seed</h4>
+<p>In the Griaule/Dieterlen account, Po is described as a tiny, dense, beginning-point. It is seed, grain, hidden center, and compressed possibility. This is why the similarity to Kanaka Maoli <strong>Pō</strong> is striking to the ear and imagination. But we must move carefully: Hawaiian Pō and Dogon Po are not proven to be the same word or tradition. The responsible comparison is conceptual: both point toward hidden generative depth before full visible unfolding.</p>
+
+<h4>Amma and the World Egg</h4>
+<p>Amma is the ordering creator. Creation is often described through an egg or seed-like enclosure where the universe is contained before differentiation. The world is not first imagined as loose matter scattered everywhere; it is gathered, folded, patterned, and then unfolded. This makes Dogon creation feel deeply architectural: the cosmos begins as a hidden structure that opens through rhythm, pairing, and motion.</p>
+
+<h4>Nommo and Living Water</h4>
+<p>The <strong>Nommo</strong> are linked with water, speech, life, sacrifice, restoration, and instruction. In many summaries they are called ancestral or amphibious beings, but that phrase can flatten their function. More importantly, Nommo represent the living principle that reconnects heaven, water, earth, language, and human order. Creation is not complete when forms appear; creation must be taught, healed, and rightly spoken.</p>
+
+<h4>The Sirius Question</h4>
+<p>The famous claims around Po Tolo and Sirius B should be taught with care. Griaule and Dieterlen reported Dogon knowledge of an invisible Sirius companion. Later scholars, including Walter van Beek, questioned whether that knowledge was widespread, ancient, or affected by outside contact. For this platform, the safest path is to respect Dogon knowledge while refusing sensational certainty. The deeper lesson is not "ancient aliens" or spectacle. It is hiddenness, density, cyclic time, oral transmission, and the seriousness of initiated knowledge.</p>
+
+<twocol left="Dogon Po" right="Kanaka Maoli Pō">Po, in the Dogon material, can be read as a tiny dense seed of hidden cosmic potential, especially in relation to Amma and Po Tolo.||Pō, in the Kumulipo, is generative night/darkness, a genealogical source from which life unfolds through chant, birth, and kuleana.</twocol>
+
+<reflect>
+What is gained by comparing Po and Pō carefully, without claiming they are the same?
+Where does your own learning confuse hiddenness with absence?
+How can oral knowledge be honored without turning it into spectacle?
+</reflect>
+`
+            },
+            {
               id:       'dg-sirius-triplet',
               num:      'DG·01',
               title:    'The Sirius Triplet — The Hidden Companion Star',
               readTime: '11 min',
-              content: `\n<p class=\"lead\">The Dogon peoples of Mali maintained detailed astronomical knowledge passed down through oral tradition for centuries. Central to their cosmology is <strong>Sirius</strong> — the brightest visible star in Earth's night sky — and the knowledge that it is not alone. The Dogon spoke of a companion star, <em>Po Tolo</em>, invisible to the naked eye, orbiting Sirius with an orbital period of about 50 years.</p>\n\n<callout>In 1844, German astronomer Friedrich Wilhelm Bessel theorized that Sirius must have an unseen companion based on observed irregularities in Sirius's motion. In 1862, American telescope-maker Alvan Clark observed <strong>Sirius B</strong> — a white dwarf companion star — directly. The Dogon had been describing this reality, with remarkable accuracy, for generations before modern astronomy confirmed it.</callout>\n\n<h4>Po Tolo & Cosmic Order</h4>\n<p>Within Dogon cosmology, Po Tolo (Sirius B) is not merely an astronomical fact — it is a principle of cosmic order. The Dogon understood that the universe is not simple or transparent. Like the stars themselves, reality contains hidden layers, invisible dimensions, presences felt through their effects even when not directly visible. This mirrors modern physics: dark matter and dark energy comprise 95% of the universe, yet we perceive only 5% directly.</p>\n\n<h4>The Nommo — Waters of Creation</h4>\n<p>The Dogon cosmology centers on the <strong>Nommo</strong> — primordial waters and the principles of life, moisture, and generative power. The universe is understood as a vast system of organized waters. Stars are seeds cast into the cosmic waters. Life emerges from moisture. This parallels the Hebrew <em>mayim</em> (waters), the Egyptian <em>Nun</em>, and the Hawaiian <em>moana</em> — across cultures separated by vast distances, the same cosmological intuition: waters are the generative principle of the universe.</p>\n`
+              content: `\n<p class=\"lead\">The Dogon peoples of Mali preserve sophisticated sky knowledge through oral tradition, ritual, architecture, agriculture, and initiation. Central to the famous Griaule/Dieterlen account is <strong>Sirius</strong> and a hidden companion called <em>Po Tolo</em>. This material is powerful, but it must be handled with care because later scholarship debates how ancient, widespread, and uncontaminated the Sirius claims are.</p>\n\n<callout>Historical astronomy confirms that Sirius has a white dwarf companion, Sirius B: Friedrich Wilhelm Bessel inferred an unseen companion in 1844, and Alvan Clark observed it in 1862. Griaule and Dieterlen later reported Dogon knowledge of a hidden Sirius companion. Walter van Beek and others questioned parts of that report. The right lesson posture is respect plus caution, not sensational certainty.</callout>\n\n<h4>Po Tolo & Cosmic Order</h4>\n<p>Within the reported Dogon cosmological system, Po Tolo is more than an astronomical object. Po is small, dense, hidden, seed-like, and difficult to perceive directly. This makes it a teaching about hidden structure: reality contains forces known by pattern, effect, rhythm, and initiation, not only by immediate visibility.</p>\n\n<h4>The Nommo — Waters of Creation</h4>\n<p>The Dogon cosmology centers on the <strong>Nommo</strong> — beings/principles linked with water, speech, life, moisture, sacrifice, and restoration. The universe is not merely an object to observe; it is a living order that must be instructed, repaired, and spoken rightly. This resonates with Kemetic Nun and Kanaka Maoli Pō as generative depth, while remaining its own West African tradition.</p>\n`
             },
             {
               id:       'dg-ammas-world',

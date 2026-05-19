@@ -189,6 +189,26 @@
         sourceConfidence: 'high confidence'
       }
     ],
+    dogonCore: [
+      {
+        label: 'Marcel Griaule and Germaine Dieterlen — Dogon cosmological accounts',
+        note: 'Major published witness for Amma, Po, Nommo, and Sirius-related teachings; important but mediated through outsider fieldwork.',
+        sourceType: 'ethnographic source',
+        sourceConfidence: 'important but debated'
+      },
+      {
+        label: 'Walter van Beek — later Dogon Sirius reassessment',
+        note: 'Critical restudy questioning parts of the famous Sirius claims and helping frame the material responsibly.',
+        sourceType: 'scholarly critique',
+        sourceConfidence: 'debate-aware'
+      },
+      {
+        label: 'Dogon oral tradition and initiated knowledge contexts',
+        note: 'Living cultural knowledge must not be reduced to spectacle or detached from protocol.',
+        sourceType: 'oral knowledge context',
+        sourceConfidence: 'requires care'
+      }
+    ],
     bridge: [
       {
         label: 'Cross-cultural cosmology comparison notes',
@@ -1043,13 +1063,67 @@ The Kumulipo, evolution, and the Big Bang are not the same story. But they descr
       }
     },
 
+    'dg-po-creation': {
+      mana: 16,
+      xp: 44,
+      sceneType: 'cosmology',
+      concepts: ['Po', 'Amma', 'Nommo', 'Cosmic egg', 'Hidden seed', 'Oral transmission', 'Generative darkness'],
+      sources: SOURCE_SETS.dogonCore,
+      related: ['km-kumulipo', 'ke-creation-deep', 'ke-nun', 'dg-sirius-triplet', 'vd-nasadiya'],
+      connections: [
+        {
+          cultureId: 'kanaka',
+          lessonId: 'km-kumulipo',
+          axis: 'Creation',
+          note: 'Compare Po and Pō as generative hiddenness while keeping language, lineage, and place distinct.'
+        },
+        {
+          cultureId: 'kemet',
+          lessonId: 'ke-nun',
+          axis: 'Creation',
+          note: 'Read alongside Nun to compare water/depth/hidden potential without flattening the traditions.'
+        },
+        {
+          cultureId: 'vedic',
+          lessonId: 'vd-nasadiya',
+          axis: 'Creation',
+          note: 'Compare hidden potential and uncertainty at the beginning of creation.'
+        }
+      ],
+      kidVersion: {
+        summary: 'Some Dogon creation teachings describe Po as a tiny hidden seed of the universe, Amma as the creator, and Nommo as connected with water, speech, and life.',
+        bigIdeas: [
+          'Small things can hold huge potential.',
+          'Hidden does not mean empty or unimportant.',
+          'Oral knowledge should be treated with respect and care.'
+        ],
+        vocabulary: [
+          { term: 'Po', meaning: 'A tiny seed-like symbol of hidden cosmic potential in reported Dogon teachings.' },
+          { term: 'Amma', meaning: 'A Dogon creator principle.' },
+          { term: 'Nommo', meaning: 'Water/life/speech beings or principles in Dogon cosmology.' }
+        ],
+        activity: 'Draw a tiny seed in the center of a page. Around it, draw everything that could unfold from it: water, stars, people, words, and responsibility.',
+        reflection: [
+          'Why can something small be powerful?',
+          'How can we compare Po and Pō respectfully?'
+        ]
+      },
+      additions: `
+<reflect>
+What does Po teach about hidden density and beginning?
+How does the Po/Pō resonance deepen your attention without becoming a claim of sameness?
+What responsibility do we have when learning initiated or debated knowledge through outside sources?
+</reflect>
+`
+    },
+
     'dg-sirius-triplet': {
       mana: 11,
       xp: 31,
       sceneType: 'astronomy',
       concepts: ['Sirius system', 'Invisible companions', 'Dogon astronomy', 'Hidden realities', 'Dark matter'],
-      sources: SOURCE_SETS.kemet,
-      related: ['vd-vedic-astronomy', 'dt-celestial-navigation']
+      sources: SOURCE_SETS.dogonCore,
+      related: ['dg-po-creation', 'vd-vedic-astronomy', 'dt-celestial-navigation']
     },
 
     'dg-ammas-world': {
@@ -1057,8 +1131,8 @@ The Kumulipo, evolution, and the Big Bang are not the same story. But they descr
       xp: 28,
       sceneType: 'cosmology',
       concepts: ['Amma', 'Creator principle', 'Sacred geometry', 'Emergence', 'Self-organization'],
-      sources: SOURCE_SETS.kemet,
-      related: ['dg-sirius-triplet', 'vd-nasadiya']
+      sources: SOURCE_SETS.dogonCore,
+      related: ['dg-po-creation', 'dg-sirius-triplet', 'vd-nasadiya']
     },
 
     'dg-syncretism': {
@@ -1066,8 +1140,8 @@ The Kumulipo, evolution, and the Big Bang are not the same story. But they descr
       xp: 26,
       sceneType: 'epistemology',
       concepts: ['Oral transmission', 'Knowledge systems', 'Precision', 'Cultural knowledge', 'Bias'],
-      sources: SOURCE_SETS.kemet,
-      related: ['dt-songlines-intro']
+      sources: SOURCE_SETS.dogonCore,
+      related: ['dg-po-creation', 'dt-songlines-intro']
     },
 
     'vd-nasadiya': {

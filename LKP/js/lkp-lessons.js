@@ -478,19 +478,23 @@
       ],
       sequence: [
         ['Dark water', 'The first condition is not a blank void but the deep medium of all possibility.'],
-        ['Stillness', 'Nothing is yet differentiated, but everything is latent.'],
+        ['Undifferentiated stillness', 'No firm earth, no separated sky, no stable direction, no visible light; everything is latent.'],
+        ['Hidden qualities', 'The Ogdoad names water, limitlessness, darkness, and hiddenness as living preconditions.'],
         ['Self-awareness', 'Atum becomes conscious within Nun.'],
         ['First standing place', 'The mound gives creation a place to appear.'],
-        ['First pair', 'Shu and Tefnut begin the relational unfolding of world.']
+        ['First pair', 'Shu and Tefnut begin the relational unfolding of world.'],
+        ['Continuing depth', 'Nun remains around and beneath creation, returning ritually in flood, night, death, and renewal.']
       ],
       parallels: [
         ['Pō and Nun', 'Both are source-depths. Pō is Hawaiian generative darkness within genealogy; Nun is Kemetic primordial water before ordered creation.'],
-        ['Oceanic emergence', 'Both traditions use depth as a way to think origin, but each belongs to its own land, language, and ritual world.']
+        ['Oceanic emergence', 'Both traditions use depth as a way to think origin, but each belongs to its own land, language, and ritual world.'],
+        ['Po / Pō / Nun', 'Dogon Po, Hawaiian Pō, and Kemetic Nun can be placed in careful dialogue as hidden generative conditions, while avoiding claims that they are the same term or tradition.']
       ],
       misreadings: [
         'Do not translate Nun as nothing.',
         'Do not make Atum an external maker standing outside creation.',
-        'Do not forget that Nun remains present after creation as surrounding depth and renewal.'
+        'Do not forget that Nun remains present after creation as surrounding depth and renewal.',
+        'Do not let Manly P. Hall or later esoteric summaries replace Egyptian primary witnesses; use them only as secondary interpretive lenses.'
       ]
     },
     'ke-ennead': {
