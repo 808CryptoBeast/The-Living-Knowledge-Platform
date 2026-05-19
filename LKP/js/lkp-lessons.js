@@ -155,39 +155,76 @@
 
     /* Bridge */
     'bridge-darkness': {
-      url: 'assets/images/bridge-darkness.png',
+      url: 'assets/images/bridge/bridge-darkness.png',
       pos: 'center center',
       credit: 'Kumulipo & Nun — Creation from Primordial Darkness'
     },
     'bridge-pairs': {
-      url: 'assets/images/bridge-pairs.png',
+      url: 'assets/images/bridge/bridge-cross-culture.png',
       pos: 'center center',
       credit: 'Paired Forces — Balance and Complementarity'
     },
     'bridge-aloha-maat': {
-      url: 'assets/images/bridge-aloha-maat.png',
+      url: 'assets/images/bridge/bridge-aloha-maat.png',
       pos: 'center center',
       credit: 'Aloha & Maʻat — Ethics of Right Relationship'
     },
     'bridge-navigation-astronomy': {
-      url: 'assets/images/bridge-navigation-astronomy.png',
+      url: 'assets/images/bridge/bridge-navigation-astronomy.png',
       pos: 'center center',
       credit: 'Sky Knowledge — Navigation, Calendars, and Reading the Heavens'
     },
     'bridge-word-creation': {
-      url: 'assets/images/bridge-word-creation.png',
+      url: 'assets/images/bridge/bridge-word-creation.png',
       pos: 'center center',
       credit: 'Creation Through Word — Speech, Chant, Name, and the Making of Worlds'
+    },
+    'bridge-ecology': {
+      url: 'assets/images/bridge/bridge-ecology.png',
+      pos: 'center center',
+      credit: 'Ecology, Kinship, and Living Systems'
+    },
+    'bridge-cross-culture': {
+      url: 'assets/images/bridge/bridge-cross-culture.png',
+      pos: 'center center',
+      credit: 'Cross-Cultural Knowledge Bridges'
+    },
+    'br-cosmology-evolution': {
+      url: 'assets/images/bridge/bridge-ecology.png',
+      pos: 'center center',
+      credit: 'Kumulipo & Evolution — Cosmology Across Scales'
+    },
+
+    /* Dogon */
+    'dg-po-creation': {
+      url: 'assets/images/dogon/dg-po.png',
+      pos: 'center center',
+      credit: 'Po, Amma & Nommo — Dogon Creation Deep Study'
+    },
+    'dg-sirius-triplet': {
+      url: 'assets/images/dogon/dg-01.png',
+      pos: 'center center',
+      credit: 'The Sirius Triplet — The Hidden Companion Star'
+    },
+    'dg-ammas-world': {
+      url: 'assets/images/dogon/dg-02.png',
+      pos: 'center center',
+      credit: 'Amma & the Creation of the World — The Cosmic Egg'
+    },
+    'dg-syncretism': {
+      url: 'assets/images/dogon/dg-03.png',
+      pos: 'center center',
+      credit: 'Knowledge Keepers & Transmission — Dogon Wisdom in the World'
     },
 
     /* Older aliases */
     'br-darkness': {
-      url: 'assets/images/bridge-darkness.png',
+      url: 'assets/images/bridge/bridge-darkness.png',
       pos: 'center center',
       credit: 'Kumulipo & Nun — Creation from Primordial Darkness'
     },
     'br-aloha-maat': {
-      url: 'assets/images/bridge-aloha-maat.png',
+      url: 'assets/images/bridge/bridge-aloha-maat.png',
       pos: 'center center',
       credit: 'Aloha & Maʻat — Ethics of Right Relationship'
     }
@@ -205,14 +242,24 @@
       credit: 'Kemet knowledge system'
     },
     bridge: {
-      url: 'assets/images/bridge-culture.png',
+      url: 'assets/images/bridge/bridge-cross-culture.png',
       pos: 'center center',
       credit: 'The Bridge — cross-cultural knowledge'
+    },
+    dogon: {
+      url: 'assets/images/dogon/dg-po.png',
+      pos: 'center center',
+      credit: 'Dogon knowledge system'
     },
     dreamtime: {
       url: 'assets/images/dreamtime-culture.png',
       pos: 'center center',
       credit: 'Dreamtime knowledge system'
+    },
+    default: {
+      pos: 'center center',
+      credit: 'Living Knowledge lesson',
+      placeholder: true
     }
   };
 
@@ -583,7 +630,7 @@
     const misreadings = study.misreadings.map(item => `<li>${item}</li>`).join('');
 
     return `
-      <section class="kumu-section kumu-wa-chant-card kumu-wa-chant-card--primary kumu-reveal is-visible">
+      <section class="kumu-section kumu-section--compact kumu-wa-chant-card kumu-wa-chant-card--primary kumu-reveal is-visible">
         <h4>${study.title}</h4>
         <p class="kumu-wa-source-meta">
           <span>Primary sources first</span>
@@ -594,7 +641,7 @@
         <p>${study.sourceNote}</p>
       </section>
 
-      <section class="kumu-section kumu-reveal is-visible">
+      <section class="kumu-section kumu-section--compact kumu-reveal is-visible">
         <h4>Primary Creation Witnesses</h4>
         <p class="kumu-wa-provenance">These are short source-grounded orientation notes, not replacements for the original Kemetic texts or specialist translations.</p>
         <div class="kumu-wa-accordion">
@@ -602,7 +649,7 @@
         </div>
       </section>
 
-      <section class="kumu-section kumu-reveal is-visible">
+      <section class="kumu-section kumu-section--compact kumu-reveal is-visible">
         <h4>Creation Sequence</h4>
         <table class="kumu-wa-table">
           <thead>
@@ -612,7 +659,7 @@
         </table>
       </section>
 
-      <section class="kumu-section kumu-reveal is-visible">
+      <section class="kumu-section kumu-section--compact kumu-reveal is-visible">
         <h4>Kumulipo Dialogue · Similarity Without Collapse</h4>
         <table class="kumu-wa-table">
           <thead>
@@ -623,9 +670,11 @@
         <p class="kumu-wa-provenance">Bridge protocol: parallels help us see shared human inquiry into darkness, water, birth, word, order, and responsibility. They do not make Kemet and Kumulipo the same tradition.</p>
       </section>
 
-      <section class="kumu-section kumu-reveal is-visible">
-        <h4>Common Misreadings to Avoid</h4>
-        <ul>${misreadings}</ul>
+      <section class="kumu-section kumu-section--compact kumu-section--quiet kumu-reveal is-visible">
+        <details>
+          <summary>Reading Cautions</summary>
+          <ul>${misreadings}</ul>
+        </details>
       </section>
     `;
   }
@@ -644,123 +693,21 @@
       ]
     };
 
-    const objectiveCards = [
-      {
-        title: 'Movement Clarity',
-        context: 'How this lesson transforms orientation',
-        objective: `Name the core movement in ${lesson.title} and explain how it changes relation, not just belief.`,
-        reveal: `Knowledge reveal: The core movement is ${meta.movement.toLowerCase()}, which reframes knowledge as a living discipline rather than static information.`
-      },
-      {
-        title: 'Crisis Visibility',
-        context: 'Where failure mode appears',
-        objective: 'Recognize the lesson-specific crisis and describe what collapses when it is ignored, misread, or weaponized.',
-        reveal: `Knowledge reveal: The crisis is ${meta.crisis.toLowerCase()} The loss appears in ethics, governance, memory, and social resilience.`
-      },
-      {
-        title: 'Practice Intelligence',
-        context: 'How capacity becomes conduct',
-        objective: `Practice ${meta.intelligence} in one contemporary context such as leadership, education, health, or community coordination.`,
-        reveal: `Knowledge reveal: ${meta.intelligence} becomes visible when principle and consequence are held together in decision-making.`
-      },
-      {
-        title: 'Continuity Thread',
-        context: 'How this lesson joins the larger arc',
-        objective: 'Connect this lesson to the wider Kemetic architecture so cosmology, ethics, and institutions are read as one system.',
-        reveal: `Knowledge reveal: ${meta.continuity}`
-      }
-    ].map(item => `
-      <article class="kumu-wa-objective-card">
-        <h5>${item.title}</h5>
-        <p class="kumu-wa-objective-card__context">${item.context}</p>
-        <p><strong>${item.objective}</strong></p>
-        <p>${item.reveal}</p>
-      </article>
-    `).join('');
-
     const pathways = (meta.pathways || [])
       .map(item => `<li>${item}</li>`)
       .join('');
 
-    const scientificIntro = `These resonances are descriptive bridges only. They help learners compare patterns without collapsing distinct knowledge systems.`;
-    const scientificAlignment = `A contemporary systems lens can describe this lesson as an account of patterned relation and emergent order, especially through ${meta.movement.toLowerCase()}.`;
-    const scientificDifference = `Kemetic framing keeps ethical and sacred accountability at the center, while many modern models remain descriptive, model-bound, and method-scoped.`;
-    const scientificContext = `In this lesson, the practical emphasis is ${meta.intelligence}: resonance is useful only if it clarifies conduct, responsibility, and social consequence.`;
-    const scientificMethodBoundary = `Modern science seeks formal explanation and testable prediction; Kemetic knowledge here orients relational life, civic ethics, and continuity practices.`;
-    const scientificCaution = `Parallel description does not imply equivalence, prediction, origin-claim, or replacement of Kemetic knowledge by modern science.`;
-
     return `
-      <section class="kumu-section kumu-reveal is-visible">
-        <h4>Foundational Orientation</h4>
-        <p><strong>${lesson.num} · ${lesson.title}</strong></p>
-        <p><span class="kumu-wa-source-tag">Orientation</span> This lesson centers ${meta.movement.toLowerCase()} and should be read as a living Kemetic knowledge foundation. The embedded risk is clear: ${meta.crisis} The intelligence cultivated here is ${meta.intelligence}.</p>
-        <p class="kumu-wa-provenance">Provenance note: This scaffold is an interpretive guide. Primary lesson material below remains the source ground.</p>
-      </section>
-
       ${creationDeepStudy}
 
-      <section class="kumu-section kumu-reveal is-visible">
-        <h4>Learning Objectives</h4>
-        <div class="kumu-wa-objective-grid">
-          ${objectiveCards}
+      <section class="kumu-section kumu-section--compact kumu-kemet-afterword kumu-reveal is-visible">
+        <h4>Knowledge Integration</h4>
+        <div class="kumu-kemet-afterword__grid">
+          <p><span class="kumu-wa-source-tag">Movement</span> ${meta.movement}</p>
+          <p><span class="kumu-wa-source-tag">Practice</span> ${meta.intelligence}</p>
+          <p><span class="kumu-wa-source-tag">Continuity</span> ${meta.continuity}</p>
         </div>
-      </section>
-
-      <section class="kumu-section kumu-reveal is-visible">
-        <h4>Deepen Study Pathways</h4>
-        <ul>${pathways}</ul>
-      </section>
-
-      <section class="kumu-section kumu-reveal is-visible">
-        <h4>Cultural Meaning in Kemetic Context</h4>
-        <p>This lesson should be held inside Kemetic relational intelligence: cosmology, governance, language, healing, and memory are interdependent domains rather than isolated subjects.</p>
-        <p>The practical instruction is to read principle and consequence together. Knowledge is complete only when it can sustain balance in lived systems.</p>
-      </section>
-
-      <section class="kumu-section kumu-reveal is-visible">
-        <h4>Deeper Interpretation</h4>
-        <p><strong>Core movement:</strong> ${meta.movement}.</p>
-        <p><strong>Core crisis:</strong> ${meta.crisis}</p>
-        <p><strong>Cultivated intelligence:</strong> ${meta.intelligence} as disciplined action across personal, social, and institutional life.</p>
-      </section>
-
-      <section class="kumu-section kumu-reveal is-visible">
-        <h4>Modern Parallels</h4>
-        <ul>
-          <li>Systems governance: stable institutions require principle constraints, not only technical efficiency.</li>
-          <li>Knowledge stewardship: archives, naming, and records shape what a society can remember, repair, and transmit.</li>
-          <li>Civic resilience: long-term order depends on balancing ethical, ecological, and social realities together.</li>
-        </ul>
-      </section>
-
-      <section class="kumu-section kumu-reveal is-visible">
-        <h4>Scientific Resonances · Parallel Descriptions</h4>
-        <p><span class="kumu-wa-source-tag">Purpose</span> ${scientificIntro}</p>
-        <p><span class="kumu-wa-source-tag">Alignment</span> ${scientificAlignment}</p>
-        <p><span class="kumu-wa-source-tag">Difference</span> ${scientificDifference}</p>
-        <p><span class="kumu-wa-source-tag">Lesson context</span> ${scientificContext}</p>
-        <p><span class="kumu-wa-source-tag">Method boundary</span> ${scientificMethodBoundary}</p>
-        <p><span class="kumu-wa-source-tag">Caution</span> ${scientificCaution}</p>
-      </section>
-
-      <section class="kumu-section kumu-reveal is-visible">
-        <h4>Common Misreadings</h4>
-        <ul>
-          <li>Reading the material as mythic ornament instead of civilizational method.</li>
-          <li>Separating cosmology from ethics and governance.</li>
-          <li>Treating symbolic language as decorative rather than operational.</li>
-        </ul>
-      </section>
-
-      <section class="kumu-section kumu-reveal is-visible">
-        <h4>Why This Lesson Matters Today</h4>
-        <p>This lesson matters because it trains discernment under complexity: how to align meaning, action, and consequence without collapsing into reduction or fragmentation.</p>
-        <p>Its contemporary value is practical: communities, institutions, and learners can use this intelligence to restore continuity where disorder has been normalized.</p>
-      </section>
-
-      <section class="kumu-section kumu-reveal is-visible">
-        <h4>Continuity Anchor</h4>
-        <p>${meta.continuity}</p>
+        ${pathways ? `<details class="kumu-kemet-afterword__details"><summary>Deepen Practice</summary><ul>${pathways}</ul></details>` : ''}
       </section>
     `;
   }
@@ -1060,7 +1007,7 @@
 
     const img = getHeroImage(lesson);
 
-    if (img.placeholder) {
+    if (!img || img.placeholder || !img.url) {
       applyPlaceholder(hero, lesson, img);
       return;
     }
@@ -2671,7 +2618,7 @@
           ? buildKemetDeepScaffold(lesson)
           : '';
 
-        body.innerHTML = kemetScaffold + baseContent;
+        body.innerHTML = baseContent + kemetScaffold;
       }
 
       if (state.mode === 'scholar' && !body.querySelector('.cv-reflection')) {
