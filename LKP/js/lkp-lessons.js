@@ -20,6 +20,7 @@
   const MODE_KEY        = 'lkp_lesson_mode_v1';
   const FONT_SCALE_KEY  = 'lkp_lesson_font_scale_v1';
   const LAST_LESSON_KEY = 'lkp_last_lesson_id_v1';
+  const SKIP_ROADMAP_KEY = 'lkp_skip_journey_roadmap_v1';
   const DEFAULT_MANA    = 10;
 
   /* ══════════════════════════════════════════════════════════════════════
@@ -254,6 +255,48 @@
       credit: 'Kaitiakitanga — Responsibility from Creation'
     },
 
+    /* Dreamtime */
+    'dt-songlines-intro': {
+      url: 'assets/images/dreamtime/dreamtime-culture.png',
+      pos: 'center center',
+      credit: 'The Songlines — Stories That Are Maps'
+    },
+    'dt-celestial-navigation': {
+      url: 'assets/images/dreamtime/dreamtime-celestial-song.png',
+      pos: 'center center',
+      credit: 'Stars & Navigation — The Celestial Songlines'
+    },
+    'dt-country-consciousness': {
+      url: 'assets/images/dreamtime/dreamtime-kinship.png',
+      pos: 'center center',
+      credit: 'Country as Living — Kinship & Custodianship'
+    },
+    'dt-protocol-country': {
+      url: 'assets/images/dreamtime/dreamtime-protocol.png',
+      pos: 'center center',
+      credit: 'Protocol First — Many Nations, Many Dreamings'
+    },
+    'dt-seven-sisters': {
+      url: 'assets/images/dreamtime/dreamtime-seven-sisters.png',
+      pos: 'center center',
+      credit: 'Seven Sisters — Songline Across Sky and Country'
+    },
+    'dt-emu-sky': {
+      url: 'assets/images/dreamtime/dreamtime-emu.png',
+      pos: 'center center',
+      credit: 'Emu in the Sky — Reading Dark Constellations'
+    },
+    'dt-care-country': {
+      url: 'assets/images/dreamtime/dreamtime-obligation.png',
+      pos: 'center center',
+      credit: 'Caring for Country — Knowledge as Obligation'
+    },
+    'dt-nations-map': {
+      url: 'assets/images/dreamtime/dreamtime-culture.png',
+      pos: 'center center',
+      credit: 'Nations, Language Groups & Country — Many Dreaming Systems'
+    },
+
     /* Older aliases */
     'br-darkness': {
       url: 'assets/images/bridge/bridge-darkness.png',
@@ -289,7 +332,7 @@
       credit: 'Dogon knowledge system'
     },
     dreamtime: {
-      url: 'assets/images/dreamtime-culture.png',
+      url: 'assets/images/dreamtime/dreamtime-culture.png',
       pos: 'center center',
       credit: 'Dreamtime knowledge system'
     },
@@ -855,6 +898,74 @@
       ]
     }
   };
+
+  const DREAMTIME_DEEP_FRAMEWORK = {
+    'dt-songlines-intro': {
+      movement: 'reading story as map, law, memory, and living relation',
+      source: 'Songlines are held through Country, language, performance, and custodial responsibility.',
+      practice: 'Treat story as situated knowledge rather than extractable content.',
+      continuity: 'This opens the Dreamtime arc by showing how place and memory are sung into relation.'
+    },
+    'dt-celestial-navigation': {
+      movement: 'reading sky and Country as one navigational field',
+      source: 'Star knowledge can hold direction, season, ceremony, and ecological timing.',
+      practice: 'Connect observation to responsibility before turning it into data.',
+      continuity: 'This carries Songlines into the night sky and prepares the Seven Sisters and Emu in the Sky lessons.'
+    },
+    'dt-country-consciousness': {
+      movement: 'recognizing Country as living relation rather than background space',
+      source: 'Country includes land, water, sky, beings, ancestors, language, and living community.',
+      practice: 'Ask what Country needs protected, repaired, or renewed.',
+      continuity: 'This grounds every Dreamtime lesson in reciprocal obligation.'
+    },
+    'dt-protocol-country': {
+      movement: 'placing protocol before access',
+      source: 'Dreaming knowledge is nation-specific, place-based, and sometimes restricted.',
+      practice: 'Let custodianship define what can be learned, shared, or left alone.',
+      continuity: 'This protects the whole Dreamtime pathway from becoming generic content.'
+    },
+    'dt-seven-sisters': {
+      movement: 'following a Songline across sky, Country, and custodial difference',
+      source: 'Seven Sisters traditions show connection without making knowledge ownerless.',
+      practice: 'Honor shared pathways through specific authority and place.',
+      continuity: 'This deepens celestial Songlines through one public orientation example.'
+    },
+    'dt-emu-sky': {
+      movement: 'learning to read dark pattern as knowledge',
+      source: 'The Emu in the Sky is seen in dark Milky Way forms and linked in public accounts to seasonal intelligence.',
+      practice: 'Train attention to shadow, timing, and negative space.',
+      continuity: 'This returns darkness to the center as a teacher, not an absence.'
+    },
+    'dt-care-country': {
+      movement: 'turning Dreaming knowledge into care for Country',
+      source: 'Knowledge is complete only when it protects living place, language, memory, and relation.',
+      practice: 'Move from fascination to protection, repair, and accountable conduct.',
+      continuity: 'This completes the arc by making learning visible as obligation.'
+    },
+    'dt-nations-map': {
+      movement: 'refusing to flatten many Countries into one generic category',
+      source: 'AIATSIS maps hundreds of Aboriginal and Torres Strait Islander language, social, and nation groups.',
+      practice: 'Name plurality, then seek local community authority for place-specific learning.',
+      continuity: 'This keeps the whole Dreamtime section accountable to many Nations, languages, and custodians.'
+    }
+  };
+
+  function buildDreamtimeDeepScaffold(lesson) {
+    const meta = DREAMTIME_DEEP_FRAMEWORK[lesson.id];
+    if (!meta) return '';
+
+    return `
+      <section class="kumu-section kumu-section--compact kumu-kemet-afterword kumu-reveal is-visible">
+        <h4>Dreamtime Knowledge Integration</h4>
+        <div class="kumu-kemet-afterword__grid">
+          <p><span class="kumu-wa-source-tag">Movement</span> ${meta.movement}</p>
+          <p><span class="kumu-wa-source-tag">Protocol Ground</span> ${meta.source}</p>
+          <p><span class="kumu-wa-source-tag">Practice</span> ${meta.practice}</p>
+        </div>
+        <p class="kumu-wa-provenance">${meta.continuity}</p>
+      </section>
+    `;
+  }
 
   function buildCreationArcView(lesson) {
     const arc = CREATION_ARCS[lesson.cultureId];
@@ -1574,6 +1685,7 @@
   function renderCultureFilters() {
     const holder = document.getElementById('cultureFilters');
     const welcome = document.getElementById('welcomeCultures');
+    const roadmap = document.getElementById('lessonRoadmap');
 
     if (!holder) return;
 
@@ -1613,6 +1725,72 @@
           ${escapeHTML(culture.name)}
         </button>
       `).join('');
+    }
+
+    if (roadmap) {
+      const totalLessons = liveCultures.reduce((sum, culture) =>
+        sum + culture.modules.reduce((moduleSum, module) => moduleSum + module.lessons.length, 0), 0);
+      const completedLessons = state.completed.length;
+
+      roadmap.innerHTML = `
+        <section class="cv-roadmap-panel cv-roadmap-panel--wide">
+          <div>
+            <span class="cv-roadmap-kicker">How the journeys work</span>
+            <h3>Choose a culture, then follow its lesson path.</h3>
+            <p>Each culture opens as a living study world: origin stories, language, land, sky, ethics, governance, medicine, ceremony, and modern responsibility. You can go deep in one culture or begin many and let your galaxy grow with you.</p>
+          </div>
+          <div class="cv-roadmap-stats" aria-label="Learning progress overview">
+            <span><strong>${liveCultures.length}</strong> live cultures</span>
+            <span><strong>${totalLessons}</strong> lessons</span>
+            <span><strong>${completedLessons}</strong> completed</span>
+          </div>
+        </section>
+
+        <section class="cv-roadmap-grid" aria-label="Culture roadmap">
+          ${liveCultures.map(culture => {
+            const progress = getCultureProgress(culture);
+            const firstLesson = culture.modules.flatMap(module => module.lessons)[0];
+            const modules = culture.modules
+              .filter(module => module.lessons.length)
+              .map(module => module.title)
+              .join(' · ');
+
+            return `
+              <article class="cv-roadmap-culture" style="--culture-color:${getCultureColor(culture.theme)}">
+                <div class="cv-roadmap-culture__top">
+                  <span class="cv-roadmap-culture__emoji">${escapeHTML(culture.emoji)}</span>
+                  <div>
+                    <h3>${escapeHTML(culture.name)}</h3>
+                    <p>${escapeHTML(culture.tagline || modules || 'Living knowledge pathway')}</p>
+                  </div>
+                </div>
+                <div class="cv-roadmap-culture__bar"><span style="width:${progress.percent}%"></span></div>
+                <div class="cv-roadmap-culture__meta">
+                  <span>${progress.done}/${progress.total} complete</span>
+                  <span>${escapeHTML(modules || 'Lessons')}</span>
+                </div>
+                ${firstLesson ? `
+                  <button class="cv-roadmap-culture__start" type="button" data-lesson-id="${escapeAttr(firstLesson.id)}">
+                    Enter ${escapeHTML(culture.name)}
+                    <i class="fas fa-arrow-right"></i>
+                  </button>
+                ` : ''}
+              </article>
+            `;
+          }).join('')}
+        </section>
+
+        <section class="cv-roadmap-panel">
+          <span class="cv-roadmap-kicker">Future roadmap</span>
+          <h3>Learn-to-earn, done carefully.</h3>
+          <p>Future mana rewards can unlock badges, galaxy evolution, portfolio proof, community quests, and stewardship challenges. The model should reward completion, reflection, and care, not extraction or shallow streak-chasing.</p>
+          <ul class="cv-roadmap-list">
+            <li>Culture planets evolve as lessons are started and completed.</li>
+            <li>Moons can represent mastered topics like origin, sky, language, ecology, or ethics.</li>
+            <li>Future rewards should privilege respectful learning, source literacy, and real-world kuleana.</li>
+          </ul>
+        </section>
+      `;
     }
   }
 
@@ -2841,9 +3019,12 @@
         const maoriScaffold = lesson.id.startsWith('mi-')
           ? buildMaoriDeepScaffold(lesson)
           : '';
+        const dreamtimeScaffold = lesson.id.startsWith('dt-')
+          ? buildDreamtimeDeepScaffold(lesson)
+          : '';
         const creationArc = buildCreationArcView(lesson);
 
-        body.innerHTML = creationArc + baseContent + kemetScaffold + maoriScaffold;
+        body.innerHTML = creationArc + baseContent + kemetScaffold + maoriScaffold + dreamtimeScaffold;
       }
 
       if (state.mode === 'scholar' && !body.querySelector('.cv-reflection')) {
@@ -3023,6 +3204,9 @@
 
     if (welcome) welcome.hidden = false;
     if (article) article.hidden = true;
+
+    const skip = document.querySelector('[data-skip-roadmap]');
+    if (skip) skip.checked = localStorage.getItem(SKIP_ROADMAP_KEY) === 'true';
 
     state.activeLessonId = null;
     renderLessonTree();
@@ -3314,6 +3498,20 @@
         return;
       }
 
+      const startFirst = event.target.closest('[data-start-first-available]');
+      if (startFirst) {
+        const last = findLesson(localStorage.getItem(LAST_LESSON_KEY) || '');
+        const first = last || state.lessons[0];
+        if (first) renderLesson(first.id);
+        return;
+      }
+
+      const skipRoadmap = event.target.closest('[data-skip-roadmap]');
+      if (skipRoadmap) {
+        localStorage.setItem(SKIP_ROADMAP_KEY, skipRoadmap.checked ? 'true' : 'false');
+        return;
+      }
+
       const cultureToggle = event.target.closest('[data-culture-toggle]');
       if (cultureToggle) {
         event.preventDefault();
@@ -3576,14 +3774,16 @@
 
     const opened = openLessonFromHash({ noScroll: true });
 
-    if (!opened && state.lessons.length) {
-      const introLessonId = 'km-kumulipo';
-      const hasIntroLesson = findLesson(introLessonId);
+    if (!opened) {
+      const shouldSkipRoadmap = localStorage.getItem(SKIP_ROADMAP_KEY) === 'true';
+      const lastLesson = shouldSkipRoadmap
+        ? findLesson(localStorage.getItem(LAST_LESSON_KEY) || '')
+        : null;
 
-      if (hasIntroLesson) {
-        renderLesson(introLessonId, { noScroll: true });
+      if (lastLesson) {
+        renderLesson(lastLesson.id, { noScroll: true });
       } else {
-        renderLesson(state.lessons[0].id, { noScroll: true });
+        renderWelcome();
       }
     }
 

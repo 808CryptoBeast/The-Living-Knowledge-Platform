@@ -42,7 +42,7 @@
   />
 
   <link rel="stylesheet" href="css/lkp-brand.css" />
-  <link rel="stylesheet" href="css/lkp-lessons.css?v=creation-arc-1" />
+  <link rel="stylesheet" href="css/lkp-lessons.css?v=journey-roadmap-2" />
 
   <!-- Supabase browser config.
        Replace these with your real project values.
@@ -168,15 +168,33 @@
 
           <span class="cv-lesson-welcome__glyph" id="lessonWelcomeGlyph" style="display:none">◈</span>
 
+          <p class="cv-lesson-welcome__eyebrow">Cultural Journeys Roadmap</p>
           <h2>Ka ʻIke Ola</h2>
 
           <p>
-            Select a lesson from the sidebar to begin.<br />
-            Every lesson is a deep exploration of living knowledge — grounded in
-            primary sources, cultural respect, and the traditions of living peoples.
+            Begin with the whole map before entering a culture. Each section is a
+            deep pathway through living knowledge, primary sources, cultural respect,
+            and the traditions of living peoples.
           </p>
 
+          <div class="cv-lesson-welcome__actions">
+            <button class="cv-welcome-primary" type="button" data-start-first-available>
+              <i class="fas fa-compass"></i>
+              Start First Journey
+            </button>
+            <a class="cv-welcome-secondary" href="../index.html#galaxy">
+              <i class="fas fa-globe"></i>
+              View Galaxy
+            </a>
+          </div>
+
+          <label class="cv-roadmap-skip">
+            <input id="skipJourneyRoadmap" name="skipJourneyRoadmap" type="checkbox" data-skip-roadmap />
+            <span>Next time, go straight to where I left off.</span>
+          </label>
+
           <div class="cv-lesson-welcome__cultures" id="welcomeCultures"></div>
+          <div class="cv-lesson-roadmap" id="lessonRoadmap"></div>
         </div>
       </div>
 
@@ -267,8 +285,8 @@
 
   <!-- Data files: load before lesson renderer -->
   <script src="js/lkp-kumulipo-full-verses.js?v=full-wa-2" defer></script>
-  <script src="js/lkp-data.js?v=base-21-maori-expanded" defer></script>
-  <script src="js/lkp-data-rich-additions.js?v=rich-8-maori-expanded" defer></script>
+  <script src="js/lkp-data.js?v=base-23-dreamtime-nations" defer></script>
+  <script src="js/lkp-data-rich-additions.js?v=rich-10-dreamtime-nations" defer></script>
   <script src="js/lkp-data-primary-sources.js?v=ps-1" defer></script>
 
   <!-- Rewards system -->
@@ -282,7 +300,7 @@
   <script src="js/lkp-kumulipo-wa-ui.js?v=wa-ui-dropdown-1" defer></script>
 
   <!-- Lesson renderer with cloud sync -->
-  <script src="js/lkp-lessons.js?v=v31-maori-images" defer></script>
+  <script src="js/lkp-lessons.js?v=v35-skip-roadmap" defer></script>
 
 </body>
 </html>

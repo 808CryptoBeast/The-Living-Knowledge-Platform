@@ -1298,6 +1298,51 @@ What responsibility do we have when learning initiated or debated knowledge thro
       related: ['dt-songlines-intro', 'br-aloha-maat']
     },
 
+    'dt-protocol-country': {
+      mana: 13,
+      xp: 36,
+      sceneType: 'protocol',
+      concepts: ['Protocol', 'Custodianship', 'Public knowledge', 'Restricted knowledge', 'Country', 'Authority'],
+      sources: SOURCE_SETS.dreamtimeCore,
+      related: ['dt-songlines-intro', 'mi-kaitiakitanga', 'km-wa-06']
+    },
+
+    'dt-seven-sisters': {
+      mana: 14,
+      xp: 38,
+      sceneType: 'astronomy',
+      concepts: ['Seven Sisters', 'Pleiades', 'Songline', 'Sky Country', 'Custodianship', 'Movement'],
+      sources: SOURCE_SETS.dreamtimeCore,
+      related: ['dt-celestial-navigation', 'dt-protocol-country', 'bridge-navigation-astronomy']
+    },
+
+    'dt-emu-sky': {
+      mana: 13,
+      xp: 36,
+      sceneType: 'astronomy',
+      concepts: ['Emu in the Sky', 'Dark constellations', 'Milky Way', 'Seasonal knowledge', 'Observation', 'Country'],
+      sources: SOURCE_SETS.dreamtimeCore,
+      related: ['dt-celestial-navigation', 'km-kumulipo', 'mi-te-po']
+    },
+
+    'dt-care-country': {
+      mana: 13,
+      xp: 36,
+      sceneType: 'philosophy',
+      concepts: ['Caring for Country', 'Repair', 'Language', 'Ceremony', 'Land care', 'Obligation'],
+      sources: SOURCE_SETS.dreamtimeCore,
+      related: ['dt-country-consciousness', 'mi-kaitiakitanga', 'bridge-ecology']
+    },
+
+    'dt-nations-map': {
+      mana: 14,
+      xp: 39,
+      sceneType: 'protocol',
+      concepts: ['Nations', 'Language groups', 'Country', 'AIATSIS map', 'Custodianship', 'Plurality'],
+      sources: SOURCE_SETS.dreamtimeCore,
+      related: ['dt-protocol-country', 'dt-songlines-intro', 'dt-care-country']
+    },
+
     'mi-te-po': {
       mana: 13,
       xp: 36,
