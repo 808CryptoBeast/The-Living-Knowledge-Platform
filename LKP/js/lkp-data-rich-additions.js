@@ -1325,6 +1325,42 @@ What responsibility do we have when learning initiated or debated knowledge thro
       related: ['mi-rangi-papa', 'km-haloa', 'dt-country-consciousness']
     },
 
+    'mi-hineahuone': {
+      mana: 13,
+      xp: 36,
+      sceneType: 'genealogy',
+      concepts: ['Tāne', 'Hineahuone', 'Kurawaka', 'Whenua', 'Breath', 'Human emergence'],
+      sources: SOURCE_SETS.maoriCore,
+      related: ['mi-whakapapa', 'km-haloa', 'dt-country-consciousness']
+    },
+
+    'mi-hinetitama': {
+      mana: 14,
+      xp: 38,
+      sceneType: 'cosmology',
+      concepts: ['Hine-tītama', 'Hine-nui-te-pō', 'Death', 'Boundary', 'Night', 'Return'],
+      sources: SOURCE_SETS.maoriCore,
+      related: ['mi-te-po', 'mi-hineahuone', 'km-kumulipo']
+    },
+
+    'mi-maui': {
+      mana: 13,
+      xp: 36,
+      sceneType: 'navigation',
+      concepts: ['Māui', 'Te Ika-a-Māui', 'Sun', 'Mahuika', 'Fire', 'World-shaping'],
+      sources: SOURCE_SETS.maoriCore,
+      related: ['mi-hinetitama', 'km-wa-16', 'bridge-navigation-astronomy']
+    },
+
+    'mi-kaitiakitanga': {
+      mana: 12,
+      xp: 34,
+      sceneType: 'philosophy',
+      concepts: ['Kaitiakitanga', 'Mauri', 'Tikanga', 'Mana', 'Tapu', 'Responsibility'],
+      sources: SOURCE_SETS.maoriCore,
+      related: ['mi-whakapapa', 'dt-country-consciousness', 'bridge-ecology']
+    },
+
     'yo-ile-ife': {
       mana: 13,
       xp: 36,

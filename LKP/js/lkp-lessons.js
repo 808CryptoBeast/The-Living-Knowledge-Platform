@@ -727,6 +727,173 @@
     `;
   }
 
+  const MAORI_DEEP_FRAMEWORK = {
+    'mi-te-po': {
+      movement: 'moving from hidden potential into the world of light',
+      source: 'Te Kore and Te Pō are treated as generative conditions, not empty absence.',
+      practice: 'Protect unseen preparation before demanding visible outcome.',
+      continuity: 'This prepares Ranginui and Papatūānuku by showing that light emerges from layered darkness.'
+    },
+    'mi-rangi-papa': {
+      movement: 'creating breathable space through relational separation',
+      source: 'Ranginui and Papatūānuku remain parents after separation; creation carries love, grief, and consequence.',
+      practice: 'Make space without erasing relation.',
+      continuity: 'This opens Te Ao Mārama and places atua domains into active kinship.'
+    },
+    'mi-whakapapa': {
+      movement: 'ordering knowledge through layered relation',
+      source: 'Whakapapa places beings, places, atua, and obligations into sequence and kinship.',
+      practice: 'Ask what responsibility follows from every relationship named.',
+      continuity: 'This carries creation into land, identity, governance, ecology, and conduct.'
+    },
+    'mi-hineahuone': {
+      movement: 'bringing human life from earth, breath, and sacred relation',
+      source: 'Hineahuone grounds human emergence in whenua, Kurawaka, and the life-giving breath.',
+      practice: 'Treat humanity as earth-born kin rather than separate owner.',
+      continuity: 'This carries whakapapa into human embodiment and prepares the boundary teachings of Hine-tītama.'
+    },
+    'mi-hinetitama': {
+      movement: 'transforming dawn into the night that receives descendants',
+      source: 'Hine-tītama becomes Hine-nui-te-pō, making death part of relation rather than meaningless absence.',
+      practice: 'Honor truth, boundary, grief, and return as part of living knowledge.',
+      continuity: 'This returns the creation arc to Te Pō and prepares Māui by marking the sacred limit he cannot conquer.'
+    },
+    'mi-maui': {
+      movement: 'reshaping the world so life can continue within limits',
+      source: 'Māui slows the sun, seeks fire, fishes up land, and meets the boundary of death.',
+      practice: 'Use cleverness in service of community continuity, not unchecked conquest.',
+      continuity: 'This shows creation continuing through culture hero action while staying accountable to Hine-nui-te-pō.'
+    },
+    'mi-kaitiakitanga': {
+      movement: 'turning creation genealogy into present-day responsibility',
+      source: 'Kaitiakitanga arises because whenua, atua, ancestors, waters, forests, and people remain related.',
+      practice: 'Judge decisions by mauri, whakapapa, and long-term relational consequence.',
+      continuity: 'This completes the Māori creation arc by moving from origin knowledge into lived care.'
+    }
+  };
+
+  const CREATION_ARCS = {
+    kanaka: {
+      title: 'Kumulipo Creation Arc',
+      subtitle: 'Sixteen Wā as one living genealogy from Pō into kuleana.',
+      note: 'This arc is an orientation map. The chant and Wā pages remain the primary pathway.',
+      items: [
+        ['Pō', 'Deep generative darkness'],
+        ['Kumulipo', 'Source genealogy begins'],
+        ['Koʻa', 'Coral and first sea forms'],
+        ['Kai', 'Marine multiplicity'],
+        ['Manu', 'Flight and boundary crossing'],
+        ['Kānaka', 'Human lines emerge'],
+        ['Hāloa', 'Land, kalo, and people bound together'],
+        ['Kuleana', 'Genealogy becomes responsibility']
+      ],
+      bridgesTitle: 'Polynesian Resonance Cards',
+      bridges: [
+        ['Kumulipo Pō', 'Māori Te Pō', 'Both hold darkness as generative depth, not emptiness. Keep each chant genealogy distinct.'],
+        ['Hāloa', 'Hineahuone / whenua', 'Both ground human life in land-body relation. They are resonant, not interchangeable.'],
+        ['Māui in Hawaiʻi', 'Māui in Aotearoa', 'A shared Polynesian figure appears through different place names, deeds, and local meanings.'],
+        ['Kuleana', 'Kaitiakitanga', 'Both move knowledge into obligation and care, each through its own language and protocol.']
+      ]
+    },
+    maori: {
+      title: 'Māori Creation Arc',
+      subtitle: 'Te Kore, Te Pō, Te Ao Mārama, and responsibility as one unfolding sequence.',
+      note: 'Many iwi and hapū hold specific versions. This map is a public learning compass, not a replacement for local whakapapa.',
+      items: [
+        ['Te Kore', 'Potential before visible form'],
+        ['Te Pō', 'Generative night and becoming'],
+        ['Rangi / Papa', 'Sky and earth held close'],
+        ['Tāne', 'Separation opens Te Ao Mārama'],
+        ['Hineahuone', 'Human life from earth and breath'],
+        ['Hine-nui-te-pō', 'Death, boundary, and return'],
+        ['Māui', 'World-shaping within sacred limits'],
+        ['Kaitiakitanga', 'Creation becomes lived responsibility']
+      ],
+      bridgesTitle: 'Kumulipo Resonance Cards',
+      bridges: [
+        ['Te Pō', 'Kumulipo Pō', 'Both name darkness as origin-depth and generative condition, not a void to escape.'],
+        ['Hineahuone / whenua', 'Hāloa', 'Both teach that human life is inseparable from land, body, birth, and obligation.'],
+        ['Māui in Aotearoa', 'Māui in Hawaiʻi', 'The figure travels across Polynesia, but each place keeps its own story authority.'],
+        ['Kaitiakitanga', 'Kuleana', 'Both insist relation must become conduct, restraint, and care for living systems.']
+      ]
+    }
+  };
+
+  function buildCreationArcView(lesson) {
+    const arc = CREATION_ARCS[lesson.cultureId];
+    if (!arc) return '';
+
+    const activeTitle = lesson.id.startsWith('mi-')
+      ? MAORI_DEEP_FRAMEWORK[lesson.id]?.movement || lesson.title
+      : lesson.id.startsWith('km-wa-') || lesson.id === 'km-kumulipo'
+        ? lesson.title
+        : '';
+
+    const steps = arc.items.map(([label, detail], index) => {
+      const isActive = activeTitle && (
+        activeTitle.toLowerCase().includes(label.toLowerCase()) ||
+        lesson.title.toLowerCase().includes(label.toLowerCase())
+      );
+
+      return `
+        <li class="cv-creation-arc__step${isActive ? ' is-active' : ''}">
+          <span class="cv-creation-arc__index">${String(index + 1).padStart(2, '0')}</span>
+          <span class="cv-creation-arc__label">${escapeHTML(label)}</span>
+          <span class="cv-creation-arc__detail">${escapeHTML(detail)}</span>
+        </li>
+      `;
+    }).join('');
+
+    const bridges = arc.bridges.map(([left, right, meaning]) => `
+      <article class="cv-resonance-card">
+        <div class="cv-resonance-card__pair">
+          <span>${escapeHTML(left)}</span>
+          <i class="fas fa-arrows-left-right" aria-hidden="true"></i>
+          <span>${escapeHTML(right)}</span>
+        </div>
+        <p>${escapeHTML(meaning)}</p>
+      </article>
+    `).join('');
+
+    return `
+      <section class="cv-creation-arc kumu-reveal is-visible" aria-label="${escapeAttr(arc.title)}">
+        <div class="cv-creation-arc__header">
+          <p class="cv-creation-arc__eyebrow">${escapeHTML(lesson.cultureName || 'Creation')}</p>
+          <h4>${escapeHTML(arc.title)}</h4>
+          <p>${escapeHTML(arc.subtitle)}</p>
+        </div>
+        <ol class="cv-creation-arc__rail">
+          ${steps}
+        </ol>
+        <p class="cv-creation-arc__note">${escapeHTML(arc.note)}</p>
+        <div class="cv-resonance">
+          <h5>${escapeHTML(arc.bridgesTitle)}</h5>
+          <div class="cv-resonance__grid">
+            ${bridges}
+          </div>
+          <p class="cv-creation-arc__note">Bridge protocol: these are careful Polynesian resonances. They help pattern recognition without collapsing languages, lands, genealogies, or living authorities into one story.</p>
+        </div>
+      </section>
+    `;
+  }
+
+  function buildMaoriDeepScaffold(lesson) {
+    const meta = MAORI_DEEP_FRAMEWORK[lesson.id];
+    if (!meta) return '';
+
+    return `
+      <section class="kumu-section kumu-section--compact kumu-kemet-afterword kumu-reveal is-visible">
+        <h4>Māori Knowledge Integration</h4>
+        <div class="kumu-kemet-afterword__grid">
+          <p><span class="kumu-wa-source-tag">Movement</span> ${meta.movement}</p>
+          <p><span class="kumu-wa-source-tag">Source Ground</span> ${meta.source}</p>
+          <p><span class="kumu-wa-source-tag">Practice</span> ${meta.practice}</p>
+        </div>
+        <p class="kumu-wa-provenance">${meta.continuity}</p>
+      </section>
+    `;
+  }
+
   const DEFAULT_REFLECTIONS = [
     'What is the deepest idea this lesson preserves — and for whom?',
     'How does this knowledge connect land, sea, sky, family, or community?',
@@ -2632,8 +2799,12 @@
         const kemetScaffold = lesson.id.startsWith('ke-')
           ? buildKemetDeepScaffold(lesson)
           : '';
+        const maoriScaffold = lesson.id.startsWith('mi-')
+          ? buildMaoriDeepScaffold(lesson)
+          : '';
+        const creationArc = buildCreationArcView(lesson);
 
-        body.innerHTML = baseContent + kemetScaffold;
+        body.innerHTML = creationArc + baseContent + kemetScaffold + maoriScaffold;
       }
 
       if (state.mode === 'scholar' && !body.querySelector('.cv-reflection')) {

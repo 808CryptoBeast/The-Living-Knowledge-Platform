@@ -124,7 +124,7 @@
           return Promise.resolve(window.CULTURALVERSE_DATA);
         }
 
-        return window.LKP_LOAD_SCRIPT('LKP/js/lkp-data.js?v=cultures-1').then(function () {
+        return window.LKP_LOAD_SCRIPT('LKP/js/lkp-data.js?v=cultures-2').then(function () {
           if (
             typeof CULTURALVERSE_DATA !== 'undefined' &&
             CULTURALVERSE_DATA &&
@@ -171,17 +171,17 @@
       window.LKP_LOAD_SHARED_DATA()
         .then(function () {
           // Load enrichments (connections, metadata, etc.)
-          return window.LKP_LOAD_SCRIPT('LKP/js/lkp-data-rich-additions.js?v=cultures-1');
+          return window.LKP_LOAD_SCRIPT('LKP/js/lkp-data-rich-additions.js?v=cultures-2');
         })
         .then(function () {
           // Load galaxy builder after enrichments are applied
-          return window.LKP_LOAD_SCRIPT('LKP/js/lkp-galaxy-builder.js?v=cultures-1');
+          return window.LKP_LOAD_SCRIPT('LKP/js/lkp-galaxy-builder.js?v=cultures-2');
         })
         .then(function () {
           // Load Three.js app
           var s = document.createElement('script');
           s.type = 'module';
-          s.src = 'LKP/js/lkp-three.js?v=cultures-1';
+          s.src = 'LKP/js/lkp-three.js?v=cultures-2';
           document.head.appendChild(s);
         })
         .catch(function (err) {
