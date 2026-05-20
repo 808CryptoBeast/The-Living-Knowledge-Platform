@@ -1327,7 +1327,6 @@ function makeAllConceptNodes() {
   GALAXY_DEFS.forEach((g) => {
     g.concepts.forEach((c) => makeCrystalNode({ ...c, culture: g.id, galaxyId: g.id }, buildIndex++));
   });
-  BRIDGE_CONCEPTS.forEach((c) => makeCrystalNode({ ...c, culture: "bridge", galaxyId: "bridge" }, buildIndex++));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -2533,19 +2532,12 @@ async function init() {
         IS_MOBILE
       );
 
-      const BRIDGE_CONCEPTS_DEFS = window.LKP_GALAXY_BUILDER.buildBridgeConstellationFromData(
-        window.CULTURALVERSE_DATA.cultures,
-        IS_MOBILE
-      );
-
       BRIDGE_CONCEPTS.length = 0;
-      BRIDGE_CONCEPTS.push(...BRIDGE_CONCEPTS_DEFS);
 
       ALL_CONCEPTS = [
         ...GALAXY_DEFS.flatMap((g) =>
           g.concepts.map((c) => ({ ...c, culture: g.id, galaxyId: g.id }))
-        ),
-        ...BRIDGE_CONCEPTS.map((c) => ({ ...c, culture: "bridge", galaxyId: "bridge" }))
+        )
       ];
 
       CONCEPT_MAP = new Map(ALL_CONCEPTS.map((c) => [c.id, c]));

@@ -256,6 +256,21 @@
       pos: 'center center',
       credit: 'Dreamtime knowledge system'
     },
+    maori: {
+      pos: 'center center',
+      credit: 'Māori knowledge system',
+      placeholder: true
+    },
+    yoruba: {
+      pos: 'center center',
+      credit: 'Yoruba knowledge system',
+      placeholder: true
+    },
+    chinese: {
+      pos: 'center center',
+      credit: 'Chinese knowledge traditions',
+      placeholder: true
+    },
     default: {
       pos: 'center center',
       credit: 'Living Knowledge lesson',

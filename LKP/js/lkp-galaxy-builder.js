@@ -83,7 +83,10 @@
       bridge: themeMap.bridge,
       dogon: themeMap.amber,
       vedic: themeMap.saffron,
-      dreamtime: themeMap.rust
+      dreamtime: themeMap.rust,
+      maori: themeMap.emerald,
+      yoruba: themeMap.gold,
+      chinese: themeMap.cyan
     };
 
     return themeMap[culture.theme] || cultureMap[culture.id] || { main: 0x54c6ee, dim: 0x247d9b, border: 0x8be8ff };

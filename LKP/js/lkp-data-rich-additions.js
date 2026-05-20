@@ -209,6 +209,106 @@
         sourceConfidence: 'requires care'
       }
     ],
+    vedicCore: [
+      {
+        label: 'Rigveda 10.129 — Nāsadīya Sūkta',
+        note: 'Primary Vedic creation hymn asking what existed before being/non-being and whether even the highest knower knows creation fully.',
+        sourceType: 'primary hymn',
+        sourceConfidence: 'high confidence'
+      },
+      {
+        label: 'Rigveda 10.121 — Hiraṇyagarbha Sūkta',
+        note: 'Primary hymn of the Golden Embryo/Womb, a key creation image in Vedic cosmology.',
+        sourceType: 'primary hymn',
+        sourceConfidence: 'high confidence'
+      },
+      {
+        label: 'Purusha Sūkta and later Purāṇic cosmology',
+        note: 'Useful for cosmic body, yuga, kalpa, and cyclical time, while requiring distinction between Vedic and later Hindu layers.',
+        sourceType: 'textual tradition',
+        sourceConfidence: 'layered tradition'
+      }
+    ],
+    dreamtimeCore: [
+      {
+        label: 'AIATSIS guidance on Songlines, Dreaming, and Country',
+        note: 'Terminology and cultural protocol guidance for Aboriginal and Torres Strait Islander knowledge contexts.',
+        sourceType: 'Indigenous knowledge guidance',
+        sourceConfidence: 'high confidence'
+      },
+      {
+        label: 'Aboriginal and Torres Strait Islander astronomy scholarship',
+        note: 'Research on sky knowledge, seasonal calendars, navigation, and cultural astronomy across distinct Nations.',
+        sourceType: 'scholarly synthesis',
+        sourceConfidence: 'context-based'
+      },
+      {
+        label: 'Community-specific custodial knowledge',
+        note: 'Dreaming and Songline knowledge is place-based and often restricted; public summaries must not replace custodial authority.',
+        sourceType: 'protocol boundary',
+        sourceConfidence: 'requires care'
+      }
+    ],
+    maoriCore: [
+      {
+        label: 'Te Ara / Māori creation and whakapapa resources',
+        note: 'Public reference for Te Kore, Te Pō, Ranginui, Papatūānuku, atua, and creation traditions.',
+        sourceType: 'public cultural reference',
+        sourceConfidence: 'context-based'
+      },
+      {
+        label: 'Māori Marsden and mātauranga Māori scholarship',
+        note: 'Useful for whakapapa, Te Ao Māori, and relational knowledge frameworks.',
+        sourceType: 'Indigenous scholarship',
+        sourceConfidence: 'high confidence'
+      },
+      {
+        label: 'Iwi-specific oral histories and tikanga',
+        note: 'Māori knowledge is place, iwi, hapū, and whānau grounded; public summaries are not substitutes for custodial authority.',
+        sourceType: 'protocol boundary',
+        sourceConfidence: 'requires care'
+      }
+    ],
+    yorubaCore: [
+      {
+        label: 'Ifá literary corpus and Yoruba oral traditions',
+        note: 'Primary living source context for Odù, Òrìṣà, Orí, Èṣù, àṣẹ, and ethical interpretation.',
+        sourceType: 'oral/literary corpus',
+        sourceConfidence: 'living tradition'
+      },
+      {
+        label: 'Yoruba religion and Ilé-Ifẹ̀ scholarship',
+        note: 'Historical and cultural context for creation accounts, sacred kingship, and ritual centers.',
+        sourceType: 'scholarly synthesis',
+        sourceConfidence: 'context-based'
+      },
+      {
+        label: 'Community-specific priestly and lineage knowledge',
+        note: 'Òrìṣà and Ifá knowledge is living and often lineage-specific; avoid flattening diverse tellings.',
+        sourceType: 'protocol boundary',
+        sourceConfidence: 'requires care'
+      }
+    ],
+    chineseCore: [
+      {
+        label: 'Daodejing and classical Daoist texts',
+        note: 'Primary textual frame for Dao, naming, non-forcing action, and return.',
+        sourceType: 'primary text',
+        sourceConfidence: 'high confidence'
+      },
+      {
+        label: 'Yijing, correlative cosmology, and classical Chinese medicine',
+        note: 'Context for yin-yang, Five Phases, change, pattern, and relational diagnosis.',
+        sourceType: 'classical tradition',
+        sourceConfidence: 'layered tradition'
+      },
+      {
+        label: 'Chinese mythic traditions of Pangu and Nüwa',
+        note: 'Mythic creation and repair accounts preserved in later textual and oral traditions.',
+        sourceType: 'mythic tradition',
+        sourceConfidence: 'context-based'
+      }
+    ],
     bridge: [
       {
         label: 'Cross-cultural cosmology comparison notes',
@@ -1149,7 +1249,7 @@ What responsibility do we have when learning initiated or debated knowledge thro
       xp: 34,
       sceneType: 'philosophy',
       concepts: ['Creation', 'Non-being', 'Brahman', 'Quantum potential', 'Emergence', 'Uncertainty'],
-      sources: SOURCE_SETS.bridge,
+      sources: SOURCE_SETS.vedicCore,
       related: ['km-kumulipo', 'br-darkness', 'dg-ammas-world']
     },
 
@@ -1158,7 +1258,7 @@ What responsibility do we have when learning initiated or debated knowledge thro
       xp: 38,
       sceneType: 'cosmology',
       concepts: ['Yugas', 'Dharma', 'Cosmic cycles', 'Time scales', 'Entropy', 'Renewal'],
-      sources: SOURCE_SETS.bridge,
+      sources: SOURCE_SETS.vedicCore,
       related: ['vd-nasadiya', 'km-kumulipo']
     },
 
@@ -1167,7 +1267,7 @@ What responsibility do we have when learning initiated or debated knowledge thro
       xp: 32,
       sceneType: 'astronomy',
       concepts: ['Decimal system', 'Zero', 'Heliocentric', 'Mathematics', 'Ancient knowledge'],
-      sources: SOURCE_SETS.kemet,
+      sources: SOURCE_SETS.vedicCore,
       related: ['dg-sirius-triplet', 'dt-celestial-navigation']
     },
 
@@ -1176,7 +1276,7 @@ What responsibility do we have when learning initiated or debated knowledge thro
       xp: 37,
       sceneType: 'narrative',
       concepts: ['Songlines', 'Dreaming', 'Country', 'Oral geography', 'Knowledge system', 'Sacred places'],
-      sources: SOURCE_SETS.kemet,
+      sources: SOURCE_SETS.dreamtimeCore,
       related: ['dt-celestial-navigation', 'dt-country-consciousness']
     },
 
@@ -1185,7 +1285,7 @@ What responsibility do we have when learning initiated or debated knowledge thro
       xp: 31,
       sceneType: 'astronomy',
       concepts: ['Navigation', 'Stars', 'Constellations', 'Pleiades', 'Southern Cross', 'Seasonal markers'],
-      sources: SOURCE_SETS.kemet,
+      sources: SOURCE_SETS.dreamtimeCore,
       related: ['dt-songlines-intro', 'vd-vedic-astronomy', 'dg-sirius-triplet']
     },
 
@@ -1194,8 +1294,89 @@ What responsibility do we have when learning initiated or debated knowledge thro
       xp: 34,
       sceneType: 'philosophy',
       concepts: ['Country', 'Kinship', 'Custodianship', 'Living systems', 'Reciprocal relationship', 'Ethics'],
-      sources: SOURCE_SETS.kemet,
+      sources: SOURCE_SETS.dreamtimeCore,
       related: ['dt-songlines-intro', 'br-aloha-maat']
+    },
+
+    'mi-te-po': {
+      mana: 13,
+      xp: 36,
+      sceneType: 'cosmology',
+      concepts: ['Te Kore', 'Te Pō', 'Potential', 'Night', 'Whakapapa', 'Creation'],
+      sources: SOURCE_SETS.maoriCore,
+      related: ['km-kumulipo', 'dg-po-creation', 'ke-nun']
+    },
+
+    'mi-rangi-papa': {
+      mana: 13,
+      xp: 36,
+      sceneType: 'cosmology',
+      concepts: ['Ranginui', 'Papatūānuku', 'Tāne', 'Atua', 'Separation', 'Light'],
+      sources: SOURCE_SETS.maoriCore,
+      related: ['mi-te-po', 'zh-pangu-nuwa', 'km-kumulipo']
+    },
+
+    'mi-whakapapa': {
+      mana: 12,
+      xp: 34,
+      sceneType: 'genealogy',
+      concepts: ['Whakapapa', 'Whenua', 'Genealogy', 'Land', 'Responsibility', 'Relation'],
+      sources: SOURCE_SETS.maoriCore,
+      related: ['mi-rangi-papa', 'km-haloa', 'dt-country-consciousness']
+    },
+
+    'yo-ile-ife': {
+      mana: 13,
+      xp: 36,
+      sceneType: 'cosmology',
+      concepts: ['Ilé-Ifẹ̀', 'Olódùmarè', 'Obàtálá', 'Odùduwà', 'Waters', 'World making'],
+      sources: SOURCE_SETS.yorubaCore,
+      related: ['ke-creation-deep', 'dg-po-creation', 'mi-rangi-papa']
+    },
+
+    'yo-ase': {
+      mana: 12,
+      xp: 34,
+      sceneType: 'language',
+      concepts: ['Àṣẹ', 'Speech', 'Power', 'Ritual', 'Authority', 'Consequence'],
+      sources: SOURCE_SETS.yorubaCore,
+      related: ['bridge-word-creation', 'ke-ptah', 'yo-ifa']
+    },
+
+    'yo-ifa': {
+      mana: 14,
+      xp: 40,
+      sceneType: 'epistemology',
+      concepts: ['Ifá', 'Orí', 'Èṣù', 'Odù', 'Destiny', 'Crossroads'],
+      sources: SOURCE_SETS.yorubaCore,
+      related: ['yo-ase', 'ke-seshat', 'zh-dao']
+    },
+
+    'zh-dao': {
+      mana: 13,
+      xp: 36,
+      sceneType: 'philosophy',
+      concepts: ['Dao', 'Naming', 'Wu wei', 'Return', 'Pattern', 'Non-forcing'],
+      sources: SOURCE_SETS.chineseCore,
+      related: ['vd-nasadiya', 'yo-ifa', 'bridge-darkness']
+    },
+
+    'zh-yinyang': {
+      mana: 13,
+      xp: 36,
+      sceneType: 'cosmology',
+      concepts: ['Yin', 'Yang', 'Five Phases', 'Change', 'Balance', 'Correlative thinking'],
+      sources: SOURCE_SETS.chineseCore,
+      related: ['bridge-pairs', 'ke-ennead', 'zh-dao']
+    },
+
+    'zh-pangu-nuwa': {
+      mana: 12,
+      xp: 34,
+      sceneType: 'cosmology',
+      concepts: ['Pangu', 'Nüwa', 'Cosmic egg', 'Heaven and earth', 'Repair', 'World body'],
+      sources: SOURCE_SETS.chineseCore,
+      related: ['zh-yinyang', 'mi-rangi-papa', 'dt-country-consciousness']
     }
   };
 

@@ -2776,6 +2776,237 @@ How can oral knowledge be honored without turning it into spectacle?
           ]
         }
       ]
+    },
+
+    /* ══════════════════════════════════════════════════════════
+       MĀORI — Aotearoa Knowledge Traditions
+    ══════════════════════════════════════════════════════════ */
+    {
+      id:      'maori',
+      name:    'Māori',
+      emoji:   '🌀',
+      tagline: 'Aotearoa Knowledge — Whakapapa, Te Pō, and Living Relation',
+      theme:   'emerald',
+      status:  'live',
+      intro:   'Māori knowledge traditions from Aotearoa New Zealand hold creation, land, genealogy, language, and responsibility together through whakapapa. These lessons begin with Te Kore and Te Pō, move through Ranginui and Papatūānuku, and follow how atua, whenua, wai, and people remain bound in living obligation.',
+      modules: [
+        {
+          id:    'maori-creation',
+          title: 'Whakapapa & Creation',
+          emoji: '🌀',
+          desc:  'Creation through Te Kore, Te Pō, Ranginui, Papatūānuku, atua, and whakapapa.',
+          lessons: [
+            {
+              id:       'mi-te-po',
+              num:      'MI·01',
+              title:    'Te Kore & Te Pō — Potential, Night, and Becoming',
+              readTime: '12 min',
+              content: `
+<p class="lead">Many Māori creation accounts begin not with a simple empty void, but with deep phases of potential and darkness: <strong>Te Kore</strong>, the realm of potential or non-being, and <strong>Te Pō</strong>, the night, darkness, and becoming. These are not failures of creation. They are the conditions through which creation gathers itself before the world becomes visible.</p>
+
+<h4>Te Kore as Potential</h4>
+<p>Te Kore can be translated in different ways depending on iwi, teacher, and context: void, nothingness, absence, potential, or the realm before being. The important point is that it should not be flattened into a dead emptiness. In many whakapapa sequences, Te Kore holds possibility before form.</p>
+
+<h4>Te Pō as Generative Night</h4>
+<p>Te Pō is night, darkness, and the long unfolding before light. Like Hawaiian Pō in the Kumulipo, Te Pō can be understood as generative depth. The comparison is powerful because both Polynesian knowledge systems refuse to make darkness evil or empty. But the traditions remain distinct: Te Pō belongs to Māori whakapapa, reo, iwi histories, and Aotearoa place relations.</p>
+
+<callout type="bridge">Careful resonance: Māori Te Pō and Kanaka Maoli Pō share a Polynesian language family and creation-depth pattern. Similarity can deepen learning, but each tradition must be approached through its own genealogies, protocols, and living communities.</callout>
+`
+            },
+            {
+              id:       'mi-rangi-papa',
+              num:      'MI·02',
+              title:    'Ranginui & Papatūānuku — The First Separation',
+              readTime: '13 min',
+              content: `
+<p class="lead"><strong>Ranginui</strong>, the sky father, and <strong>Papatūānuku</strong>, the earth mother, are joined in close embrace. Their children live cramped in darkness between them. Creation opens when the children debate how to make space, and Tāne separates sky and earth so light can enter the world.</p>
+
+<h4>Creation as Space for Relation</h4>
+<p>The separation is not simply a physical event. It creates the breathing room in which life, weather, forests, winds, seas, and humans can exist. But it is also painful: love, grief, and consequence enter the world with light. Ranginui weeps as rain; Papatūānuku sighs as mist. Creation is not a clean victory over darkness. It is a relational reordering with cost.</p>
+
+<h4>The Atua and the World</h4>
+<p>The children of Rangi and Papa become atua associated with domains such as forest, sea, winds, cultivated food, uncultivated food, and conflict. Their relationships explain why the world is not a collection of resources. Forest, ocean, weather, crops, and people are kin-linked domains with obligations.</p>
+
+<callout>The first separation teaches that light creates responsibility. Once the world is visible, relations can be damaged or cared for. Knowledge begins with seeing consequence.</callout>
+`
+            },
+            {
+              id:       'mi-whakapapa',
+              num:      'MI·03',
+              title:    'Whakapapa — Genealogy as Knowledge System',
+              readTime: '11 min',
+              content: `
+<p class="lead"><strong>Whakapapa</strong> is often translated as genealogy, but it is more than a family tree. It is an ordering system that places people, atua, land, waters, plants, animals, and events into relation. To know whakapapa is to know where responsibilities come from.</p>
+
+<h4>Layering Relation</h4>
+<p>The word whakapapa evokes placing in layers. Knowledge is layered through descent, sequence, naming, and relation. This makes whakapapa a memory system, a political system, an ecological system, and a spiritual system at once.</p>
+
+<h4>Whenua and Belonging</h4>
+<p>Whenua means land and placenta. The language itself holds the relationship between birth, body, place, nourishment, and belonging. A person is not separate from land as an owner standing outside it. Identity is grounded through relation to whenua, ancestors, and responsibility.</p>
+
+<reflect>
+What changes when genealogy is treated as an ethical map, not just ancestry?
+How does whakapapa challenge the idea that land is property only?
+</reflect>
+`
+            }
+          ]
+        }
+      ]
+    },
+
+    /* ══════════════════════════════════════════════════════════
+       YORUBA — West African Ifá and Òrìṣà Traditions
+    ══════════════════════════════════════════════════════════ */
+    {
+      id:      'yoruba',
+      name:    'Yoruba',
+      emoji:   '⚡',
+      tagline: 'West African Wisdom — Ifá, Òrìṣà, Àṣẹ, and Destiny',
+      theme:   'gold',
+      status:  'live',
+      intro:   'Yoruba knowledge traditions from West Africa carry a profound system of creation, divination, ethics, art, memory, and destiny. These lessons begin with Olódùmarè, Ilé-Ifẹ̀, Ọ̀rìṣà-nlá/Obàtálá, Odùduwà, Èṣù, Ifá, and àṣẹ as living principles of order, choice, and consequence.',
+      modules: [
+        {
+          id:    'yoruba-cosmology',
+          title: 'Creation, Ifá & Àṣẹ',
+          emoji: '⚡',
+          desc:  'Yoruba creation, sacred power, destiny, divination, and ethical choice.',
+          lessons: [
+            {
+              id:       'yo-ile-ife',
+              num:      'YO·01',
+              title:    'Ilé-Ifẹ̀ — Descent, Earth, and the Making of World',
+              readTime: '12 min',
+              content: `
+<p class="lead">In important Yoruba creation accounts, the world begins as watery or unformed expanse. <strong>Olódùmarè</strong>, the supreme source, sends divine agents to make habitable earth. Ilé-Ifẹ̀ becomes a sacred center: the place where world-making, kingship, artistry, and human origin are remembered.</p>
+
+<h4>Earth Spread Over Waters</h4>
+<p>One widely told account describes a chain descending from heaven, a handful of earth or sacred substance, and a fowl that spreads the earth across the waters. This is not only a story of land appearing. It is a teaching about order emerging through delegated responsibility and careful action.</p>
+
+<h4>Obàtálá and Odùduwà</h4>
+<p>Different Yoruba lineages and tellings emphasize Obàtálá, Odùduwà, or both in distinct ways. A responsible lesson does not flatten these variations into one final version. It recognizes that sacred history lives through place, lineage, ritual, and interpretation.</p>
+
+<callout type="gold">Ilé-Ifẹ̀ is not merely a location on a map. It is a civilizational center of memory where creation, kingship, art, and sacred authority meet.</callout>
+`
+            },
+            {
+              id:       'yo-ase',
+              num:      'YO·02',
+              title:    'Àṣẹ — The Power That Makes Things Happen',
+              readTime: '11 min',
+              content: `
+<p class="lead"><strong>Àṣẹ</strong> is the power of realization: the force by which words, rituals, choices, blessings, curses, art, and divine command become effective. It is often translated as power, authority, command, or "so may it be," but those translations only point toward it.</p>
+
+<h4>Speech and Consequence</h4>
+<p>Àṣẹ teaches that speech is not neutral. Words can bless, bind, open, distort, heal, or harm. This places language inside ethics. To speak without care is to act without care.</p>
+
+<h4>Embodied Power</h4>
+<p>Àṣẹ moves through Òrìṣà, elders, ritual specialists, artists, medicines, drums, praise poetry, and everyday conduct. Power is not abstract. It must be carried, disciplined, and aligned.</p>
+
+<callout>Àṣẹ resonates with other traditions where word, chant, name, and breath are world-shaping. The resonance is real, but Yoruba àṣẹ remains grounded in Yoruba language, ritual, and Òrìṣà practice.</callout>
+`
+            },
+            {
+              id:       'yo-ifa',
+              num:      'YO·03',
+              title:    'Ifá, Orí & Èṣù — Destiny, Choice, and the Crossroads',
+              readTime: '13 min',
+              content: `
+<p class="lead"><strong>Ifá</strong> is a divination, wisdom, literary, and ethical system associated with Òrúnmìlà. It preserves vast bodies of verse called <strong>Odù</strong>, which guide interpretation, ritual, character, and decision-making.</p>
+
+<h4>Orí and Destiny</h4>
+<p><strong>Orí</strong> means head, inner head, destiny, and personal spiritual orientation. Yoruba thought often frames a person's life as a negotiation between chosen destiny, character, community, and action. Destiny is not passive. It must be cultivated.</p>
+
+<h4>Èṣù at the Crossroads</h4>
+<p><strong>Èṣù</strong> is a messenger, opener of roads, tester, translator, and guardian of thresholds. Reducing Èṣù to "devil" is a colonial distortion. Èṣù teaches that every path has consequence and that communication must be interpreted with care.</p>
+
+<reflect>
+Where do you stand at a crossroads right now?
+What would change if destiny meant disciplined alignment rather than fixed fate?
+</reflect>
+`
+            }
+          ]
+        }
+      ]
+    },
+
+    /* ══════════════════════════════════════════════════════════
+       CHINESE — Dao, Yin-Yang, and Classical Chinese Traditions
+    ══════════════════════════════════════════════════════════ */
+    {
+      id:      'chinese',
+      name:    'Chinese',
+      emoji:   '☯',
+      tagline: 'Chinese Wisdom — Dao, Yin-Yang, Heaven, Earth, and Harmony',
+      theme:   'cyan',
+      status:  'live',
+      intro:   'Classical Chinese knowledge traditions include Daoist, Confucian, cosmological, medical, divinatory, and mythic lineages. These lessons begin with Dao, yin-yang, Pangu, Nüwa, Heaven-Earth-Human relation, and the long search for harmony within change.',
+      modules: [
+        {
+          id:    'chinese-cosmology',
+          title: 'Dao, Creation & Harmony',
+          emoji: '☯',
+          desc:  'Chinese creation, Dao, yin-yang, Pangu, Nüwa, and relational order.',
+          lessons: [
+            {
+              id:       'zh-dao',
+              num:      'ZH·01',
+              title:    'Dao — The Way Before Naming',
+              readTime: '12 min',
+              content: `
+<p class="lead">The <strong>Dao</strong> is the Way: the generative order, pattern, and movement through which things arise and return. The Dao that can be fully named is not the constant Dao. This is not anti-knowledge. It is a warning that reality exceeds fixed labels.</p>
+
+<h4>Before Names</h4>
+<p>Classical Daoist thought begins with humility before origin. Naming is useful, but it can also trap living process into rigid categories. The nameless points toward source; the named points toward the many forms of the world.</p>
+
+<h4>Wu Wei</h4>
+<p><strong>Wu wei</strong>, often translated as non-forcing or effortless action, does not mean passivity. It means action aligned with pattern, timing, and relation. The wise person does not dominate the flow of things; they learn how to move with it.</p>
+
+<callout>Dao offers a deep complement to the platform's living knowledge frame: wisdom is not control over life, but disciplined alignment with the patterns that sustain life.</callout>
+`
+            },
+            {
+              id:       'zh-yinyang',
+              num:      'ZH·02',
+              title:    'Yin-Yang & Five Phases — Change as Pattern',
+              readTime: '13 min',
+              content: `
+<p class="lead"><strong>Yin</strong> and <strong>yang</strong> are not good and evil. They are relational tendencies: dark/light, receptive/active, cool/warm, inward/outward, earth/sky, rest/movement. Each contains the seed of the other.</p>
+
+<h4>Dynamic Complementarity</h4>
+<p>Yin-yang thinking trains attention to balance through movement. A situation can become too yang or too yin. Wisdom is not choosing one forever, but discerning the right relation for the moment.</p>
+
+<h4>Five Phases</h4>
+<p>The Five Phases — wood, fire, earth, metal, and water — describe cycles of generation and control. They are used in medicine, music, governance, seasonal thinking, and cosmology as a way to track transformation rather than static substance.</p>
+
+<callout type="bridge">This resonates with paired-force systems in Kemet, Māori, Yoruba, and Kanaka Maoli lessons. The point is not sameness; the point is disciplined attention to relation.</callout>
+`
+            },
+            {
+              id:       'zh-pangu-nuwa',
+              num:      'ZH·03',
+              title:    'Pangu & Nüwa — World Body, Repair, and Human Making',
+              readTime: '12 min',
+              content: `
+<p class="lead">Chinese mythic traditions include many creation accounts. Two especially important figures are <strong>Pangu</strong>, associated with the separation of heaven and earth and the formation of the world-body, and <strong>Nüwa</strong>, associated with creating humans and repairing the damaged sky.</p>
+
+<h4>Pangu and Separation</h4>
+<p>In later accounts, Pangu grows within a cosmic egg and separates heaven and earth. When he dies, his body becomes features of the world: breath, wind, voice, thunder, eyes, sun and moon, limbs, mountains, blood, rivers. The cosmos is not dead material; it is body-transformation.</p>
+
+<h4>Nüwa and Repair</h4>
+<p>Nüwa is remembered for forming humans and for mending the sky after cosmic damage. This matters deeply: creation is not only beginning. Creation includes repair. The world can fracture, and sacred intelligence restores balance.</p>
+
+<reflect>
+What does it mean to treat repair as a sacred act?
+Where does your world need mending rather than conquest?
+</reflect>
+`
+            }
+          ]
+        }
+      ]
     }
 
   ] // end cultures
