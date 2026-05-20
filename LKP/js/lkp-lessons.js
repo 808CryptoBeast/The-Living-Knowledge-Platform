@@ -217,6 +217,43 @@
       credit: 'Knowledge Keepers & Transmission — Dogon Wisdom in the World'
     },
 
+    /* Māori */
+    'mi-te-po': {
+      url: 'assets/images/maori/mi-te-po.png',
+      pos: 'center center',
+      credit: 'Te Kore & Te Pō — Potential, Night, and Becoming'
+    },
+    'mi-rangi-papa': {
+      url: 'assets/images/maori/mi-ranga-papa.png',
+      pos: 'center center',
+      credit: 'Ranginui & Papatūānuku — The First Separation'
+    },
+    'mi-whakapapa': {
+      url: 'assets/images/maori/mi-whakapapa.png',
+      pos: 'center center',
+      credit: 'Whakapapa — Genealogy as Knowledge System'
+    },
+    'mi-hineahuone': {
+      url: 'assets/images/maori/mi-hineahuone.png',
+      pos: 'center center',
+      credit: 'Tāne & Hineahuone — Human Emergence from Earth'
+    },
+    'mi-hinetitama': {
+      url: 'assets/images/maori/mi-hinetitama.png',
+      pos: 'center center',
+      credit: 'Hine-tītama & Hine-nui-te-pō — Dawn, Death, and Return'
+    },
+    'mi-maui': {
+      url: 'assets/images/maori/mi-maui.png',
+      pos: 'center center',
+      credit: 'Māui — World-Shaping, Fire, Sun, and Islands'
+    },
+    'mi-kaitiakitanga': {
+      url: 'assets/images/maori/mi-kaitiakitanga.png',
+      pos: 'center center',
+      credit: 'Kaitiakitanga — Responsibility from Creation'
+    },
+
     /* Older aliases */
     'br-darkness': {
       url: 'assets/images/bridge/bridge-darkness.png',
@@ -257,9 +294,9 @@
       credit: 'Dreamtime knowledge system'
     },
     maori: {
+      url: 'assets/images/maori/mi-te-po.png',
       pos: 'center center',
-      credit: 'Māori knowledge system',
-      placeholder: true
+      credit: 'Māori knowledge system'
     },
     yoruba: {
       pos: 'center center',
@@ -822,6 +859,8 @@
   function buildCreationArcView(lesson) {
     const arc = CREATION_ARCS[lesson.cultureId];
     if (!arc) return '';
+    if (lesson.cultureId === 'kanaka' && lesson.id !== 'km-kumulipo' && !lesson.id.startsWith('km-wa-')) return '';
+    if (lesson.cultureId === 'maori' && !lesson.id.startsWith('mi-')) return '';
 
     const activeTitle = lesson.id.startsWith('mi-')
       ? MAORI_DEEP_FRAMEWORK[lesson.id]?.movement || lesson.title

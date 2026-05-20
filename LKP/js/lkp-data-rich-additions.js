@@ -935,7 +935,7 @@ Make a Maʻat decision chart: write one hard choice, list actions that create ba
       sceneType: 'balance',
       concepts: ['Kingship', 'Governance', 'Justice', 'Temple economy', 'Public order', 'Maʻat'],
       sources: SOURCE_SETS.kemetCore,
-      related: ['ke-maat', 'km-kapu-pono', 'bridge-aloha-maat'],
+      related: ['ke-maat', 'km-ahupuaa', 'bridge-aloha-maat'],
       kidVersion: {
         summary: 'This lesson teaches that a ruler was supposed to protect Maʻat. Leadership was not only power; it was responsibility to truth, balance, and the people.',
         bigIdeas: [
@@ -1102,7 +1102,7 @@ Use three columns: (1) Kumulipo / Nun source language, (2) scientific concept fa
       sceneType: 'balance',
       concepts: ['Aloha', 'Maʻat', 'Pono', 'Ethics', 'Relationship', 'Cosmic alignment'],
       sources: SOURCE_SETS.bridge,
-      related: ['ke-maat', 'km-kapu-pono', 'km-malamaina'],
+      related: ['ke-maat', 'km-ahupuaa', 'km-malamaina'],
       kidVersion: {
         summary: 'Aloha and Maʻat both teach that people should live in right relationship. They are not the same word, but both connect ethics, balance, and responsibility.',
         bigIdeas: [
@@ -1322,7 +1322,7 @@ What responsibility do we have when learning initiated or debated knowledge thro
       sceneType: 'genealogy',
       concepts: ['Whakapapa', 'Whenua', 'Genealogy', 'Land', 'Responsibility', 'Relation'],
       sources: SOURCE_SETS.maoriCore,
-      related: ['mi-rangi-papa', 'km-haloa', 'dt-country-consciousness']
+      related: ['mi-rangi-papa', 'km-wakea', 'dt-country-consciousness']
     },
 
     'mi-hineahuone': {
@@ -1331,7 +1331,7 @@ What responsibility do we have when learning initiated or debated knowledge thro
       sceneType: 'genealogy',
       concepts: ['Tāne', 'Hineahuone', 'Kurawaka', 'Whenua', 'Breath', 'Human emergence'],
       sources: SOURCE_SETS.maoriCore,
-      related: ['mi-whakapapa', 'km-haloa', 'dt-country-consciousness']
+      related: ['mi-whakapapa', 'km-wakea', 'dt-country-consciousness']
     },
 
     'mi-hinetitama': {
