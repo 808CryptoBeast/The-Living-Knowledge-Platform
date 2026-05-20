@@ -501,11 +501,36 @@ body[data-culture="dreamtime"] {
 .cv-lesson-welcome__inner {
   width:min(1120px,100%);
   padding:clamp(24px,5vw,52px);
-  border-radius:var(--radius-lg);
-  border:1px solid rgba(240,201,106,0.16);
-  background: radial-gradient(circle at 0 0, rgba(240,201,106,0.10), transparent 44%), radial-gradient(circle at 100% 100%, rgba(84,198,238,0.08), transparent 44%), rgba(5,12,32,0.72);
-  box-shadow:0 24px 80px rgba(0,0,0,0.30);
+  position:relative;
+  overflow:hidden;
+  border-radius:28px;
+  border:1px solid rgba(240,201,106,0.20);
+  background:
+    radial-gradient(circle at 16% 0, rgba(240,201,106,0.18), transparent 34%),
+    radial-gradient(circle at 92% 12%, rgba(84,198,238,0.14), transparent 38%),
+    radial-gradient(circle at 50% 120%, rgba(44,116,174,0.22), transparent 42%),
+    linear-gradient(145deg, rgba(7,15,38,0.92), rgba(4,9,25,0.94) 54%, rgba(2,5,16,0.96));
+  box-shadow:0 28px 90px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.07);
   backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px);
+}
+
+.cv-lesson-welcome__inner::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background-image:
+    radial-gradient(circle, rgba(255,255,255,0.42) 0 1px, transparent 1.6px),
+    radial-gradient(circle, rgba(240,201,106,0.26) 0 1px, transparent 1.8px);
+  background-size:78px 78px, 118px 118px;
+  background-position:9px 12px, 46px 30px;
+  opacity:0.22;
+  mask-image:linear-gradient(180deg, rgba(0,0,0,0.9), transparent 72%);
+}
+
+.cv-lesson-welcome__inner > * {
+  position:relative;
+  z-index:1;
 }
 .cv-lesson-welcome__icon {
   width:clamp(100px,11vw,150px); height:clamp(100px,11vw,150px);
@@ -544,19 +569,20 @@ body[data-culture="dreamtime"] {
 
 .cv-roadmap-skip {
   width:min(520px,100%);
-  min-height:38px;
+  min-height:42px;
   display:flex;
   align-items:center;
   justify-content:center;
   gap:10px;
-  margin:14px auto 0;
-  padding:9px 12px;
-  border:1px solid rgba(255,255,255,0.09);
+  margin:16px auto 0;
+  padding:10px 14px;
+  border:1px solid rgba(240,201,106,0.18);
   border-radius:999px;
-  background:rgba(255,255,255,0.035);
-  color:rgba(210,228,240,0.78);
+  background:linear-gradient(135deg, rgba(240,201,106,0.08), rgba(84,198,238,0.045));
+  color:rgba(224,238,248,0.86);
   font-size:0.9rem;
   line-height:1.35;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
 .cv-roadmap-skip input {
@@ -564,6 +590,11 @@ body[data-culture="dreamtime"] {
   height:17px;
   accent-color:var(--lkp-gold);
   flex:0 0 auto;
+}
+
+.cv-roadmap-skip:focus-within {
+  border-color:rgba(240,201,106,0.42);
+  box-shadow:0 0 0 3px rgba(240,201,106,0.10), inset 0 1px 0 rgba(255,255,255,0.06);
 }
 
 .cv-welcome-primary,
@@ -600,8 +631,8 @@ body[data-culture="dreamtime"] {
 .cv-roadmap-panel,
 .cv-roadmap-culture {
   border:1px solid rgba(255,255,255,0.09);
-  border-radius:16px;
-  background:rgba(0,0,0,0.18);
+  border-radius:18px;
+  background:linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.025));
   box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
 }
 
@@ -677,6 +708,15 @@ body[data-culture="dreamtime"] {
 .cv-roadmap-culture {
   min-width:0;
   padding:14px;
+  transition:transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.cv-roadmap-culture:hover {
+  transform:translateY(-2px);
+  border-color:color-mix(in srgb, var(--culture-color, var(--active-color)) 42%, rgba(255,255,255,0.08));
+  background:
+    radial-gradient(circle at 0 0, color-mix(in srgb, var(--culture-color, var(--active-color)) 16%, transparent), transparent 48%),
+    linear-gradient(180deg, rgba(255,255,255,0.065), rgba(255,255,255,0.025));
 }
 
 .cv-roadmap-culture__top {
@@ -742,6 +782,53 @@ body[data-culture="dreamtime"] {
   padding-left:18px;
   color:rgba(202,222,236,0.78);
   line-height:1.6;
+}
+
+.cv-roadmap-panel--future {
+  display:grid;
+  gap:16px;
+  background:
+    radial-gradient(circle at 100% 0, rgba(240,201,106,0.12), transparent 40%),
+    radial-gradient(circle at 0 100%, rgba(84,198,238,0.10), transparent 42%),
+    rgba(255,255,255,0.035);
+}
+
+.cv-roadmap-future-grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+}
+
+.cv-roadmap-future-grid article {
+  min-width:0;
+  padding:14px;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:14px;
+  background:rgba(0,0,0,0.18);
+}
+
+.cv-roadmap-future-grid i {
+  width:36px;
+  height:36px;
+  display:grid;
+  place-items:center;
+  margin-bottom:10px;
+  border-radius:12px;
+  border:1px solid rgba(240,201,106,0.24);
+  background:rgba(240,201,106,0.09);
+  color:var(--lkp-gold-hi);
+}
+
+.cv-roadmap-future-grid h4 {
+  margin:0;
+  color:rgba(255,255,255,0.94);
+  font-size:0.98rem;
+}
+
+.cv-roadmap-future-grid p {
+  margin-top:7px;
+  font-size:0.88rem;
+  line-height:1.55;
 }
 
 /* ══════════════════════════════════════════════════════════════════════
@@ -3427,7 +3514,8 @@ body.is-reading-mode .cv-lesson-article { width:min(880px,100%); }
     overflow:hidden;
   }
   .cv-roadmap-panel--wide,
-  .cv-roadmap-grid {
+  .cv-roadmap-grid,
+  .cv-roadmap-future-grid {
     grid-template-columns:1fr;
   }
   .cv-roadmap-culture__meta {

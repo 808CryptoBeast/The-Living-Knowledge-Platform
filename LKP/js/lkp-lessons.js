@@ -1780,14 +1780,33 @@
           }).join('')}
         </section>
 
-        <section class="cv-roadmap-panel">
-          <span class="cv-roadmap-kicker">Future roadmap</span>
-          <h3>Learn-to-earn, done carefully.</h3>
-          <p>Future mana rewards can unlock badges, galaxy evolution, portfolio proof, community quests, and stewardship challenges. The model should reward completion, reflection, and care, not extraction or shallow streak-chasing.</p>
+        <section class="cv-roadmap-panel cv-roadmap-panel--future">
+          <div>
+            <span class="cv-roadmap-kicker">Future roadmap</span>
+            <h3>Learn-to-earn, anchored in care.</h3>
+            <p>The next reward layer is planned around XRPL: fast, low-friction proof of learning that can support badges, credentials, stewardship quests, and portable learner identity without turning culture into speculation.</p>
+          </div>
+          <div class="cv-roadmap-future-grid" aria-label="Future platform roadmap">
+            <article>
+              <i class="fas fa-award"></i>
+              <h4>Mana and credentials</h4>
+              <p>Lessons, reflections, reviews, and community challenges can become visible achievements tied to progress and conduct.</p>
+            </article>
+            <article>
+              <i class="fas fa-link"></i>
+              <h4>XRPL foundation</h4>
+              <p>XRPL can support lightweight badges, trust lines, future NFTs, and wallet-connected learning records when the platform is ready.</p>
+            </article>
+            <article>
+              <i class="fas fa-cube"></i>
+              <h4>Digitalverse</h4>
+              <p>A dedicated section will help learners navigate blockchain ecosystems, AI tools, LLMs, wallets, safety, and emerging technologies.</p>
+            </article>
+          </div>
           <ul class="cv-roadmap-list">
-            <li>Culture planets evolve as lessons are started and completed.</li>
-            <li>Moons can represent mastered topics like origin, sky, language, ecology, or ethics.</li>
-            <li>Future rewards should privilege respectful learning, source literacy, and real-world kuleana.</li>
+            <li>Reward depth, reflection, source literacy, and real-world responsibility.</li>
+            <li>Let culture planets, moons, rings, and badges show earned learning without replacing relationship.</li>
+            <li>Use Digitalverse to teach the technology layer before asking learners to use it.</li>
           </ul>
         </section>
       `;
