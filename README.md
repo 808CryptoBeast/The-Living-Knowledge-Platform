@@ -142,6 +142,7 @@ The profile area tracks:
 ## Main Files
 
 - `index.html` - homepage and interactive galaxy entry point
+- `presentation.html` - immersive web slideshow for sharing and pitching the project
 - `LKP/lessons.html` - Cultural Journeys lesson experience
 - `profile.html` - Wayfinder Passport and user galaxy
 - `about.html` - project overview
@@ -171,6 +172,7 @@ This keeps the app deployable on GitHub Pages while leaving room for richer Supa
 
 - [APP_REPORT_2026-05-12.md](APP_REPORT_2026-05-12.md) - implementation report
 - [WA_UI_PREVIEW.md](WA_UI_PREVIEW.md) - Kumulipo Wa interface reference
+- [presentation.html](presentation.html) - interactive web slideshow presentation
 - [PROJECT_PRESENTATION.md](PROJECT_PRESENTATION.md) - shareable presentation and talking points
 
 ## Project Direction

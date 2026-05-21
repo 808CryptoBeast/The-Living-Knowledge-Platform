@@ -1,5 +1,7 @@
 # Ka Paepae `Ike Ola - Presentation Piece
 
+Open [`presentation.html`](presentation.html) for the interactive web slideshow version of this presentation. The markdown below remains the speaker-note and talking-points version.
+
 ## One-Sentence Pitch
 
 Ka Paepae `Ike Ola is a living cultural knowledge platform where learners explore Cultural Journeys, study primary-source knowledge, track progress, and watch their personal galaxy grow as their learning deepens.

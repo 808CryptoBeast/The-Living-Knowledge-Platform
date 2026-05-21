@@ -1,0 +1,122 @@
+/*
+  Shared cursor themes for Ka Paepae Ike Ola.
+  Enabled by LKP/js/lkp-cursor.js with body[data-lkp-cursor-theme].
+*/
+
+:root {
+  --lkp-cursor-ring: rgba(240, 201, 106, 0.88);
+  --lkp-cursor-core: #54c6ee;
+  --lkp-cursor-halo: rgba(84, 198, 238, 0.18);
+  --lkp-cursor-x: 50vw;
+  --lkp-cursor-y: 50vh;
+}
+
+.lkp-custom-cursor {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2147483646;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(var(--lkp-cursor-x), var(--lkp-cursor-y), 0);
+  transition: opacity 0.16s ease;
+  mix-blend-mode: screen;
+}
+
+.lkp-custom-cursor__ring,
+.lkp-custom-cursor__core {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+}
+
+.lkp-custom-cursor__ring {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--lkp-cursor-ring);
+  box-shadow:
+    0 0 18px var(--lkp-cursor-halo),
+    inset 0 0 12px rgba(255, 255, 255, 0.05);
+}
+
+.lkp-custom-cursor__ring::before,
+.lkp-custom-cursor__ring::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 54px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lkp-cursor-ring), transparent);
+  transform: translate(-50%, -50%);
+  opacity: 0.54;
+}
+
+.lkp-custom-cursor__ring::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.lkp-custom-cursor__core {
+  width: 7px;
+  height: 7px;
+  background: var(--lkp-cursor-core);
+  box-shadow: 0 0 16px var(--lkp-cursor-core);
+}
+
+body.lkp-cursor-visible .lkp-custom-cursor {
+  opacity: 1;
+}
+
+body.lkp-cursor-active .lkp-custom-cursor__ring {
+  transform: translate(-50%, -50%) scale(0.72) rotate(45deg);
+}
+
+body[data-lkp-cursor-theme="wayfinder"] {
+  --lkp-cursor-ring: rgba(240, 201, 106, 0.9);
+  --lkp-cursor-core: #54c6ee;
+  --lkp-cursor-halo: rgba(84, 198, 238, 0.22);
+}
+
+body[data-lkp-cursor-theme="star"] {
+  --lkp-cursor-ring: rgba(255, 235, 154, 0.94);
+  --lkp-cursor-core: #ffe27a;
+  --lkp-cursor-halo: rgba(255, 226, 122, 0.28);
+}
+
+body[data-lkp-cursor-theme="ocean"] {
+  --lkp-cursor-ring: rgba(84, 198, 238, 0.9);
+  --lkp-cursor-core: #9bf2ff;
+  --lkp-cursor-halo: rgba(84, 198, 238, 0.26);
+}
+
+body[data-lkp-cursor-theme="ember"] {
+  --lkp-cursor-ring: rgba(255, 162, 72, 0.92);
+  --lkp-cursor-core: #ffcf6f;
+  --lkp-cursor-halo: rgba(255, 120, 44, 0.24);
+}
+
+body[data-lkp-cursor-theme="leaf"] {
+  --lkp-cursor-ring: rgba(82, 213, 151, 0.9);
+  --lkp-cursor-core: #c9ffd9;
+  --lkp-cursor-halo: rgba(82, 213, 151, 0.22);
+}
+
+body[data-lkp-cursor-theme]:not([data-lkp-cursor-theme="default"]) .lkp-custom-cursor__ring {
+  transition: transform 0.16s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body[data-lkp-cursor-theme]:not([data-lkp-cursor-theme="default"]),
+  body[data-lkp-cursor-theme]:not([data-lkp-cursor-theme="default"]) *,
+  body[data-lkp-cursor-theme]:not([data-lkp-cursor-theme="default"]) *::before,
+  body[data-lkp-cursor-theme]:not([data-lkp-cursor-theme="default"]) *::after {
+    cursor: none !important;
+  }
+}
+
+@media (pointer: coarse), (hover: none), (prefers-reduced-motion: reduce) {
+  .lkp-custom-cursor {
+    display: none !important;
+  }
+}

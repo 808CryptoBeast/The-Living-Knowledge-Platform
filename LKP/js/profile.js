@@ -2407,7 +2407,124 @@
      UI BINDING
   ═══════════════════════════════════════════════════════════════════════ */
 
+  function renderCursorThemeControls() {
+    const activeTheme = window.LKPCursor?.getTheme?.() || 'wayfinder';
+
+    $all('[data-cursor-theme]').forEach(btn => {
+      const isActive = btn.dataset.cursorTheme === activeTheme;
+      btn.classList.toggle('is-active', isActive);
+      btn.setAttribute('aria-checked', String(isActive));
+    });
+  }
+
+  function openSettingsDrawer() {
+    const drawer = $('#profileSettingsDrawer');
+    const backdrop = $('#profileSettingsBackdrop');
+    const btn = $('#profileSettingsBtn');
+
+    if (!drawer || !backdrop) return;
+
+    drawer.hidden = false;
+    backdrop.hidden = false;
+    renderCursorThemeControls();
+
+    requestAnimationFrame(() => {
+      drawer.classList.add('is-open');
+      backdrop.classList.add('is-open');
+      btn?.setAttribute('aria-expanded', 'true');
+      $('#profileSettingsClose')?.focus({ preventScroll: true });
+    });
+  }
+
+  function closeSettingsDrawer() {
+    const drawer = $('#profileSettingsDrawer');
+    const backdrop = $('#profileSettingsBackdrop');
+    const btn = $('#profileSettingsBtn');
+
+    if (!drawer || !backdrop) return;
+
+    drawer.classList.remove('is-open');
+    backdrop.classList.remove('is-open');
+    btn?.setAttribute('aria-expanded', 'false');
+
+    window.setTimeout(() => {
+      if (!drawer.classList.contains('is-open')) {
+        drawer.hidden = true;
+        backdrop.hidden = true;
+      }
+    }, 240);
+  }
+
+  function focusSettingsTarget(targetId) {
+    const target = document.getElementById(targetId);
+
+    if (!target) {
+      showToast('That profile field is not available yet.');
+      return;
+    }
+
+    closeSettingsDrawer();
+
+    window.setTimeout(() => {
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      target.focus?.({ preventScroll: true });
+    }, 260);
+  }
+
+  async function handleSettingsAction(action) {
+    if (action === 'theme') {
+      $('#profileThemeToggle')?.click();
+      renderCursorThemeControls();
+      return;
+    }
+
+    if (action === 'sync') {
+      $('#profileSyncBtn')?.click();
+      return;
+    }
+
+    if (action === 'galaxy') {
+      closeSettingsDrawer();
+      window.setTimeout(() => {
+        const galaxy = $('#profileGalaxy');
+        galaxy?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 260);
+      return;
+    }
+  }
+
   function bindUI() {
+    $('#profileSettingsBtn')?.addEventListener('click', openSettingsDrawer);
+    $('#profileSettingsClose')?.addEventListener('click', closeSettingsDrawer);
+    $('#profileSettingsBackdrop')?.addEventListener('click', closeSettingsDrawer);
+
+    $('#profileSettingsDrawer')?.addEventListener('click', event => {
+      const cursorBtn = event.target.closest('[data-cursor-theme]');
+
+      if (cursorBtn) {
+        const nextTheme = window.LKPCursor?.setTheme?.(cursorBtn.dataset.cursorTheme) || cursorBtn.dataset.cursorTheme;
+        renderCursorThemeControls();
+        showToast(`Cursor theme set to ${cursorBtn.querySelector('strong')?.textContent || nextTheme}.`);
+        return;
+      }
+
+      const focusBtn = event.target.closest('[data-settings-focus]');
+
+      if (focusBtn) {
+        focusSettingsTarget(focusBtn.dataset.settingsFocus);
+        return;
+      }
+
+      const actionBtn = event.target.closest('[data-settings-action]');
+
+      if (actionBtn) {
+        handleSettingsAction(actionBtn.dataset.settingsAction);
+      }
+    });
+
+    window.addEventListener('lkp:cursor-theme-changed', renderCursorThemeControls);
+    renderCursorThemeControls();
+
     $('#profileThemeToggle')?.addEventListener('click', () => {
       const next = state.visuals.theme === 'light' ? 'dark' : 'light';
 
@@ -2520,6 +2637,7 @@
 
     document.addEventListener('keydown', event => {
       if (event.key === 'Escape') {
+        closeSettingsDrawer();
         clearGalaxySelection();
       }
     });

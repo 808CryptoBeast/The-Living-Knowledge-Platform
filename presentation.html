@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ka Paepae Ike Ola — The Living Knowledge Platform</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   VARIABLES & RESET
+═══════════════════════════════════════════════ */
+:root {
+  --bg:       #04080f;
+  --bg2:      #07101e;
+  --gold:     #c9a227;
+  --gold2:    #e8c85a;
+  --gold-dim: #7a6018;
+  --cyan:     #3dcfdf;
+  --cyan2:    #87e8f0;
+  --cyan-dim: #1a6b74;
+  --cream:    #ede8d8;
+  --muted:    #8a9ab0;
+  --glass-bg: rgba(8, 18, 34, 0.72);
+  --glass-border: rgba(201, 162, 39, 0.18);
+  --slide-w: 100vw;
+  --slide-h: 100dvh;
+  --font-display: 'Cinzel Decorative', 'Cinzel', serif;
+  --font-title:   'Cinzel', serif;
+  --font-body:    'Spectral', Georgia, serif;
+  --ease-silk: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  color: var(--cream);
+  font-family: var(--font-body);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Project-themed cursor for desktop presentation mode */
+.wayfinder-cursor {
+  position: fixed;
+  left: var(--cursor-x, 50vw);
+  top: var(--cursor-y, 50vh);
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  transition: opacity .18s ease, width .18s ease, height .18s ease, border-color .18s ease, background .18s ease;
+}
+
+.wayfinder-cursor--ring {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(201,162,39,.58);
+  border-radius: 50%;
+  box-shadow: 0 0 18px rgba(201,162,39,.18), inset 0 0 12px rgba(61,207,223,.08);
+}
+
+.wayfinder-cursor--ring::before,
+.wayfinder-cursor--ring::after {
+  content: "";
+  position: absolute;
+  inset: 50% auto auto 50%;
+  width: 42px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(135,232,240,.58), transparent);
+  transform: translate(-50%, -50%);
+}
+
+.wayfinder-cursor--ring::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+
+.wayfinder-cursor--core {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--gold2), var(--gold) 60%, transparent 72%);
+  box-shadow: 0 0 14px rgba(232,200,90,.65), 0 0 24px rgba(61,207,223,.22);
+}
+
+body.cursor-visible .wayfinder-cursor { opacity: 1; }
+body.cursor-active .wayfinder-cursor--ring {
+  width: 48px;
+  height: 48px;
+  border-color: rgba(135,232,240,.78);
+  background: rgba(61,207,223,.035);
+}
+
+body.cursor-active .wayfinder-cursor--core {
+  background: radial-gradient(circle, var(--cyan2), var(--cyan) 58%, transparent 72%);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  *,
+  *::before,
+  *::after,
+  a,
+  button,
+  [role="button"],
+  .dot,
+  .nav-btn,
+  .top-btn,
+  .title-link {
+    cursor: none !important;
+  }
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .wayfinder-cursor { display: none; }
+}
+
+/* ═══════════════════════════════════════════════
+   CANVAS BACKGROUND
+═══════════════════════════════════════════════ */
+#bg-canvas {
+  position: fixed; inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* CSS fallback stars (shown if Three.js fails) */
+.css-stars {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,.7) 0%, transparent 100%),
+    radial-gradient(1px 1px at 25% 40%, rgba(201,162,39,.5) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 40% 8%, rgba(255,255,255,.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 60%, rgba(61,207,223,.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 70% 25%, rgba(255,255,255,.4) 0%, transparent 100%),
+    radial-gradient(2px 2px at 85% 75%, rgba(201,162,39,.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 15% 80%, rgba(255,255,255,.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 92% 45%, rgba(61,207,223,.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 48% 88%, rgba(255,255,255,.3) 0%, transparent 100%),
+    radial-gradient(1.5px 1.5px at 63% 12%, rgba(255,255,255,.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 78% 92%, rgba(201,162,39,.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 33% 55%, rgba(255,255,255,.4) 0%, transparent 100%),
+    radial-gradient(2px 2px at 5% 50%, rgba(61,207,223,.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 96% 10%, rgba(255,255,255,.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 20% 95%, rgba(255,255,255,.3) 0%, transparent 100%);
+  background-size: cover;
+  pointer-events: none;
+}
+
+/* Deep space nebula gradient */
+.space-gradient {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 80%, rgba(20,8,50,.6) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(5,30,50,.5) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, var(--bg2) 0%, var(--bg) 100%);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════
+   PROGRESS BAR
+═══════════════════════════════════════════════ */
+#progress-bar {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 3px; z-index: 100;
+  background: rgba(201,162,39,.12);
+}
+#progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold2), var(--cyan));
+  transition: width 0.5s var(--ease-silk);
+  box-shadow: 0 0 8px var(--gold);
+}
+
+/* ═══════════════════════════════════════════════
+   SLIDE COUNTER & CONTROLS TOP
+═══════════════════════════════════════════════ */
+#top-bar {
+  position: fixed; top: 14px; right: 18px;
+  z-index: 100;
+  display: flex; align-items: center; gap: 10px;
+}
+.top-btn {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--muted);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: .08em;
+  cursor: pointer;
+  transition: color .2s, border-color .2s, background .2s;
+  backdrop-filter: blur(8px);
+}
+.top-btn:hover, .top-btn.active {
+  color: var(--gold);
+  border-color: var(--gold-dim);
+  background: rgba(201,162,39,.08);
+}
+#slide-counter {
+  font-family: var(--font-title);
+  font-size: 12px;
+  letter-spacing: .12em;
+  color: var(--muted);
+  padding: 6px 12px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+  min-width: 68px;
+  text-align: center;
+}
+
+/* ═══════════════════════════════════════════════
+   SLIDE DOTS
+═══════════════════════════════════════════════ */
+#dots {
+  position: fixed; bottom: 22px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex; gap: 8px; align-items: center;
+}
+.dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--glass-border);
+  border: 1px solid rgba(201,162,39,.3);
+  cursor: pointer;
+  transition: all .3s var(--ease-silk);
+  padding: 0;
+}
+.dot.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  box-shadow: 0 0 6px var(--gold);
+  transform: scale(1.4);
+}
+.dot:hover { background: var(--gold-dim); }
+
+/* ═══════════════════════════════════════════════
+   NAVIGATION ARROWS
+═══════════════════════════════════════════════ */
+.nav-btn {
+  position: fixed; top: 50%; z-index: 100;
+  transform: translateY(-50%);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--gold);
+  width: 44px; height: 60px;
+  border-radius: 8px;
+  font-size: 20px;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all .2s;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-btn:hover {
+  background: rgba(201,162,39,.12);
+  border-color: var(--gold);
+  box-shadow: 0 0 20px rgba(201,162,39,.2);
+}
+#btn-prev { left: 14px; }
+#btn-next { right: 14px; }
+
+/* ═══════════════════════════════════════════════
+   SPEAKER NOTES PANEL
+═══════════════════════════════════════════════ */
+#notes-panel {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  background: rgba(4,8,15,.94);
+  border-top: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  transform: translateY(100%);
+  transition: transform .4s var(--ease-silk);
+  max-height: 38vh;
+  overflow-y: auto;
+}
+#notes-panel.open { transform: translateY(0); }
+#notes-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 22px;
+  border-bottom: 1px solid rgba(201,162,39,.1);
+}
+#notes-header span {
+  font-family: var(--font-title);
+  font-size: 10px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+}
+#notes-close {
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; font-size: 18px; line-height: 1;
+  padding: 2px 6px;
+  transition: color .2s;
+}
+#notes-close:hover { color: var(--gold); }
+#notes-content {
+  padding: 18px 28px 24px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--cream);
+  font-style: italic;
+  opacity: .85;
+}
+
+/* ═══════════════════════════════════════════════
+   SLIDE DECK CONTAINER
+═══════════════════════════════════════════════ */
+#deck {
+  position: relative; z-index: 10;
+  width: 100vw; height: 100dvh;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════
+   INDIVIDUAL SLIDES
+═══════════════════════════════════════════════ */
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 60px 80px 80px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .6s var(--ease-silk), transform .6s var(--ease-silk);
+  transform: translateX(60px);
+  perspective: 1200px;
+}
+.slide.active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(0);
+}
+.slide.exit-left {
+  opacity: 0;
+  transform: translateX(-60px);
+}
+
+.slide.exit-right {
+  opacity: 0;
+  transform: translateX(60px);
+}
+
+/* ═══════════════════════════════════════════════
+   GLASS CARD
+═══════════════════════════════════════════════ */
+.glass {
+  position: relative;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  backdrop-filter: blur(20px);
+  transform-style: preserve-3d;
+  transition: transform .28s var(--ease-silk), box-shadow .28s var(--ease-silk), border-color .28s var(--ease-silk);
+  box-shadow:
+    0 0 40px rgba(201,162,39,.06),
+    0 20px 60px rgba(0,0,0,.4),
+    inset 0 1px 0 rgba(255,255,255,.04);
+}
+
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.14), transparent 28%),
+    radial-gradient(circle at var(--card-x, 50%) var(--card-y, 10%), rgba(135,232,240,.14), transparent 38%);
+  opacity: .42;
+  mix-blend-mode: screen;
+  transform: translateZ(1px);
+}
+
+.glass:hover,
+.tile:hover,
+.step:hover,
+.badge:hover,
+.callout:hover {
+  transform: translateY(-6px) rotateX(var(--tilt-y, 0deg)) rotateY(var(--tilt-x, 0deg));
+  border-color: rgba(232,200,90,.34);
+  box-shadow:
+    0 0 34px rgba(61,207,223,.12),
+    0 0 46px rgba(201,162,39,.13),
+    0 30px 80px rgba(0,0,0,.55),
+    inset 0 1px 0 rgba(255,255,255,.10);
+}
+
+/* ═══════════════════════════════════════════════
+   TYPOGRAPHY
+═══════════════════════════════════════════════ */
+.label-sm {
+  font-family: var(--font-title);
+  font-size: 10px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 14px;
+  opacity: .8;
+}
+
+.slide-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 3.2rem);
+  color: var(--gold2);
+  text-align: center;
+  line-height: 1.2;
+  margin-bottom: 12px;
+  text-shadow: 0 0 30px rgba(201,162,39,.3);
+}
+
+.slide-subtitle {
+  font-family: var(--font-title);
+  font-size: clamp(.85rem, 1.8vw, 1.15rem);
+  color: var(--cream);
+  text-align: center;
+  letter-spacing: .08em;
+  opacity: .75;
+  margin-bottom: 28px;
+}
+
+.slide-body {
+  font-family: var(--font-body);
+  font-size: clamp(.88rem, 1.5vw, 1.05rem);
+  line-height: 1.8;
+  color: var(--cream);
+  opacity: .85;
+  text-align: left;
+  max-width: 780px;
+  width: 100%;
+}
+.slide-body p { margin-bottom: 14px; }
+.slide-body p:last-child { margin-bottom: 0; }
+
+.divider {
+  width: 80px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 18px auto;
+}
+
+/* ═══════════════════════════════════════════════
+   HIGHLIGHT / CALLOUT
+═══════════════════════════════════════════════ */
+.callout {
+  position: relative;
+  border-left: 2px solid var(--gold);
+  padding: 12px 18px;
+  background: rgba(201,162,39,.06);
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: var(--cream);
+  margin: 18px 0;
+  font-size: .96em;
+  transition: transform .24s var(--ease-silk), box-shadow .24s var(--ease-silk), border-color .24s var(--ease-silk), background .24s var(--ease-silk);
+}
+
+.highlight { color: var(--gold2); font-weight: 600; }
+.cyan-hl   { color: var(--cyan2); }
+
+/* ═══════════════════════════════════════════════
+   GRID / TILES
+═══════════════════════════════════════════════ */
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 860px;
+  margin-top: 8px;
+}
+
+.tile {
+  position: relative;
+  background: rgba(201,162,39,.05);
+  border: 1px solid rgba(201,162,39,.15);
+  border-radius: 12px;
+  padding: 14px 16px;
+  text-align: center;
+  transform-style: preserve-3d;
+  transition: transform .24s var(--ease-silk), box-shadow .24s var(--ease-silk), border-color .24s var(--ease-silk), background .24s var(--ease-silk);
+  box-shadow: 0 14px 34px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.04);
+}
+.tile:hover {
+  background:
+    radial-gradient(circle at var(--card-x, 50%) var(--card-y, 0%), rgba(135,232,240,.10), transparent 52%),
+    rgba(201,162,39,.075);
+  border-color: rgba(232,200,90,.36);
+}
+.tile .tile-icon { font-size: 1.6rem; margin-bottom: 6px; }
+.tile .tile-name {
+  font-family: var(--font-title);
+  font-size: .78rem;
+  letter-spacing: .1em;
+  color: var(--cream);
+  opacity: .85;
+}
+
+/* ═══════════════════════════════════════════════
+   TWO-COLUMN LAYOUT
+═══════════════════════════════════════════════ */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  width: 100%;
+  max-width: 900px;
+  align-items: start;
+}
+.col-card {
+  padding: 24px 22px;
+  border-radius: 16px;
+}
+.col-card h3 {
+  font-family: var(--font-title);
+  font-size: .82rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 12px;
+}
+.col-card ul {
+  list-style: none;
+  padding: 0;
+}
+.col-card ul li {
+  padding: 5px 0;
+  font-size: .9rem;
+  line-height: 1.5;
+  color: var(--cream);
+  opacity: .82;
+  border-bottom: 1px solid rgba(255,255,255,.04);
+}
+.col-card ul li:last-child { border-bottom: none; }
+.col-card ul li::before {
+  content: '◆ ';
+  color: var(--gold);
+  font-size: .65em;
+  vertical-align: middle;
+}
+
+/* ═══════════════════════════════════════════════
+   PLANET VISUALIZER (SLIDE 8)
+═══════════════════════════════════════════════ */
+.planet-row {
+  display: flex;
+  gap: 18px;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 16px 0;
+  flex-wrap: wrap;
+}
+.planet-item {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.planet {
+  border-radius: 50%;
+  position: relative;
+  box-shadow:
+    inset -4px -3px 12px rgba(0,0,0,.5),
+    0 0 20px rgba(61,207,223,.15);
+  animation: float 6s ease-in-out infinite;
+}
+.planet:nth-child(1) { animation-delay: 0s; }
+.planet-label {
+  font-family: var(--font-title);
+  font-size: .68rem;
+  letter-spacing: .1em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+@keyframes float {
+  0%,100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+/* ═══════════════════════════════════════════════
+   CHAIN / STEPS
+═══════════════════════════════════════════════ */
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 640px;
+}
+.step {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 18px;
+  background: rgba(61,207,223,.04);
+  border: 1px solid rgba(61,207,223,.12);
+  border-radius: 12px;
+  transition: transform .24s var(--ease-silk), box-shadow .24s var(--ease-silk), border-color .24s var(--ease-silk), background .24s var(--ease-silk);
+  box-shadow: 0 14px 30px rgba(0,0,0,.16);
+}
+.step:hover {
+  background: rgba(61,207,223,.07);
+  border-color: rgba(135,232,240,.28);
+}
+.step-num {
+  font-family: var(--font-title);
+  font-size: 1.1rem;
+  color: var(--cyan);
+  opacity: .7;
+  min-width: 28px;
+  line-height: 1.4;
+}
+.step-text {
+  font-size: .9rem;
+  line-height: 1.6;
+  color: var(--cream);
+  opacity: .85;
+}
+.step-text strong {
+  font-family: var(--font-title);
+  color: var(--cyan2);
+  font-size: .82rem;
+  letter-spacing: .08em;
+  display: block;
+  margin-bottom: 3px;
+}
+
+/* ═══════════════════════════════════════════════
+   SLIDE-SPECIFIC: TITLE SLIDE
+═══════════════════════════════════════════════ */
+#slide-1 {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.title-island {
+  position: relative;
+  padding: 52px 64px 48px;
+  max-width: 700px;
+  width: 100%;
+}
+.title-island::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 22px;
+  background: linear-gradient(135deg, rgba(201,162,39,.25), transparent 50%, rgba(61,207,223,.15));
+  z-index: -1;
+}
+.main-title {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 5.5vw, 4rem);
+  color: var(--gold2);
+  line-height: 1.15;
+  margin-bottom: 16px;
+  text-shadow:
+    0 0 40px rgba(201,162,39,.4),
+    0 2px 4px rgba(0,0,0,.6);
+}
+.main-subtitle {
+  font-family: var(--font-title);
+  font-size: clamp(.9rem, 2vw, 1.2rem);
+  color: var(--cyan2);
+  letter-spacing: .18em;
+  opacity: .85;
+  margin-bottom: 10px;
+}
+.main-tagline {
+  font-family: var(--font-body);
+  font-size: clamp(.8rem, 1.5vw, 1rem);
+  font-style: italic;
+  color: var(--cream);
+  opacity: .6;
+  margin-top: 8px;
+}
+.title-links {
+  display: flex; gap: 14px; justify-content: center;
+  margin-top: 32px; flex-wrap: wrap;
+}
+.title-link {
+  display: inline-block;
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-family: var(--font-title);
+  font-size: .75rem;
+  letter-spacing: .14em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: all .25s;
+}
+.title-link.primary {
+  background: rgba(201,162,39,.15);
+  border: 1px solid var(--gold-dim);
+  color: var(--gold2);
+}
+.title-link.primary:hover {
+  background: rgba(201,162,39,.25);
+  box-shadow: 0 0 20px rgba(201,162,39,.2);
+}
+.title-link.secondary {
+  background: rgba(61,207,223,.08);
+  border: 1px solid rgba(61,207,223,.25);
+  color: var(--cyan2);
+}
+.title-link.secondary:hover {
+  background: rgba(61,207,223,.15);
+  box-shadow: 0 0 20px rgba(61,207,223,.15);
+}
+
+/* ═══════════════════════════════════════════════
+   DECORATIVE GEOMETRY
+═══════════════════════════════════════════════ */
+.geo-circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(201,162,39,.07);
+  pointer-events: none;
+}
+.orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(61,207,223,.05);
+  pointer-events: none;
+}
+.corner-ornament {
+  position: absolute;
+  width: 48px; height: 48px;
+  opacity: .25;
+  pointer-events: none;
+}
+.corner-ornament svg { width: 100%; height: 100%; }
+.corner-tl { top: 22px; left: 22px; }
+.corner-br { bottom: 22px; right: 22px; transform: rotate(180deg); }
+
+/* ═══════════════════════════════════════════════
+   CLOSING SLIDE
+═══════════════════════════════════════════════ */
+.closing-quote {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  font-style: italic;
+  color: var(--cream);
+  text-align: center;
+  line-height: 1.7;
+  max-width: 640px;
+  opacity: .88;
+  padding: 0 20px;
+}
+.closing-quote em {
+  color: var(--gold2);
+  font-style: normal;
+}
+
+/* ═══════════════════════════════════════════════
+   IMAGE CONTAINER
+═══════════════════════════════════════════════ */
+.slide-img {
+  max-height: 160px;
+  max-width: 240px;
+  object-fit: contain;
+  border-radius: 10px;
+  opacity: .85;
+  margin-bottom: 20px;
+}
+.slide-img-sm {
+  max-height: 90px; max-width: 140px;
+}
+
+/* ═══════════════════════════════════════════════
+   BADGE ROW
+═══════════════════════════════════════════════ */
+.badge-row {
+  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
+  margin: 14px 0;
+}
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-family: var(--font-title);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  border: 1px solid;
+  transition: transform .22s var(--ease-silk), box-shadow .22s var(--ease-silk), border-color .22s var(--ease-silk);
+  box-shadow: 0 10px 24px rgba(0,0,0,.16);
+}
+.badge.gold  { background: rgba(201,162,39,.1); border-color: rgba(201,162,39,.3); color: var(--gold2); }
+.badge.cyan  { background: rgba(61,207,223,.08); border-color: rgba(61,207,223,.25); color: var(--cyan2); }
+.badge.soft  { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.12); color: var(--cream); opacity: .7; }
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .slide { padding: 60px 22px 80px; }
+  .title-island { padding: 36px 28px 32px; }
+  .two-col { grid-template-columns: 1fr; }
+  .tile-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+  .planet-row { gap: 10px; }
+  #btn-prev { left: 6px; }
+  #btn-next { right: 6px; }
+  .nav-btn { width: 36px; height: 50px; font-size: 16px; }
+}
+
+/* ═══════════════════════════════════════════════
+   REDUCED MOTION
+═══════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .slide { transition: opacity .3s; transform: none !important; }
+  .planet { animation: none; }
+  * { animation-duration: .01ms !important; transition-duration: .2s !important; }
+}
+
+/* ═══════════════════════════════════════════════
+   SCROLLBAR STYLE
+═══════════════════════════════════════════════ */
+#notes-panel::-webkit-scrollbar { width: 4px; }
+#notes-panel::-webkit-scrollbar-track { background: transparent; }
+#notes-panel::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
+
+</style>
+</head>
+<body>
+
+<!-- Background layers -->
+<div class="space-gradient" aria-hidden="true"></div>
+<div class="css-stars" id="css-stars" aria-hidden="true"></div>
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+<div class="wayfinder-cursor wayfinder-cursor--ring" aria-hidden="true"></div>
+<div class="wayfinder-cursor wayfinder-cursor--core" aria-hidden="true"></div>
+
+<!-- Progress bar -->
+<div id="progress-bar" role="progressbar" aria-label="Presentation progress">
+  <div id="progress-fill"></div>
+</div>
+
+<!-- Top controls -->
+<div id="top-bar">
+  <button class="top-btn" id="btn-notes" aria-label="Toggle speaker notes" title="Speaker Notes (N)">
+    NOTES
+  </button>
+  <button class="top-btn" id="btn-fullscreen" aria-label="Toggle fullscreen" title="Fullscreen (F)">
+    ⛶
+  </button>
+  <div id="slide-counter" aria-live="polite">1 / 14</div>
+</div>
+
+<!-- Nav arrows -->
+<button class="nav-btn" id="btn-prev" aria-label="Previous slide" title="Previous (←)">‹</button>
+<button class="nav-btn" id="btn-next" aria-label="Next slide" title="Next (→ or Space)">›</button>
+
+<!-- Speaker notes panel -->
+<div id="notes-panel" role="region" aria-label="Speaker notes">
+  <div id="notes-header">
+    <span>◆ SPEAKER NOTES</span>
+    <button id="notes-close" aria-label="Close notes">×</button>
+  </div>
+  <div id="notes-content">Loading notes…</div>
+</div>
+
+<!-- Slide dots -->
+<nav id="dots" aria-label="Slide navigation"></nav>
+
+<!-- ═══════════════════════════════════════════
+     DECK
+═══════════════════════════════════════════ -->
+<main id="deck" role="main">
+
+<!-- ─── SLIDE 1: TITLE ─────────────────────── -->
+<section class="slide" id="slide-1" data-index="0"
+  aria-label="Slide 1: Title"
+  data-notes="Welcome. Ka Paepae Ike Ola means The Living Knowledge Platform. This is not another learning app. It is an attempt to hold cultural knowledge with the care it deserves — as relationship, memory, and responsibility. Tonight I want to show you what that looks like in practice.">
+
+  <!-- Decorative geometry -->
+  <div class="geo-circle" style="width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%);border-color:rgba(201,162,39,.05);" aria-hidden="true"></div>
+  <div class="geo-circle" style="width:400px;height:400px;top:50%;left:50%;transform:translate(-50%,-50%);border-color:rgba(61,207,223,.06);" aria-hidden="true"></div>
+
+  <div class="title-island glass">
+    <!-- Corner ornaments -->
+    <div class="corner-ornament corner-tl" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L22 2 L2 22 Z" stroke="#c9a227" stroke-width="1" fill="none"/>
+        <circle cx="2" cy="2" r="2" fill="#c9a227"/>
+      </svg>
+    </div>
+    <div class="corner-ornament corner-br" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 2 L22 2 L2 22 Z" stroke="#3dcfdf" stroke-width="1" fill="none"/>
+        <circle cx="2" cy="2" r="2" fill="#3dcfdf"/>
+      </svg>
+    </div>
+
+    <div class="label-sm">Ka Paepae Ike Ola</div>
+    <h1 class="main-title">The Living<br>Knowledge Platform</h1>
+    <div class="divider"></div>
+    <div class="main-subtitle">Cultural Learning as Relationship, Memory, and Responsibility</div>
+    <div class="main-tagline">An immersive platform for cultural study — rooted in source, carried with care.</div>
+
+    <div class="title-links">
+      <a class="title-link primary" href="index.html" target="_blank">Open App</a>
+      <a class="title-link secondary" href="LKP/lessons.html" target="_blank">Cultural Journeys</a>
+      <a class="title-link secondary" href="profile.html" target="_blank">Wayfinder Passport</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 2: PROBLEM ───────────────────── -->
+<section class="slide" id="slide-2" data-index="1"
+  aria-label="Slide 2: The Problem"
+  data-notes="Most learning tools — from Wikipedia to quiz apps to even well-intentioned educational platforms — flatten culture into facts, summaries, or checklists. A Hawaiian chant becomes a translation. An Egyptian cosmology becomes a glossary entry. The depth, the relationship, the responsibility — all gone. We built this because we believe that is not good enough.">
+
+  <div class="glass" style="padding:44px 52px;max-width:700px;width:100%;border-radius:20px;">
+    <div class="label-sm">The Problem</div>
+    <h2 class="slide-title" style="font-size:clamp(1.4rem,3.5vw,2.4rem);">Most tools flatten<br>what culture holds</h2>
+    <div class="divider"></div>
+    <div class="slide-body">
+      <p>Learning platforms break cultural knowledge into <span class="highlight">isolated facts, summaries, and checklists</span>. A chant becomes a translation. A cosmology becomes a bullet point. The depth, the relation, the responsibility — erased in the rendering.</p>
+      <div class="callout">
+        "When you flatten the source, you lose the map."
+      </div>
+      <p>Ka Paepae Ike Ola responds by keeping <span class="cyan-hl">source, relation, reflection, and practice visible</span> at every layer of the experience — not as footnotes, but as the structure itself.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 3: VISION ────────────────────── -->
+<section class="slide" id="slide-3" data-index="2"
+  aria-label="Slide 3: The Vision"
+  data-notes="The vision is simple: cultural learning becomes a journey, not a transaction. Learners enter a living map of knowledge. They do not consume information — they move through it, reflect on it, and carry it forward with care.">
+
+  <div class="glass" style="padding:44px 52px;max-width:700px;width:100%;border-radius:20px;">
+    <div class="label-sm">The Vision</div>
+    <h2 class="slide-title" style="font-size:clamp(1.4rem,3.5vw,2.4rem);">Enter a living map<br>of knowledge</h2>
+    <div class="divider"></div>
+    <div class="slide-body">
+      <p>Cultural learning becomes a <span class="highlight">journey</span> — not a transaction. Learners do not simply consume information.</p>
+      <div class="callout">
+        They enter a living map. They move through it. They reflect on it. They carry it forward.
+      </div>
+      <p>The platform is designed so that <span class="cyan-hl">every interaction reinforces relationship</span>: with the source, with the learner's own reflection, and with the cultures represented.</p>
+      <p>Knowledge held this way is knowledge that survives.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 4: CORE EXPERIENCE ──────────── -->
+<section class="slide" id="slide-4" data-index="3"
+  aria-label="Slide 4: Core Experience"
+  data-notes="The core experience has several interlocking parts. The galaxy homepage sets the visual tone. Cultural Journeys are the learning engine. The Kumulipo Wa section is our deep-source study model. Scholar and Keiki modes allow the same content to serve different learners. The Wayfinder Passport tracks growth. And the personal galaxy makes progress visual and cosmic.">
+
+  <div style="max-width:860px;width:100%;text-align:center;">
+    <div class="label-sm">Core Experience</div>
+    <h2 class="slide-title" style="margin-bottom:24px;">Eight layers of learning</h2>
+    <div class="tile-grid">
+      <div class="tile"><div class="tile-icon">🌌</div><div class="tile-name">Galaxy Homepage</div></div>
+      <div class="tile"><div class="tile-icon">🧭</div><div class="tile-name">Cultural Journeys</div></div>
+      <div class="tile"><div class="tile-icon">📜</div><div class="tile-name">Kumulipo Wā Deep Study</div></div>
+      <div class="tile"><div class="tile-icon">🎓</div><div class="tile-name">Scholar &amp; Keiki Modes</div></div>
+      <div class="tile"><div class="tile-icon">✍️</div><div class="tile-name">Reflections</div></div>
+      <div class="tile"><div class="tile-icon">✨</div><div class="tile-name">Mana &amp; Badges</div></div>
+      <div class="tile"><div class="tile-icon">🗺️</div><div class="tile-name">Wayfinder Passport</div></div>
+      <div class="tile"><div class="tile-icon">🪐</div><div class="tile-name">Personal Galaxy</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 5: CULTURAL JOURNEYS ────────── -->
+<section class="slide" id="slide-5" data-index="4"
+  aria-label="Slide 5: Cultural Journeys"
+  data-notes="Cultural Journeys is the main learning engine. Learners choose a culture, explore modules, and progress through lessons. The roadmap landing page shows them where they are. They can resume where they left off. Everything is mobile-responsive. The design keeps the learner oriented — not lost in an endless feed.">
+
+  <div class="glass" style="padding:40px 48px;max-width:820px;width:100%;border-radius:20px;">
+    <div class="label-sm">Cultural Journeys</div>
+    <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);margin-bottom:20px;">Navigate by culture,<br>progress by depth</h2>
+    <div class="two-col">
+      <div class="col-card glass" style="padding:20px 18px;">
+        <h3>Navigation</h3>
+        <ul>
+          <li>Culture dropdown selector</li>
+          <li>Lessons by module and sequence</li>
+          <li>Progress indicators per lesson</li>
+          <li>Roadmap landing page</li>
+          <li>Resume from last lesson</li>
+        </ul>
+      </div>
+      <div class="col-card glass" style="padding:20px 18px;">
+        <h3>Design</h3>
+        <ul>
+          <li>Mobile-first responsive layout</li>
+          <li>Skip roadmap option</li>
+          <li>Roadmap popup with orbit styling</li>
+          <li>Mana &amp; badge rewards per lesson</li>
+          <li>Scholar and Keiki reading modes</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 6: KUMULIPO WĀ ──────────────── -->
+<section class="slide" id="slide-6" data-index="5"
+  aria-label="Slide 6: Kumulipo Wa Deep Study"
+  data-notes="The Kumulipo is the Hawaiian creation chant — one of the most sophisticated cosmological documents in the Pacific. Our deep study module presents all 16 Wā in the original Hawaiian first. English meaning follows each line. Then interpretation follows the chant. Primary source always comes first — this is non-negotiable in our design philosophy.">
+
+  <div class="glass" style="padding:44px 52px;max-width:700px;width:100%;border-radius:20px;">
+    <div class="label-sm">Kumulipo Wā · Deep Study</div>
+    <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);">Primary source first,<br>always</h2>
+    <div class="divider"></div>
+    <div class="slide-body">
+      <div class="callout" style="font-family:var(--font-title);letter-spacing:.06em;font-size:.92em;line-height:1.9;font-style:normal;">
+        O ke au i kahuli wela ka honua<br>
+        <span style="font-size:.82em;opacity:.6;font-style:italic;letter-spacing:.02em;">When the heat turned the earth</span>
+      </div>
+      <p>All <span class="highlight">16 Wā</span> are presented with Hawaiian source lines first. English meaning follows each line. Interpretation comes after the full chant.</p>
+      <p><span class="cyan-hl">The structure is intentional</span>: learners must encounter the original before the translation. This is how the platform honors its sources.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 7: CULTURES ──────────────────── -->
+<section class="slide" id="slide-7" data-index="6"
+  aria-label="Slide 7: Expanding Knowledge Worlds"
+  data-notes="We are building outward. Kanaka Maoli is our foundation and anchor. From there we are adding Kemet, Dogon, Vedic, Dreamtime, Maori, Yoruba, and Chinese knowledge traditions. Bridge lessons connect cross-cultural resonances — not to flatten them into sameness, but to let learners see how independently cultures arrived at profound similar understandings.">
+
+  <div style="max-width:860px;width:100%;text-align:center;">
+    <div class="label-sm">Expanding Knowledge Worlds</div>
+    <h2 class="slide-title" style="margin-bottom:24px;">Nine traditions, one platform</h2>
+    <div class="tile-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
+      <div class="tile" style="border-color:rgba(201,162,39,.25);">
+        <div class="tile-icon">🌺</div><div class="tile-name">Kanaka Maoli</div>
+      </div>
+      <div class="tile" style="border-color:rgba(201,162,39,.2);">
+        <div class="tile-icon">𓂀</div><div class="tile-name">Kemet</div>
+      </div>
+      <div class="tile" style="border-color:rgba(61,207,223,.2);">
+        <div class="tile-icon">⭐</div><div class="tile-name">Dogon</div>
+      </div>
+      <div class="tile" style="border-color:rgba(201,162,39,.2);">
+        <div class="tile-icon">🕉️</div><div class="tile-name">Vedic</div>
+      </div>
+      <div class="tile" style="border-color:rgba(255,140,60,.2);">
+        <div class="tile-icon">🟤</div><div class="tile-name">Dreamtime</div>
+      </div>
+      <div class="tile" style="border-color:rgba(61,207,223,.2);">
+        <div class="tile-icon">🌀</div><div class="tile-name">Māori</div>
+      </div>
+      <div class="tile" style="border-color:rgba(200,80,80,.2);">
+        <div class="tile-icon">🥁</div><div class="tile-name">Yoruba</div>
+      </div>
+      <div class="tile" style="border-color:rgba(201,162,39,.2);">
+        <div class="tile-icon">☯️</div><div class="tile-name">Chinese</div>
+      </div>
+      <div class="tile" style="border-color:rgba(150,150,255,.2);">
+        <div class="tile-icon">🌉</div><div class="tile-name">Bridge Lessons</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 8: USER GALAXY ──────────────── -->
+<section class="slide" id="slide-8" data-index="7"
+  aria-label="Slide 8: The User's Galaxy"
+  data-notes="Every culture a learner begins becomes a planet in their personal galaxy. As they complete lessons that planet evolves — gaining moons, rings, clearing nebula, gaining companion bodies. The galaxy becomes a living visual story of both breadth and depth. It is not gamification for its own sake — it mirrors what is actually happening in the learner's relationship with these traditions.">
+
+  <div class="glass" style="padding:40px 52px;max-width:760px;width:100%;border-radius:20px;text-align:center;">
+    <div class="label-sm">The Wayfinder's Galaxy</div>
+    <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);margin-bottom:16px;">Your learning becomes<br>a living cosmos</h2>
+
+    <!-- Decorative planet row -->
+    <div class="planet-row" aria-hidden="true">
+      <div class="planet-item">
+        <div class="planet" style="width:38px;height:38px;background:radial-gradient(circle at 38% 35%,#e8c85a,#7a6018);"></div>
+        <div class="planet-label">Hawaiian</div>
+      </div>
+      <div class="planet-item">
+        <div class="planet" style="width:52px;height:52px;background:radial-gradient(circle at 38% 35%,#f0b040,#8a4020);animation-delay:.8s;box-shadow:inset -4px -3px 12px rgba(0,0,0,.5),0 0 30px rgba(240,176,64,.2);"></div>
+        <div class="planet-label">Kemet</div>
+      </div>
+      <div class="planet-item">
+        <div class="planet" style="width:34px;height:34px;background:radial-gradient(circle at 38% 35%,#4dd9e8,#1a5060);animation-delay:1.4s;"></div>
+        <div class="planet-label">Dogon</div>
+      </div>
+      <div class="planet-item">
+        <div class="planet" style="width:44px;height:44px;background:radial-gradient(circle at 38% 35%,#e8a060,#604020);animation-delay:.4s;"></div>
+        <div class="planet-label">Vedic</div>
+      </div>
+      <div class="planet-item">
+        <div class="planet" style="width:30px;height:30px;background:radial-gradient(circle at 38% 35%,#c89050,#503018);animation-delay:2s;opacity:.6;"></div>
+        <div class="planet-label">Dreamtime</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+    <div class="slide-body" style="text-align:center;max-width:560px;margin:0 auto;">
+      <p>Each started culture becomes a <span class="highlight">planet</span>. Lessons completed evolve it — <span class="cyan-hl">moons, rings, nebula clearing, stars, orbiting companions</span>.</p>
+      <p>The galaxy is a visual story of the learner's breadth and depth — alive, growing, uniquely theirs.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 9: LEARN-TO-EARN ─────────────── -->
+<section class="slide" id="slide-9" data-index="8"
+  aria-label="Slide 9: Learn-To-Earn"
+  data-notes="Learn-to-earn should support depth, care, and reflection — not speculation. Mana is earned through learning and reflection. Badges mark topic mastery. Stewardship quests reward those who go deep. The portfolio provides proof of genuine engagement. We are deliberately building away from anything that would turn culture into a commodity or extraction opportunity.">
+
+  <div class="glass" style="padding:40px 52px;max-width:760px;width:100%;border-radius:20px;">
+    <div class="label-sm">Learn-To-Earn</div>
+    <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);margin-bottom:18px;">Rewards that support depth,<br>not extraction</h2>
+    <div class="badge-row">
+      <span class="badge gold">✦ Mana</span>
+      <span class="badge gold">🏆 Badges</span>
+      <span class="badge cyan">📋 Portfolio</span>
+      <span class="badge cyan">🌱 Stewardship Quests</span>
+      <span class="badge soft">No speculation</span>
+      <span class="badge soft">No extraction</span>
+    </div>
+    <div class="divider"></div>
+    <div class="slide-body">
+      <p>Mana is earned for <span class="highlight">learning and reflection</span>. Badges recognize topic mastery. Stewardship quests reward those who go deeper than the lesson requires.</p>
+      <p>The portfolio creates <span class="cyan-hl">proof of genuine engagement</span> — not just completion checkmarks.</p>
+      <div class="callout">The principle: culture is not a speculative asset. Rewards must honor the knowledge they represent.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 10: XRPL LAYER ──────────────── -->
+<section class="slide" id="slide-10" data-index="9"
+  aria-label="Slide 10: XRPL Layer"
+  data-notes="We are designing a blockchain layer using XRPL. XRPL is appropriate here because of its low transaction costs, its speed, and its suitability for learning records, badges, tokens, and eventually credentials. But here is the critical design principle: wallet use comes after education and consent. The current application works entirely without any wallet connection. We are building education first, blockchain second.">
+
+  <div class="glass" style="padding:40px 52px;max-width:760px;width:100%;border-radius:20px;">
+    <div class="label-sm">XRPL Layer · Planned</div>
+    <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);margin-bottom:18px;">Blockchain that serves<br>the learner</h2>
+    <div class="two-col">
+      <div class="col-card glass" style="padding:18px;">
+        <h3>Why XRPL</h3>
+        <ul>
+          <li>Low-friction learning records</li>
+          <li>Badge &amp; token issuance</li>
+          <li>Future credentialing</li>
+          <li>Fast, low-cost transactions</li>
+        </ul>
+      </div>
+      <div class="col-card glass" style="padding:18px;">
+        <h3>Design Principles</h3>
+        <ul>
+          <li>Education before wallet</li>
+          <li>Consent before connection</li>
+          <li>App works without any wallet</li>
+          <li>No speculation layer</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout" style="margin-top:18px;">
+      The current platform is fully functional without blockchain. XRPL is a future layer — not a dependency.
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 11: DIGITALVERSE ────────────── -->
+<section class="slide" id="slide-11" data-index="10"
+  aria-label="Slide 11: Digitalverse"
+  data-notes="Digitalverse is a planned section for emerging technology literacy. The same principles that guide our cultural knowledge work apply here: primary sources first, consent-based, depth over breadth. Learners who understand how XRPL works, how AI systems are built, and how their data is used — those learners can navigate the digital world with the same kind of sovereignty they bring to their cultural identity.">
+
+  <div class="glass" style="padding:40px 52px;max-width:760px;width:100%;border-radius:20px;">
+    <div class="label-sm">Digitalverse · Future Section</div>
+    <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);margin-bottom:18px;">Technology literacy<br>rooted in sovereignty</h2>
+    <div class="tile-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
+      <div class="tile"><div class="tile-icon">⛓️</div><div class="tile-name">XRPL Basics</div></div>
+      <div class="tile"><div class="tile-icon">🌐</div><div class="tile-name">Blockchain Ecosystems</div></div>
+      <div class="tile"><div class="tile-icon">🤖</div><div class="tile-name">AI &amp; LLM Literacy</div></div>
+      <div class="tile"><div class="tile-icon">🔐</div><div class="tile-name">Wallets &amp; Safety</div></div>
+      <div class="tile"><div class="tile-icon">📦</div><div class="tile-name">Data Ownership</div></div>
+      <div class="tile"><div class="tile-icon">✅</div><div class="tile-name">Consent &amp; Responsibility</div></div>
+    </div>
+    <div class="callout" style="margin-top:16px;">
+      Cultural sovereignty and digital sovereignty are the same conversation.
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 12: LIVE DEMO FLOW ──────────── -->
+<section class="slide" id="slide-12" data-index="11"
+  aria-label="Slide 12: Live Demo Flow"
+  data-notes="Here is the demo flow. Start on the galaxy homepage — let the experience land. Then open Cultural Journeys and pick a culture. Go into a specific culture section. Open a Kumulipo Wa lesson — show the Hawaiian source lines, the Scholar and Keiki toggle. Mark a lesson complete and watch Mana populate. Then go to the Profile galaxy and show how the planet for that culture has evolved.">
+
+  <div style="max-width:700px;width:100%;text-align:center;">
+    <div class="label-sm">Live Demo Flow</div>
+    <h2 class="slide-title" style="margin-bottom:24px;">Six moments to show</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-text"><strong>Galaxy Homepage</strong>Land in the cosmos. Let the experience set the tone.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-text"><strong>Cultural Journeys</strong>Open a culture section. Show the roadmap and the module structure.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-text"><strong>Kumulipo Wā</strong>Open a Wā lesson. Show Hawaiian source lines. Toggle Scholar / Keiki.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-text"><strong>Mark Complete</strong>Complete a lesson. Watch Mana and badge populate.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-text"><strong>Wayfinder Profile</strong>Open the profile galaxy. Show the culture planet evolving.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 13: NEXT PHASE ──────────────── -->
+<section class="slide" id="slide-13" data-index="12"
+  aria-label="Slide 13: Next Phase"
+  data-notes="The next phase focuses on depth of content, community accountability, and infrastructure for growth. More cultures. Educator guides so teachers can bring this into classrooms. Community review workflows so culture-bearers can validate and correct. Admin publishing tools. A richer galaxy dashboard. And the Digitalverse buildout alongside XRPL-ready credentials for real-world portability.">
+
+  <div class="glass" style="padding:40px 52px;max-width:820px;width:100%;border-radius:20px;">
+    <div class="label-sm">Next Phase</div>
+    <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);margin-bottom:20px;">What we are building toward</h2>
+    <div class="two-col">
+      <div class="col-card glass" style="padding:18px;">
+        <h3>Content &amp; Community</h3>
+        <ul>
+          <li>More culture traditions added</li>
+          <li>Educator guides &amp; classroom tools</li>
+          <li>Community review workflows</li>
+          <li>Culture-bearer validation</li>
+          <li>Admin publishing tools</li>
+        </ul>
+      </div>
+      <div class="col-card glass" style="padding:18px;">
+        <h3>Platform &amp; Infrastructure</h3>
+        <ul>
+          <li>Richer galaxy dashboard</li>
+          <li>Digitalverse section buildout</li>
+          <li>XRPL-ready credentials</li>
+          <li>Portable learning records</li>
+          <li>Expanded Wayfinder Passport</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── SLIDE 14: CLOSING ─────────────────── -->
+<section class="slide" id="slide-14" data-index="13"
+  aria-label="Slide 14: Closing"
+  data-notes="Close with the principle. Knowledge is not only read — it is entered, remembered, practiced, and carried forward. That is what Ka Paepae Ike Ola is built to support. Mahalo.">
+
+  <div class="geo-circle" style="width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%);border-color:rgba(201,162,39,.06);" aria-hidden="true"></div>
+  <div class="orbit-ring" style="width:340px;height:340px;top:50%;left:50%;transform:translate(-50%,-50%);border-color:rgba(61,207,223,.07);" aria-hidden="true"></div>
+
+  <div style="text-align:center;">
+    <div class="label-sm">Ka Paepae Ike Ola</div>
+    <div class="main-title" style="font-family:var(--font-display);font-size:clamp(1.6rem,4vw,3rem);color:var(--gold2);margin-bottom:24px;text-shadow:0 0 40px rgba(201,162,39,.3);">
+      Ike · Knowledge
+    </div>
+    <div class="divider"></div>
+    <div class="closing-quote">
+      Knowledge is not only <em>read</em>.<br>
+      It is entered, remembered, practiced,<br>
+      and <em>carried forward</em>.
+    </div>
+    <div style="margin-top:36px;" class="badge-row">
+      <span class="badge gold">Ka Paepae Ike Ola</span>
+      <span class="badge cyan">The Living Knowledge Platform</span>
+    </div>
+    <div class="title-links" style="margin-top:24px;">
+      <a class="title-link primary" href="index.html" target="_blank">Open App</a>
+      <a class="title-link secondary" href="LKP/lessons.html" target="_blank">Cultural Journeys</a>
+      <a class="title-link secondary" href="profile.html" target="_blank">Wayfinder Passport</a>
+    </div>
+  </div>
+</section>
+
+</main><!-- /#deck -->
+
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════ -->
+<script type="module">
+/* ─── THREE.JS STARFIELD ──────────────────── */
+let threeLoaded = false;
+
+async function initStarfield() {
+  try {
+    const THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js');
+
+    const canvas = document.getElementById('bg-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 400;
+
+    // Stars geometry
+    const COUNT = 1400;
+    const positions = new Float32Array(COUNT * 3);
+    const colors = new Float32Array(COUNT * 3);
+    const sizes = new Float32Array(COUNT);
+
+    const palettes = [
+      [1,.95,.7],   // warm white
+      [.78,.64,.16],// gold
+      [.24,.81,.87],// cyan
+      [.9,.9,1],    // cool white
+    ];
+
+    for (let i = 0; i < COUNT; i++) {
+      positions[i*3]   = (Math.random() - .5) * 900;
+      positions[i*3+1] = (Math.random() - .5) * 700;
+      positions[i*3+2] = (Math.random() - .5) * 600;
+      const pal = palettes[Math.floor(Math.random() * palettes.length)];
+      colors[i*3]   = pal[0];
+      colors[i*3+1] = pal[1];
+      colors[i*3+2] = pal[2];
+      sizes[i] = Math.random() * 2.2 + .4;
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+
+    const mat = new THREE.PointsMaterial({
+      size: 1.4, vertexColors: true, transparent: true,
+      opacity: .72, sizeAttenuation: true
+    });
+
+    scene.add(new THREE.Points(geo, mat));
+
+    // Soft drift nebula particles
+    const nCount = 80;
+    const nPos = new Float32Array(nCount * 3);
+    for (let i = 0; i < nCount; i++) {
+      nPos[i*3]   = (Math.random() - .5) * 700;
+      nPos[i*3+1] = (Math.random() - .5) * 500;
+      nPos[i*3+2] = (Math.random() - .5) * 200;
+    }
+    const nGeo = new THREE.BufferGeometry();
+    nGeo.setAttribute('position', new THREE.BufferAttribute(nPos, 3));
+    const nMat = new THREE.PointsMaterial({
+      size: 4, color: 0x3d8fa0, transparent: true, opacity: .08
+    });
+    scene.add(new THREE.Points(nGeo, nMat));
+
+    function resize() {
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+    }
+    resize();
+    window.addEventListener('resize', resize, { passive: true });
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let frame;
+
+    function animate() {
+      frame = requestAnimationFrame(animate);
+      if (!prefersReduced) {
+        scene.rotation.y += 0.00015;
+        scene.rotation.x += 0.00006;
+      }
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Hide CSS stars once Three.js is running
+    document.getElementById('css-stars').style.opacity = '0';
+    threeLoaded = true;
+
+  } catch (e) {
+    console.warn('Three.js starfield could not load. Using CSS fallback.', e);
+  }
+}
+
+initStarfield();
+
+/* Wayfinder cursor */
+const cursorMedia = window.matchMedia('(hover: hover) and (pointer: fine)');
+if (cursorMedia.matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+  const setCursor = event => {
+    document.documentElement.style.setProperty('--cursor-x', `${event.clientX}px`);
+    document.documentElement.style.setProperty('--cursor-y', `${event.clientY}px`);
+    document.body.classList.add('cursor-visible');
+  };
+
+  document.addEventListener('pointermove', setCursor, { passive: true });
+  document.addEventListener('pointerleave', () => document.body.classList.remove('cursor-visible'));
+
+  document.addEventListener('pointerover', event => {
+    if (event.target.closest('a,button,.dot,[role="button"]')) {
+      document.body.classList.add('cursor-active');
+    }
+  });
+
+  document.addEventListener('pointerout', event => {
+    if (event.target.closest('a,button,.dot,[role="button"]')) {
+      document.body.classList.remove('cursor-active');
+    }
+  });
+
+  document.addEventListener('pointermove', event => {
+    const card = event.target.closest('.glass,.tile,.step,.badge,.callout');
+    if (!card) return;
+
+    const rect = card.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width) * 100;
+    const y = ((event.clientY - rect.top) / rect.height) * 100;
+    const tiltX = ((event.clientX - rect.left) / rect.width - 0.5) * 5;
+    const tiltY = (((event.clientY - rect.top) / rect.height - 0.5) * -5);
+
+    card.style.setProperty('--card-x', `${x}%`);
+    card.style.setProperty('--card-y', `${y}%`);
+    card.style.setProperty('--tilt-x', `${tiltX}deg`);
+    card.style.setProperty('--tilt-y', `${tiltY}deg`);
+  }, { passive: true });
+}
+
+/* ─── SLIDE DATA ──────────────────────────── */
+const slides = Array.from(document.querySelectorAll('.slide'));
+const TOTAL = slides.length;
+let current = 0;
+let prevSlide = -1;
+
+const notes = slides.map(s => s.dataset.notes || '');
+
+/* ─── DOM REFS ────────────────────────────── */
+const progressFill  = document.getElementById('progress-fill');
+const slideCounter  = document.getElementById('slide-counter');
+const notesPanel    = document.getElementById('notes-panel');
+const notesContent  = document.getElementById('notes-content');
+const notesClose    = document.getElementById('notes-close');
+const btnNotes      = document.getElementById('btn-notes');
+const btnFullscreen = document.getElementById('btn-fullscreen');
+const btnPrev       = document.getElementById('btn-prev');
+const btnNext       = document.getElementById('btn-next');
+const dotsContainer = document.getElementById('dots');
+
+/* ─── BUILD DOTS ──────────────────────────── */
+slides.forEach((_, i) => {
+  const d = document.createElement('button');
+  d.className = 'dot';
+  d.setAttribute('aria-label', `Go to slide ${i + 1}`);
+  d.addEventListener('click', () => goTo(i));
+  dotsContainer.appendChild(d);
+});
+const dotEls = Array.from(dotsContainer.querySelectorAll('.dot'));
+
+/* ─── RENDER SLIDE ────────────────────────── */
+function goTo(idx, dir = 1) {
+  if (idx < 0 || idx >= TOTAL) return;
+
+  // Exit previous
+  if (prevSlide >= 0 && prevSlide !== idx) {
+    slides[prevSlide].classList.remove('active');
+    slides[prevSlide].classList.add(dir > 0 ? 'exit-left' : 'exit-right');
+    const prev = prevSlide;
+    setTimeout(() => slides[prev].classList.remove('exit-left', 'exit-right'), 650);
+  }
+
+  current = idx;
+  prevSlide = idx;
+
+  slides.forEach((s, i) => {
+    s.classList.toggle('active', i === idx);
+  });
+
+  // Update progress
+  const pct = ((idx + 1) / TOTAL) * 100;
+  progressFill.style.width = pct + '%';
+
+  // Counter
+  slideCounter.textContent = `${idx + 1} / ${TOTAL}`;
+
+  // Dots
+  dotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
+
+  // Notes
+  notesContent.textContent = notes[idx] || 'No notes for this slide.';
+}
+
+/* ─── NAV ─────────────────────────────────── */
+btnNext.addEventListener('click', () => {
+  const next = (current + 1) % TOTAL;
+  goTo(next, 1);
+});
+btnPrev.addEventListener('click', () => {
+  const prev = (current - 1 + TOTAL) % TOTAL;
+  goTo(prev, -1);
+});
+
+/* ─── KEYBOARD ────────────────────────────── */
+document.addEventListener('keydown', e => {
+  // Skip if typing in an input
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  switch (e.key) {
+    case 'ArrowRight':
+    case ' ':
+      e.preventDefault();
+      goTo((current + 1) % TOTAL, 1);
+      break;
+    case 'ArrowLeft':
+      e.preventDefault();
+      goTo((current - 1 + TOTAL) % TOTAL, -1);
+      break;
+    case 'Home':
+      goTo(0);
+      break;
+    case 'End':
+      goTo(TOTAL - 1);
+      break;
+    case 'n':
+    case 'N':
+      toggleNotes();
+      break;
+    case 'f':
+    case 'F':
+      toggleFullscreen();
+      break;
+    case 'Escape':
+      if (notesPanel.classList.contains('open')) closeNotes();
+      break;
+  }
+});
+
+/* ─── NOTES ───────────────────────────────── */
+function toggleNotes() {
+  notesPanel.classList.toggle('open');
+  btnNotes.classList.toggle('active', notesPanel.classList.contains('open'));
+}
+function closeNotes() {
+  notesPanel.classList.remove('open');
+  btnNotes.classList.remove('active');
+}
+btnNotes.addEventListener('click', toggleNotes);
+notesClose.addEventListener('click', closeNotes);
+
+/* ─── FULLSCREEN ──────────────────────────── */
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen?.()
+      .then(() => btnFullscreen.textContent = '⛶')
+      .catch(() => {});
+  } else {
+    document.exitFullscreen?.();
+  }
+}
+btnFullscreen.addEventListener('click', toggleFullscreen);
+document.addEventListener('fullscreenchange', () => {
+  btnFullscreen.textContent = document.fullscreenElement ? '⛶' : '⛶';
+});
+
+/* ─── TOUCH SWIPE ─────────────────────────── */
+let touchX = null;
+document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', e => {
+  if (touchX === null) return;
+  const dx = e.changedTouches[0].clientX - touchX;
+  if (Math.abs(dx) > 50) {
+    dx < 0 ? goTo((current+1)%TOTAL, 1) : goTo((current-1+TOTAL)%TOTAL, -1);
+  }
+  touchX = null;
+}, { passive: true });
+
+/* ─── INIT ────────────────────────────────── */
+goTo(0);
+</script>
+
+</body>
+</html>

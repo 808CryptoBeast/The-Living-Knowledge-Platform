@@ -29,7 +29,8 @@
   />
 
   <link rel="stylesheet" href="LKP/css/lkp-brand.css" />
-  <link rel="stylesheet" href="LKP/css/profile.css?v=scrollbars-1" />
+  <link rel="stylesheet" href="LKP/css/lkp-cursor.css?v=cursor-1" />
+  <link rel="stylesheet" href="LKP/css/profile.css?v=settings-1" />
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -58,7 +59,8 @@
 
   <!-- Sign out helper and main profile renderer -->
   <script defer src="LKP/js/lkp-signout.js?v=signout-1"></script>
-  <script defer src="LKP/js/profile.js?v=profile-cloud-1"></script>
+  <script defer src="LKP/js/lkp-cursor.js?v=cursor-1"></script>
+  <script defer src="LKP/js/profile.js?v=settings-1"></script>
 </head>
 
 <body class="profile-page profile-theme-dark" data-time-phase="night" data-bg-variant="0">
@@ -106,11 +108,99 @@
         <i class="fas fa-rotate"></i> Sync
       </button>
 
+      <button id="profileSettingsBtn" class="profile-topbar__button" type="button" aria-haspopup="dialog" aria-controls="profileSettingsDrawer" aria-expanded="false">
+        <i class="fas fa-gear"></i> Settings
+      </button>
+
       <button id="profileSignOutBtn" class="profile-topbar__button is-hidden" type="button">
         <i class="fas fa-right-from-bracket"></i> Sign Out
       </button>
     </nav>
   </header>
+
+  <div id="profileSettingsBackdrop" class="profile-settings-backdrop" hidden></div>
+
+  <aside id="profileSettingsDrawer" class="profile-settings-drawer" role="dialog" aria-modal="true" aria-labelledby="profileSettingsTitle" hidden>
+    <div class="profile-settings-drawer__head">
+      <div>
+        <span class="profile-settings-eyebrow">Wayfinder Controls</span>
+        <h2 id="profileSettingsTitle">Profile Settings</h2>
+      </div>
+      <button id="profileSettingsClose" class="profile-settings-close" type="button" aria-label="Close profile settings">
+        <i class="fas fa-xmark"></i>
+      </button>
+    </div>
+
+    <div class="profile-settings-drawer__body">
+      <section class="profile-settings-section">
+        <h3><i class="fas fa-id-card"></i> Account &amp; Profile</h3>
+        <p>Edit your public Wayfinder identity, access details, image, and story from one place.</p>
+        <div class="profile-settings-action-grid">
+          <button type="button" data-settings-focus="editDisplayName"><i class="fas fa-signature"></i> Name</button>
+          <button type="button" data-settings-focus="editAvatarUrl"><i class="fas fa-image"></i> Avatar</button>
+          <button type="button" data-settings-focus="editBio"><i class="fas fa-feather"></i> Bio</button>
+          <button type="button" data-settings-focus="authEmail"><i class="fas fa-envelope"></i> Email</button>
+        </div>
+      </section>
+
+      <section class="profile-settings-section">
+        <h3><i class="fas fa-wand-magic-sparkles"></i> Cursor Theme</h3>
+        <p>Choose the pointer style used across the app. Classic Pointer returns the browser cursor.</p>
+        <div class="cursor-theme-grid" role="radiogroup" aria-label="Cursor theme">
+          <button type="button" class="cursor-theme-card" data-cursor-theme="default" role="radio" aria-checked="false">
+            <span class="cursor-theme-card__preview cursor-theme-card__preview--default"></span>
+            <strong>Classic</strong>
+            <small>Browser pointer</small>
+          </button>
+          <button type="button" class="cursor-theme-card" data-cursor-theme="wayfinder" role="radio" aria-checked="false">
+            <span class="cursor-theme-card__preview cursor-theme-card__preview--wayfinder"></span>
+            <strong>Wayfinder</strong>
+            <small>Gold compass</small>
+          </button>
+          <button type="button" class="cursor-theme-card" data-cursor-theme="star" role="radio" aria-checked="false">
+            <span class="cursor-theme-card__preview cursor-theme-card__preview--star"></span>
+            <strong>Star Core</strong>
+            <small>Bright source</small>
+          </button>
+          <button type="button" class="cursor-theme-card" data-cursor-theme="ocean" role="radio" aria-checked="false">
+            <span class="cursor-theme-card__preview cursor-theme-card__preview--ocean"></span>
+            <strong>Ocean</strong>
+            <small>Cyan pulse</small>
+          </button>
+          <button type="button" class="cursor-theme-card" data-cursor-theme="ember" role="radio" aria-checked="false">
+            <span class="cursor-theme-card__preview cursor-theme-card__preview--ember"></span>
+            <strong>Ember</strong>
+            <small>Warm glow</small>
+          </button>
+          <button type="button" class="cursor-theme-card" data-cursor-theme="leaf" role="radio" aria-checked="false">
+            <span class="cursor-theme-card__preview cursor-theme-card__preview--leaf"></span>
+            <strong>Greenstone</strong>
+            <small>Living path</small>
+          </button>
+        </div>
+      </section>
+
+      <section class="profile-settings-section">
+        <h3><i class="fas fa-sliders"></i> Interface</h3>
+        <div class="profile-settings-list">
+          <button type="button" data-settings-action="theme"><span>Theme</span><small>Toggle light or dark mode</small></button>
+          <button type="button" data-settings-action="sync"><span>Sync Passport</span><small>Refresh lessons, Mana, and profile data</small></button>
+          <button type="button" data-settings-action="galaxy"><span>Galaxy View</span><small>Jump to your personal galaxy</small></button>
+        </div>
+      </section>
+
+      <section class="profile-settings-section">
+        <h3><i class="fas fa-shield-halved"></i> Credentials &amp; Privacy</h3>
+        <p>Future XRPL-ready records, badges, and credentials will live here after education, consent, and wallet setup.</p>
+        <div class="profile-settings-pill-row">
+          <span>Learning records</span>
+          <span>Badge proofs</span>
+          <span>Wallet safety</span>
+          <span>Data export</span>
+        </div>
+      </section>
+    </div>
+  </aside>
 
   <nav class="profile-mobile-dock" aria-label="Profile mobile navigation">
     <a href="#passport">Passport</a>
