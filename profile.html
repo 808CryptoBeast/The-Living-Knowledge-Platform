@@ -30,7 +30,7 @@
 
   <link rel="stylesheet" href="LKP/css/lkp-brand.css" />
   <link rel="stylesheet" href="LKP/css/lkp-cursor.css?v=cursor-1" />
-  <link rel="stylesheet" href="LKP/css/profile.css?v=settings-1" />
+  <link rel="stylesheet" href="LKP/css/profile.css?v=user-profile-1" />
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -51,7 +51,7 @@
   <script defer src="LKP/js/lkp-data.js?v=base-2"></script>
   <script defer src="LKP/js/lkp-data-rich-additions.js?v=rich-2"></script>
   <script defer src="LKP/js/lkp-data-primary-sources.js?v=ps-1"></script>
-  <script defer src="LKP/js/lkp-rewards.js?v=rewards-1"></script>
+  <script defer src="LKP/js/lkp-rewards.js?v=rewards-2"></script>
 
   <!-- Cross-device Supabase profile/progress sync.
        Must load before profile.js. -->
@@ -60,7 +60,7 @@
   <!-- Sign out helper and main profile renderer -->
   <script defer src="LKP/js/lkp-signout.js?v=signout-1"></script>
   <script defer src="LKP/js/lkp-cursor.js?v=cursor-1"></script>
-  <script defer src="LKP/js/profile.js?v=settings-1"></script>
+  <script defer src="LKP/js/profile.js?v=user-profile-1"></script>
 </head>
 
 <body class="profile-page profile-theme-dark" data-time-phase="night" data-bg-variant="0">
@@ -98,7 +98,7 @@
     <nav class="profile-topbar__links" aria-label="Profile navigation">
       <a href="index.html"><i class="fas fa-house"></i> Home</a>
       <a href="LKP/lessons.html"><i class="fas fa-book-open"></i> Lessons</a>
-      <a href="LKP/admin.html"><i class="fas fa-user-shield"></i> Admin</a>
+      <a id="profileAdminNavLink" class="is-hidden" href="LKP/admin.html"><i class="fas fa-user-shield"></i> Admin</a>
 
       <button id="profileThemeToggle" class="profile-topbar__button profile-theme-toggle" type="button" aria-label="Toggle light and dark mode">
         <i class="fas fa-sun"></i> Light Mode
@@ -141,6 +141,40 @@
           <button type="button" data-settings-focus="editBio"><i class="fas fa-feather"></i> Bio</button>
           <button type="button" data-settings-focus="authEmail"><i class="fas fa-envelope"></i> Email</button>
         </div>
+
+        <form id="profileEditForm" class="profile-edit-form profile-edit-form--settings">
+          <label for="editDisplayName">Display Name</label>
+          <input id="editDisplayName" name="editDisplayName" type="text" maxlength="80" placeholder="Your display name" />
+
+          <label for="editHandle">Handle</label>
+          <input id="editHandle" name="editHandle" type="text" maxlength="40" placeholder="your-handle" />
+
+          <label for="editHomeRealm">Home Realm</label>
+          <select id="editHomeRealm" name="editHomeRealm">
+            <option value="lkp">The Living Knowledge Platform</option>
+            <option value="ikeverse">Ikeverse</option>
+            <option value="digitalverse">Digitalverse</option>
+            <option value="culturalverse">Culturalverse</option>
+            <option value="ikestar">IkeStar</option>
+            <option value="pikoverse">Pikoverse</option>
+          </select>
+
+          <label for="editAvatarUrl">Avatar URL</label>
+          <input id="editAvatarUrl" name="editAvatarUrl" type="url" placeholder="https://..." />
+
+          <label for="editBio">Bio / Moʻolelo</label>
+          <textarea
+            id="editBio"
+            name="editBio"
+            rows="4"
+            maxlength="500"
+            placeholder="Tell the story of your learning path..."
+          ></textarea>
+
+          <button class="profile-main-btn" type="submit">
+            <i class="fas fa-floppy-disk"></i> Save Profile
+          </button>
+        </form>
       </section>
 
       <section class="profile-settings-section">
@@ -181,6 +215,20 @@
       </section>
 
       <section class="profile-settings-section">
+        <h3><i class="fas fa-universal-access"></i> Accessibility</h3>
+        <p>Tune the passport interface for easier reading, lower motion, and stronger contrast. These preferences can sync with your profile when signed in.</p>
+        <div class="profile-settings-list profile-settings-list--split">
+          <button type="button" data-settings-action="font-down"><span>Smaller Text</span><small id="fontScaleLabel">Text scale 100%</small></button>
+          <button type="button" data-settings-action="font-up"><span>Larger Text</span><small>Increase profile reading size</small></button>
+          <button type="button" data-settings-action="reduced-motion"><span>Reduced Motion</span><small id="reducedMotionLabel">Motion on</small></button>
+          <button type="button" data-settings-action="high-contrast"><span>High Contrast</span><small id="highContrastLabel">Standard contrast</small></button>
+        </div>
+        <button class="profile-settings-inline-btn" type="button" data-settings-action="reset-accessibility">
+          Reset accessibility preferences
+        </button>
+      </section>
+
+      <section class="profile-settings-section">
         <h3><i class="fas fa-sliders"></i> Interface</h3>
         <div class="profile-settings-list">
           <button type="button" data-settings-action="theme"><span>Theme</span><small>Toggle light or dark mode</small></button>
@@ -189,9 +237,30 @@
         </div>
       </section>
 
+      <section id="profileSettingsAdminSection" class="profile-settings-section profile-settings-admin-section is-hidden">
+        <h3><i class="fas fa-user-shield"></i> Admin Command Deck</h3>
+        <p>Your owner/admin controls are tucked here so the main passport can stay focused on identity, progress, and the galaxy.</p>
+        <div class="profile-settings-list">
+          <a href="presentation.html"><span>Open Pitch Deck</span><small>Launch the immersive project presentation for demos and partner conversations.</small></a>
+          <a href="LKP/admin.html"><span>Open Admin Dashboard</span><small>Manage lessons, cultures, modules, sources, and galaxy settings.</small></a>
+          <a href="LKP/lessons.html"><span>Review Public Lessons</span><small>Check the learner-facing Cultural Journeys experience.</small></a>
+          <button type="button" data-settings-action="admin-sync"><span>Refresh Admin Profile</span><small>Sync records before publishing or reviewing changes.</small></button>
+        </div>
+        <div class="profile-settings-pill-row profile-settings-admin-pills">
+          <span id="profileSettingsAdminRole">Admin role active</span>
+          <span>Publishing tools</span>
+          <span>Review flow</span>
+        </div>
+      </section>
+
       <section class="profile-settings-section">
         <h3><i class="fas fa-shield-halved"></i> Credentials &amp; Privacy</h3>
         <p>Future XRPL-ready records, badges, and credentials will live here after education, consent, and wallet setup.</p>
+        <div class="profile-settings-list">
+          <button type="button" data-settings-action="export-profile"><span>Export Profile Data</span><small>Download profile, progress, rewards, reflections, and preferences.</small></button>
+          <button type="button" data-settings-action="wallet-info"><span>Wallet Status</span><small id="walletStatusLabel">Wallet not connected yet.</small></button>
+          <button type="button" data-settings-action="clear-local-cache"><span>Clear Local Cache</span><small>Remove this device's cached passport data.</small></button>
+        </div>
         <div class="profile-settings-pill-row">
           <span>Learning records</span>
           <span>Badge proofs</span>
@@ -204,10 +273,10 @@
 
   <nav class="profile-mobile-dock" aria-label="Profile mobile navigation">
     <a href="#passport">Passport</a>
-    <a href="#access">Access</a>
+    <a href="#continuePath">Continue</a>
     <a href="#rewards">Rewards</a>
+    <a href="#reflections">Reflections</a>
     <a href="#path">Path</a>
-    <a href="#ecosystem">Links</a>
   </nav>
 
   <main class="profile-shell">
@@ -391,6 +460,45 @@
           </aside>
         </section>
 
+        <section class="profile-continuation-grid" aria-label="Profile learning continuation">
+          <article class="profile-card profile-continue-card" id="continuePath">
+            <div class="profile-card-head">
+              <span class="profile-card-icon"><i class="fas fa-location-arrow"></i></span>
+              <div>
+                <h2>Continue Journey</h2>
+                <p id="continueKicker">Finding your next learning point...</p>
+              </div>
+            </div>
+
+            <div class="profile-continue-card__body">
+              <strong id="continueTitle">Loading next lesson...</strong>
+              <span id="continueMeta">Your path will appear here once lesson data is ready.</span>
+              <div class="profile-continue-progress" aria-hidden="true">
+                <span id="continueProgress"></span>
+              </div>
+              <small id="continueBadgeHint">Complete lessons from inside Cultural Journeys to evolve your galaxy.</small>
+            </div>
+
+            <a id="continueAction" class="profile-main-btn" href="LKP/lessons.html">
+              Open Cultural Journeys
+            </a>
+          </article>
+
+          <article class="profile-card profile-evolution-card" id="evolutionLog">
+            <div class="profile-card-head">
+              <span class="profile-card-icon"><i class="fas fa-satellite"></i></span>
+              <div>
+                <h2>Galaxy Evolution Log</h2>
+                <p>Track how culture planets change as your learning deepens.</p>
+              </div>
+            </div>
+
+            <div id="evolutionLogList" class="profile-evolution-log">
+              <div class="profile-note">Start a lesson to awaken your first culture planet.</div>
+            </div>
+          </article>
+        </section>
+
         <div class="profile-col profile-col--left">
           <section class="profile-card profile-rewards-card" id="rewards">
             <div class="profile-card-head">
@@ -458,6 +566,9 @@
             </div>
 
             <div class="rewards-section-title">Badges</div>
+            <div id="nextBadgeCard" class="rewards-next-badge">
+              <div class="profile-note">Your next badge will appear once rewards finish loading.</div>
+            </div>
             <div id="rewardBadges" class="rewards-badge-grid">
               <div class="profile-note">Complete your first lesson to earn your first badge.</div>
             </div>
@@ -465,6 +576,20 @@
             <div class="rewards-section-title">Certificates</div>
             <div id="rewardCertificates" class="rewards-certificate-list">
               <div class="profile-note">Complete a full module to generate your first certificate record.</div>
+            </div>
+          </section>
+
+          <section class="profile-card profile-reflections-card" id="reflections">
+            <div class="profile-card-head">
+              <span class="profile-card-icon"><i class="fas fa-feather"></i></span>
+              <div>
+                <h2>My Reflections</h2>
+                <p>Recent lesson reflections stay close to your passport as proof of lived study.</p>
+              </div>
+            </div>
+
+            <div id="reflectionPreviewList" class="profile-reflection-list">
+              <div class="profile-note">Write reflections inside lessons and your latest entries will appear here.</div>
             </div>
           </section>
 
@@ -506,7 +631,7 @@
             </p>
           </section>
 
-          <section class="profile-card" id="edit">
+          <section class="profile-card is-hidden" id="editLegacy" aria-hidden="true" hidden>
             <div class="profile-card-head">
               <span class="profile-card-icon">✎</span>
               <div>
@@ -515,15 +640,15 @@
               </div>
             </div>
 
-            <form id="profileEditForm" class="profile-edit-form">
-              <label for="editDisplayName">Display Name</label>
-              <input id="editDisplayName" name="editDisplayName" type="text" maxlength="80" placeholder="Your display name" />
+            <form id="profileEditFormLegacy" class="profile-edit-form">
+              <label for="editDisplayNameLegacy">Display Name</label>
+              <input id="editDisplayNameLegacy" name="editDisplayNameLegacy" type="text" maxlength="80" placeholder="Your display name" />
 
-              <label for="editHandle">Handle</label>
-              <input id="editHandle" name="editHandle" type="text" maxlength="40" placeholder="your-handle" />
+              <label for="editHandleLegacy">Handle</label>
+              <input id="editHandleLegacy" name="editHandleLegacy" type="text" maxlength="40" placeholder="your-handle" />
 
-              <label for="editHomeRealm">Home Realm</label>
-              <select id="editHomeRealm" name="editHomeRealm">
+              <label for="editHomeRealmLegacy">Home Realm</label>
+              <select id="editHomeRealmLegacy" name="editHomeRealmLegacy">
                 <option value="lkp">The Living Knowledge Platform</option>
                 <option value="ikeverse">Ikeverse</option>
                 <option value="digitalverse">Digitalverse</option>
@@ -532,13 +657,13 @@
                 <option value="pikoverse">Pikoverse</option>
               </select>
 
-              <label for="editAvatarUrl">Avatar URL</label>
-              <input id="editAvatarUrl" name="editAvatarUrl" type="url" placeholder="https://..." />
+              <label for="editAvatarUrlLegacy">Avatar URL</label>
+              <input id="editAvatarUrlLegacy" name="editAvatarUrlLegacy" type="url" placeholder="https://..." />
 
-              <label for="editBio">Bio / Moʻolelo</label>
+              <label for="editBioLegacy">Bio / Moʻolelo</label>
               <textarea
-                id="editBio"
-                name="editBio"
+                id="editBioLegacy"
+                name="editBioLegacy"
                 rows="4"
                 maxlength="500"
                 placeholder="Tell the story of your learning path..."
@@ -560,6 +685,12 @@
             </div>
 
             <div class="profile-admin-grid">
+              <a href="presentation.html" class="profile-admin-card">
+                <i class="fas fa-person-chalkboard"></i>
+                <strong>Open Pitch Deck</strong>
+                <span>Use the immersive presentation page during demos, partner calls, and community previews.</span>
+              </a>
+
               <a href="LKP/admin.html" class="profile-admin-card">
                 <i class="fas fa-screwdriver-wrench"></i>
                 <strong>Open Admin Dashboard</strong>
@@ -580,7 +711,7 @@
             <span class="profile-card-icon">🌌</span>
             <div>
               <h2>Learning Path</h2>
-              <p>Filter, complete, and sync lessons across The Living Knowledge Platform.</p>
+              <p>Filter lessons and continue learning. Completion happens inside each lesson after study.</p>
             </div>
           </div>
 

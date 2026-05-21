@@ -32,6 +32,7 @@
     completed:  "cv_completed",
     legacyMana: "cv_mana",
     rewards:    "lkp_rewards_state_v1",
+    metadata:   "lkp_reward_metadata_v1",
     daily:      "lkp_rewards_daily_v1",
     wallet:     "lkp_wallet_link_v1"
   };
@@ -107,6 +108,122 @@
 
   function stripTags(html) {
     return String(html || "").replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+  }
+
+  function slugify(value) {
+    return String(value || "")
+      .toLowerCase()
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 80) || "reward";
+  }
+
+  function hashString(value) {
+    let hash = 2166136261;
+    const text = String(value || "");
+
+    for (let i = 0; i < text.length; i++) {
+      hash ^= text.charCodeAt(i);
+      hash += (hash << 1) + (hash << 4) + (hash << 7) + (hash << 8) + (hash << 24);
+    }
+
+    return (hash >>> 0).toString(16).padStart(8, "0");
+  }
+
+  function buildNFTMetadata({
+    id,
+    type,
+    name,
+    description,
+    icon = "\u2736",
+    cultureId = "",
+    cultureName = "",
+    moduleId = "",
+    moduleTitle = "",
+    lessonId = "",
+    lessonTitle = "",
+    stage = "",
+    progress = null,
+    mana = 0,
+    xp = 0,
+    earnedAt = todayKey(),
+    eligible = false
+  }) {
+    const externalPath = lessonId
+      ? `LKP/lessons.html#${encodeURIComponent(lessonId)}`
+      : "profile.html";
+
+    const attributes = [
+      { trait_type: "Reward Type", value: type },
+      { trait_type: "Culture", value: cultureName || cultureId || "Platform" },
+      { trait_type: "Module", value: moduleTitle || moduleId || "General" },
+      { trait_type: "Stage", value: stage || type },
+      { trait_type: "Mana", value: Number(mana) || 0 },
+      { trait_type: "XP", value: Number(xp) || 0 },
+      { trait_type: "XRPL Eligible", value: eligible ? "Future eligible" : "Offchain record" }
+    ];
+
+    if (lessonId) attributes.push({ trait_type: "Lesson ID", value: lessonId });
+    if (progress != null) attributes.push({ trait_type: "Progress", value: `${progress}%` });
+
+    return {
+      schema: "lkp.reward.metadata.v1",
+      name,
+      description,
+      image: `ipfs://future/${slugify(id)}.png`,
+      animation_url: `ipfs://future/${slugify(id)}.json`,
+      external_url: externalPath,
+      attributes,
+      properties: {
+        platform: "Ka Paepae Ike Ola - The Living Knowledge Platform",
+        collection: "Wayfinder Passport Rewards",
+        icon,
+        rewardId: id,
+        rewardType: type,
+        cultureId,
+        cultureName,
+        moduleId,
+        moduleTitle,
+        lessonId,
+        lessonTitle,
+        stage,
+        earnedAt,
+        proof: {
+          method: "local-or-supabase-completion",
+          completedKey: STORAGE.completed,
+          digest: hashString(`${id}|${cultureId}|${moduleId}|${lessonId}|${earnedAt}`)
+        },
+        xrpl: {
+          network: "XRPL",
+          planned: true,
+          eligible,
+          suggestedStandard: "NFTokenMint",
+          nftokenTaxon: parseInt(hashString(`${type}:${cultureId || "platform"}`), 16) % 4294967295,
+          transferFee: 0,
+          note: "Future credential metadata only. No wallet connection is required in the current app."
+        }
+      }
+    };
+  }
+
+  function makeBadge(payload) {
+    const metadata = buildNFTMetadata({
+      type: "badge",
+      ...payload,
+      eligible: Boolean(payload.eligible)
+    });
+
+    return {
+      id: payload.id,
+      name: payload.name,
+      icon: payload.icon || "\u2736",
+      desc: payload.description || payload.desc || "",
+      earnedAt: payload.earnedAt || todayKey(),
+      metadata,
+      xrpl: metadata.properties.xrpl
+    };
   }
 
   function normalizeData(data) {
@@ -276,6 +393,94 @@
     return { current, next, progressToNext };
   }
 
+  function buildLessonBadges(completedLessons, today) {
+    return completedLessons.map(lesson => makeBadge({
+      id: `lesson_badge:${lesson.id}`,
+      name: `Lesson Star - ${lesson.title}`,
+      icon: lesson.cultureId === "kanaka" ? "\uD83C\uDF3A" : "\u2B50",
+      description: `Completed ${lesson.title} in ${lesson.cultureName}.`,
+      cultureId: lesson.cultureId,
+      cultureName: lesson.cultureName,
+      moduleId: lesson.moduleId,
+      moduleTitle: lesson.moduleTitle,
+      lessonId: lesson.id,
+      lessonTitle: lesson.title,
+      stage: "lesson-complete",
+      mana: RULES.lesson.mana,
+      xp: RULES.lesson.xp,
+      earnedAt: today,
+      eligible: false
+    }));
+  }
+
+  function resolveEvolutionStage(completedCount, totalCount) {
+    const progress = totalCount ? Math.round((completedCount / totalCount) * 100) : 0;
+
+    if (progress >= 100) return { id: "constellation", name: "Constellation", icon: "\uD83C\uDF0C" };
+    if (progress >= 75)  return { id: "ringed-world",  name: "Ringed World",  icon: "\uD83E\uDE90" };
+    if (progress >= 50)  return { id: "moon-keeper",   name: "Moon Keeper",   icon: "\uD83C\uDF19" };
+    if (progress >= 25)  return { id: "orbiting-star", name: "Orbiting Star", icon: "\u2600\uFE0F" };
+    return { id: "young-planet", name: "Young Planet", icon: "\uD83E\uDE90" };
+  }
+
+  function buildCultureEvolutions(flat, completedByCulture, today) {
+    return flat.cultures
+      .map(culture => {
+        const completedCount = completedByCulture[culture.id] || 0;
+        const totalCount = culture.lessons.length || 0;
+        const progress = totalCount ? Math.round((completedCount / totalCount) * 100) : 0;
+
+        if (!completedCount) return null;
+
+        const stage = resolveEvolutionStage(completedCount, totalCount);
+        const metadata = buildNFTMetadata({
+          id: `evolution:${culture.id}:${stage.id}`,
+          type: "culture_evolution",
+          name: `${culture.name} ${stage.name}`,
+          description: `${culture.name} planet evolved to ${stage.name} with ${completedCount}/${totalCount} lessons complete.`,
+          icon: stage.icon,
+          cultureId: culture.id,
+          cultureName: culture.name,
+          stage: stage.id,
+          progress,
+          mana: completedCount * RULES.lesson.mana,
+          xp: completedCount * RULES.lesson.xp,
+          earnedAt: today,
+          eligible: progress >= 50
+        });
+
+        return {
+          id: `evolution:${culture.id}:${stage.id}`,
+          type: "culture_evolution",
+          cultureId: culture.id,
+          cultureName: culture.name,
+          stage,
+          completedCount,
+          totalCount,
+          progress,
+          earnedAt: today,
+          metadata,
+          xrpl: metadata.properties.xrpl
+        };
+      })
+      .filter(Boolean);
+  }
+
+  function buildEvolutionBadges(evolutions, today) {
+    return evolutions.map(evolution => makeBadge({
+      id: `evolution_badge:${evolution.cultureId}:${evolution.stage.id}`,
+      name: `${evolution.cultureName} - ${evolution.stage.name}`,
+      icon: evolution.stage.icon,
+      description: `Your ${evolution.cultureName} culture planet reached ${evolution.stage.name}.`,
+      cultureId: evolution.cultureId,
+      cultureName: evolution.cultureName,
+      stage: evolution.stage.id,
+      progress: evolution.progress,
+      earnedAt: today,
+      eligible: evolution.progress >= 50
+    }));
+  }
+
   /* ── calculateRewards ────────────────────────────────────────────────── */
 
   function calculateRewards(options = {}) {
@@ -341,9 +546,24 @@
       checkedInToday, dailyDates, streak, flat
     };
 
-    const badges = BADGE_LIBRARY
+    const milestoneBadges = BADGE_LIBRARY
       .filter(badge => badge.test(ctx))
-      .map(badge => ({ id: badge.id, name: badge.name, icon: badge.icon, desc: badge.desc, earnedAt: today }));
+      .map(badge => makeBadge({
+        id: badge.id,
+        name: badge.name,
+        icon: badge.icon,
+        description: badge.desc,
+        stage: "milestone",
+        earnedAt: today,
+        eligible: false
+      }));
+
+    const evolutions = buildCultureEvolutions(flat, completedByCulture, today);
+    const badges = [
+      ...milestoneBadges,
+      ...buildLessonBadges(completedLessons, today),
+      ...buildEvolutionBadges(evolutions, today)
+    ];
 
     const certificates = [
       ...completedModules.map(m => ({
@@ -359,7 +579,7 @@
     ];
 
     const claimRecords = buildClaimRecords({
-      completedLessons, completedModules, completedCultures, badges, certificates, today
+      completedLessons, completedModules, completedCultures, badges, certificates, evolutions, today
     });
     const rank = getRank(mana);
 
@@ -375,7 +595,7 @@
       completedCultureCount: completedCultures.length,
       totalCultureCount:     flat.cultures.length,
       completedByCulture, completedModules, completedCultures,
-      badges, certificates, claimRecords,
+      badges, certificates, evolutions, claimRecords,
       streak, checkedInToday, dailyDates,
       rules: RULES
     };
@@ -383,6 +603,7 @@
     _cachedState = state;
 
     writeLocal(STORAGE.rewards,    state);
+    writeLocal(STORAGE.metadata,   claimRecords.map(record => record.metadata).filter(Boolean));
     writeLocal(STORAGE.legacyMana, String(mana));
     writeLocal(STORAGE.completed,  [...completedSet]);
 
@@ -392,35 +613,88 @@
 
   /* ── buildClaimRecords ───────────────────────────────────────────────── */
 
-  function buildClaimRecords({ completedLessons, completedModules, completedCultures, badges, certificates, today }) {
+  function buildClaimRecords({ completedLessons, completedModules, completedCultures, badges, certificates, evolutions = [], today }) {
     const records = [];
 
     completedLessons.forEach(lesson => {
+      const metadata = buildNFTMetadata({
+        id: `lesson:${lesson.id}`,
+        type: "lesson_completion",
+        name: `Lesson Completion - ${lesson.title}`,
+        description: `Proof that ${lesson.title} was completed inside ${lesson.cultureName}.`,
+        cultureId: lesson.cultureId,
+        cultureName: lesson.cultureName,
+        moduleId: lesson.moduleId,
+        moduleTitle: lesson.moduleTitle,
+        lessonId: lesson.id,
+        lessonTitle: lesson.title,
+        stage: "lesson-complete",
+        mana: RULES.lesson.mana,
+        xp: RULES.lesson.xp,
+        earnedAt: today,
+        eligible: false
+      });
+
       records.push({
         id: `lesson:${lesson.id}`, type: "lesson_completion",
         status: "offchain_ready", title: lesson.title,
         cultureId: lesson.cultureId, moduleId: lesson.moduleId, lessonId: lesson.id,
         mana: RULES.lesson.mana, xp: RULES.lesson.xp,
+        metadata,
         xrpl: { eligible: false, futureUse: "Can later become part of proof-of-learning claim history." },
         createdAt: today
       });
     });
     completedModules.forEach(module => {
+      const metadata = buildNFTMetadata({
+        id: `module:${module.key}`,
+        type: "module_completion",
+        name: `Module Keeper - ${module.title}`,
+        description: `Completed every lesson in ${module.title} for ${module.cultureName}.`,
+        icon: module.emoji,
+        cultureId: module.cultureId,
+        cultureName: module.cultureName,
+        moduleId: module.id,
+        moduleTitle: module.title,
+        stage: "module-complete",
+        mana: RULES.module.mana,
+        xp: RULES.module.xp,
+        earnedAt: today,
+        eligible: true
+      });
+
       records.push({
         id: `module:${module.key}`, type: "module_completion",
         status: "xrpl_ready_future", title: module.title,
         cultureId: module.cultureId, moduleId: module.id,
         mana: RULES.module.mana, xp: RULES.module.xp,
+        metadata,
         xrpl: { eligible: true, suggestedAssetType: "NFT certificate",
           futureUse: "Can later be minted as an XRPL NFT badge/certificate." },
         createdAt: today
       });
     });
     completedCultures.forEach(culture => {
+      const metadata = buildNFTMetadata({
+        id: `culture:${culture.id}`,
+        type: "culture_completion",
+        name: `${culture.name} Culture Path`,
+        description: `Completed the full ${culture.name} culture path.`,
+        icon: culture.emoji,
+        cultureId: culture.id,
+        cultureName: culture.name,
+        stage: "culture-complete",
+        mana: RULES.culture.mana,
+        xp: RULES.culture.xp,
+        earnedAt: today,
+        eligible: true
+      });
+
       records.push({
         id: `culture:${culture.id}`, type: "culture_completion",
         status: "xrpl_ready_future", title: culture.name, cultureId: culture.id,
         mana: RULES.culture.mana, xp: RULES.culture.xp,
+        metadata,
         xrpl: { eligible: true, suggestedAssetType: "NFT certificate or claimable reward",
           futureUse: "Can later unlock XRPL reward claim or culture path NFT." },
         createdAt: today
@@ -430,17 +704,45 @@
       records.push({
         id: `badge:${badge.id}`, type: "badge", status: "offchain_badge",
         title: badge.name, badgeId: badge.id,
-        xrpl: { eligible: false, futureUse: "Can later be mirrored to an NFT or achievement registry." },
+        metadata: badge.metadata,
+        xrpl: badge.xrpl || { eligible: false, futureUse: "Can later be mirrored to an NFT or achievement registry." },
         createdAt: today
       });
     });
     certificates.forEach(cert => {
+      const metadata = buildNFTMetadata({
+        id: `certificate:${cert.id}`,
+        type: "certificate",
+        name: cert.title,
+        description: `${cert.title} certificate record for ${cert.subtitle || cert.type || "learning completion"}.`,
+        cultureId: cert.cultureId,
+        moduleId: cert.moduleId || "",
+        stage: `${cert.type || "certificate"}-certificate`,
+        earnedAt: today,
+        eligible: true
+      });
+
       records.push({
         id: `certificate:${cert.id}`, type: "certificate",
         status: "xrpl_ready_future", title: cert.title, certificateType: cert.type,
         cultureId: cert.cultureId, moduleId: cert.moduleId || null,
+        metadata,
         xrpl: { eligible: true, suggestedAssetType: "NFT certificate",
           futureUse: "Can later be minted or attached to wallet profile." },
+        createdAt: today
+      });
+    });
+    evolutions.forEach(evolution => {
+      records.push({
+        id: evolution.id,
+        type: "culture_evolution",
+        status: evolution.xrpl?.eligible ? "xrpl_ready_future" : "offchain_ready",
+        title: `${evolution.cultureName} ${evolution.stage.name}`,
+        cultureId: evolution.cultureId,
+        evolutionStage: evolution.stage.id,
+        progress: evolution.progress,
+        metadata: evolution.metadata,
+        xrpl: evolution.xrpl,
         createdAt: today
       });
     });
@@ -696,6 +998,17 @@
     return getState().claimRecords.filter(r => r.xrpl && r.xrpl.eligible);
   }
 
+  function exportRewardMetadata(options = {}) {
+    const records = getState().claimRecords || [];
+    const filtered = options.xrplReadyOnly
+      ? records.filter(record => record.xrpl && record.xrpl.eligible)
+      : records;
+
+    return filtered
+      .map(record => record.metadata)
+      .filter(Boolean);
+  }
+
   function getWalletLink() {
     return safeJSONParse(localStorage.getItem(STORAGE.wallet), null);
   }
@@ -721,7 +1034,7 @@
     getCompletedLessons, getDailyDates, calculateRewards, flattenData, getFlatData,
     completeLesson, checkInToday,
     toggleLesson, uncompleteLesson, setCompletedLessons,
-    exportXRPLReadyClaims, getWalletLink, setWalletLink,
+    exportXRPLReadyClaims, exportRewardMetadata, getWalletLink, setWalletLink,
     resetRewardsOnly
   };
 

@@ -65,7 +65,16 @@
   const MANA_KEY = 'cv_mana';
   const THEME_KEY = 'lkp_profile_theme';
   const BACKGROUND_VARIANT_KEY = 'lkp_profile_bg_variant';
+  const PROFILE_PREFERENCES_KEY = 'lkp_profile_preferences_v1';
+  const LAST_LESSON_KEY = 'lkp_last_lesson_id_v1';
+  const REFLECTIONS_KEY = 'lkp_lesson_reflections_v2';
   const BACKGROUND_ROTATION_MS = 90000;
+
+  const DEFAULT_PROFILE_PREFERENCES = {
+    fontScale: 1,
+    reducedMotion: false,
+    highContrast: false
+  };
 
   /* ═══════════════════════════════════════════════════════════════════════
      REALM DATA
@@ -126,6 +135,18 @@
       paletteName: 'Command Gold / Violet',
       adminOnly: true,
       progressScope: 'admin'
+    },
+    {
+      id: 'presentation',
+      name: 'Pitch Deck',
+      shortName: 'Pitch',
+      desc: 'Immersive presentation page for demos, funder conversations, and community previews.',
+      href: 'presentation.html',
+      color: '#f0c96a',
+      secondaryColor: '#8fa0ff',
+      paletteName: 'Pitch Gold / Violet',
+      adminOnly: true,
+      progressScope: 'presentation'
     },
     {
       id: 'ikehub',
@@ -322,6 +343,7 @@
     lessons: [],
     contentData: null,
     sessionReady: false,
+    preferences: readJSON(PROFILE_PREFERENCES_KEY, DEFAULT_PROFILE_PREFERENCES),
 
     filters: {
       search: '',
@@ -437,6 +459,179 @@
     showToast._timer = setTimeout(() => {
       toast.classList.remove('is-visible');
     }, 3200);
+  }
+
+  function normalizeProfilePreferences(input = {}) {
+    const fontScale = Number(input.fontScale);
+
+    return {
+      ...DEFAULT_PROFILE_PREFERENCES,
+      ...input,
+      fontScale: Number.isFinite(fontScale)
+        ? Math.min(1.22, Math.max(0.9, fontScale))
+        : DEFAULT_PROFILE_PREFERENCES.fontScale,
+      reducedMotion: Boolean(input.reducedMotion),
+      highContrast: Boolean(input.highContrast)
+    };
+  }
+
+  function getProfilePreferences() {
+    const local = readJSON(PROFILE_PREFERENCES_KEY, {});
+    const remote =
+      state.profile &&
+      state.profile.preferences &&
+      typeof state.profile.preferences === 'object'
+        ? state.profile.preferences
+        : {};
+
+    return normalizeProfilePreferences({
+      ...DEFAULT_PROFILE_PREFERENCES,
+      ...local,
+      ...(state.user ? remote : {})
+    });
+  }
+
+  function saveLocalPreferences(preferences) {
+    const next = normalizeProfilePreferences(preferences);
+    state.preferences = next;
+    writeJSON(PROFILE_PREFERENCES_KEY, next);
+    return next;
+  }
+
+  function renderPreferenceControls(preferences = getProfilePreferences()) {
+    setText('#fontScaleLabel', `Text scale ${Math.round(preferences.fontScale * 100)}%`);
+    setText('#reducedMotionLabel', preferences.reducedMotion ? 'Motion reduced' : 'Motion on');
+    setText('#highContrastLabel', preferences.highContrast ? 'High contrast on' : 'Standard contrast');
+
+    $all('[data-settings-action="reduced-motion"]').forEach(btn => {
+      btn.classList.toggle('is-active', preferences.reducedMotion);
+    });
+
+    $all('[data-settings-action="high-contrast"]').forEach(btn => {
+      btn.classList.toggle('is-active', preferences.highContrast);
+    });
+
+    const wallet = window.LKPRewards?.getWalletLink?.() || null;
+    setText(
+      '#walletStatusLabel',
+      wallet?.address
+        ? `${wallet.network || 'XRPL'} wallet staged`
+        : 'Wallet not connected yet.'
+    );
+  }
+
+  function applyProfilePreferences(preferences = getProfilePreferences()) {
+    const next = normalizeProfilePreferences(preferences);
+    state.preferences = next;
+
+    document.documentElement.style.setProperty('--profile-user-font-scale', String(next.fontScale));
+    document.body.classList.toggle('profile-reduced-motion', next.reducedMotion);
+    document.body.classList.toggle('profile-high-contrast', next.highContrast);
+
+    renderPreferenceControls(next);
+    return next;
+  }
+
+  async function persistProfilePreferences(patch = {}) {
+    const next = saveLocalPreferences({
+      ...getProfilePreferences(),
+      ...patch
+    });
+
+    applyProfilePreferences(next);
+
+    if (state.profile) {
+      state.profile = {
+        ...state.profile,
+        preferences: next
+      };
+      writeJSON(PROFILE_CACHE_KEY, state.profile);
+    }
+
+    if (state.user && window.LKPProfileSync?.updateProfile) {
+      try {
+        const result = await window.LKPProfileSync.updateProfile({ preferences: next });
+        if (result?.error) throw result.error;
+        showToast('Preference saved and synced.');
+      } catch (err) {
+        console.warn('[Profile] Preference sync failed:', err.message);
+        showToast('Preference saved locally. Cloud sync will retry later.');
+      }
+    } else {
+      showToast('Preference saved on this device.');
+    }
+
+    return next;
+  }
+
+  function downloadJSON(filename, payload) {
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+      type: 'application/json'
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function exportProfileData() {
+    const displayName =
+      state.profile?.display_name ||
+      state.profile?.handle ||
+      state.user?.email ||
+      'wayfinder';
+
+    const safeName = normalizeHandle(displayName) || 'wayfinder';
+    const rewardState = window.LKPRewards?.getState?.({ recalculate: true }) || null;
+
+    downloadJSON(`lkp-${safeName}-profile-export.json`, {
+      exportedAt: new Date().toISOString(),
+      profile: state.profile || null,
+      preferences: getProfilePreferences(),
+      completedLessons: state.completed || [],
+      startedLessons: getStartedLessons(),
+      lastLessonId: localStorage.getItem(LAST_LESSON_KEY) || null,
+      mana: state.mana || 0,
+      reflections: readJSON(REFLECTIONS_KEY, {}),
+      rewards: rewardState,
+      xrplReadyClaims: window.LKPRewards?.exportXRPLReadyClaims?.() || [],
+      nftMetadataDrafts: window.LKPRewards?.exportRewardMetadata?.() || []
+    });
+
+    showToast('Profile export downloaded.');
+  }
+
+  function clearLocalProfileCache() {
+    const confirmed = window.confirm(
+      'Clear this device cache for profile display, rewards cache, cursor/settings, and resume state? Completed lessons and reflections stay protected.'
+    );
+
+    if (!confirmed) return;
+
+    [
+      PROFILE_CACHE_KEY,
+      LEGACY_PROFILE_CACHE_KEY,
+      PROFILE_PREFERENCES_KEY,
+      STARTED_KEY,
+      LAST_LESSON_KEY,
+      'lkp_rewards_state_v1',
+      'lkp_reward_metadata_v1',
+      'lkp_rewards_daily_v1',
+      'lkp_wallet_link_v1'
+    ].forEach(key => localStorage.removeItem(key));
+
+    state.preferences = { ...DEFAULT_PROFILE_PREFERENCES };
+    applyProfilePreferences(state.preferences);
+    state.started = getStartedLessons();
+    renderDashboard();
+    renderRewardsPanel();
+    renderLessonPath();
+    rebuildProfileGalaxyForRole();
+    showToast(state.user ? 'Local cache cleared. Sync refresh can restore cloud data.' : 'Local cache cleared.');
   }
 
   function normalizeHandle(handle) {
@@ -864,7 +1059,7 @@
   function getStartedLessons() {
     const explicit = readJSON(STARTED_KEY, []);
     const started = Array.isArray(explicit) ? explicit : [];
-    const lastLesson = localStorage.getItem('lkp_last_lesson_id_v1');
+    const lastLesson = localStorage.getItem(LAST_LESSON_KEY);
     return [...new Set([...started, ...(lastLesson ? [lastLesson] : []), ...(state.completed || [])].filter(Boolean))];
   }
 
@@ -1588,7 +1783,8 @@
       home_realm: homeRealm,
       avatar_url: avatarUrl || null,
       bio: bio || null,
-      role: state.profile?.role || 'user'
+      role: state.profile?.role || 'user',
+      preferences: getProfilePreferences()
     };
 
     if (!state.user || !supabaseClient) {
@@ -1611,7 +1807,8 @@
         handle:       handle      || null,
         home_realm:   homeRealm,
         avatar_url:   avatarUrl   || null,
-        bio:          bio         || null
+        bio:          bio         || null,
+        preferences:  getProfilePreferences()
       };
 
       // Guard: don't upsert if email is still blank
@@ -1803,6 +2000,7 @@
     );
 
     setText('#passportRoleChip', isAdmin ? role.toUpperCase() : state.user ? 'USER' : 'GUEST');
+    setText('#profileSettingsAdminRole', `${role.toUpperCase()} role active`);
     setText('#profileAvatarInitials', initialsFromName(displayName));
 
     const avatar = $('#profileAvatar');
@@ -1843,10 +2041,17 @@
     setValue('#editBio', profile.bio || '');
 
     setHidden('#profileSignOutBtn', !state.user);
+    setHidden('#profileAdminNavLink', !isAdmin);
+    setHidden('#profileSettingsAdminSection', !isAdmin);
     setHidden('#authPanel', Boolean(state.user));
-    setHidden('#adminPanel', !isAdmin);
+    setHidden('#adminPanel', true);
 
     renderBadges(progress, isAdmin, role);
+    const preferences = saveLocalPreferences(getProfilePreferences());
+    applyProfilePreferences(preferences);
+    renderContinueCard();
+    renderEvolutionLog();
+    renderReflectionPreview();
     resizeProfileGalaxy();
   }
 
@@ -1920,6 +2125,8 @@
 
     const badges = summary.badges || [];
 
+    renderNextBadgeCard(summary);
+
     setHTML(
       '#rewardBadges',
       badges.length
@@ -1971,6 +2178,229 @@
         ${escapeHTML(badge.label)}
       </span>
     `).join('');
+  }
+
+  function getContinueLesson() {
+    const lessons = state.lessons || [];
+    const completedSet = new Set(state.completed || []);
+    const startedSet = new Set(getStartedLessons());
+    const lastLessonId = localStorage.getItem(LAST_LESSON_KEY);
+
+    if (!lessons.length) return null;
+
+    const lastLesson = lessons.find(lesson => lesson.id === lastLessonId);
+    if (lastLesson && !completedSet.has(lastLesson.id)) {
+      return {
+        lesson: lastLesson,
+        reason: 'Resume where you left off'
+      };
+    }
+
+    const startedOpen = lessons.find(lesson => startedSet.has(lesson.id) && !completedSet.has(lesson.id));
+    if (startedOpen) {
+      return {
+        lesson: startedOpen,
+        reason: 'Continue an active path'
+      };
+    }
+
+    const nextOpen = lessons.find(lesson => !completedSet.has(lesson.id));
+    if (nextOpen) {
+      return {
+        lesson: nextOpen,
+        reason: completedSet.size ? 'Next open lesson' : 'Start your first lesson'
+      };
+    }
+
+    return {
+      lesson: lessons[0],
+      reason: 'All current lessons complete',
+      completedAll: true
+    };
+  }
+
+  function renderContinueCard() {
+    const result = getContinueLesson();
+    const action = $('#continueAction');
+    const progressBar = $('#continueProgress');
+    const total = state.lessons.length || 0;
+    const completed = state.completed.length || 0;
+    const progress = total ? Math.round((completed / total) * 100) : 0;
+
+    if (!result?.lesson) {
+      setText('#continueKicker', 'Cultural Journeys are loading');
+      setText('#continueTitle', 'Open the lesson library');
+      setText('#continueMeta', 'Your next lesson appears here after the lesson data finishes loading.');
+      setText('#continueBadgeHint', 'Profile progress, badges, and galaxy evolution will activate after study begins.');
+      if (action) {
+        action.href = 'LKP/lessons.html';
+        action.textContent = 'Open Cultural Journeys';
+      }
+      if (progressBar) progressBar.style.width = '0%';
+      return;
+    }
+
+    const lesson = result.lesson;
+    const lessonUrl = lesson.lessonUrl || buildLessonUrl(lesson);
+
+    setText('#continueKicker', result.reason);
+    setText('#continueTitle', result.completedAll ? 'Review completed journeys' : lesson.title);
+    setText(
+      '#continueMeta',
+      `${lesson.cultureName || 'Culture'} · ${lesson.moduleTitle || 'Module'} · ${lesson.readTime || 'Lesson'}`
+    );
+    setText(
+      '#continueBadgeHint',
+      result.completedAll
+        ? 'New cultures and modules will create the next planet evolution path.'
+        : `${completed}/${total} lessons complete · finish lessons inside Cultural Journeys to earn badges.`
+    );
+
+    if (action) {
+      action.href = result.completedAll ? 'LKP/lessons.html' : lessonUrl;
+      action.textContent = result.completedAll ? 'Review Journeys' : 'Continue Lesson';
+    }
+
+    if (progressBar) progressBar.style.width = `${progress}%`;
+  }
+
+  function getEvolutionStage(level) {
+    const stages = {
+      1: {
+        name: 'Young Planet',
+        desc: 'A culture world has appeared in your galaxy.'
+      },
+      2: {
+        name: 'First Star',
+        desc: 'Completion energy has lit the path around this world.'
+      },
+      3: {
+        name: 'Moon Keeper',
+        desc: 'Mastered topics are beginning to orbit as moons.'
+      },
+      4: {
+        name: 'Ringed World',
+        desc: 'Depth and repetition are forming visible rings.'
+      },
+      5: {
+        name: 'Constellation World',
+        desc: 'This culture path now carries companion bodies and advanced proof.'
+      }
+    };
+
+    return stages[level] || stages[1];
+  }
+
+  function renderEvolutionLog() {
+    const items = getCultureProgressItems()
+      .sort((a, b) => b.progress - a.progress || b.completedCount - a.completedCount)
+      .slice(0, 6);
+
+    if (!items.length) {
+      setHTML(
+        '#evolutionLogList',
+        `<div class="profile-note">Start a lesson and your first culture planet will appear here.</div>`
+      );
+      return;
+    }
+
+    setHTML(
+      '#evolutionLogList',
+      items.map(item => {
+        const stage = getEvolutionStage(item.level);
+        const moons = item.moonCount
+          ? `${item.moonCount} moon${item.moonCount === 1 ? '' : 's'}`
+          : 'Moons pending';
+        return `
+          <article class="profile-evolution-item" style="--culture-color:${escapeHTML(item.color)}">
+            <span class="profile-evolution-item__orb">${escapeHTML(item.emoji || '\u2736')}</span>
+            <div>
+              <strong>${escapeHTML(item.name)}</strong>
+              <small>${escapeHTML(stage.name)} · ${item.completedCount}/${item.totalLessons} lessons · ${escapeHTML(moons)}</small>
+              <p>${escapeHTML(stage.desc)}</p>
+            </div>
+          </article>
+        `;
+      }).join('')
+    );
+  }
+
+  function renderReflectionPreview() {
+    const reflections = readJSON(REFLECTIONS_KEY, {});
+    const lessonById = new Map((state.lessons || []).map(lesson => [lesson.id, lesson]));
+    const entries = [];
+
+    Object.entries(reflections || {}).forEach(([lessonId, answers]) => {
+      if (!answers || typeof answers !== 'object') return;
+
+      Object.entries(answers).forEach(([promptIndex, value]) => {
+        const text = String(value || '').trim();
+        if (!text) return;
+
+        const lesson = lessonById.get(lessonId);
+        entries.push({
+          lessonId,
+          promptIndex,
+          text,
+          lessonTitle: lesson?.title || lessonId,
+          cultureName: lesson?.cultureName || 'Cultural Journey',
+          lessonUrl: lesson?.lessonUrl || (lesson ? buildLessonUrl(lesson) : 'LKP/lessons.html')
+        });
+      });
+    });
+
+    const latest = entries.slice(-3).reverse();
+
+    if (!latest.length) {
+      setHTML(
+        '#reflectionPreviewList',
+        `<div class="profile-note">Write reflections inside lessons and your latest entries will appear here.</div>`
+      );
+      return;
+    }
+
+    setHTML(
+      '#reflectionPreviewList',
+      latest.map(entry => `
+        <article class="profile-reflection-item">
+          <span>${escapeHTML(entry.cultureName)}</span>
+          <strong>${escapeHTML(entry.lessonTitle)}</strong>
+          <p>${escapeHTML(entry.text.length > 180 ? `${entry.text.slice(0, 177)}...` : entry.text)}</p>
+          <a href="${escapeHTML(entry.lessonUrl)}">Return to lesson</a>
+        </article>
+      `).join('')
+    );
+  }
+
+  function renderNextBadgeCard(summary = {}) {
+    const library = window.LKPRewards?.BADGE_LIBRARY || [];
+    const earned = new Set((summary.badges || []).map(badge => badge.id));
+    const nextBadge = library.find(badge => !earned.has(badge.id));
+
+    if (!nextBadge) {
+      setHTML(
+        '#nextBadgeCard',
+        `<div class="rewards-next-badge__inner is-complete">
+          <span>\u2726</span>
+          <div>
+            <strong>Milestone shelf complete</strong>
+            <small>Keep completing lessons to collect lesson and planet evolution badges.</small>
+          </div>
+        </div>`
+      );
+      return;
+    }
+
+    setHTML(
+      '#nextBadgeCard',
+      `<div class="rewards-next-badge__inner">
+        <span>${escapeHTML(nextBadge.icon || '\u2736')}</span>
+        <div>
+          <strong>Next Badge: ${escapeHTML(nextBadge.name)}</strong>
+          <small>${escapeHTML(nextBadge.desc || 'Continue learning to unlock this badge.')}</small>
+        </div>
+      </div>`
+    );
   }
 
   function populateCultureFilter() {
@@ -2113,13 +2543,12 @@
             <small>${escapeHTML(lesson.cultureName)} \u00b7 ${escapeHTML(lesson.moduleTitle)} \u00b7 ${escapeHTML(lesson.readTime || 'Lesson')}</small>
           </a>
 
-          <button
-            class="lesson-row__complete ${completed ? 'is-done' : ''}"
-            type="button"
-            data-toggle-complete="${escapeHTML(lesson.id)}"
+          <span
+            class="lesson-row__status ${completed ? 'is-done' : ''}"
+            title="${completed ? 'Completed through the lesson experience.' : 'Open the lesson to complete it.'}"
           >
-            ${completed ? 'Done' : 'Complete'}
-          </button>
+            ${completed ? 'Completed' : 'In Lesson'}
+          </span>
 
           <a class="lesson-row__open" href="${escapeHTML(lesson.lessonUrl || buildLessonUrl(lesson))}">\u2192</a>
         </article>
@@ -2463,12 +2892,16 @@
       return;
     }
 
-    closeSettingsDrawer();
+    const isInsideSettings = Boolean(target.closest('#profileSettingsDrawer'));
+
+    if (!isInsideSettings) {
+      closeSettingsDrawer();
+    }
 
     window.setTimeout(() => {
       target.scrollIntoView({ behavior: 'smooth', block: 'center' });
       target.focus?.({ preventScroll: true });
-    }, 260);
+    }, isInsideSettings ? 0 : 260);
   }
 
   async function handleSettingsAction(action) {
@@ -2483,12 +2916,66 @@
       return;
     }
 
+    if (action === 'admin-sync') {
+      await syncNow();
+      showToast('Admin profile refreshed.');
+      return;
+    }
+
     if (action === 'galaxy') {
       closeSettingsDrawer();
       window.setTimeout(() => {
         const galaxy = $('#profileGalaxy');
         galaxy?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }, 260);
+      return;
+    }
+
+    if (action === 'font-up') {
+      const prefs = getProfilePreferences();
+      await persistProfilePreferences({
+        fontScale: Math.min(1.22, Math.round((prefs.fontScale + 0.06) * 100) / 100)
+      });
+      return;
+    }
+
+    if (action === 'font-down') {
+      const prefs = getProfilePreferences();
+      await persistProfilePreferences({
+        fontScale: Math.max(0.9, Math.round((prefs.fontScale - 0.06) * 100) / 100)
+      });
+      return;
+    }
+
+    if (action === 'reduced-motion') {
+      const prefs = getProfilePreferences();
+      await persistProfilePreferences({ reducedMotion: !prefs.reducedMotion });
+      return;
+    }
+
+    if (action === 'high-contrast') {
+      const prefs = getProfilePreferences();
+      await persistProfilePreferences({ highContrast: !prefs.highContrast });
+      return;
+    }
+
+    if (action === 'reset-accessibility') {
+      await persistProfilePreferences(DEFAULT_PROFILE_PREFERENCES);
+      return;
+    }
+
+    if (action === 'export-profile') {
+      exportProfileData();
+      return;
+    }
+
+    if (action === 'clear-local-cache') {
+      clearLocalProfileCache();
+      return;
+    }
+
+    if (action === 'wallet-info') {
+      showToast('Wallet connection comes after Digitalverse safety, consent, and XRPL education.');
       return;
     }
   }
@@ -2518,7 +3005,10 @@
       const actionBtn = event.target.closest('[data-settings-action]');
 
       if (actionBtn) {
-        handleSettingsAction(actionBtn.dataset.settingsAction);
+        handleSettingsAction(actionBtn.dataset.settingsAction).catch(err => {
+          console.warn('[Profile] Settings action failed:', err.message);
+          showToast('That setting could not be applied.');
+        });
       }
     });
 
@@ -2570,14 +3060,6 @@
     $('#lessonStatusFilter')?.addEventListener('change', event => {
       state.filters.status = event.target.value;
       renderLessonPath();
-    });
-
-    $('#lessonPathList')?.addEventListener('click', async event => {
-      const btn = event.target.closest('[data-toggle-complete]');
-      if (!btn) return;
-
-      event.preventDefault();
-      await toggleLessonComplete(btn.dataset.toggleComplete);
     });
 
     $('#realmWheel')?.addEventListener('click', event => {
