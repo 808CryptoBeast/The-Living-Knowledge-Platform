@@ -3004,10 +3004,13 @@
     document.documentElement.style.setProperty('--lesson-font-scale', String(state.fontScale));
 
     const welcome = document.getElementById('lessonWelcome');
+    const home = document.getElementById('lessonHome');
     const article = document.getElementById('lessonArticle');
 
     if (welcome) welcome.hidden = true;
+    if (home) home.hidden = true;
     if (article) article.hidden = false;
+    document.body.classList.remove('cv-roadmap-open');
 
     if (article) {
       article.classList.remove('is-transitioning');
@@ -3219,16 +3222,37 @@
 
   function renderWelcome() {
     const welcome = document.getElementById('lessonWelcome');
+    const home = document.getElementById('lessonHome');
     const article = document.getElementById('lessonArticle');
 
     if (welcome) welcome.hidden = false;
+    if (home) home.hidden = false;
     if (article) article.hidden = true;
+    document.body.classList.toggle('cv-roadmap-open', Boolean(welcome));
 
     const skip = document.querySelector('[data-skip-roadmap]');
     if (skip) skip.checked = localStorage.getItem(SKIP_ROADMAP_KEY) === 'true';
 
     state.activeLessonId = null;
     renderLessonTree();
+  }
+
+  function closeRoadmapOverlay() {
+    const welcome = document.getElementById('lessonWelcome');
+    if (welcome) welcome.hidden = true;
+    document.body.classList.remove('cv-roadmap-open');
+  }
+
+  function openRoadmapOverlay() {
+    const welcome = document.getElementById('lessonWelcome');
+    const home = document.getElementById('lessonHome');
+
+    if (home) home.hidden = false;
+    if (welcome) {
+      welcome.hidden = false;
+      document.body.classList.add('cv-roadmap-open');
+      welcome.querySelector('[data-close-roadmap]')?.focus?.();
+    }
   }
 
   let stickyObserver = null;
@@ -3517,6 +3541,21 @@
         return;
       }
 
+      if (event.target.closest('[data-close-roadmap]')) {
+        closeRoadmapOverlay();
+        return;
+      }
+
+      if (event.target.id === 'lessonWelcome') {
+        closeRoadmapOverlay();
+        return;
+      }
+
+      if (event.target.closest('[data-open-roadmap]')) {
+        openRoadmapOverlay();
+        return;
+      }
+
       const startFirst = event.target.closest('[data-start-first-available]');
       if (startFirst) {
         const last = findLesson(localStorage.getItem(LAST_LESSON_KEY) || '');
@@ -3657,6 +3696,11 @@
     });
 
     document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !document.getElementById('lessonWelcome')?.hidden) {
+        closeRoadmapOverlay();
+        return;
+      }
+
       if (!state.activeLessonId) return;
 
       const index = getLessonIndex(state.activeLessonId);

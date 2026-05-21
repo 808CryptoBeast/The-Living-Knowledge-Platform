@@ -42,7 +42,7 @@
   />
 
   <link rel="stylesheet" href="css/lkp-brand.css" />
-  <link rel="stylesheet" href="css/lkp-lessons.css?v=journey-roadmap-3" />
+  <link rel="stylesheet" href="css/lkp-lessons.css?v=journey-roadmap-overlay-1" />
 
   <!-- Supabase browser config.
        Replace these with your real project values.
@@ -156,9 +156,36 @@
     <!-- Main content -->
     <main class="lkp-lesson-main" id="lessonMain">
 
-      <!-- Welcome screen -->
-      <div class="cv-lesson-welcome" id="lessonWelcome">
+      <!-- Cultural Journeys landing surface -->
+      <section class="cv-lesson-home" id="lessonHome" aria-label="Cultural Journeys home" hidden>
+        <div class="cv-lesson-home__inner">
+          <p class="cv-lesson-welcome__eyebrow">Cultural Journeys</p>
+          <h1>Choose a pathway.</h1>
+          <p>
+            Use the culture navigation to enter a lesson, resume your last journey,
+            or open the roadmap for the full view of what this learning section holds.
+          </p>
+
+          <div class="cv-lesson-welcome__actions">
+            <button class="cv-welcome-primary" type="button" data-start-first-available>
+              <i class="fas fa-compass"></i>
+              Resume Journey
+            </button>
+            <button class="cv-welcome-secondary" type="button" data-open-roadmap>
+              <i class="fas fa-map"></i>
+              View Roadmap
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Roadmap overlay -->
+      <div class="cv-lesson-welcome" id="lessonWelcome" role="dialog" aria-modal="true" aria-label="Cultural Journeys Roadmap" hidden>
         <div class="cv-lesson-welcome__inner">
+          <button class="cv-roadmap-close" type="button" data-close-roadmap aria-label="Close Cultural Journeys roadmap">
+            <i class="fas fa-xmark"></i>
+          </button>
+
           <img
             class="cv-lesson-welcome__icon"
             src="assets/images/kaikeola.png"
@@ -300,7 +327,7 @@
   <script src="js/lkp-kumulipo-wa-ui.js?v=wa-ui-dropdown-1" defer></script>
 
   <!-- Lesson renderer with cloud sync -->
-  <script src="js/lkp-lessons.js?v=v36-xrpl-roadmap" defer></script>
+  <script src="js/lkp-lessons.js?v=v37-roadmap-overlay" defer></script>
 
 </body>
 </html>
