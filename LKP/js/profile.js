@@ -1985,6 +1985,7 @@
     state.isAdmin = isAdmin;
 
     document.body.classList.toggle('profile-is-signed-in', Boolean(state.user));
+    document.body.classList.toggle('profile-is-guest', !state.user);
     document.body.classList.toggle('profile-is-admin', Boolean(isAdmin));
 
     setText('#profileDisplayName', displayName);
@@ -2024,6 +2025,14 @@
     setText('#statLessons', totalLessons);
     setText('#statProgress', `${progress}%`);
     setText('#statProgressMirror', `${progress}%`);
+
+    setText('#pathTitle', state.user ? 'Learning Path' : 'Cultures & Lessons');
+    setText(
+      '#pathIntro',
+      state.user
+        ? 'Filter lessons and continue learning. Completion happens inside each lesson after study.'
+        : 'Browse the living lesson map as a guest. Open a culture path when you are ready to begin.'
+    );
 
     const ring = $('#passportRingProgress');
 
@@ -3028,6 +3037,24 @@
     $('#profileAuthForm')?.addEventListener('submit', async event => {
       event.preventDefault();
       await signIn();
+    });
+
+    $('#authPasswordToggle')?.addEventListener('click', () => {
+      const passwordInput = $('#authPassword');
+      const toggle = $('#authPasswordToggle');
+      const icon = toggle?.querySelector('i');
+
+      if (!passwordInput || !toggle) return;
+
+      const isHidden = passwordInput.type === 'password';
+      passwordInput.type = isHidden ? 'text' : 'password';
+      toggle.setAttribute('aria-pressed', String(isHidden));
+      toggle.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+
+      if (icon) {
+        icon.classList.toggle('fa-eye', !isHidden);
+        icon.classList.toggle('fa-eye-slash', isHidden);
+      }
     });
 
     $('#signUpBtn')?.addEventListener('click', async () => {

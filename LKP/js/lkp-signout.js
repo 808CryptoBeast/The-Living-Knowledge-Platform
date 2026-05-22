@@ -30,11 +30,49 @@
   const DEFAULT_REDIRECT = "index.html";
   const SIGNOUT_OVERLAY_ID = "lkp-signout-overlay";
   const SIGNIN_OVERLAY_ID  = "lkp-signin-overlay";
+  const SIGNOUT_TIMEOUT_MS = 4500;
 
   /* ── Supabase resolver ───────────────────────────────────────────────── */
 
   function getSupabase() {
     return window._lkpSupaClient || window.LKP_SUPABASE || window._supaClient || null;
+  }
+
+  function withTimeout(promise, ms, label) {
+    let timer;
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`${label} timed out`)), ms);
+    });
+
+    return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+  }
+
+  function removeStoredAuthTokens(storage) {
+    if (!storage) return;
+
+    for (let i = storage.length - 1; i >= 0; i -= 1) {
+      const key = storage.key(i);
+      if (!key) continue;
+
+      if (
+        key === "supabase.auth.token" ||
+        (key.startsWith("sb-") && key.endsWith("-auth-token"))
+      ) {
+        try { storage.removeItem(key); } catch {}
+      }
+    }
+  }
+
+  function clearLocalSignOutState() {
+    [
+      "cv_completed",
+      "cv_mana",
+      "lkp_rewards_state_v1",
+      "lkp_rewards_daily_v1"
+    ].forEach(k => { try { localStorage.removeItem(k); } catch {} });
+
+    try { removeStoredAuthTokens(localStorage); } catch {}
+    try { removeStoredAuthTokens(sessionStorage); } catch {}
   }
 
   /* ══════════════════════════════════════════════════════════════════════
@@ -475,17 +513,18 @@
 
     try {
       const supa = getSupabase();
-      if (supa) await supa.auth.signOut();
-
-      ["cv_completed","cv_mana","lkp_rewards_state_v1","lkp_rewards_daily_v1"]
-        .forEach(k => { try { localStorage.removeItem(k); } catch {} });
+      if (supa) {
+        await withTimeout(supa.auth.signOut(), SIGNOUT_TIMEOUT_MS, "Supabase sign-out");
+      }
     } catch (err) {
       console.warn("[LKP SignOut] error:", err.message);
+    } finally {
+      clearLocalSignOutState();
     }
 
     await new Promise(r => setTimeout(r, 1100));
     stopStars();
-    window.location.href = redirect || DEFAULT_REDIRECT;
+    window.location.replace(redirect || DEFAULT_REDIRECT);
   }
 
   /* ══════════════════════════════════════════════════════════════════════
@@ -586,7 +625,7 @@
     // ── Auto-wire Profile page sign-out button ──
     const profileBtn = document.getElementById("profileSignOutBtn");
     if (profileBtn && !profileBtn.dataset.lkpSignoutWired) {
-      profileBtn.dataset.lkpSignoutRedirect = "index.html";
+      profileBtn.dataset.lkpSignoutRedirect = "profile.html";
       profileBtn.dataset.lkpSignoutConfirm  = "true";
       wireSignOutButton(profileBtn);
     }
@@ -604,7 +643,7 @@
 
       const profileBtnLate = document.getElementById("profileSignOutBtn");
       if (profileBtnLate && !profileBtnLate.dataset.lkpSignoutWired) {
-        profileBtnLate.dataset.lkpSignoutRedirect = "index.html";
+        profileBtnLate.dataset.lkpSignoutRedirect = "profile.html";
         profileBtnLate.dataset.lkpSignoutConfirm  = "true";
         wireSignOutButton(profileBtnLate);
       }

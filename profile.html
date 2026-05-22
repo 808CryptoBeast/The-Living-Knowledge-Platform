@@ -29,8 +29,8 @@
   />
 
   <link rel="stylesheet" href="LKP/css/lkp-brand.css" />
-  <link rel="stylesheet" href="LKP/css/lkp-cursor.css?v=cursor-1" />
-  <link rel="stylesheet" href="LKP/css/profile.css?v=user-profile-1" />
+  <link rel="stylesheet" href="LKP/css/lkp-cursor.css?v=cursor-2" />
+  <link rel="stylesheet" href="LKP/css/profile.css?v=user-profile-2" />
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -58,12 +58,12 @@
   <script defer src="LKP/js/lkp-profile-sync.js?v=profile-sync-1"></script>
 
   <!-- Sign out helper and main profile renderer -->
-  <script defer src="LKP/js/lkp-signout.js?v=signout-1"></script>
-  <script defer src="LKP/js/lkp-cursor.js?v=cursor-1"></script>
-  <script defer src="LKP/js/profile.js?v=user-profile-1"></script>
+  <script defer src="LKP/js/lkp-signout.js?v=signout-2"></script>
+  <script defer src="LKP/js/lkp-cursor.js?v=cursor-2"></script>
+  <script defer src="LKP/js/profile.js?v=user-profile-2"></script>
 </head>
 
-<body class="profile-page profile-theme-dark" data-time-phase="night" data-bg-variant="0">
+<body class="profile-page profile-theme-dark profile-is-guest" data-time-phase="night" data-bg-variant="0">
   <div class="profile-bg" aria-hidden="true">
     <div class="profile-bg__sky"></div>
     <div class="profile-bg__image"></div>
@@ -310,7 +310,7 @@
           <span class="profile-card-icon">◈</span>
           <div>
             <h2>Enter Your Passport</h2>
-            <p>Use Supabase email/password login for your learning profile.</p>
+            <p>Sign in to sync your learning profile across devices.</p>
           </div>
         </div>
 
@@ -334,13 +334,24 @@
           />
 
           <label for="authPassword">Password</label>
-          <input
-            id="authPassword"
-            name="authPassword"
-            type="password"
-            autocomplete="current-password"
-            placeholder="Your password"
-          />
+          <div class="profile-password-field">
+            <input
+              id="authPassword"
+              name="authPassword"
+              type="password"
+              autocomplete="current-password"
+              placeholder="Your password"
+            />
+            <button
+              id="authPasswordToggle"
+              class="profile-password-toggle"
+              type="button"
+              aria-label="Show password"
+              aria-pressed="false"
+            >
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
 
           <button class="profile-main-btn" type="submit">
             <i class="fas fa-user-astronaut"></i> Sign In
@@ -352,8 +363,8 @@
         </form>
 
         <p class="profile-note">
-          After your account is created, your Supabase profile row can be upgraded to
-          <strong>owner</strong> or <strong>admin</strong> in the database.
+          Explore as a guest, or create a profile when you are ready to carry your
+          passport, progress, and reflections across devices.
         </p>
       </aside>
 
@@ -710,8 +721,8 @@
           <div class="profile-card-head">
             <span class="profile-card-icon">🌌</span>
             <div>
-              <h2>Learning Path</h2>
-              <p>Filter lessons and continue learning. Completion happens inside each lesson after study.</p>
+              <h2 id="pathTitle">Learning Path</h2>
+              <p id="pathIntro">Filter lessons and continue learning. Completion happens inside each lesson after study.</p>
             </div>
           </div>
 

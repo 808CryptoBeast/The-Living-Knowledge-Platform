@@ -28,6 +28,7 @@
 
   const DEFAULT_REDIRECT = "index.html";
   const OVERLAY_ID       = "lkp-signout-overlay";
+  const SIGNOUT_TIMEOUT_MS = 4500;
 
   /* ── Resolve Supabase client ─────────────────────────────────────────── */
 
@@ -38,6 +39,45 @@
       window._supaClient     ||
       null
     );
+  }
+
+  function withTimeout(promise, ms, label) {
+    let timer;
+    const timeout = new Promise((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`${label} timed out`)), ms);
+    });
+
+    return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+  }
+
+  function removeStoredAuthTokens(storage) {
+    if (!storage) return;
+
+    for (let i = storage.length - 1; i >= 0; i -= 1) {
+      const key = storage.key(i);
+      if (!key) continue;
+
+      if (
+        key === "supabase.auth.token" ||
+        (key.startsWith("sb-") && key.endsWith("-auth-token"))
+      ) {
+        try { storage.removeItem(key); } catch {}
+      }
+    }
+  }
+
+  function clearLocalSignOutState() {
+    [
+      "cv_completed",
+      "cv_mana",
+      "lkp_rewards_state_v1",
+      "lkp_rewards_daily_v1"
+    ].forEach(k => {
+      try { localStorage.removeItem(k); } catch {}
+    });
+
+    try { removeStoredAuthTokens(localStorage); } catch {}
+    try { removeStoredAuthTokens(sessionStorage); } catch {}
   }
 
   /* ── CSS injected once ───────────────────────────────────────────────── */
@@ -517,7 +557,7 @@
     try {
       const supa = getSupabase();
       if (supa) {
-        await supa.auth.signOut();
+        await withTimeout(supa.auth.signOut(), SIGNOUT_TIMEOUT_MS, "Supabase sign-out");
       }
 
       // Also clear local LKP caches so the next user starts clean
@@ -536,12 +576,14 @@
       // Continue to redirect anyway — don't trap the user
     }
 
+    clearLocalSignOutState();
+
     // Let the overlay linger for 1.1s so the animation reads properly
     await new Promise(r => setTimeout(r, 1100));
 
     stopStars();
 
-    window.location.href = redirect || DEFAULT_REDIRECT;
+    window.location.replace(redirect || DEFAULT_REDIRECT);
   }
 
   /* ── Wire up buttons ─────────────────────────────────────────────────── */
