@@ -298,7 +298,32 @@
     }
   }
 
-  async function completeLesson(lesson) {
+  async function completeLesson(lesson, options = {}) {
+    if (options.source !== 'lesson-page') {
+      console.warn('[LKP Profile Sync] Completion blocked outside lesson page:', lesson?.id);
+      return {
+        synced: false,
+        completed: false,
+        blocked: true,
+        reason: 'lesson_page_required'
+      };
+    }
+
+    const requiredProgress = Number(options.requiredProgress || 70);
+    const readProgress = Number(options.readProgress || 0);
+
+    if (readProgress < requiredProgress) {
+      console.warn('[LKP Profile Sync] Completion blocked before reading threshold:', lesson?.id);
+      return {
+        synced: false,
+        completed: false,
+        blocked: true,
+        reason: 'read_progress_required',
+        requiredProgress,
+        readProgress
+      };
+    }
+
     const supabase = getSupabaseClient();
 
     if (!supabase || !state.user || !lesson?.id) {

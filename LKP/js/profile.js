@@ -28,7 +28,7 @@
    3. hydrateLessonsFromData() calls bootRewards() not bare LKPRewards.init()
    4. signIn()/signUp() show LKPSignOut loading spinner + welcome animation
    5. #profileSignOutBtn listener removed from bindUI() — lkp-signout.js wires it
-   6. lkp_user_progress table, await LKPRewards.completeLesson(), bootRewards on auth
+   6. Lesson completion is locked to lesson pages; profile shortcuts redirect into lessons.
 ═══════════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -603,6 +603,65 @@
     });
 
     showToast('Profile export downloaded.');
+  }
+
+  function exportNftMetadataDrafts(options = {}) {
+    const xrplReadyOnly = Boolean(options.xrplReadyOnly);
+    const metadata = window.LKPRewards?.exportRewardMetadata?.({ xrplReadyOnly }) || [];
+    const label = xrplReadyOnly ? 'xrpl-ready-metadata' : 'nft-metadata-drafts';
+
+    downloadJSON(`lkp-${label}.json`, {
+      exportedAt: new Date().toISOString(),
+      schema: 'lkp.reward.metadata.v2',
+      xrplReadyOnly,
+      count: metadata.length,
+      metadata
+    });
+
+    showToast(
+      xrplReadyOnly
+        ? 'XRPL-ready metadata export downloaded.'
+        : 'NFT metadata draft export downloaded.'
+    );
+  }
+
+  function exportXrplReadyClaims() {
+    const claims = window.LKPRewards?.exportXRPLReadyClaims?.() || [];
+
+    downloadJSON('lkp-xrpl-ready-claims.json', {
+      exportedAt: new Date().toISOString(),
+      schema: 'lkp.xrpl.claims.v1',
+      count: claims.length,
+      claims
+    });
+
+    showToast('XRPL-ready claim export downloaded.');
+  }
+
+  function stageXrplWallet() {
+    const existing = window.LKPRewards?.getWalletLink?.() || null;
+    const address = window.prompt(
+      'Enter a future XRPL wallet address for staged credentials. This does not connect or authorize a wallet.',
+      existing?.address || ''
+    );
+
+    if (address === null) return;
+
+    const trimmed = address.trim();
+    if (!trimmed) {
+      showToast('No wallet address staged.');
+      return;
+    }
+
+    window.LKPRewards?.setWalletLink?.({
+      address: trimmed,
+      network: 'XRPL',
+      verified: false,
+      note: 'Staged from admin profile credential tools. Wallet connection still requires education and consent.'
+    });
+
+    renderPreferenceControls();
+    showToast('XRPL wallet address staged for future credential planning.');
   }
 
   function clearLocalProfileCache() {
@@ -1855,6 +1914,13 @@
      saveRemoteProgress only called for uncomplete since completeLesson()
      already writes to lkp_user_progress for the complete path. */
   async function toggleLessonComplete(lessonId) {
+    const lesson = state.lessons.find(item => item.id === lessonId);
+    const target = lesson?.lessonUrl || (lesson ? buildLessonUrl(lesson) : 'LKP/lessons.html');
+
+    showToast('Open the lesson and progress through the content to earn completion.');
+    window.location.href = target;
+    return;
+
     const currentlyDone = state.completed.includes(lessonId);
     const shouldComplete = !currentlyDone;
 
@@ -1871,7 +1937,7 @@
 
     if (window.LKPRewards) {
       if (shouldComplete && typeof window.LKPRewards.completeLesson === 'function') {
-        rewardResult = await window.LKPRewards.completeLesson(lessonId);
+        rewardResult = { blocked: true, reason: 'lesson_page_required' };
       } else if (!shouldComplete && typeof window.LKPRewards.toggleLesson === 'function') {
         window.LKPRewards.toggleLesson(lessonId, false);
       }
@@ -2053,7 +2119,7 @@
     setHidden('#profileAdminNavLink', !isAdmin);
     setHidden('#profileSettingsAdminSection', !isAdmin);
     setHidden('#authPanel', Boolean(state.user));
-    setHidden('#adminPanel', true);
+    setHidden('#adminPanel', !isAdmin);
 
     renderBadges(progress, isAdmin, role);
     const preferences = saveLocalPreferences(getProfilePreferences());
@@ -2928,6 +2994,21 @@
     if (action === 'admin-sync') {
       await syncNow();
       showToast('Admin profile refreshed.');
+      return;
+    }
+
+    if (action === 'export-nft-metadata') {
+      exportNftMetadataDrafts();
+      return;
+    }
+
+    if (action === 'export-xrpl-claims') {
+      exportXrplReadyClaims();
+      return;
+    }
+
+    if (action === 'stage-xrpl-wallet') {
+      stageXrplWallet();
       return;
     }
 

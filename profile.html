@@ -30,7 +30,7 @@
 
   <link rel="stylesheet" href="LKP/css/lkp-brand.css" />
   <link rel="stylesheet" href="LKP/css/lkp-cursor.css?v=cursor-2" />
-  <link rel="stylesheet" href="LKP/css/profile.css?v=user-profile-3" />
+  <link rel="stylesheet" href="LKP/css/profile.css?v=user-profile-4" />
   <link
     rel="stylesheet"
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
@@ -51,16 +51,16 @@
   <script defer src="LKP/js/lkp-data.js?v=base-2"></script>
   <script defer src="LKP/js/lkp-data-rich-additions.js?v=rich-2"></script>
   <script defer src="LKP/js/lkp-data-primary-sources.js?v=ps-1"></script>
-  <script defer src="LKP/js/lkp-rewards.js?v=rewards-2"></script>
+  <script defer src="LKP/js/lkp-rewards.js?v=rewards-3"></script>
 
   <!-- Cross-device Supabase profile/progress sync.
        Must load before profile.js. -->
-  <script defer src="LKP/js/lkp-profile-sync.js?v=profile-sync-1"></script>
+  <script defer src="LKP/js/lkp-profile-sync.js?v=profile-sync-2"></script>
 
   <!-- Sign out helper and main profile renderer -->
   <script defer src="LKP/js/lkp-signout.js?v=signout-2"></script>
   <script defer src="LKP/js/lkp-cursor.js?v=cursor-2"></script>
-  <script defer src="LKP/js/profile.js?v=user-profile-2"></script>
+  <script defer src="LKP/js/profile.js?v=user-profile-4"></script>
 </head>
 
 <body class="profile-page profile-theme-dark profile-is-guest" data-time-phase="night" data-bg-variant="0">
@@ -244,11 +244,15 @@
           <a href="presentation.html"><span>Open Pitch Deck</span><small>Launch the immersive project presentation for demos and partner conversations.</small></a>
           <a href="LKP/admin.html"><span>Open Admin Dashboard</span><small>Manage lessons, cultures, modules, sources, and galaxy settings.</small></a>
           <a href="LKP/lessons.html"><span>Review Public Lessons</span><small>Check the learner-facing Cultural Journeys experience.</small></a>
+          <button type="button" data-settings-action="export-nft-metadata"><span>Export NFT Metadata Drafts</span><small>Download metadata v2 JSON for badge, lesson, certificate, and evolution records.</small></button>
+          <button type="button" data-settings-action="export-xrpl-claims"><span>Export XRPL-Ready Claims</span><small>Download future-mintable records for module, culture, certificate, and evolution credentials.</small></button>
+          <button type="button" data-settings-action="stage-xrpl-wallet"><span>Stage XRPL Wallet</span><small>Record a future XRPL destination address without connecting a wallet yet.</small></button>
           <button type="button" data-settings-action="admin-sync"><span>Refresh Admin Profile</span><small>Sync records before publishing or reviewing changes.</small></button>
         </div>
         <div class="profile-settings-pill-row profile-settings-admin-pills">
           <span id="profileSettingsAdminRole">Admin role active</span>
-          <span>Publishing tools</span>
+          <span>Metadata v2</span>
+          <span>XRPL prep</span>
           <span>Review flow</span>
         </div>
       </section>
@@ -691,8 +695,8 @@
             <div class="profile-card-head">
               <span class="profile-card-icon">👑</span>
               <div>
-                <h2>Admin Control Deck</h2>
-                <p>Visible only for users with owner/admin role.</p>
+                <h2>Live Pitch View</h2>
+                <p>Quick access for demos while admin tools stay tucked into settings.</p>
               </div>
             </div>
 
@@ -703,16 +707,16 @@
                 <span>Use the immersive presentation page during demos, partner calls, and community previews.</span>
               </a>
 
-              <a href="LKP/admin.html" class="profile-admin-card">
-                <i class="fas fa-screwdriver-wrench"></i>
-                <strong>Open Admin Dashboard</strong>
-                <span>Manage lessons, galaxies, cultures, modules, and sources.</span>
+              <a href="index.html" class="profile-admin-card">
+                <i class="fas fa-circle-nodes"></i>
+                <strong>Launch Galaxy</strong>
+                <span>Open the main landing galaxy exactly as guests and partners experience it.</span>
               </a>
 
               <a href="LKP/lessons.html" class="profile-admin-card">
                 <i class="fas fa-book-open"></i>
-                <strong>Review Lessons</strong>
-                <span>Inspect the public lesson experience.</span>
+                <strong>Cultural Journeys</strong>
+                <span>Jump into the public lesson flow to show cultures, source study, and progress.</span>
               </a>
             </div>
           </section>

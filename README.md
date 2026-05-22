@@ -21,8 +21,10 @@ The current experience includes Kanaka Maoli, Kemet, Dogon, Vedic, Dreamtime, Ma
 - Scholar and Keiki learning modes.
 - Reflection prompts with saved local reflections and sync-ready structure.
 - Lesson completion, Mana, badges, and progress tracking.
+- Completion is locked to lesson pages and requires meaningful read progress before Mana or badges can be earned.
 - Wayfinder Passport profile with a living user galaxy.
 - Culture planets that appear when a learner starts a culture and evolve as lessons are completed.
+- Admin profile pitch mode with quick links to the deck, galaxy, public lessons, metadata exports, and XRPL credential planning tools.
 - Responsive styling across desktop, tablet, and phone, including themed scrollbars and polished navigation.
 
 ## Cultural Journeys
@@ -70,6 +72,8 @@ The user's learning becomes visible as a living galaxy.
 
 The future reward model is designed around care, completion, reflection, and stewardship rather than shallow streak-chasing.
 
+Completion rewards are intentionally gated. A learner can browse lessons and profile lists freely, but Mana, badges, and completion records are only earned from inside a lesson page after progressing through the content. Profile list shortcuts return the learner to the lesson instead of awarding progress directly.
+
 Planned learn-to-earn possibilities include:
 
 - Mana rewards for lesson completion, reflection, and source literacy
@@ -95,6 +99,34 @@ Possible XRPL uses include:
 - transparent reward logic for quests and learning challenges
 
 This layer is future-facing. The current app is functional without a wallet, and cultural learning remains the center of the experience.
+
+## Credential Metadata and NFT Readiness
+
+The rewards engine now prepares metadata drafts with the schema `lkp.reward.metadata.v2`. These records are not minted yet; they are structured so future XRPL or NFT credential work can start from clean, reviewable fields.
+
+Each reward or credential metadata record can include:
+
+- `culture` - culture id and name
+- `module` - module id and title
+- `lesson` - lesson id and title when applicable
+- `source` - source summary and source references
+- `reflectionProof` - response count, local proof digest, and storage reference
+- `timestamp` - credential event timestamp
+- `level` - badge, lesson, or culture evolution level
+- `visualEvolutionState` - planet/evolution state such as stage, moons, rings, nebula clearing, and companion bodies
+- `xrpl` - future XRPL minting hints such as eligibility, network, suggested standard, taxon, and transfer policy
+
+The current NFT path is:
+
+1. Earn records through lesson-page completion, reflection, modules, culture paths, and galaxy evolution.
+2. Review metadata v2 drafts from the admin profile settings drawer.
+3. Export all NFT metadata drafts or only XRPL-ready claim records.
+4. Review cultural source fields, reflection proof boundaries, and community approval needs before minting.
+5. Add wallet education and consent in Digitalverse before connecting or authorizing any wallet.
+6. Pin reviewed metadata and visual assets to durable storage such as IPFS or another approved asset store.
+7. Mint selected records as XRPL NFTs or credentials only after review, consent, and clear non-speculative purpose.
+
+The principle stays the same: credentials should prove learning and stewardship, not turn cultural knowledge into speculation.
 
 ## Digitalverse
 
@@ -127,6 +159,15 @@ The profile area tracks:
 - profile editing
 - sync-ready data structures
 
+For owner/admin users, the profile settings drawer also includes credential workflow helpers:
+
+- export NFT metadata v2 drafts
+- export XRPL-ready claim records
+- stage a future XRPL wallet address without connecting a wallet
+- refresh admin profile data before reviewing or publishing
+
+The main admin profile surface remains pitch-focused, while the deeper publishing, metadata, and XRPL preparation tools live in settings.
+
 ## Tech Stack
 
 - HTML5
@@ -151,6 +192,8 @@ The profile area tracks:
 - `LKP/js/lkp-kumulipo-full-verses.js` - full Kumulipo Wa line pairs
 - `LKP/js/lkp-data-rich-additions.js` - expanded lesson content
 - `LKP/js/lkp-lessons.js` - lesson renderer and controls
+- `LKP/js/lkp-rewards.js` - Mana, badge, metadata, claim, and XRPL-ready reward records
+- `LKP/js/lkp-profile-sync.js` - Supabase-ready profile, progress, and reflection sync
 - `LKP/js/profile.js` - profile logic and user galaxy
 - `LKP/css/lkp-lessons.css` - Cultural Journeys styling
 - `LKP/css/profile.css` - profile and galaxy styling
@@ -174,9 +217,10 @@ This keeps the app deployable on GitHub Pages while leaving room for richer Supa
 - [WA_UI_PREVIEW.md](WA_UI_PREVIEW.md) - Kumulipo Wa interface reference
 - [presentation.html](presentation.html) - interactive web slideshow presentation
 - [PROJECT_PRESENTATION.md](PROJECT_PRESENTATION.md) - shareable presentation and talking points
+- [PRESENTATION_PAGE_PROMPT.md](PRESENTATION_PAGE_PROMPT.md) - build/resume prompt for the web presentation page
 
 ## Project Direction
 
 Ka Paepae Ike Ola is built to honor cultural learning as relationship, not consumption. The platform is designed to keep primary sources visible, make learning progress meaningful, and create an experience where culture, place, ancestry, technology, and responsibility can be explored together.
 
-The next major direction is to connect Cultural Journeys, the personal galaxy, Digitalverse, and XRPL-powered learning credentials into one coherent learning ecosystem.
+The next major direction is to connect Cultural Journeys, the personal galaxy, Digitalverse, admin publishing, metadata review, and XRPL-powered learning credentials into one coherent learning ecosystem.

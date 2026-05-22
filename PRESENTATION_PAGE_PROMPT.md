@@ -24,7 +24,10 @@ Important recent additions:
 - Cultural Journeys landing roadmap
 - option to skip the roadmap and resume the last lesson
 - improved roadmap popup styling
+- lesson completion is locked to lesson pages after meaningful read progress
 - XRPL learn-to-earn roadmap copy
+- reward metadata schema `lkp.reward.metadata.v2`
+- NFT metadata draft and XRPL-ready claim exports from the admin profile settings drawer
 - Digitalverse future section concept
 - expanding cultures including Kanaka Maoli, Kemet, Dogon, Vedic, Dreamtime, Maori, Yoruba, Chinese, and Bridge lessons
 - profile galaxy where cultures become evolving planets
@@ -99,6 +102,7 @@ Use the content from `PROJECT_PRESENTATION.md`, but update it to include:
 9. **Learn-To-Earn**
    - rewards should support depth, care, and reflection
    - Mana for learning and reflection
+   - completion rewards are earned only from inside lesson pages after read progress
    - badges for topic mastery
    - stewardship quests
    - portfolio proof of learning
@@ -107,6 +111,8 @@ Use the content from `PROJECT_PRESENTATION.md`, but update it to include:
 10. **XRPL Layer**
    - planned future blockchain layer using XRPL
    - XRPL is suitable for low-friction learning records, badges, tokens, and future credentialing
+   - metadata v2 already includes culture, lesson, module, source, reflection proof, timestamp, level, and visual evolution state
+   - admin profile settings can export NFT metadata drafts and XRPL-ready claim records
    - wallet use should come after education and consent
    - current app works without wallet connection
 
@@ -133,9 +139,34 @@ Use the content from `PROJECT_PRESENTATION.md`, but update it to include:
    - educator guides
    - community review workflows
    - admin publishing
+   - metadata review workflow for badges, certificates, and culture evolution records
+   - XRPL/NFT credential preparation after consent and wallet education
    - richer galaxy dashboard
    - Digitalverse buildout
    - XRPL-ready credentials
+
+## Credential Metadata / NFT Notes
+
+The rewards engine uses `lkp.reward.metadata.v2` metadata drafts for future credentials. Metadata should be treated as review material until source, reflection, visual asset, community approval, and learner consent requirements are satisfied.
+
+Important fields:
+
+- `culture`
+- `module`
+- `lesson`
+- `source`
+- `reflectionProof`
+- `timestamp`
+- `level`
+- `visualEvolutionState`
+- `xrpl`
+
+Admin profile settings should support this work by keeping exports and XRPL preparation in the drawer, not on the main learner-facing profile surface:
+
+- export all NFT metadata drafts
+- export XRPL-ready claim records
+- stage a future XRPL wallet address without connecting a wallet
+- refresh admin profile/reward state before review
 
 14. **Closing**
    - Knowledge is not only read, but entered, remembered, practiced, and carried forward.

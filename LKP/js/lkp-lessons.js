@@ -21,6 +21,8 @@
   const FONT_SCALE_KEY  = 'lkp_lesson_font_scale_v1';
   const LAST_LESSON_KEY = 'lkp_last_lesson_id_v1';
   const SKIP_ROADMAP_KEY = 'lkp_skip_journey_roadmap_v1';
+  const READ_PROGRESS_KEY = 'lkp_lesson_read_progress_v1';
+  const COMPLETION_REQUIRED_PROGRESS = 70;
   const DEFAULT_MANA    = 10;
 
   /* ══════════════════════════════════════════════════════════════════════
@@ -1059,7 +1061,9 @@
     mode: localStorage.getItem(MODE_KEY) || 'scholar',
     fontScale: Number(localStorage.getItem(FONT_SCALE_KEY) || '1') || 1,
     completed: readJSON(COMPLETED_KEY, []),
+    readProgress: readJSON(READ_PROGRESS_KEY, {}),
     reflections: readJSON(REFLECTIONS_KEY, {}),
+    suppressReadProgress: false,
     sidebarSearch: '',
     openCultures: new Set(),
     closedCultures: new Set()
@@ -1631,6 +1635,60 @@
     }
 
     return state.completed.includes(id);
+  }
+
+  function getLessonReadProgress(lessonId) {
+    const value = Number(state.readProgress?.[lessonId] || 0);
+    return Math.max(0, Math.min(100, Math.round(value) || 0));
+  }
+
+  function getCurrentPageReadProgress() {
+    const max = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+
+    if (max <= 0) return 100;
+
+    return Math.max(0, Math.min(100, Math.round((window.scrollY / max) * 100)));
+  }
+
+  function setLessonReadProgress(lessonId, value) {
+    if (!lessonId) return 0;
+
+    const current = getLessonReadProgress(lessonId);
+    const next = Math.max(current, Math.max(0, Math.min(100, Math.round(Number(value) || 0))));
+
+    if (next !== current) {
+      state.readProgress[lessonId] = next;
+      writeJSON(READ_PROGRESS_KEY, state.readProgress);
+    }
+
+    return next;
+  }
+
+  function canCompleteLesson(lesson) {
+    return Boolean(lesson?.id) && (
+      isCompleted(lesson.id) ||
+      getLessonReadProgress(lesson.id) >= COMPLETION_REQUIRED_PROGRESS
+    );
+  }
+
+  function updateLessonReadProgress(options = {}) {
+    const fill = document.getElementById('progressFill');
+    const percent = getCurrentPageReadProgress();
+
+    if (fill) {
+      fill.style.width = `${percent}%`;
+    }
+
+    if (!state.activeLessonId || state.suppressReadProgress) return percent;
+
+    const stored = options.write === false
+      ? getLessonReadProgress(state.activeLessonId)
+      : setLessonReadProgress(state.activeLessonId, percent);
+
+    const lesson = findLesson(state.activeLessonId);
+    if (lesson) updateCompleteButton(lesson);
+
+    return Math.max(stored, percent);
   }
 
   function syncCompletedFromRewards() {
@@ -2988,6 +3046,7 @@
     }
 
     state.activeLessonId = lesson.id;
+    state.suppressReadProgress = !options.noScroll;
     localStorage.setItem(LAST_LESSON_KEY, lesson.id);
     try {
       const started = JSON.parse(localStorage.getItem(STARTED_KEY) || '[]');
@@ -3080,6 +3139,7 @@
     
     renderLessonTree();
     updateCompleteButton(lesson);
+    updateLessonReadProgress({ write: false });
     updateUrlHash(lesson.id);
     bindReflectionTextareas(lesson);
     initStickyStrip();
@@ -3104,7 +3164,14 @@
           behavior: 'smooth',
           block: 'start'
         });
+        window.setTimeout(() => {
+          state.suppressReadProgress = false;
+          updateLessonReadProgress();
+        }, 700);
       });
+    } else {
+      state.suppressReadProgress = false;
+      requestAnimationFrame(() => updateLessonReadProgress());
     }
 
     closeSidebarOnMobile();
@@ -3213,8 +3280,24 @@
     if (!btn || !lesson) return;
 
     const done = isCompleted(lesson.id);
+    const progress = getLessonReadProgress(lesson.id);
+    const locked = !done && progress < COMPLETION_REQUIRED_PROGRESS;
+    const remaining = Math.max(0, COMPLETION_REQUIRED_PROGRESS - progress);
 
     btn.classList.toggle('is-complete', done);
+    btn.classList.toggle('is-locked', locked);
+    btn.setAttribute('aria-disabled', locked ? 'true' : 'false');
+    btn.dataset.completionLocked = locked ? 'true' : 'false';
+    btn.title = locked
+      ? `Read ${remaining}% more of this lesson before completing it.`
+      : done
+        ? 'Lesson complete'
+        : 'Mark this lesson complete';
+
+    if (locked) {
+      btn.innerHTML = `<i class="fas fa-lock"></i> Read ${remaining}% more`;
+      return;
+    }
     btn.innerHTML = done
       ? '<i class="fas fa-check-circle"></i> Complete'
       : `<i class="fas fa-star"></i> Mark Complete · +${lesson.mana || DEFAULT_MANA} Mana`;
@@ -3308,8 +3391,21 @@
       return;
     }
 
+    const readProgress = getLessonReadProgress(lesson.id);
+
+    if (!canCompleteLesson(lesson)) {
+      const remaining = Math.max(0, COMPLETION_REQUIRED_PROGRESS - readProgress);
+      updateCompleteButton(lesson);
+      showToast(`Keep reading first. ${remaining}% more unlocks completion.`);
+      return;
+    }
+
     if (window.LKPProfileSync && window.LKPProfileSync.state.user) {
-      const result = await window.LKPProfileSync.completeLesson(lesson);
+      const result = await window.LKPProfileSync.completeLesson(lesson, {
+        source: 'lesson-page',
+        readProgress,
+        requiredProgress: COMPLETION_REQUIRED_PROGRESS
+      });
 
       if (result.completed) {
         const localCompleted = readJSON(COMPLETED_KEY, []);
@@ -3339,7 +3435,13 @@
 
     if (window.LKPRewards?.completeLesson) {
       try {
-        window.LKPRewards.completeLesson(lesson.id, { mana });
+        await window.LKPRewards.completeLesson(lesson.id, {
+          source: 'lesson-page',
+          mana,
+          lesson,
+          readProgress,
+          requiredProgress: COMPLETION_REQUIRED_PROGRESS
+        });
       } catch {}
     } else {
       setMana(getMana() + mana);
@@ -3780,13 +3882,8 @@
     const year = document.getElementById('footerYear');
     if (year) year.textContent = new Date().getFullYear();
 
-    const fill = document.getElementById('progressFill');
-
     window.addEventListener('scroll', () => {
-      if (!fill) return;
-
-      const max = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      fill.style.width = `${max > 0 ? (window.scrollY / max) * 100 : 0}%`;
+      updateLessonReadProgress();
     }, {
       passive: true
     });

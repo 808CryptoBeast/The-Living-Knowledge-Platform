@@ -34,7 +34,8 @@
     rewards:    "lkp_rewards_state_v1",
     metadata:   "lkp_reward_metadata_v1",
     daily:      "lkp_rewards_daily_v1",
-    wallet:     "lkp_wallet_link_v1"
+    wallet:     "lkp_wallet_link_v1",
+    reflections: "lkp_lesson_reflections_v2"
   };
 
   const RULES = {
@@ -45,6 +46,8 @@
     reflection:   { mana: 25,  xp: 75   },
     quizPass:     { mana: 50,  xp: 125  }
   };
+
+  const REQUIRED_LESSON_PROGRESS = 70;
 
   const RANKS = [
     { id: "initiate",              name: "Initiate",              minMana: 0,    icon: "🌱", desc: "Beginning the path of living knowledge."                               },
@@ -132,6 +135,114 @@
     return (hash >>> 0).toString(16).padStart(8, "0");
   }
 
+  function normalizeSourceRefs(lesson = {}) {
+    const refs = [];
+    const rawSources = Array.isArray(lesson.sources) ? lesson.sources : [];
+
+    rawSources.forEach((source, index) => {
+      if (typeof source === "string") {
+        refs.push({
+          label: source,
+          url: "",
+          type: "source",
+          confidence: "",
+          note: ""
+        });
+        return;
+      }
+
+      if (!source || typeof source !== "object") return;
+
+      const label =
+        source.label ||
+        source.title ||
+        source.name ||
+        source.cite ||
+        `Source ${index + 1}`;
+
+      refs.push({
+        label,
+        url: source.url || source.href || "",
+        type: source.sourceType || source.type || "",
+        confidence: source.sourceConfidence || source.confidence || "",
+        note: source.note || source.desc || source.body || ""
+      });
+    });
+
+    const sourceNote = lesson.source || lesson.sourceNote || lesson.provenance || "";
+
+    if (!refs.length && sourceNote) {
+      refs.push({
+        label: sourceNote,
+        url: "",
+        type: "lesson-source-note",
+        confidence: "",
+        note: ""
+      });
+    }
+
+    return refs.filter(ref => ref.label || ref.url || ref.note);
+  }
+
+  function summarizeSourceRefs(sourceRefs = []) {
+    const labels = sourceRefs
+      .map(source => source.label || source.url || source.note)
+      .filter(Boolean);
+
+    return labels.length ? labels.slice(0, 3).join(" | ") : "Not specified";
+  }
+
+  function buildReflectionProof(lessonId) {
+    if (!lessonId) {
+      return {
+        captured: false,
+        responseCount: 0,
+        digest: "",
+        storageKey: STORAGE.reflections
+      };
+    }
+
+    const reflections = readLocal(STORAGE.reflections, {});
+    const lessonReflections = reflections?.[lessonId] || {};
+    const values = Array.isArray(lessonReflections)
+      ? lessonReflections
+      : Object.values(lessonReflections);
+    const responses = values
+      .map(value => stripTags(value))
+      .filter(Boolean);
+
+    return {
+      captured: responses.length > 0,
+      responseCount: responses.length,
+      digest: responses.length ? hashString(`${lessonId}|${responses.join("|")}`) : "",
+      storageKey: STORAGE.reflections
+    };
+  }
+
+  function credentialFields(metadata = {}) {
+    const properties = metadata.properties || {};
+
+    return {
+      culture: properties.culture || {
+        id: properties.cultureId || "",
+        name: properties.cultureName || ""
+      },
+      module: properties.module || {
+        id: properties.moduleId || "",
+        title: properties.moduleTitle || ""
+      },
+      lesson: properties.lesson || {
+        id: properties.lessonId || "",
+        title: properties.lessonTitle || ""
+      },
+      source: properties.source || null,
+      reflectionProof: properties.reflectionProof || null,
+      timestamp: properties.timestamp || properties.earnedAt || "",
+      level: properties.level || null,
+      visualEvolutionState: properties.visualEvolutionState || null
+    };
+  }
+
   function buildNFTMetadata({
     id,
     type,
@@ -144,22 +255,39 @@
     moduleTitle = "",
     lessonId = "",
     lessonTitle = "",
+    sourceRefs = [],
+    source = "",
+    reflectionProof = null,
     stage = "",
     progress = null,
+    level = null,
+    visualEvolutionState = null,
     mana = 0,
     xp = 0,
     earnedAt = todayKey(),
+    timestamp = "",
     eligible = false
   }) {
     const externalPath = lessonId
       ? `LKP/lessons.html#${encodeURIComponent(lessonId)}`
       : "profile.html";
+    const normalizedSources = Array.isArray(sourceRefs) ? sourceRefs : [];
+    const sourceSummary = source || summarizeSourceRefs(normalizedSources);
+    const proof = reflectionProof || buildReflectionProof(lessonId);
+    const earnedTimestamp = timestamp || (
+      earnedAt && String(earnedAt).length === 10
+        ? `${earnedAt}T00:00:00.000Z`
+        : String(earnedAt || new Date().toISOString())
+    );
 
     const attributes = [
       { trait_type: "Reward Type", value: type },
       { trait_type: "Culture", value: cultureName || cultureId || "Platform" },
       { trait_type: "Module", value: moduleTitle || moduleId || "General" },
       { trait_type: "Stage", value: stage || type },
+      { trait_type: "Source", value: sourceSummary },
+      { trait_type: "Reflection Proof", value: proof?.captured ? `${proof.responseCount} response(s)` : "Not captured" },
+      { trait_type: "Timestamp", value: earnedTimestamp },
       { trait_type: "Mana", value: Number(mana) || 0 },
       { trait_type: "XP", value: Number(xp) || 0 },
       { trait_type: "XRPL Eligible", value: eligible ? "Future eligible" : "Offchain record" }
@@ -167,9 +295,13 @@
 
     if (lessonId) attributes.push({ trait_type: "Lesson ID", value: lessonId });
     if (progress != null) attributes.push({ trait_type: "Progress", value: `${progress}%` });
+    if (level != null) attributes.push({ trait_type: "Level", value: Number(level) || 0 });
+    if (visualEvolutionState?.stageId) {
+      attributes.push({ trait_type: "Visual Evolution State", value: visualEvolutionState.stageId });
+    }
 
     return {
-      schema: "lkp.reward.metadata.v1",
+      schema: "lkp.reward.metadata.v2",
       name,
       description,
       image: `ipfs://future/${slugify(id)}.png`,
@@ -184,16 +316,28 @@
         rewardType: type,
         cultureId,
         cultureName,
+        culture: { id: cultureId, name: cultureName },
         moduleId,
         moduleTitle,
+        module: { id: moduleId, title: moduleTitle },
         lessonId,
         lessonTitle,
+        lesson: { id: lessonId, title: lessonTitle },
+        source: {
+          summary: sourceSummary,
+          refs: normalizedSources
+        },
+        reflectionProof: proof,
         stage,
+        level,
+        visualEvolutionState,
         earnedAt,
+        timestamp: earnedTimestamp,
         proof: {
           method: "local-or-supabase-completion",
           completedKey: STORAGE.completed,
-          digest: hashString(`${id}|${cultureId}|${moduleId}|${lessonId}|${earnedAt}`)
+          reflectionDigest: proof?.digest || "",
+          digest: hashString(`${id}|${cultureId}|${moduleId}|${lessonId}|${earnedTimestamp}|${proof?.digest || ""}`)
         },
         xrpl: {
           network: "XRPL",
@@ -259,11 +403,15 @@
 
         (Array.isArray(module.lessons) ? module.lessons : []).forEach((lesson, li) => {
           const lessonId = lesson.id || `${moduleId}-lesson-${li}`;
+          const sourceRefs = normalizeSourceRefs(lesson);
           const record = {
             id: lessonId, key: lessonId, cultureId, cultureName,
             moduleId, moduleKey: moduleRecord.key, moduleTitle: moduleName,
             title: lesson.title || lessonId, num: lesson.num || "",
             readTime: lesson.readTime || "",
+            sourceRefs,
+            sourceSummary: summarizeSourceRefs(sourceRefs),
+            sourceCount: sourceRefs.length,
             contentText: stripTags(lesson.content || "")
           };
           moduleRecord.lessons.push(record);
@@ -405,7 +553,19 @@
       moduleTitle: lesson.moduleTitle,
       lessonId: lesson.id,
       lessonTitle: lesson.title,
+      sourceRefs: lesson.sourceRefs || [],
+      source: lesson.sourceSummary || "",
+      reflectionProof: buildReflectionProof(lesson.id),
       stage: "lesson-complete",
+      level: 1,
+      visualEvolutionState: {
+        stageId: "lesson-star",
+        stageName: "Lesson Star",
+        level: 1,
+        cultureId: lesson.cultureId,
+        lessonId: lesson.id,
+        starUnlocked: true
+      },
       mana: RULES.lesson.mana,
       xp: RULES.lesson.xp,
       earnedAt: today,
@@ -416,11 +576,30 @@
   function resolveEvolutionStage(completedCount, totalCount) {
     const progress = totalCount ? Math.round((completedCount / totalCount) * 100) : 0;
 
-    if (progress >= 100) return { id: "constellation", name: "Constellation", icon: "\uD83C\uDF0C" };
-    if (progress >= 75)  return { id: "ringed-world",  name: "Ringed World",  icon: "\uD83E\uDE90" };
-    if (progress >= 50)  return { id: "moon-keeper",   name: "Moon Keeper",   icon: "\uD83C\uDF19" };
-    if (progress >= 25)  return { id: "orbiting-star", name: "Orbiting Star", icon: "\u2600\uFE0F" };
-    return { id: "young-planet", name: "Young Planet", icon: "\uD83E\uDE90" };
+    if (progress >= 100) return { id: "constellation", name: "Constellation", icon: "\uD83C\uDF0C", level: 5 };
+    if (progress >= 75)  return { id: "ringed-world",  name: "Ringed World",  icon: "\uD83E\uDE90", level: 4 };
+    if (progress >= 50)  return { id: "moon-keeper",   name: "Moon Keeper",   icon: "\uD83C\uDF19", level: 3 };
+    if (progress >= 25)  return { id: "orbiting-star", name: "Orbiting Star", icon: "\u2600\uFE0F", level: 2 };
+    return { id: "young-planet", name: "Young Planet", icon: "\uD83E\uDE90", level: 1 };
+  }
+
+  function buildVisualEvolutionState(stage, progress, completedCount, totalCount) {
+    const level = stage.level || 1;
+
+    return {
+      stageId: stage.id,
+      stageName: stage.name,
+      level,
+      progress,
+      completedCount,
+      totalCount,
+      planetVisible: true,
+      starUnlocked: level >= 2,
+      moonCount: level >= 3 ? Math.min(3, Math.max(1, Math.floor(completedCount / 4) || 1)) : 0,
+      ringsVisible: level >= 4,
+      nebulaCleared: level >= 5,
+      companionBodies: level >= 5 ? Math.max(1, Math.floor(completedCount / 6) || 1) : 0
+    };
   }
 
   function buildCultureEvolutions(flat, completedByCulture, today) {
@@ -433,6 +612,7 @@
         if (!completedCount) return null;
 
         const stage = resolveEvolutionStage(completedCount, totalCount);
+        const visualState = buildVisualEvolutionState(stage, progress, completedCount, totalCount);
         const metadata = buildNFTMetadata({
           id: `evolution:${culture.id}:${stage.id}`,
           type: "culture_evolution",
@@ -443,6 +623,8 @@
           cultureName: culture.name,
           stage: stage.id,
           progress,
+          level: stage.level,
+          visualEvolutionState: visualState,
           mana: completedCount * RULES.lesson.mana,
           xp: completedCount * RULES.lesson.xp,
           earnedAt: today,
@@ -455,6 +637,8 @@
           cultureId: culture.id,
           cultureName: culture.name,
           stage,
+          level: stage.level,
+          visualState,
           completedCount,
           totalCount,
           progress,
@@ -476,6 +660,8 @@
       cultureName: evolution.cultureName,
       stage: evolution.stage.id,
       progress: evolution.progress,
+      level: evolution.level || evolution.stage.level || null,
+      visualEvolutionState: evolution.visualState || null,
       earnedAt: today,
       eligible: evolution.progress >= 50
     }));
@@ -628,7 +814,19 @@
         moduleTitle: lesson.moduleTitle,
         lessonId: lesson.id,
         lessonTitle: lesson.title,
+        sourceRefs: lesson.sourceRefs || [],
+        source: lesson.sourceSummary || "",
+        reflectionProof: buildReflectionProof(lesson.id),
         stage: "lesson-complete",
+        level: 1,
+        visualEvolutionState: {
+          stageId: "lesson-star",
+          stageName: "Lesson Star",
+          level: 1,
+          cultureId: lesson.cultureId,
+          lessonId: lesson.id,
+          starUnlocked: true
+        },
         mana: RULES.lesson.mana,
         xp: RULES.lesson.xp,
         earnedAt: today,
@@ -640,6 +838,7 @@
         status: "offchain_ready", title: lesson.title,
         cultureId: lesson.cultureId, moduleId: lesson.moduleId, lessonId: lesson.id,
         mana: RULES.lesson.mana, xp: RULES.lesson.xp,
+        ...credentialFields(metadata),
         metadata,
         xrpl: { eligible: false, futureUse: "Can later become part of proof-of-learning claim history." },
         createdAt: today
@@ -668,6 +867,7 @@
         status: "xrpl_ready_future", title: module.title,
         cultureId: module.cultureId, moduleId: module.id,
         mana: RULES.module.mana, xp: RULES.module.xp,
+        ...credentialFields(metadata),
         metadata,
         xrpl: { eligible: true, suggestedAssetType: "NFT certificate",
           futureUse: "Can later be minted as an XRPL NFT badge/certificate." },
@@ -694,6 +894,7 @@
         id: `culture:${culture.id}`, type: "culture_completion",
         status: "xrpl_ready_future", title: culture.name, cultureId: culture.id,
         mana: RULES.culture.mana, xp: RULES.culture.xp,
+        ...credentialFields(metadata),
         metadata,
         xrpl: { eligible: true, suggestedAssetType: "NFT certificate or claimable reward",
           futureUse: "Can later unlock XRPL reward claim or culture path NFT." },
@@ -704,6 +905,7 @@
       records.push({
         id: `badge:${badge.id}`, type: "badge", status: "offchain_badge",
         title: badge.name, badgeId: badge.id,
+        ...credentialFields(badge.metadata),
         metadata: badge.metadata,
         xrpl: badge.xrpl || { eligible: false, futureUse: "Can later be mirrored to an NFT or achievement registry." },
         createdAt: today
@@ -726,6 +928,7 @@
         id: `certificate:${cert.id}`, type: "certificate",
         status: "xrpl_ready_future", title: cert.title, certificateType: cert.type,
         cultureId: cert.cultureId, moduleId: cert.moduleId || null,
+        ...credentialFields(metadata),
         metadata,
         xrpl: { eligible: true, suggestedAssetType: "NFT certificate",
           futureUse: "Can later be minted or attached to wallet profile." },
@@ -741,6 +944,7 @@
         cultureId: evolution.cultureId,
         evolutionStage: evolution.stage.id,
         progress: evolution.progress,
+        ...credentialFields(evolution.metadata),
         metadata: evolution.metadata,
         xrpl: evolution.xrpl,
         createdAt: today
@@ -856,9 +1060,38 @@
 
   /* ── Async writes ────────────────────────────────────────────────────── */
 
-  async function completeLesson(lessonId) {
+  async function completeLesson(lessonId, options = {}) {
     if (!lessonId) {
       return { already_completed: false, mana_earned: 0, xp_earned: 0, state: getState() };
+    }
+
+    if (options.source !== "lesson-page") {
+      console.warn("[LKPRewards] Completion blocked outside lesson page:", lessonId);
+      return {
+        already_completed: false,
+        mana_earned: 0,
+        xp_earned: 0,
+        blocked: true,
+        reason: "lesson_page_required",
+        state: getState()
+      };
+    }
+
+    const requiredProgress = Number(options.requiredProgress || REQUIRED_LESSON_PROGRESS);
+    const readProgress = Number(options.readProgress || 0);
+
+    if (readProgress < requiredProgress) {
+      console.warn("[LKPRewards] Completion blocked before lesson progress threshold:", lessonId);
+      return {
+        already_completed: false,
+        mana_earned: 0,
+        xp_earned: 0,
+        blocked: true,
+        reason: "read_progress_required",
+        requiredProgress,
+        readProgress,
+        state: getState()
+      };
     }
 
     if (_cache.completedIds.has(lessonId)) {

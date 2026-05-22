@@ -2,6 +2,8 @@
 
 Open [`presentation.html`](presentation.html) for the interactive web slideshow version of this presentation. The markdown below remains the speaker-note and talking-points version.
 
+Current build note: lesson completion is now earned only from inside lesson pages after meaningful read progress. Reward records generate `lkp.reward.metadata.v2` drafts for future badge, certificate, culture-evolution, and XRPL/NFT credential workflows. Admin credential exports live in the Wayfinder Passport settings drawer.
+
 ## One-Sentence Pitch
 
 Ka Paepae `Ike Ola is a living cultural knowledge platform where learners explore Cultural Journeys, study primary-source knowledge, track progress, and watch their personal galaxy grow as their learning deepens.
@@ -11,6 +13,8 @@ Ka Paepae `Ike Ola is a living cultural knowledge platform where learners explor
 Ka Paepae `Ike Ola turns cultural learning into an immersive, respectful, and progress-aware experience. Instead of presenting culture as a flat archive, it organizes learning as relationship: lessons become journeys, sources stay visible, progress becomes a living galaxy, and learners are invited to move with care through knowledge systems.
 
 The platform currently includes interactive galaxy navigation, Cultural Journeys, Kumulipo Wā deep study, Scholar and Keiki modes, completion tracking, Mana rewards, and a Wayfinder Passport profile where each culture the learner begins becomes a planet in their personal galaxy.
+
+The reward layer is intentionally non-speculative. Completion, badges, and credential metadata are tied to lesson-page progress, source context, reflection proof, timestamps, and visual evolution state.
 
 ## Presentation Goals
 
@@ -63,6 +67,7 @@ The app includes:
 - Wayfinder Passport profile
 - Mana, badges, and progress
 - personal user galaxy
+- metadata v2 records for future credentials
 
 Speaker note: This slide is the high-level product map.
 
@@ -77,6 +82,7 @@ Each culture has:
 - progress indicators
 - active lesson state
 - completion markers
+- completion locked to lesson-page reading progress
 - mobile-friendly navigation
 
 Speaker note: Show the sidebar. Point out that the interface encourages learners to understand culture as a path, not a random list.
@@ -130,7 +136,27 @@ The platform supports:
 
 Speaker note: Tie the technology back to responsibility and use.
 
-### Slide 10 - Current Build
+### Slide 10 - Rewards, Metadata, and XRPL Readiness
+
+The reward layer prepares future credentials without requiring a wallet today.
+
+Current metadata fields include:
+
+- culture
+- module
+- lesson
+- source
+- reflection proof
+- timestamp
+- level
+- visual evolution state
+- XRPL future minting hints
+
+Admin profile settings can export NFT metadata drafts, export XRPL-ready claims, and stage a future XRPL wallet address without connecting a wallet.
+
+Speaker note: Emphasize that metadata is review material first. Minting comes after education, source review, learner consent, and a clear non-speculative purpose.
+
+### Slide 11 - Current Build
 
 Current implementation includes:
 
@@ -141,10 +167,12 @@ Current implementation includes:
 - profile progress systems
 - user galaxy visualization
 - Supabase-ready structure
+- metadata v2 export and XRPL-ready claim preparation
+- admin settings drawer for pitch, publishing, and credential workflow tools
 
 Speaker note: This is not just a mockup. It is a working prototype with a clear growth path.
 
-### Slide 11 - Live Demo Flow
+### Slide 12 - Live Demo Flow
 
 Recommended demo:
 
@@ -154,13 +182,14 @@ Recommended demo:
 4. Open Kumulipo Wā Deep Study.
 5. Show a Wā page with full verse lines.
 6. Toggle Scholar/Keiki mode.
-7. Mark a lesson complete.
+7. Scroll through the lesson until completion unlocks, then mark it complete.
 8. Open the profile.
 9. Show the user's galaxy and culture planet progress.
+10. For admin demos, open settings and show metadata/XRPL export tools.
 
 Speaker note: Keep the demo focused. The goal is to show the learning loop from discovery to study to progress visualization.
 
-### Slide 12 - Next Phase
+### Slide 13 - Next Phase
 
 The next phase can include:
 
@@ -170,6 +199,8 @@ The next phase can include:
 - community review workflows
 - richer profile planet summaries
 - admin publishing pipeline
+- metadata review and credential approval workflow
+- XRPL/NFT mint preparation after Digitalverse wallet education
 - classroom and workshop modes
 - presentation-ready hosted demo
 
