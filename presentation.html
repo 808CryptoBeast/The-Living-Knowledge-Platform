@@ -7,898 +7,392 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════════════
-   VARIABLES & RESET
-═══════════════════════════════════════════════ */
-:root {
-  --bg:       #04080f;
-  --bg2:      #07101e;
-  --gold:     #c9a227;
-  --gold2:    #e8c85a;
-  --gold-dim: #7a6018;
-  --cyan:     #3dcfdf;
-  --cyan2:    #87e8f0;
-  --cyan-dim: #1a6b74;
-  --cream:    #ede8d8;
-  --muted:    #8a9ab0;
-  --glass-bg: rgba(8, 18, 34, 0.72);
-  --glass-border: rgba(201, 162, 39, 0.18);
-  --slide-w: 100vw;
-  --slide-h: 100dvh;
-  --font-display: 'Cinzel Decorative', 'Cinzel', serif;
-  --font-title:   'Cinzel', serif;
-  --font-body:    'Spectral', Georgia, serif;
-  --ease-silk: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
+:root{--bg:#04080f;--bg2:#07101e;--gold:#c9a227;--gold2:#e8c85a;--gold-dim:#7a6018;--cyan:#3dcfdf;--cyan2:#87e8f0;--cyan-dim:#1a6b74;--cream:#ede8d8;--muted:#8a9ab0;--glass-bg:rgba(8,18,34,.72);--glass-border:rgba(201,162,39,.18);--font-display:'Cinzel Decorative','Cinzel',serif;--font-title:'Cinzel',serif;--font-body:'Spectral',Georgia,serif;--ease-silk:cubic-bezier(.25,.46,.45,.94)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;background:var(--bg);color:var(--cream);font-family:var(--font-body);overflow:hidden;-webkit-font-smoothing:antialiased}
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* ── CURSOR ── */
+.wf-cursor{position:fixed;z-index:1000;pointer-events:none;opacity:0;transform:translate(-50%,-50%);transition:opacity .18s,width .18s,height .18s,border-color .18s,background .18s;left:var(--cx,50vw);top:var(--cy,50vh)}
+.wf-ring{width:34px;height:34px;border:1px solid rgba(201,162,39,.58);border-radius:50%;box-shadow:0 0 18px rgba(201,162,39,.18),inset 0 0 12px rgba(61,207,223,.08)}
+.wf-ring::before,.wf-ring::after{content:"";position:absolute;inset:50% auto auto 50%;width:42px;height:1px;background:linear-gradient(90deg,transparent,rgba(135,232,240,.58),transparent);transform:translate(-50%,-50%)}
+.wf-ring::after{transform:translate(-50%,-50%) rotate(90deg)}
+.wf-core{width:8px;height:8px;border-radius:50%;background:radial-gradient(circle,var(--gold2),var(--gold) 60%,transparent 72%);box-shadow:0 0 14px rgba(232,200,90,.65),0 0 24px rgba(61,207,223,.22)}
+body.cur-vis .wf-cursor{opacity:1}
+body.cur-act .wf-ring{width:48px;height:48px;border-color:rgba(135,232,240,.78);background:rgba(61,207,223,.035)}
+body.cur-act .wf-core{background:radial-gradient(circle,var(--cyan2),var(--cyan) 58%,transparent 72%)}
+@media(hover:hover) and (pointer:fine){html,body,*,*::before,*::after,a,button,[role=button],.dot,.nav-btn,.top-btn,.title-link{cursor:none !important}}
+@media(hover:none),(pointer:coarse),(prefers-reduced-motion:reduce){.wf-cursor{display:none}}
 
-html, body {
-  width: 100%; height: 100%;
-  background: var(--bg);
-  color: var(--cream);
-  font-family: var(--font-body);
-  overflow: hidden;
-  -webkit-font-smoothing: antialiased;
-}
+/* ── BACKGROUNDS ── */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+#trail-canvas{position:fixed;inset:0;z-index:6;pointer-events:none}
+#warp-canvas{position:fixed;inset:0;z-index:8;pointer-events:none;opacity:0}
+.space-gradient{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse 80% 60% at 20% 80%,rgba(20,8,50,.6),transparent 60%),radial-gradient(ellipse 60% 40% at 80% 20%,rgba(5,30,50,.5),transparent 60%),radial-gradient(ellipse 100% 100% at 50% 50%,var(--bg2) 0%,var(--bg) 100%);pointer-events:none}
+#nebula-mood{position:fixed;inset:0;z-index:1;pointer-events:none;transition:background 1.6s var(--ease-silk)}
+.css-stars{position:fixed;inset:0;z-index:0;background:radial-gradient(1px 1px at 10% 15%,rgba(255,255,255,.7),transparent),radial-gradient(1px 1px at 25% 40%,rgba(201,162,39,.5),transparent),radial-gradient(1.5px 1.5px at 40% 8%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 55% 60%,rgba(61,207,223,.5),transparent),radial-gradient(1px 1px at 70% 25%,rgba(255,255,255,.4),transparent),radial-gradient(2px 2px at 85% 75%,rgba(201,162,39,.4),transparent),radial-gradient(1px 1px at 15% 80%,rgba(255,255,255,.5),transparent),radial-gradient(1px 1px at 92% 45%,rgba(61,207,223,.4),transparent),radial-gradient(1px 1px at 63% 12%,rgba(255,255,255,.6),transparent),radial-gradient(1px 1px at 96% 10%,rgba(255,255,255,.5),transparent);pointer-events:none}
 
-/* Project-themed cursor for desktop presentation mode */
-.wayfinder-cursor {
-  position: fixed;
-  left: var(--cursor-x, 50vw);
-  top: var(--cursor-y, 50vh);
-  z-index: 1000;
-  pointer-events: none;
-  opacity: 0;
-  transform: translate(-50%, -50%);
-  transition: opacity .18s ease, width .18s ease, height .18s ease, border-color .18s ease, background .18s ease;
-}
+/* ── PROGRESS BAR ── */
+#progress-bar{position:fixed;top:0;left:0;right:0;height:3px;z-index:100;background:rgba(201,162,39,.12)}
+#progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold),var(--gold2),var(--cyan));transition:width .5s var(--ease-silk);box-shadow:0 0 8px var(--gold);position:relative}
+#progress-fill::after{content:'';position:absolute;right:-4px;top:-4px;width:10px;height:10px;border-radius:50%;background:var(--gold2);box-shadow:0 0 10px var(--gold2),0 0 22px var(--gold),0 0 32px rgba(201,162,39,.28);transition:box-shadow .5s}
 
-.wayfinder-cursor--ring {
-  width: 34px;
-  height: 34px;
-  border: 1px solid rgba(201,162,39,.58);
-  border-radius: 50%;
-  box-shadow: 0 0 18px rgba(201,162,39,.18), inset 0 0 12px rgba(61,207,223,.08);
-}
+/* ── TOP BAR & SECTION LABEL ── */
+#top-bar{position:fixed;top:14px;right:18px;z-index:100;display:flex;align-items:center;gap:10px}
+#section-label{position:fixed;top:18px;left:18px;z-index:100;font-family:var(--font-title);font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-dim);opacity:.7;transition:opacity .4s,color .4s}
+.top-btn{background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--muted);border-radius:8px;padding:6px 10px;font-family:var(--font-body);font-size:11px;letter-spacing:.08em;cursor:pointer;transition:color .2s,border-color .2s,background .2s;backdrop-filter:blur(8px)}
+.top-btn:hover,.top-btn.active{color:var(--gold);border-color:var(--gold-dim);background:rgba(201,162,39,.08)}
+#slide-counter{font-family:var(--font-title);font-size:12px;letter-spacing:.12em;color:var(--muted);padding:6px 12px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:8px;backdrop-filter:blur(8px);min-width:68px;text-align:center}
 
-.wayfinder-cursor--ring::before,
-.wayfinder-cursor--ring::after {
-  content: "";
-  position: absolute;
-  inset: 50% auto auto 50%;
-  width: 42px;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(135,232,240,.58), transparent);
-  transform: translate(-50%, -50%);
-}
+/* ── DOTS & CONSTELLATION ── */
+#dots{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);z-index:100;display:flex;gap:8px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--glass-border);border:1px solid rgba(201,162,39,.3);cursor:pointer;transition:all .3s var(--ease-silk);padding:0;position:relative}
+.dot.active{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px var(--gold),0 0 16px rgba(201,162,39,.3);transform:scale(1.5)}
+.dot:hover{background:var(--gold-dim)}
+#constellation-svg{position:absolute;top:50%;left:0;transform:translateY(-50%);pointer-events:none;overflow:visible}
 
-.wayfinder-cursor--ring::after {
-  transform: translate(-50%, -50%) rotate(90deg);
-}
+/* ── NAV ARROWS ── */
+.nav-btn{position:fixed;top:50%;z-index:100;transform:translateY(-50%);background:var(--glass-bg);border:1px solid var(--glass-border);color:var(--gold);width:44px;height:60px;border-radius:8px;font-size:20px;cursor:pointer;backdrop-filter:blur(10px);transition:all .2s;display:flex;align-items:center;justify-content:center}
+.nav-btn:hover{background:rgba(201,162,39,.12);border-color:var(--gold);box-shadow:0 0 20px rgba(201,162,39,.2)}
+#btn-prev{left:14px}
+#btn-next{right:14px}
 
-.wayfinder-cursor--core {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--gold2), var(--gold) 60%, transparent 72%);
-  box-shadow: 0 0 14px rgba(232,200,90,.65), 0 0 24px rgba(61,207,223,.22);
-}
+/* ── NOTES PANEL ── */
+#notes-panel{position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(4,8,15,.96);border-top:1px solid var(--glass-border);backdrop-filter:blur(16px);transform:translateY(100%);transition:transform .4s var(--ease-silk);max-height:38vh;overflow-y:auto}
+#notes-panel.open{transform:translateY(0)}
+#notes-header{display:flex;align-items:center;justify-content:space-between;padding:10px 22px;border-bottom:1px solid rgba(201,162,39,.1)}
+#notes-header span{font-family:var(--font-title);font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-dim)}
+#notes-close{background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px;line-height:1;padding:2px 6px;transition:color .2s}
+#notes-close:hover{color:var(--gold)}
+#notes-content{padding:18px 28px 24px;font-size:14px;line-height:1.7;color:var(--cream);font-style:italic;opacity:.85}
 
-body.cursor-visible .wayfinder-cursor { opacity: 1; }
-body.cursor-active .wayfinder-cursor--ring {
-  width: 48px;
-  height: 48px;
-  border-color: rgba(135,232,240,.78);
-  background: rgba(61,207,223,.035);
-}
+/* ── AI LIVING GUIDE ── */
+#ai-toggle{position:fixed;bottom:66px;right:18px;z-index:100;background:rgba(201,162,39,.09);border:1px solid rgba(201,162,39,.26);color:var(--gold2);border-radius:24px;padding:8px 18px;font-family:var(--font-title);font-size:10px;letter-spacing:.18em;cursor:pointer;backdrop-filter:blur(8px);transition:all .25s;box-shadow:0 0 20px rgba(201,162,39,.07)}
+#ai-toggle:hover,#ai-toggle.active{background:rgba(201,162,39,.2);box-shadow:0 0 28px rgba(201,162,39,.2);border-color:rgba(201,162,39,.45)}
 
-body.cursor-active .wayfinder-cursor--core {
-  background: radial-gradient(circle, var(--cyan2), var(--cyan) 58%, transparent 72%);
-}
+#ai-panel{position:fixed;bottom:114px;right:18px;width:370px;max-height:520px;z-index:200;background:rgba(4,8,15,.95);border:1px solid rgba(201,162,39,.22);border-radius:18px;backdrop-filter:blur(24px);display:flex;flex-direction:column;opacity:0;transform:translateY(16px) scale(.97);pointer-events:none;transition:opacity .3s var(--ease-silk),transform .3s var(--ease-silk);box-shadow:0 0 60px rgba(201,162,39,.1),0 0 120px rgba(61,207,223,.05),0 30px 80px rgba(0,0,0,.65)}
+#ai-panel.open{opacity:1;transform:translateY(0) scale(1);pointer-events:all}
 
-@media (hover: hover) and (pointer: fine) {
-  html,
-  body,
-  *,
-  *::before,
-  *::after,
-  a,
-  button,
-  [role="button"],
-  .dot,
-  .nav-btn,
-  .top-btn,
-  .title-link {
-    cursor: none !important;
-  }
-}
+#ai-header{padding:14px 18px;border-bottom:1px solid rgba(201,162,39,.1);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.ai-header-left{font-family:var(--font-title);font-size:9px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px}
+.ai-header-left::before{content:'✦';font-size:10px}
+#ai-status{width:6px;height:6px;border-radius:50%;background:var(--gold-dim);transition:background .4s,box-shadow .4s}
+#ai-status.on{background:#4ac97a;box-shadow:0 0 8px #4ac97a}
+#ai-close-btn{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;line-height:1;padding:2px 6px;transition:color .2s}
+#ai-close-btn:hover{color:var(--gold)}
 
-@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
-  .wayfinder-cursor { display: none; }
-}
+#ai-setup{padding:20px 18px 16px;flex:1}
+#ai-setup p{font-size:.82rem;color:var(--cream);opacity:.72;line-height:1.65;margin-bottom:10px;font-family:var(--font-body)}
+.ai-small{font-size:.72rem !important;opacity:.48 !important}
+#ai-key-input{width:100%;padding:9px 12px;background:rgba(255,255,255,.04);border:1px solid rgba(201,162,39,.18);border-radius:8px;color:var(--cream);font-size:.82rem;font-family:var(--font-body);outline:none;margin-bottom:10px;transition:border-color .2s}
+#ai-key-input:focus{border-color:rgba(201,162,39,.48)}
+#ai-key-input::placeholder{color:var(--muted);opacity:.5}
+#ai-connect-btn{background:rgba(201,162,39,.12);border:1px solid rgba(201,162,39,.28);color:var(--gold2);border-radius:8px;padding:9px 20px;font-family:var(--font-title);font-size:.72rem;letter-spacing:.14em;cursor:pointer;width:100%;transition:all .2s}
+#ai-connect-btn:hover{background:rgba(201,162,39,.22);box-shadow:0 0 16px rgba(201,162,39,.15)}
 
-/* ═══════════════════════════════════════════════
-   CANVAS BACKGROUND
-═══════════════════════════════════════════════ */
-#bg-canvas {
-  position: fixed; inset: 0;
-  z-index: 0;
-  pointer-events: none;
-}
+#ai-messages{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:60px}
+#ai-messages::-webkit-scrollbar{width:3px}
+#ai-messages::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:2px}
 
-/* CSS fallback stars (shown if Three.js fails) */
-.css-stars {
-  position: fixed; inset: 0; z-index: 0;
-  background:
-    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,.7) 0%, transparent 100%),
-    radial-gradient(1px 1px at 25% 40%, rgba(201,162,39,.5) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 40% 8%, rgba(255,255,255,.6) 0%, transparent 100%),
-    radial-gradient(1px 1px at 55% 60%, rgba(61,207,223,.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 70% 25%, rgba(255,255,255,.4) 0%, transparent 100%),
-    radial-gradient(2px 2px at 85% 75%, rgba(201,162,39,.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 15% 80%, rgba(255,255,255,.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 92% 45%, rgba(61,207,223,.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 48% 88%, rgba(255,255,255,.3) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 63% 12%, rgba(255,255,255,.6) 0%, transparent 100%),
-    radial-gradient(1px 1px at 78% 92%, rgba(201,162,39,.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 33% 55%, rgba(255,255,255,.4) 0%, transparent 100%),
-    radial-gradient(2px 2px at 5% 50%, rgba(61,207,223,.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 96% 10%, rgba(255,255,255,.5) 0%, transparent 100%),
-    radial-gradient(1px 1px at 20% 95%, rgba(255,255,255,.3) 0%, transparent 100%);
-  background-size: cover;
-  pointer-events: none;
-}
+.ai-msg{max-width:92%}
+.ai-msg--guide{align-self:flex-start}
+.ai-msg--user{align-self:flex-end}
+.ai-msg-text{padding:10px 14px;border-radius:12px;font-size:.83rem;line-height:1.62;font-family:var(--font-body)}
+.ai-msg--guide .ai-msg-text{background:rgba(201,162,39,.07);border:1px solid rgba(201,162,39,.14);color:var(--cream);border-radius:4px 12px 12px 12px}
+.ai-msg--user .ai-msg-text{background:rgba(61,207,223,.07);border:1px solid rgba(61,207,223,.16);color:var(--cyan2);border-radius:12px 4px 12px 12px;font-style:italic}
+.ai-thinking{display:flex;gap:5px;align-items:center;padding:12px 14px;background:rgba(201,162,39,.05);border:1px solid rgba(201,162,39,.1);border-radius:4px 12px 12px 12px}
+.ai-thinking span{width:5px;height:5px;border-radius:50%;background:var(--gold-dim);animation:thinkDot 1.2s ease-in-out infinite}
+.ai-thinking span:nth-child(2){animation-delay:.2s}
+.ai-thinking span:nth-child(3){animation-delay:.4s}
+@keyframes thinkDot{0%,60%,100%{transform:scale(.7);opacity:.35}30%{transform:scale(1.2);opacity:1}}
+.ai-slide-ctx{font-family:var(--font-title);font-size:8px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan-dim);opacity:.6;margin-bottom:4px;padding-left:2px}
 
-/* Deep space nebula gradient */
-.space-gradient {
-  position: fixed; inset: 0; z-index: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 20% 80%, rgba(20,8,50,.6) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(5,30,50,.5) 0%, transparent 60%),
-    radial-gradient(ellipse 100% 100% at 50% 50%, var(--bg2) 0%, var(--bg) 100%);
-  pointer-events: none;
-}
+#ai-input-area{padding:12px 14px;border-top:1px solid rgba(201,162,39,.08);display:flex;gap:8px;flex-shrink:0}
+#ai-input{flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(201,162,39,.14);border-radius:8px;padding:8px 12px;color:var(--cream);font-size:.84rem;font-family:var(--font-body);outline:none;transition:border-color .2s}
+#ai-input:focus{border-color:rgba(201,162,39,.4)}
+#ai-input::placeholder{color:var(--muted);opacity:.4}
+#ai-send{background:rgba(201,162,39,.12);border:1px solid rgba(201,162,39,.22);color:var(--gold2);border-radius:8px;padding:8px 14px;font-size:16px;cursor:pointer;transition:all .2s;flex-shrink:0;font-family:var(--font-body)}
+#ai-send:hover{background:rgba(201,162,39,.25)}
+#ai-send:disabled{opacity:.4;cursor:default}
 
-/* ═══════════════════════════════════════════════
-   PROGRESS BAR
-═══════════════════════════════════════════════ */
-#progress-bar {
-  position: fixed; top: 0; left: 0; right: 0;
-  height: 3px; z-index: 100;
-  background: rgba(201,162,39,.12);
-}
-#progress-fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold2), var(--cyan));
-  transition: width 0.5s var(--ease-silk);
-  box-shadow: 0 0 8px var(--gold);
-}
+/* ── OVERVIEW PANEL ── */
+#overview-panel{position:fixed;inset:0;z-index:250;background:rgba(4,8,15,.96);backdrop-filter:blur(20px);opacity:0;pointer-events:none;transition:opacity .35s var(--ease-silk);padding:80px 40px 40px;overflow-y:auto}
+#overview-panel.open{opacity:1;pointer-events:all}
+#overview-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;max-width:980px;margin:0 auto}
+.ov-card{background:rgba(201,162,39,.05);border:1px solid rgba(201,162,39,.12);border-radius:12px;padding:16px;cursor:pointer;transition:all .22s;text-align:left}
+.ov-card:hover,.ov-card.is-current{background:rgba(201,162,39,.1);border-color:rgba(201,162,39,.3);box-shadow:0 0 20px rgba(201,162,39,.12)}
+.ov-num{font-family:var(--font-title);font-size:.68rem;letter-spacing:.2em;color:var(--gold-dim);margin-bottom:3px}
+.ov-sec{font-family:var(--font-title);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan-dim);margin-bottom:6px}
+.ov-title{font-size:.8rem;color:var(--cream);opacity:.75;line-height:1.4;font-family:var(--font-body)}
+#ov-hint{position:fixed;top:24px;left:50%;transform:translateX(-50%);font-family:var(--font-title);font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--muted);opacity:.55}
+#key-hint{position:fixed;bottom:22px;left:18px;z-index:100;font-family:var(--font-title);font-size:8px;letter-spacing:.16em;color:var(--muted);opacity:.35;line-height:1.9}
 
-/* ═══════════════════════════════════════════════
-   SLIDE COUNTER & CONTROLS TOP
-═══════════════════════════════════════════════ */
-#top-bar {
-  position: fixed; top: 14px; right: 18px;
-  z-index: 100;
-  display: flex; align-items: center; gap: 10px;
-}
-.top-btn {
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--muted);
-  border-radius: 8px;
-  padding: 6px 10px;
-  font-family: var(--font-body);
-  font-size: 11px;
-  letter-spacing: .08em;
-  cursor: pointer;
-  transition: color .2s, border-color .2s, background .2s;
-  backdrop-filter: blur(8px);
-}
-.top-btn:hover, .top-btn.active {
-  color: var(--gold);
-  border-color: var(--gold-dim);
-  background: rgba(201,162,39,.08);
-}
-#slide-counter {
-  font-family: var(--font-title);
-  font-size: 12px;
-  letter-spacing: .12em;
-  color: var(--muted);
-  padding: 6px 12px;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 8px;
-  backdrop-filter: blur(8px);
-  min-width: 68px;
-  text-align: center;
-}
+/* ── DECK & SLIDES ── */
+#deck{position:relative;z-index:10;width:100vw;height:100dvh;overflow:hidden}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 80px 80px;opacity:0;pointer-events:none;transition:opacity .6s var(--ease-silk),transform .6s var(--ease-silk);transform:translateX(60px)}
+.slide.active{opacity:1;pointer-events:all;transform:translateX(0)}
+.slide.exit-left{opacity:0;transform:translateX(-60px)}
+.slide.exit-right{opacity:0;transform:translateX(60px)}
 
-/* ═══════════════════════════════════════════════
-   SLIDE DOTS
-═══════════════════════════════════════════════ */
-#dots {
-  position: fixed; bottom: 22px; left: 50%;
-  transform: translateX(-50%);
-  z-index: 100;
-  display: flex; gap: 8px; align-items: center;
-}
-.dot {
-  width: 6px; height: 6px;
-  border-radius: 50%;
-  background: var(--glass-border);
-  border: 1px solid rgba(201,162,39,.3);
-  cursor: pointer;
-  transition: all .3s var(--ease-silk);
-  padding: 0;
-}
-.dot.active {
-  background: var(--gold);
-  border-color: var(--gold);
-  box-shadow: 0 0 6px var(--gold);
-  transform: scale(1.4);
-}
-.dot:hover { background: var(--gold-dim); }
+/* ── GLASS ── */
+.glass{position:relative;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:20px;backdrop-filter:blur(20px);transform-style:preserve-3d;transition:transform .28s var(--ease-silk),box-shadow .28s var(--ease-silk),border-color .28s var(--ease-silk);box-shadow:0 0 40px rgba(201,162,39,.06),0 20px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.04)}
+.glass::after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:linear-gradient(135deg,rgba(255,255,255,.14),transparent 28%),radial-gradient(circle at var(--card-x,50%) var(--card-y,10%),rgba(135,232,240,.14),transparent 38%);opacity:.42;mix-blend-mode:screen;transform:translateZ(1px)}
+.glass:not(.title-island)::before{content:"";position:absolute;inset:0;border-radius:inherit;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(255,255,255,.011) 2px,rgba(255,255,255,.011) 3px);pointer-events:none;z-index:2}
+.glass:hover,.tile:hover,.step:hover{transform:translateY(-6px) rotateX(var(--tilt-y,0deg)) rotateY(var(--tilt-x,0deg));border-color:rgba(232,200,90,.34);box-shadow:0 0 34px rgba(61,207,223,.12),0 0 46px rgba(201,162,39,.13),0 30px 80px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.1)}
 
-/* ═══════════════════════════════════════════════
-   NAVIGATION ARROWS
-═══════════════════════════════════════════════ */
-.nav-btn {
-  position: fixed; top: 50%; z-index: 100;
-  transform: translateY(-50%);
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--gold);
-  width: 44px; height: 60px;
-  border-radius: 8px;
-  font-size: 20px;
-  cursor: pointer;
-  backdrop-filter: blur(10px);
-  transition: all .2s;
-  display: flex; align-items: center; justify-content: center;
-}
-.nav-btn:hover {
-  background: rgba(201,162,39,.12);
-  border-color: var(--gold);
-  box-shadow: 0 0 20px rgba(201,162,39,.2);
-}
-#btn-prev { left: 14px; }
-#btn-next { right: 14px; }
+/* ── TYPOGRAPHY ── */
+.label-sm{font-family:var(--font-title);font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--cyan);margin-bottom:14px;opacity:.8}
+.slide-title{font-family:var(--font-display);font-size:clamp(1.6rem,4vw,3.2rem);color:var(--gold2);text-align:center;line-height:1.2;margin-bottom:12px;text-shadow:0 0 30px rgba(201,162,39,.3)}
+.slide-body{font-family:var(--font-body);font-size:clamp(.88rem,1.5vw,1.05rem);line-height:1.8;color:var(--cream);opacity:.85;text-align:left;max-width:780px;width:100%}
+.slide-body p{margin-bottom:14px}
+.slide-body p:last-child{margin-bottom:0}
+.divider{width:80px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:18px auto}
+.callout{position:relative;border-left:2px solid var(--gold);padding:12px 18px;background:rgba(201,162,39,.06);border-radius:0 8px 8px 0;font-style:italic;color:var(--cream);margin:18px 0;font-size:.96em;transition:transform .24s var(--ease-silk),box-shadow .24s var(--ease-silk)}
+.highlight{color:var(--gold2);font-weight:600}
+.cyan-hl{color:var(--cyan2)}
 
-/* ═══════════════════════════════════════════════
-   SPEAKER NOTES PANEL
-═══════════════════════════════════════════════ */
-#notes-panel {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  z-index: 200;
-  background: rgba(4,8,15,.94);
-  border-top: 1px solid var(--glass-border);
-  backdrop-filter: blur(16px);
-  transform: translateY(100%);
-  transition: transform .4s var(--ease-silk);
-  max-height: 38vh;
-  overflow-y: auto;
-}
-#notes-panel.open { transform: translateY(0); }
-#notes-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 10px 22px;
-  border-bottom: 1px solid rgba(201,162,39,.1);
-}
-#notes-header span {
-  font-family: var(--font-title);
-  font-size: 10px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--gold-dim);
-}
-#notes-close {
-  background: none; border: none; color: var(--muted);
-  cursor: pointer; font-size: 18px; line-height: 1;
-  padding: 2px 6px;
-  transition: color .2s;
-}
-#notes-close:hover { color: var(--gold); }
-#notes-content {
-  padding: 18px 28px 24px;
-  font-size: 14px;
-  line-height: 1.7;
-  color: var(--cream);
-  font-style: italic;
-  opacity: .85;
-}
+/* ── TILES ── */
+.tile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;width:100%;max-width:860px;margin-top:8px}
+.tile{position:relative;background:rgba(201,162,39,.05);border:1px solid rgba(201,162,39,.15);border-radius:12px;padding:14px 16px;text-align:center;transform-style:preserve-3d;transition:transform .24s var(--ease-silk),box-shadow .24s var(--ease-silk),border-color .24s var(--ease-silk),background .24s var(--ease-silk);box-shadow:0 14px 34px rgba(0,0,0,.18)}
+.tile:hover{background:rgba(201,162,39,.075);border-color:rgba(232,200,90,.36)}
+.tile-icon{font-size:1.6rem;margin-bottom:6px}
+.tile-name{font-family:var(--font-title);font-size:.78rem;letter-spacing:.1em;color:var(--cream);opacity:.85}
 
-/* ═══════════════════════════════════════════════
-   SLIDE DECK CONTAINER
-═══════════════════════════════════════════════ */
-#deck {
-  position: relative; z-index: 10;
-  width: 100vw; height: 100dvh;
-  overflow: hidden;
-}
+/* ── TWO-COL ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px;width:100%;max-width:900px;align-items:start}
+.col-card{padding:24px 22px;border-radius:16px}
+.col-card h3{font-family:var(--font-title);font-size:.82rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px}
+.col-card ul{list-style:none;padding:0}
+.col-card ul li{padding:5px 0;font-size:.9rem;line-height:1.5;color:var(--cream);opacity:.82;border-bottom:1px solid rgba(255,255,255,.04)}
+.col-card ul li:last-child{border-bottom:none}
+.col-card ul li::before{content:'◆ ';color:var(--gold);font-size:.65em;vertical-align:middle}
 
-/* ═══════════════════════════════════════════════
-   INDIVIDUAL SLIDES
-═══════════════════════════════════════════════ */
-.slide {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  padding: 60px 80px 80px;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .6s var(--ease-silk), transform .6s var(--ease-silk);
-  transform: translateX(60px);
-  perspective: 1200px;
-}
-.slide.active {
-  opacity: 1;
-  pointer-events: all;
-  transform: translateX(0);
-}
-.slide.exit-left {
-  opacity: 0;
-  transform: translateX(-60px);
-}
+/* ── CSS PLANET (SLIDE 1) ── */
+.slide-planet{position:absolute;right:6%;top:50%;transform:translateY(-50%);width:200px;height:200px;pointer-events:none;z-index:0}
+@media(max-width:1060px){.slide-planet{display:none}}
+.sp-atmo{position:absolute;inset:-28px;border-radius:50%;background:radial-gradient(circle,transparent 38%,rgba(61,150,220,.07) 60%,rgba(10,50,120,.1) 80%,transparent 100%);animation:atmoBreathe 9s ease-in-out infinite}
+@keyframes atmoBreathe{0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.06);opacity:1}}
+.sp-sphere{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 28%,rgba(100,170,235,.75) 0%,transparent 42%),radial-gradient(circle at 68% 68%,rgba(6,18,50,.95) 0%,transparent 45%),radial-gradient(circle at 50% 50%,#14305a,#050e1e);box-shadow:inset -24px -18px 45px rgba(0,0,0,.88),inset 8px 6px 20px rgba(61,150,220,.1),0 0 80px rgba(61,120,200,.14),0 0 150px rgba(40,80,180,.06)}
+.sp-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotateX(70deg);width:286px;height:286px;border-radius:50%;border:16px solid rgba(201,162,39,.2);box-shadow:0 0 14px rgba(201,162,39,.12),inset 0 0 10px rgba(201,162,39,.06);pointer-events:none}
+.sp-orbit{position:absolute;inset:-50px;border-radius:50%;animation:moonOrbit 20s linear infinite}
+.sp-moon{position:absolute;top:0;left:50%;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 36% 30%,#e8c85a 0%,#a07820 55%,#3a2408 100%);box-shadow:inset -5px -4px 10px rgba(0,0,0,.65),0 0 20px rgba(201,162,39,.4),0 0 40px rgba(201,162,39,.15)}
+@keyframes moonOrbit{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
-.slide.exit-right {
-  opacity: 0;
-  transform: translateX(60px);
-}
+/* ── STAR COMPASS ── */
+.star-compass{position:absolute;width:340px;height:340px;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:0;opacity:.22;animation:compassSpin 200s linear infinite}
+.star-compass svg{width:100%;height:100%}
+@keyframes compassSpin{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(360deg)}}
 
-/* ═══════════════════════════════════════════════
-   GLASS CARD
-═══════════════════════════════════════════════ */
-.glass {
-  position: relative;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  backdrop-filter: blur(20px);
-  transform-style: preserve-3d;
-  transition: transform .28s var(--ease-silk), box-shadow .28s var(--ease-silk), border-color .28s var(--ease-silk);
-  box-shadow:
-    0 0 40px rgba(201,162,39,.06),
-    0 20px 60px rgba(0,0,0,.4),
-    inset 0 1px 0 rgba(255,255,255,.04);
-}
+/* ── PLANET ROW (SLIDE 8) ── */
+.planet-row{display:flex;gap:18px;align-items:flex-end;justify-content:center;margin:16px 0;flex-wrap:wrap}
+.planet-item{display:flex;flex-direction:column;align-items:center;gap:6px}
+.planet{border-radius:50%;position:relative;box-shadow:inset -4px -3px 12px rgba(0,0,0,.5),0 0 20px rgba(61,207,223,.15);animation:floatPlanet 6s ease-in-out infinite}
+.planet-label{font-family:var(--font-title);font-size:.68rem;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+@keyframes floatPlanet{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
-.glass::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  background:
-    linear-gradient(135deg, rgba(255,255,255,.14), transparent 28%),
-    radial-gradient(circle at var(--card-x, 50%) var(--card-y, 10%), rgba(135,232,240,.14), transparent 38%);
-  opacity: .42;
-  mix-blend-mode: screen;
-  transform: translateZ(1px);
-}
+/* ── STEPS ── */
+.steps{display:flex;flex-direction:column;gap:12px;width:100%;max-width:640px}
+.step{position:relative;display:flex;align-items:flex-start;gap:16px;padding:14px 18px;background:rgba(61,207,223,.04);border:1px solid rgba(61,207,223,.12);border-radius:12px;transition:transform .24s var(--ease-silk),box-shadow .24s var(--ease-silk),border-color .24s var(--ease-silk),background .24s var(--ease-silk);box-shadow:0 14px 30px rgba(0,0,0,.16)}
+.step:hover{background:rgba(61,207,223,.07);border-color:rgba(135,232,240,.28)}
+.step-num{font-family:var(--font-title);font-size:1.1rem;color:var(--cyan);opacity:.7;min-width:28px;line-height:1.4}
+.step-text{font-size:.9rem;line-height:1.6;color:var(--cream);opacity:.85}
+.step-text strong{font-family:var(--font-title);color:var(--cyan2);font-size:.82rem;letter-spacing:.08em;display:block;margin-bottom:3px}
 
-.glass:hover,
-.tile:hover,
-.step:hover,
-.badge:hover,
-.callout:hover {
-  transform: translateY(-6px) rotateX(var(--tilt-y, 0deg)) rotateY(var(--tilt-x, 0deg));
-  border-color: rgba(232,200,90,.34);
-  box-shadow:
-    0 0 34px rgba(61,207,223,.12),
-    0 0 46px rgba(201,162,39,.13),
-    0 30px 80px rgba(0,0,0,.55),
-    inset 0 1px 0 rgba(255,255,255,.10);
-}
+/* ── TITLE SLIDE ── */
+#slide-1{align-items:center;justify-content:center;text-align:center}
+.title-island{position:relative;padding:52px 64px 48px;max-width:700px;width:100%}
+.title-island::before{content:'';position:absolute;inset:-1px;border-radius:22px;background:linear-gradient(135deg,rgba(201,162,39,.25),transparent 50%,rgba(61,207,223,.15));z-index:-1}
+.main-title{font-family:var(--font-display);font-size:clamp(2rem,5.5vw,4rem);color:var(--gold2);line-height:1.15;margin-bottom:16px;text-shadow:0 0 40px rgba(201,162,39,.4),0 2px 4px rgba(0,0,0,.6)}
+.main-subtitle{font-family:var(--font-title);font-size:clamp(.9rem,2vw,1.2rem);color:var(--cyan2);letter-spacing:.18em;opacity:.85;margin-bottom:10px}
+.main-tagline{font-family:var(--font-body);font-size:clamp(.8rem,1.5vw,1rem);font-style:italic;color:var(--cream);opacity:.6;margin-top:8px}
+.title-links{display:flex;gap:14px;justify-content:center;margin-top:32px;flex-wrap:wrap}
+.title-link{display:inline-block;padding:9px 20px;border-radius:8px;font-family:var(--font-title);font-size:.75rem;letter-spacing:.14em;text-decoration:none;text-transform:uppercase;transition:all .25s}
+.title-link.primary{background:rgba(201,162,39,.15);border:1px solid var(--gold-dim);color:var(--gold2)}
+.title-link.primary:hover{background:rgba(201,162,39,.25);box-shadow:0 0 20px rgba(201,162,39,.2)}
+.title-link.secondary{background:rgba(61,207,223,.08);border:1px solid rgba(61,207,223,.25);color:var(--cyan2)}
+.title-link.secondary:hover{background:rgba(61,207,223,.15);box-shadow:0 0 20px rgba(61,207,223,.15)}
 
-/* ═══════════════════════════════════════════════
-   TYPOGRAPHY
-═══════════════════════════════════════════════ */
-.label-sm {
-  font-family: var(--font-title);
-  font-size: 10px;
-  letter-spacing: .28em;
-  text-transform: uppercase;
-  color: var(--cyan);
-  margin-bottom: 14px;
-  opacity: .8;
-}
+/* ── DECORATIVE ── */
+.geo-circle{position:absolute;border-radius:50%;border:1px solid rgba(201,162,39,.07);pointer-events:none}
+.orbit-ring{position:absolute;border-radius:50%;border:1px solid rgba(61,207,223,.05);pointer-events:none}
+.corner-ornament{position:absolute;width:48px;height:48px;opacity:.25;pointer-events:none}
+.corner-ornament svg{width:100%;height:100%}
+.corner-tl{top:22px;left:22px}
+.corner-br{bottom:22px;right:22px;transform:rotate(180deg)}
 
-.slide-title {
-  font-family: var(--font-display);
-  font-size: clamp(1.6rem, 4vw, 3.2rem);
-  color: var(--gold2);
-  text-align: center;
-  line-height: 1.2;
-  margin-bottom: 12px;
-  text-shadow: 0 0 30px rgba(201,162,39,.3);
-}
+/* ── CLOSING SLIDE ── */
+.closing-quote{font-family:var(--font-body);font-size:clamp(1rem,2.5vw,1.5rem);font-style:italic;color:var(--cream);text-align:center;line-height:1.7;max-width:640px;opacity:.88;padding:0 20px}
+.closing-quote em{color:var(--gold2);font-style:normal}
+.closing-mandala{position:absolute;width:60vh;height:60vh;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:0;opacity:.45;animation:compassSpin 280s linear infinite reverse}
 
-.slide-subtitle {
-  font-family: var(--font-title);
-  font-size: clamp(.85rem, 1.8vw, 1.15rem);
-  color: var(--cream);
-  text-align: center;
-  letter-spacing: .08em;
-  opacity: .75;
-  margin-bottom: 28px;
-}
+/* ── BADGES ── */
+.badge-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin:14px 0}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;font-family:var(--font-title);font-size:.72rem;letter-spacing:.1em;border:1px solid;transition:transform .22s var(--ease-silk),box-shadow .22s var(--ease-silk);box-shadow:0 10px 24px rgba(0,0,0,.16)}
+.badge.gold{background:rgba(201,162,39,.1);border-color:rgba(201,162,39,.3);color:var(--gold2)}
+.badge.cyan{background:rgba(61,207,223,.08);border-color:rgba(61,207,223,.25);color:var(--cyan2)}
+.badge.soft{background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.12);color:var(--cream);opacity:.7}
 
-.slide-body {
-  font-family: var(--font-body);
-  font-size: clamp(.88rem, 1.5vw, 1.05rem);
-  line-height: 1.8;
-  color: var(--cream);
-  opacity: .85;
-  text-align: left;
-  max-width: 780px;
-  width: 100%;
-}
-.slide-body p { margin-bottom: 14px; }
-.slide-body p:last-child { margin-bottom: 0; }
+/* ══ STAGGER REVEAL ══ */
+@keyframes staggerReveal{from{opacity:0;transform:translateY(22px);filter:blur(3px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+.slide.active .glass{animation:staggerReveal .6s .05s ease both}
+.slide.active .label-sm{animation:staggerReveal .5s 0s ease both}
+.slide.active .slide-title{animation:staggerReveal .6s .1s ease both}
+.slide.active .divider{animation:staggerReveal .4s .2s ease both}
+.slide.active .slide-body{animation:staggerReveal .6s .25s ease both}
+.slide.active .two-col{animation:staggerReveal .6s .2s ease both}
+.slide.active .badge-row{animation:staggerReveal .5s .15s ease both}
+.slide.active .planet-row{animation:staggerReveal .6s .15s ease both}
+.slide.active .steps{animation:staggerReveal .6s .15s ease both}
+.slide.active .title-links{animation:staggerReveal .5s .4s ease both}
+.slide.active .closing-quote{animation:staggerReveal .8s .2s ease both}
+.slide.active .tile-grid .tile{animation:staggerReveal .4s ease both}
+.slide.active .tile-grid .tile:nth-child(1){animation-delay:.07s}
+.slide.active .tile-grid .tile:nth-child(2){animation-delay:.12s}
+.slide.active .tile-grid .tile:nth-child(3){animation-delay:.17s}
+.slide.active .tile-grid .tile:nth-child(4){animation-delay:.22s}
+.slide.active .tile-grid .tile:nth-child(5){animation-delay:.27s}
+.slide.active .tile-grid .tile:nth-child(6){animation-delay:.32s}
+.slide.active .tile-grid .tile:nth-child(7){animation-delay:.37s}
+.slide.active .tile-grid .tile:nth-child(8){animation-delay:.42s}
+.slide.active .tile-grid .tile:nth-child(9){animation-delay:.47s}
+.slide.active .steps .step{animation:staggerReveal .45s ease both}
+.slide.active .steps .step:nth-child(1){animation-delay:.07s}
+.slide.active .steps .step:nth-child(2){animation-delay:.15s}
+.slide.active .steps .step:nth-child(3){animation-delay:.23s}
+.slide.active .steps .step:nth-child(4){animation-delay:.31s}
+.slide.active .steps .step:nth-child(5){animation-delay:.39s}
 
-.divider {
-  width: 80px; height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  margin: 18px auto;
-}
+/* ══ GOLD PULSE ══ */
+@keyframes goldPulse{0%,100%{text-shadow:0 0 8px rgba(201,162,39,.25)}50%{text-shadow:0 0 24px rgba(232,200,90,.7),0 0 48px rgba(201,162,39,.25)}}
+.badge.gold{animation:goldPulse 4s 1s ease-in-out infinite}
+.main-title{animation:goldPulse 5s ease-in-out infinite}
+@keyframes aiPulse{0%,100%{box-shadow:0 0 20px rgba(201,162,39,.07)}50%{box-shadow:0 0 28px rgba(201,162,39,.22)}}
+#ai-toggle{animation:aiPulse 3.5s ease-in-out infinite}
 
-/* ═══════════════════════════════════════════════
-   HIGHLIGHT / CALLOUT
-═══════════════════════════════════════════════ */
-.callout {
-  position: relative;
-  border-left: 2px solid var(--gold);
-  padding: 12px 18px;
-  background: rgba(201,162,39,.06);
-  border-radius: 0 8px 8px 0;
-  font-style: italic;
-  color: var(--cream);
-  margin: 18px 0;
-  font-size: .96em;
-  transition: transform .24s var(--ease-silk), box-shadow .24s var(--ease-silk), border-color .24s var(--ease-silk), background .24s var(--ease-silk);
-}
+/* ══ AMBIENT MODE ══ */
+body.ambient-mode #top-bar,body.ambient-mode #section-label,body.ambient-mode #btn-prev,body.ambient-mode #btn-next,body.ambient-mode #dots,body.ambient-mode #notes-panel,body.ambient-mode #ai-toggle,body.ambient-mode #ai-panel,body.ambient-mode #key-hint{opacity:0;pointer-events:none;transition:opacity .5s}
+body.ambient-mode #progress-bar{opacity:0;transition:opacity .5s}
 
-.highlight { color: var(--gold2); font-weight: 600; }
-.cyan-hl   { color: var(--cyan2); }
+/* ── RESPONSIVE ── */
+@media(max-width:768px){.slide{padding:60px 22px 80px}.title-island{padding:36px 28px 32px}.two-col{grid-template-columns:1fr}.tile-grid{grid-template-columns:repeat(auto-fit,minmax(120px,1fr))}.planet-row{gap:10px}#btn-prev{left:6px}#btn-next{right:6px}.nav-btn{width:36px;height:50px;font-size:16px}#ai-panel{width:calc(100vw - 36px);right:18px}#ai-toggle{right:18px}}
+@media(max-width:500px){#key-hint{display:none}}
 
-/* ═══════════════════════════════════════════════
-   GRID / TILES
-═══════════════════════════════════════════════ */
-.tile-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
-  width: 100%;
-  max-width: 860px;
-  margin-top: 8px;
-}
-
-.tile {
-  position: relative;
-  background: rgba(201,162,39,.05);
-  border: 1px solid rgba(201,162,39,.15);
-  border-radius: 12px;
-  padding: 14px 16px;
-  text-align: center;
-  transform-style: preserve-3d;
-  transition: transform .24s var(--ease-silk), box-shadow .24s var(--ease-silk), border-color .24s var(--ease-silk), background .24s var(--ease-silk);
-  box-shadow: 0 14px 34px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.04);
-}
-.tile:hover {
-  background:
-    radial-gradient(circle at var(--card-x, 50%) var(--card-y, 0%), rgba(135,232,240,.10), transparent 52%),
-    rgba(201,162,39,.075);
-  border-color: rgba(232,200,90,.36);
-}
-.tile .tile-icon { font-size: 1.6rem; margin-bottom: 6px; }
-.tile .tile-name {
-  font-family: var(--font-title);
-  font-size: .78rem;
-  letter-spacing: .1em;
-  color: var(--cream);
-  opacity: .85;
-}
-
-/* ═══════════════════════════════════════════════
-   TWO-COLUMN LAYOUT
-═══════════════════════════════════════════════ */
-.two-col {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  width: 100%;
-  max-width: 900px;
-  align-items: start;
-}
-.col-card {
-  padding: 24px 22px;
-  border-radius: 16px;
-}
-.col-card h3 {
-  font-family: var(--font-title);
-  font-size: .82rem;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--cyan);
-  margin-bottom: 12px;
-}
-.col-card ul {
-  list-style: none;
-  padding: 0;
-}
-.col-card ul li {
-  padding: 5px 0;
-  font-size: .9rem;
-  line-height: 1.5;
-  color: var(--cream);
-  opacity: .82;
-  border-bottom: 1px solid rgba(255,255,255,.04);
-}
-.col-card ul li:last-child { border-bottom: none; }
-.col-card ul li::before {
-  content: '◆ ';
-  color: var(--gold);
-  font-size: .65em;
-  vertical-align: middle;
-}
-
-/* ═══════════════════════════════════════════════
-   PLANET VISUALIZER (SLIDE 8)
-═══════════════════════════════════════════════ */
-.planet-row {
-  display: flex;
-  gap: 18px;
-  align-items: flex-end;
-  justify-content: center;
-  margin: 16px 0;
-  flex-wrap: wrap;
-}
-.planet-item {
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-}
-.planet {
-  border-radius: 50%;
-  position: relative;
-  box-shadow:
-    inset -4px -3px 12px rgba(0,0,0,.5),
-    0 0 20px rgba(61,207,223,.15);
-  animation: float 6s ease-in-out infinite;
-}
-.planet:nth-child(1) { animation-delay: 0s; }
-.planet-label {
-  font-family: var(--font-title);
-  font-size: .68rem;
-  letter-spacing: .1em;
-  color: var(--muted);
-  text-transform: uppercase;
-}
-@keyframes float {
-  0%,100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
-}
-
-/* ═══════════════════════════════════════════════
-   CHAIN / STEPS
-═══════════════════════════════════════════════ */
-.steps {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-width: 640px;
-}
-.step {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 14px 18px;
-  background: rgba(61,207,223,.04);
-  border: 1px solid rgba(61,207,223,.12);
-  border-radius: 12px;
-  transition: transform .24s var(--ease-silk), box-shadow .24s var(--ease-silk), border-color .24s var(--ease-silk), background .24s var(--ease-silk);
-  box-shadow: 0 14px 30px rgba(0,0,0,.16);
-}
-.step:hover {
-  background: rgba(61,207,223,.07);
-  border-color: rgba(135,232,240,.28);
-}
-.step-num {
-  font-family: var(--font-title);
-  font-size: 1.1rem;
-  color: var(--cyan);
-  opacity: .7;
-  min-width: 28px;
-  line-height: 1.4;
-}
-.step-text {
-  font-size: .9rem;
-  line-height: 1.6;
-  color: var(--cream);
-  opacity: .85;
-}
-.step-text strong {
-  font-family: var(--font-title);
-  color: var(--cyan2);
-  font-size: .82rem;
-  letter-spacing: .08em;
-  display: block;
-  margin-bottom: 3px;
-}
-
-/* ═══════════════════════════════════════════════
-   SLIDE-SPECIFIC: TITLE SLIDE
-═══════════════════════════════════════════════ */
-#slide-1 {
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-.title-island {
-  position: relative;
-  padding: 52px 64px 48px;
-  max-width: 700px;
-  width: 100%;
-}
-.title-island::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: 22px;
-  background: linear-gradient(135deg, rgba(201,162,39,.25), transparent 50%, rgba(61,207,223,.15));
-  z-index: -1;
-}
-.main-title {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 5.5vw, 4rem);
-  color: var(--gold2);
-  line-height: 1.15;
-  margin-bottom: 16px;
-  text-shadow:
-    0 0 40px rgba(201,162,39,.4),
-    0 2px 4px rgba(0,0,0,.6);
-}
-.main-subtitle {
-  font-family: var(--font-title);
-  font-size: clamp(.9rem, 2vw, 1.2rem);
-  color: var(--cyan2);
-  letter-spacing: .18em;
-  opacity: .85;
-  margin-bottom: 10px;
-}
-.main-tagline {
-  font-family: var(--font-body);
-  font-size: clamp(.8rem, 1.5vw, 1rem);
-  font-style: italic;
-  color: var(--cream);
-  opacity: .6;
-  margin-top: 8px;
-}
-.title-links {
-  display: flex; gap: 14px; justify-content: center;
-  margin-top: 32px; flex-wrap: wrap;
-}
-.title-link {
-  display: inline-block;
-  padding: 9px 20px;
-  border-radius: 8px;
-  font-family: var(--font-title);
-  font-size: .75rem;
-  letter-spacing: .14em;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: all .25s;
-}
-.title-link.primary {
-  background: rgba(201,162,39,.15);
-  border: 1px solid var(--gold-dim);
-  color: var(--gold2);
-}
-.title-link.primary:hover {
-  background: rgba(201,162,39,.25);
-  box-shadow: 0 0 20px rgba(201,162,39,.2);
-}
-.title-link.secondary {
-  background: rgba(61,207,223,.08);
-  border: 1px solid rgba(61,207,223,.25);
-  color: var(--cyan2);
-}
-.title-link.secondary:hover {
-  background: rgba(61,207,223,.15);
-  box-shadow: 0 0 20px rgba(61,207,223,.15);
-}
-
-/* ═══════════════════════════════════════════════
-   DECORATIVE GEOMETRY
-═══════════════════════════════════════════════ */
-.geo-circle {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(201,162,39,.07);
-  pointer-events: none;
-}
-.orbit-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(61,207,223,.05);
-  pointer-events: none;
-}
-.corner-ornament {
-  position: absolute;
-  width: 48px; height: 48px;
-  opacity: .25;
-  pointer-events: none;
-}
-.corner-ornament svg { width: 100%; height: 100%; }
-.corner-tl { top: 22px; left: 22px; }
-.corner-br { bottom: 22px; right: 22px; transform: rotate(180deg); }
-
-/* ═══════════════════════════════════════════════
-   CLOSING SLIDE
-═══════════════════════════════════════════════ */
-.closing-quote {
-  font-family: var(--font-body);
-  font-size: clamp(1rem, 2.5vw, 1.5rem);
-  font-style: italic;
-  color: var(--cream);
-  text-align: center;
-  line-height: 1.7;
-  max-width: 640px;
-  opacity: .88;
-  padding: 0 20px;
-}
-.closing-quote em {
-  color: var(--gold2);
-  font-style: normal;
-}
-
-/* ═══════════════════════════════════════════════
-   IMAGE CONTAINER
-═══════════════════════════════════════════════ */
-.slide-img {
-  max-height: 160px;
-  max-width: 240px;
-  object-fit: contain;
-  border-radius: 10px;
-  opacity: .85;
-  margin-bottom: 20px;
-}
-.slide-img-sm {
-  max-height: 90px; max-width: 140px;
-}
-
-/* ═══════════════════════════════════════════════
-   BADGE ROW
-═══════════════════════════════════════════════ */
-.badge-row {
-  display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;
-  margin: 14px 0;
-}
-.badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-family: var(--font-title);
-  font-size: .72rem;
-  letter-spacing: .1em;
-  border: 1px solid;
-  transition: transform .22s var(--ease-silk), box-shadow .22s var(--ease-silk), border-color .22s var(--ease-silk);
-  box-shadow: 0 10px 24px rgba(0,0,0,.16);
-}
-.badge.gold  { background: rgba(201,162,39,.1); border-color: rgba(201,162,39,.3); color: var(--gold2); }
-.badge.cyan  { background: rgba(61,207,223,.08); border-color: rgba(61,207,223,.25); color: var(--cyan2); }
-.badge.soft  { background: rgba(255,255,255,.04); border-color: rgba(255,255,255,.12); color: var(--cream); opacity: .7; }
-
-/* ═══════════════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════════════ */
-@media (max-width: 768px) {
-  .slide { padding: 60px 22px 80px; }
-  .title-island { padding: 36px 28px 32px; }
-  .two-col { grid-template-columns: 1fr; }
-  .tile-grid { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
-  .planet-row { gap: 10px; }
-  #btn-prev { left: 6px; }
-  #btn-next { right: 6px; }
-  .nav-btn { width: 36px; height: 50px; font-size: 16px; }
-}
-
-/* ═══════════════════════════════════════════════
-   REDUCED MOTION
-═══════════════════════════════════════════════ */
-@media (prefers-reduced-motion: reduce) {
-  .slide { transition: opacity .3s; transform: none !important; }
-  .planet { animation: none; }
-  * { animation-duration: .01ms !important; transition-duration: .2s !important; }
-}
-
-/* ═══════════════════════════════════════════════
-   SCROLLBAR STYLE
-═══════════════════════════════════════════════ */
-#notes-panel::-webkit-scrollbar { width: 4px; }
-#notes-panel::-webkit-scrollbar-track { background: transparent; }
-#notes-panel::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
-
+/* ── REDUCED MOTION ── */
+@media(prefers-reduced-motion:reduce){.slide{transition:opacity .3s;transform:none !important}.planet,.sp-orbit,.sp-atmo,.star-compass,.closing-mandala{animation:none !important}*{animation-duration:.01ms !important;transition-duration:.2s !important}}
+#notes-panel::-webkit-scrollbar{width:4px}
+#notes-panel::-webkit-scrollbar-track{background:transparent}
+#notes-panel::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:2px}
 </style>
 </head>
 <body>
 
-<!-- Background layers -->
 <div class="space-gradient" aria-hidden="true"></div>
 <div class="css-stars" id="css-stars" aria-hidden="true"></div>
 <canvas id="bg-canvas" aria-hidden="true"></canvas>
-<div class="wayfinder-cursor wayfinder-cursor--ring" aria-hidden="true"></div>
-<div class="wayfinder-cursor wayfinder-cursor--core" aria-hidden="true"></div>
+<canvas id="trail-canvas" aria-hidden="true"></canvas>
+<canvas id="warp-canvas" aria-hidden="true"></canvas>
+<div id="nebula-mood" aria-hidden="true"></div>
+<div class="wf-cursor wf-ring" aria-hidden="true"></div>
+<div class="wf-cursor wf-core" aria-hidden="true"></div>
 
-<!-- Progress bar -->
-<div id="progress-bar" role="progressbar" aria-label="Presentation progress">
-  <div id="progress-fill"></div>
-</div>
+<div id="progress-bar" role="progressbar" aria-label="Presentation progress"><div id="progress-fill"></div></div>
+<div id="section-label" aria-live="polite"></div>
 
-<!-- Top controls -->
 <div id="top-bar">
-  <button class="top-btn" id="btn-notes" aria-label="Toggle speaker notes" title="Speaker Notes (N)">
-    NOTES
-  </button>
-  <button class="top-btn" id="btn-fullscreen" aria-label="Toggle fullscreen" title="Fullscreen (F)">
-    ⛶
-  </button>
+  <button class="top-btn" id="btn-notes" title="Notes (N)">NOTES</button>
+  <button class="top-btn" id="btn-overview" title="Overview (O)">MAP</button>
+  <button class="top-btn" id="btn-ambient" title="Ambient (A)">AMBIENT</button>
+  <button class="top-btn" id="btn-fullscreen" title="Fullscreen (F)">⛶</button>
   <div id="slide-counter" aria-live="polite">1 / 14</div>
 </div>
 
-<!-- Nav arrows -->
-<button class="nav-btn" id="btn-prev" aria-label="Previous slide" title="Previous (←)">‹</button>
-<button class="nav-btn" id="btn-next" aria-label="Next slide" title="Next (→ or Space)">›</button>
+<button class="nav-btn" id="btn-prev" aria-label="Previous slide">‹</button>
+<button class="nav-btn" id="btn-next" aria-label="Next slide">›</button>
 
-<!-- Speaker notes panel -->
 <div id="notes-panel" role="region" aria-label="Speaker notes">
-  <div id="notes-header">
-    <span>◆ SPEAKER NOTES</span>
-    <button id="notes-close" aria-label="Close notes">×</button>
-  </div>
-  <div id="notes-content">Loading notes…</div>
+  <div id="notes-header"><span>◆ SPEAKER NOTES</span><button id="notes-close" aria-label="Close notes">×</button></div>
+  <div id="notes-content">Loading…</div>
 </div>
 
-<!-- Slide dots -->
+<!-- ─── AI LIVING GUIDE ─── -->
+<button id="ai-toggle" aria-label="Open Living Guide" title="Living Guide (? key)">✦ ASK</button>
+<div id="ai-panel" role="dialog" aria-label="Living Guide" aria-hidden="true">
+  <div id="ai-header">
+    <div class="ai-header-left">LIVING GUIDE <div id="ai-status"></div></div>
+    <button id="ai-close-btn" aria-label="Close">×</button>
+  </div>
+  <div id="ai-setup">
+    <p>The Living Guide is an AI presence that knows Ka Paepae Ike Ola deeply — its philosophy, traditions, and design. Audience members can ask questions in real time.</p>
+    <p class="ai-small">Enter your Anthropic API key to activate. Key is stored only in this browser session.</p>
+    <input type="password" id="ai-key-input" placeholder="sk-ant-api03-...">
+    <button id="ai-connect-btn">CONNECT THE GUIDE</button>
+  </div>
+  <div id="ai-convo" style="display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden;">
+    <div id="ai-messages">
+      <div class="ai-msg ai-msg--guide">
+        <div class="ai-msg-text">Aloha. I am the Living Guide of Ka Paepae Ike Ola. Ask me anything about this platform — its philosophy, the knowledge traditions it holds, how it works, or what comes next.</div>
+      </div>
+    </div>
+  </div>
+  <div id="ai-input-area" style="display:none;">
+    <input type="text" id="ai-input" placeholder="Ask the Living Guide…" autocomplete="off" aria-label="Your question">
+    <button id="ai-send" aria-label="Send">↑</button>
+  </div>
+</div>
+
+<!-- ─── SLIDE OVERVIEW MAP ─── -->
+<div id="overview-panel" role="dialog" aria-label="Slide overview">
+  <div id="ov-hint">STAR MAP — Click any slide to navigate · Press O or Escape to close</div>
+  <div id="overview-grid"></div>
+</div>
+
 <nav id="dots" aria-label="Slide navigation"></nav>
 
-<!-- ═══════════════════════════════════════════
-     DECK
-═══════════════════════════════════════════ -->
+<div id="key-hint" aria-hidden="true">
+  → NEXT &nbsp; ← PREV &nbsp; N NOTES &nbsp; O MAP &nbsp; ? GUIDE &nbsp; A AMBIENT &nbsp; F FULL
+</div>
+
 <main id="deck" role="main">
 
-<!-- ─── SLIDE 1: TITLE ─────────────────────── -->
-<section class="slide" id="slide-1" data-index="0"
-  aria-label="Slide 1: Title"
-  data-notes="Welcome. Ka Paepae Ike Ola means The Living Knowledge Platform. This is not another learning app. It is an attempt to hold cultural knowledge with the care it deserves — as relationship, memory, and responsibility. Tonight I want to show you what that looks like in practice.">
-
-  <!-- Decorative geometry -->
-  <div class="geo-circle" style="width:600px;height:600px;top:50%;left:50%;transform:translate(-50%,-50%);border-color:rgba(201,162,39,.05);" aria-hidden="true"></div>
-  <div class="geo-circle" style="width:400px;height:400px;top:50%;left:50%;transform:translate(-50%,-50%);border-color:rgba(61,207,223,.06);" aria-hidden="true"></div>
-
+<!-- ─── 1: TITLE ─── -->
+<section class="slide" id="slide-1" data-index="0" aria-label="Slide 1: Title"
+  data-notes="Welcome. Ka Paepae Ike Ola means The Living Knowledge Platform. This is not another learning app. It is an attempt to hold cultural knowledge with the care it deserves — as relationship, memory, and responsibility.">
+  <div class="star-compass" aria-hidden="true">
+    <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(150,150)">
+        <circle r="20" stroke="rgba(201,162,39,.45)" stroke-width=".5"/><circle r="60" stroke="rgba(201,162,39,.22)" stroke-width=".5"/><circle r="100" stroke="rgba(201,162,39,.14)" stroke-width=".5"/><circle r="135" stroke="rgba(61,207,223,.1)" stroke-width=".5"/>
+        <polygon points="0,-135 7,-22 0,0" fill="rgba(201,162,39,.18)" stroke="rgba(201,162,39,.65)" stroke-width=".6"/>
+        <polygon points="0,-135 -7,-22 0,0" fill="rgba(201,162,39,.08)" stroke="rgba(201,162,39,.3)" stroke-width=".5"/>
+        <polygon points="0,135 7,22 0,0" fill="rgba(201,162,39,.18)" stroke="rgba(201,162,39,.65)" stroke-width=".6"/>
+        <polygon points="0,135 -7,22 0,0" fill="rgba(201,162,39,.08)" stroke="rgba(201,162,39,.3)" stroke-width=".5"/>
+        <polygon points="135,0 22,7 0,0" fill="rgba(201,162,39,.18)" stroke="rgba(201,162,39,.65)" stroke-width=".6"/>
+        <polygon points="135,0 22,-7 0,0" fill="rgba(201,162,39,.08)" stroke="rgba(201,162,39,.3)" stroke-width=".5"/>
+        <polygon points="-135,0 -22,7 0,0" fill="rgba(201,162,39,.18)" stroke="rgba(201,162,39,.65)" stroke-width=".6"/>
+        <polygon points="-135,0 -22,-7 0,0" fill="rgba(201,162,39,.08)" stroke="rgba(201,162,39,.3)" stroke-width=".5"/>
+        <polygon points="96,-96 10,-14 0,0" fill="rgba(61,207,223,.1)" stroke="rgba(61,207,223,.48)" stroke-width=".5"/>
+        <polygon points="-96,-96 -10,-14 0,0" fill="rgba(61,207,223,.1)" stroke="rgba(61,207,223,.48)" stroke-width=".5"/>
+        <polygon points="96,96 10,14 0,0" fill="rgba(61,207,223,.1)" stroke="rgba(61,207,223,.48)" stroke-width=".5"/>
+        <polygon points="-96,96 -10,14 0,0" fill="rgba(61,207,223,.1)" stroke="rgba(61,207,223,.48)" stroke-width=".5"/>
+        <polygon points="96,-96 14,-10 0,0" fill="rgba(61,207,223,.04)" stroke="rgba(61,207,223,.2)" stroke-width=".4"/>
+        <polygon points="-96,-96 -14,-10 0,0" fill="rgba(61,207,223,.04)" stroke="rgba(61,207,223,.2)" stroke-width=".4"/>
+        <polygon points="96,96 14,10 0,0" fill="rgba(61,207,223,.04)" stroke="rgba(61,207,223,.2)" stroke-width=".4"/>
+        <polygon points="-96,96 -14,10 0,0" fill="rgba(61,207,223,.04)" stroke="rgba(61,207,223,.2)" stroke-width=".4"/>
+        <circle r="4" fill="rgba(201,162,39,.7)"/><circle r="8" fill="none" stroke="rgba(201,162,39,.35)" stroke-width=".5"/>
+        <g stroke="rgba(201,162,39,.3)" stroke-width=".5"><line x1="0" y1="-100" x2="0" y2="-110"/><line x1="50" y1="-86.6" x2="55" y2="-95"/><line x1="86.6" y1="-50" x2="95" y2="-55"/><line x1="100" y1="0" x2="110" y2="0"/><line x1="86.6" y1="50" x2="95" y2="55"/><line x1="50" y1="86.6" x2="55" y2="95"/><line x1="0" y1="100" x2="0" y2="110"/><line x1="-50" y1="86.6" x2="-55" y2="95"/><line x1="-86.6" y1="50" x2="-95" y2="55"/><line x1="-100" y1="0" x2="-110" y2="0"/><line x1="-86.6" y1="-50" x2="-95" y2="-55"/><line x1="-50" y1="-86.6" x2="-55" y2="-95"/></g>
+      </g>
+    </svg>
+  </div>
+  <div class="slide-planet" aria-hidden="true">
+    <div class="sp-atmo"></div><div class="sp-sphere"></div><div class="sp-ring"></div>
+    <div class="sp-orbit"><div class="sp-moon"></div></div>
+  </div>
   <div class="title-island glass">
-    <!-- Corner ornaments -->
-    <div class="corner-ornament corner-tl" aria-hidden="true">
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M2 2 L22 2 L2 22 Z" stroke="#c9a227" stroke-width="1" fill="none"/>
-        <circle cx="2" cy="2" r="2" fill="#c9a227"/>
-      </svg>
-    </div>
-    <div class="corner-ornament corner-br" aria-hidden="true">
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M2 2 L22 2 L2 22 Z" stroke="#3dcfdf" stroke-width="1" fill="none"/>
-        <circle cx="2" cy="2" r="2" fill="#3dcfdf"/>
-      </svg>
-    </div>
-
+    <div class="corner-ornament corner-tl" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M2 2 L22 2 L2 22 Z" stroke="#c9a227" stroke-width="1" fill="none"/><circle cx="2" cy="2" r="2" fill="#c9a227"/></svg></div>
+    <div class="corner-ornament corner-br" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M2 2 L22 2 L2 22 Z" stroke="#3dcfdf" stroke-width="1" fill="none"/><circle cx="2" cy="2" r="2" fill="#3dcfdf"/></svg></div>
     <div class="label-sm">Ka Paepae Ike Ola</div>
     <h1 class="main-title">The Living<br>Knowledge Platform</h1>
     <div class="divider"></div>
     <div class="main-subtitle">Cultural Learning as Relationship, Memory, and Responsibility</div>
     <div class="main-tagline">An immersive platform for cultural study — rooted in source, carried with care.</div>
-
     <div class="title-links">
       <a class="title-link primary" href="index.html" target="_blank">Open App</a>
       <a class="title-link secondary" href="LKP/lessons.html" target="_blank">Cultural Journeys</a>
@@ -907,50 +401,40 @@ body.cursor-active .wayfinder-cursor--core {
   </div>
 </section>
 
-<!-- ─── SLIDE 2: PROBLEM ───────────────────── -->
-<section class="slide" id="slide-2" data-index="1"
-  aria-label="Slide 2: The Problem"
-  data-notes="Most learning tools — from Wikipedia to quiz apps to even well-intentioned educational platforms — flatten culture into facts, summaries, or checklists. A Hawaiian chant becomes a translation. An Egyptian cosmology becomes a glossary entry. The depth, the relationship, the responsibility — all gone. We built this because we believe that is not good enough.">
-
+<!-- ─── 2: PROBLEM ─── -->
+<section class="slide" id="slide-2" data-index="1" aria-label="Slide 2: The Problem"
+  data-notes="Most learning tools flatten culture into facts, summaries, or checklists. A Hawaiian chant becomes a translation. An Egyptian cosmology becomes a glossary entry. The depth, the relationship, the responsibility — all gone. We built this because we believe that is not good enough.">
   <div class="glass" style="padding:44px 52px;max-width:700px;width:100%;border-radius:20px;">
     <div class="label-sm">The Problem</div>
     <h2 class="slide-title" style="font-size:clamp(1.4rem,3.5vw,2.4rem);">Most tools flatten<br>what culture holds</h2>
     <div class="divider"></div>
     <div class="slide-body">
       <p>Learning platforms break cultural knowledge into <span class="highlight">isolated facts, summaries, and checklists</span>. A chant becomes a translation. A cosmology becomes a bullet point. The depth, the relation, the responsibility — erased in the rendering.</p>
-      <div class="callout">
-        "When you flatten the source, you lose the map."
-      </div>
-      <p>Ka Paepae Ike Ola responds by keeping <span class="cyan-hl">source, relation, reflection, and practice visible</span> at every layer of the experience — not as footnotes, but as the structure itself.</p>
+      <div class="callout">"When you flatten the source, you lose the map."</div>
+      <p>Ka Paepae Ike Ola responds by keeping <span class="cyan-hl">source, relation, reflection, and practice visible</span> at every layer — not as footnotes, but as the structure itself.</p>
     </div>
   </div>
 </section>
 
-<!-- ─── SLIDE 3: VISION ────────────────────── -->
-<section class="slide" id="slide-3" data-index="2"
-  aria-label="Slide 3: The Vision"
-  data-notes="The vision is simple: cultural learning becomes a journey, not a transaction. Learners enter a living map of knowledge. They do not consume information — they move through it, reflect on it, and carry it forward with care.">
-
+<!-- ─── 3: VISION ─── -->
+<section class="slide" id="slide-3" data-index="2" aria-label="Slide 3: The Vision"
+  data-notes="Cultural learning becomes a journey, not a transaction. Learners enter a living map of knowledge. They do not consume information — they move through it, reflect on it, and carry it forward with care.">
   <div class="glass" style="padding:44px 52px;max-width:700px;width:100%;border-radius:20px;">
     <div class="label-sm">The Vision</div>
     <h2 class="slide-title" style="font-size:clamp(1.4rem,3.5vw,2.4rem);">Enter a living map<br>of knowledge</h2>
     <div class="divider"></div>
     <div class="slide-body">
       <p>Cultural learning becomes a <span class="highlight">journey</span> — not a transaction. Learners do not simply consume information.</p>
-      <div class="callout">
-        They enter a living map. They move through it. They reflect on it. They carry it forward.
-      </div>
+      <div class="callout">They enter a living map. They move through it. They reflect on it. They carry it forward.</div>
       <p>The platform is designed so that <span class="cyan-hl">every interaction reinforces relationship</span>: with the source, with the learner's own reflection, and with the cultures represented.</p>
       <p>Knowledge held this way is knowledge that survives.</p>
     </div>
   </div>
 </section>
 
-<!-- ─── SLIDE 4: CORE EXPERIENCE ──────────── -->
-<section class="slide" id="slide-4" data-index="3"
-  aria-label="Slide 4: Core Experience"
-  data-notes="The core experience has several interlocking parts. The galaxy homepage sets the visual tone. Cultural Journeys are the learning engine. The Kumulipo Wa section is our deep-source study model. Scholar and Keiki modes allow the same content to serve different learners. The Wayfinder Passport tracks growth. And the personal galaxy makes progress visual and cosmic.">
-
+<!-- ─── 4: CORE EXPERIENCE ─── -->
+<section class="slide" id="slide-4" data-index="3" aria-label="Slide 4: Core Experience"
+  data-notes="The core experience has several interlocking parts. The galaxy homepage sets the visual tone. Cultural Journeys are the learning engine. Kumulipo Wa is the deep-source study model. Scholar and Keiki modes serve different learners with the same content. The Wayfinder Passport tracks growth. The personal galaxy makes progress visual and cosmic.">
   <div style="max-width:860px;width:100%;text-align:center;">
     <div class="label-sm">Core Experience</div>
     <h2 class="slide-title" style="margin-bottom:24px;">Eight layers of learning</h2>
@@ -967,50 +451,34 @@ body.cursor-active .wayfinder-cursor--core {
   </div>
 </section>
 
-<!-- ─── SLIDE 5: CULTURAL JOURNEYS ────────── -->
-<section class="slide" id="slide-5" data-index="4"
-  aria-label="Slide 5: Cultural Journeys"
+<!-- ─── 5: CULTURAL JOURNEYS ─── -->
+<section class="slide" id="slide-5" data-index="4" aria-label="Slide 5: Cultural Journeys"
   data-notes="Cultural Journeys is the main learning engine. Learners choose a culture, explore modules, and progress through lessons. The roadmap landing page shows them where they are. They can resume where they left off. Everything is mobile-responsive. The design keeps the learner oriented — not lost in an endless feed.">
-
   <div class="glass" style="padding:40px 48px;max-width:820px;width:100%;border-radius:20px;">
     <div class="label-sm">Cultural Journeys</div>
     <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);margin-bottom:20px;">Navigate by culture,<br>progress by depth</h2>
     <div class="two-col">
       <div class="col-card glass" style="padding:20px 18px;">
         <h3>Navigation</h3>
-        <ul>
-          <li>Culture dropdown selector</li>
-          <li>Lessons by module and sequence</li>
-          <li>Progress indicators per lesson</li>
-          <li>Roadmap landing page</li>
-          <li>Resume from last lesson</li>
-        </ul>
+        <ul><li>Culture dropdown selector</li><li>Lessons by module and sequence</li><li>Progress indicators per lesson</li><li>Roadmap landing page</li><li>Resume from last lesson</li></ul>
       </div>
       <div class="col-card glass" style="padding:20px 18px;">
         <h3>Design</h3>
-        <ul>
-          <li>Mobile-first responsive layout</li>
-          <li>Skip roadmap option</li>
-          <li>Roadmap popup with orbit styling</li>
-          <li>Mana &amp; badge rewards per lesson</li>
-          <li>Scholar and Keiki reading modes</li>
-        </ul>
+        <ul><li>Mobile-first responsive layout</li><li>Skip roadmap option</li><li>Roadmap popup with orbit styling</li><li>Mana &amp; badge rewards per lesson</li><li>Scholar and Keiki reading modes</li></ul>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── SLIDE 6: KUMULIPO WĀ ──────────────── -->
-<section class="slide" id="slide-6" data-index="5"
-  aria-label="Slide 6: Kumulipo Wa Deep Study"
-  data-notes="The Kumulipo is the Hawaiian creation chant — one of the most sophisticated cosmological documents in the Pacific. Our deep study module presents all 16 Wā in the original Hawaiian first. English meaning follows each line. Then interpretation follows the chant. Primary source always comes first — this is non-negotiable in our design philosophy.">
-
+<!-- ─── 6: KUMULIPO ─── -->
+<section class="slide" id="slide-6" data-index="5" aria-label="Slide 6: Kumulipo Wa"
+  data-notes="The Kumulipo is the Hawaiian creation chant — one of the most sophisticated cosmological documents in the Pacific. Our deep study module presents all 16 Wa in the original Hawaiian first. English meaning follows each line. Then interpretation follows the chant. Primary source always comes first.">
   <div class="glass" style="padding:44px 52px;max-width:700px;width:100%;border-radius:20px;">
     <div class="label-sm">Kumulipo Wā · Deep Study</div>
     <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);">Primary source first,<br>always</h2>
     <div class="divider"></div>
     <div class="slide-body">
-      <div class="callout" style="font-family:var(--font-title);letter-spacing:.06em;font-size:.92em;line-height:1.9;font-style:normal;">
+      <div class="callout" style="font-family:var(--font-title);letter-spacing:.06em;font-size:.92em;line-height:2;font-style:normal;">
         O ke au i kahuli wela ka honua<br>
         <span style="font-size:.82em;opacity:.6;font-style:italic;letter-spacing:.02em;">When the heat turned the earth</span>
       </div>
@@ -1020,79 +488,39 @@ body.cursor-active .wayfinder-cursor--core {
   </div>
 </section>
 
-<!-- ─── SLIDE 7: CULTURES ──────────────────── -->
-<section class="slide" id="slide-7" data-index="6"
-  aria-label="Slide 7: Expanding Knowledge Worlds"
-  data-notes="We are building outward. Kanaka Maoli is our foundation and anchor. From there we are adding Kemet, Dogon, Vedic, Dreamtime, Maori, Yoruba, and Chinese knowledge traditions. Bridge lessons connect cross-cultural resonances — not to flatten them into sameness, but to let learners see how independently cultures arrived at profound similar understandings.">
-
+<!-- ─── 7: CULTURES ─── -->
+<section class="slide" id="slide-7" data-index="6" aria-label="Slide 7: Nine Traditions"
+  data-notes="We are building outward. Kanaka Maoli is our foundation. From there we add Kemet, Dogon, Vedic, Dreamtime, Maori, Yoruba, and Chinese. Bridge lessons connect cross-cultural resonances — not to flatten them, but to show how independently cultures arrived at profound similar understandings.">
   <div style="max-width:860px;width:100%;text-align:center;">
     <div class="label-sm">Expanding Knowledge Worlds</div>
     <h2 class="slide-title" style="margin-bottom:24px;">Nine traditions, one platform</h2>
     <div class="tile-grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
-      <div class="tile" style="border-color:rgba(201,162,39,.25);">
-        <div class="tile-icon">🌺</div><div class="tile-name">Kanaka Maoli</div>
-      </div>
-      <div class="tile" style="border-color:rgba(201,162,39,.2);">
-        <div class="tile-icon">𓂀</div><div class="tile-name">Kemet</div>
-      </div>
-      <div class="tile" style="border-color:rgba(61,207,223,.2);">
-        <div class="tile-icon">⭐</div><div class="tile-name">Dogon</div>
-      </div>
-      <div class="tile" style="border-color:rgba(201,162,39,.2);">
-        <div class="tile-icon">🕉️</div><div class="tile-name">Vedic</div>
-      </div>
-      <div class="tile" style="border-color:rgba(255,140,60,.2);">
-        <div class="tile-icon">🟤</div><div class="tile-name">Dreamtime</div>
-      </div>
-      <div class="tile" style="border-color:rgba(61,207,223,.2);">
-        <div class="tile-icon">🌀</div><div class="tile-name">Māori</div>
-      </div>
-      <div class="tile" style="border-color:rgba(200,80,80,.2);">
-        <div class="tile-icon">🥁</div><div class="tile-name">Yoruba</div>
-      </div>
-      <div class="tile" style="border-color:rgba(201,162,39,.2);">
-        <div class="tile-icon">☯️</div><div class="tile-name">Chinese</div>
-      </div>
-      <div class="tile" style="border-color:rgba(150,150,255,.2);">
-        <div class="tile-icon">🌉</div><div class="tile-name">Bridge Lessons</div>
-      </div>
+      <div class="tile" style="border-color:rgba(201,162,39,.28);"><div class="tile-icon">🌺</div><div class="tile-name">Kanaka Maoli</div></div>
+      <div class="tile" style="border-color:rgba(201,162,39,.22);"><div class="tile-icon">𓂀</div><div class="tile-name">Kemet</div></div>
+      <div class="tile" style="border-color:rgba(61,207,223,.22);"><div class="tile-icon">⭐</div><div class="tile-name">Dogon</div></div>
+      <div class="tile" style="border-color:rgba(201,162,39,.22);"><div class="tile-icon">🕉️</div><div class="tile-name">Vedic</div></div>
+      <div class="tile" style="border-color:rgba(255,140,60,.22);"><div class="tile-icon">🟤</div><div class="tile-name">Dreamtime</div></div>
+      <div class="tile" style="border-color:rgba(61,207,223,.22);"><div class="tile-icon">🌀</div><div class="tile-name">Māori</div></div>
+      <div class="tile" style="border-color:rgba(200,80,80,.22);"><div class="tile-icon">🥁</div><div class="tile-name">Yoruba</div></div>
+      <div class="tile" style="border-color:rgba(201,162,39,.22);"><div class="tile-icon">☯️</div><div class="tile-name">Chinese</div></div>
+      <div class="tile" style="border-color:rgba(150,150,255,.22);"><div class="tile-icon">🌉</div><div class="tile-name">Bridge Lessons</div></div>
     </div>
   </div>
 </section>
 
-<!-- ─── SLIDE 8: USER GALAXY ──────────────── -->
-<section class="slide" id="slide-8" data-index="7"
-  aria-label="Slide 8: The User's Galaxy"
-  data-notes="Every culture a learner begins becomes a planet in their personal galaxy. As they complete lessons that planet evolves — gaining moons, rings, clearing nebula, gaining companion bodies. The galaxy becomes a living visual story of both breadth and depth. It is not gamification for its own sake — it mirrors what is actually happening in the learner's relationship with these traditions.">
-
+<!-- ─── 8: USER GALAXY ─── -->
+<section class="slide" id="slide-8" data-index="7" aria-label="Slide 8: The User's Galaxy"
+  data-notes="Every culture a learner begins becomes a planet in their personal galaxy. As they complete lessons that planet evolves — gaining moons, rings, clearing nebula. The galaxy becomes a living visual story of breadth and depth. It mirrors what is actually happening in the learner's relationship with these traditions.">
   <div class="glass" style="padding:40px 52px;max-width:760px;width:100%;border-radius:20px;text-align:center;">
     <div class="label-sm">The Wayfinder's Galaxy</div>
     <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);margin-bottom:16px;">Your learning becomes<br>a living cosmos</h2>
-
-    <!-- Decorative planet row -->
     <div class="planet-row" aria-hidden="true">
-      <div class="planet-item">
-        <div class="planet" style="width:38px;height:38px;background:radial-gradient(circle at 38% 35%,#e8c85a,#7a6018);"></div>
-        <div class="planet-label">Hawaiian</div>
-      </div>
-      <div class="planet-item">
-        <div class="planet" style="width:52px;height:52px;background:radial-gradient(circle at 38% 35%,#f0b040,#8a4020);animation-delay:.8s;box-shadow:inset -4px -3px 12px rgba(0,0,0,.5),0 0 30px rgba(240,176,64,.2);"></div>
-        <div class="planet-label">Kemet</div>
-      </div>
-      <div class="planet-item">
-        <div class="planet" style="width:34px;height:34px;background:radial-gradient(circle at 38% 35%,#4dd9e8,#1a5060);animation-delay:1.4s;"></div>
-        <div class="planet-label">Dogon</div>
-      </div>
-      <div class="planet-item">
-        <div class="planet" style="width:44px;height:44px;background:radial-gradient(circle at 38% 35%,#e8a060,#604020);animation-delay:.4s;"></div>
-        <div class="planet-label">Vedic</div>
-      </div>
-      <div class="planet-item">
-        <div class="planet" style="width:30px;height:30px;background:radial-gradient(circle at 38% 35%,#c89050,#503018);animation-delay:2s;opacity:.6;"></div>
-        <div class="planet-label">Dreamtime</div>
-      </div>
+      <div class="planet-item"><div class="planet" style="width:38px;height:38px;background:radial-gradient(circle at 38% 35%,#e8c85a,#7a6018);"></div><div class="planet-label">Hawaiian</div></div>
+      <div class="planet-item"><div class="planet" style="width:52px;height:52px;background:radial-gradient(circle at 38% 35%,#f0b040,#8a4020);animation-delay:.8s;box-shadow:inset -4px -3px 12px rgba(0,0,0,.5),0 0 30px rgba(240,176,64,.2);"></div><div class="planet-label">Kemet</div></div>
+      <div class="planet-item"><div class="planet" style="width:34px;height:34px;background:radial-gradient(circle at 38% 35%,#4dd9e8,#1a5060);animation-delay:1.4s;"></div><div class="planet-label">Dogon</div></div>
+      <div class="planet-item"><div class="planet" style="width:44px;height:44px;background:radial-gradient(circle at 38% 35%,#e8a060,#604020);animation-delay:.4s;"></div><div class="planet-label">Vedic</div></div>
+      <div class="planet-item"><div class="planet" style="width:30px;height:30px;background:radial-gradient(circle at 38% 35%,#c89050,#503018);animation-delay:2s;opacity:.6;"></div><div class="planet-label">Dreamtime</div></div>
     </div>
-
     <div class="divider"></div>
     <div class="slide-body" style="text-align:center;max-width:560px;margin:0 auto;">
       <p>Each started culture becomes a <span class="highlight">planet</span>. Lessons completed evolve it — <span class="cyan-hl">moons, rings, nebula clearing, stars, orbiting companions</span>.</p>
@@ -1101,21 +529,16 @@ body.cursor-active .wayfinder-cursor--core {
   </div>
 </section>
 
-<!-- ─── SLIDE 9: LEARN-TO-EARN ─────────────── -->
-<section class="slide" id="slide-9" data-index="8"
-  aria-label="Slide 9: Learn-To-Earn"
-  data-notes="Learn-to-earn should support depth, care, and reflection — not speculation. Mana is earned through learning and reflection. Badges mark topic mastery. Stewardship quests reward those who go deep. The portfolio provides proof of genuine engagement. We are deliberately building away from anything that would turn culture into a commodity or extraction opportunity.">
-
+<!-- ─── 9: LEARN-TO-EARN ─── -->
+<section class="slide" id="slide-9" data-index="8" aria-label="Slide 9: Learn-To-Earn"
+  data-notes="Learn-to-earn should support depth, care, and reflection — not speculation. Mana is earned through learning and reflection. Badges mark topic mastery. Stewardship quests reward those who go deep. The portfolio provides proof of genuine engagement. We are deliberately building away from turning culture into a commodity.">
   <div class="glass" style="padding:40px 52px;max-width:760px;width:100%;border-radius:20px;">
     <div class="label-sm">Learn-To-Earn</div>
     <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);margin-bottom:18px;">Rewards that support depth,<br>not extraction</h2>
     <div class="badge-row">
-      <span class="badge gold">✦ Mana</span>
-      <span class="badge gold">🏆 Badges</span>
-      <span class="badge cyan">📋 Portfolio</span>
-      <span class="badge cyan">🌱 Stewardship Quests</span>
-      <span class="badge soft">No speculation</span>
-      <span class="badge soft">No extraction</span>
+      <span class="badge gold">✦ Mana</span><span class="badge gold">🏆 Badges</span>
+      <span class="badge cyan">📋 Portfolio</span><span class="badge cyan">🌱 Stewardship Quests</span>
+      <span class="badge soft">No speculation</span><span class="badge soft">No extraction</span>
     </div>
     <div class="divider"></div>
     <div class="slide-body">
@@ -1126,45 +549,23 @@ body.cursor-active .wayfinder-cursor--core {
   </div>
 </section>
 
-<!-- ─── SLIDE 10: XRPL LAYER ──────────────── -->
-<section class="slide" id="slide-10" data-index="9"
-  aria-label="Slide 10: XRPL Layer"
-  data-notes="We are designing a blockchain layer using XRPL. XRPL is appropriate here because of its low transaction costs, its speed, and its suitability for learning records, badges, tokens, and eventually credentials. But here is the critical design principle: wallet use comes after education and consent. The current application works entirely without any wallet connection. We are building education first, blockchain second.">
-
+<!-- ─── 10: XRPL ─── -->
+<section class="slide" id="slide-10" data-index="9" aria-label="Slide 10: XRPL Layer"
+  data-notes="We are designing a blockchain layer using XRPL — low transaction costs, speed, suitability for learning records and credentials. But the critical principle: wallet use comes after education and consent. The current application works entirely without any wallet connection. Education first, blockchain second.">
   <div class="glass" style="padding:40px 52px;max-width:760px;width:100%;border-radius:20px;">
     <div class="label-sm">XRPL Layer · Planned</div>
     <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);margin-bottom:18px;">Blockchain that serves<br>the learner</h2>
     <div class="two-col">
-      <div class="col-card glass" style="padding:18px;">
-        <h3>Why XRPL</h3>
-        <ul>
-          <li>Low-friction learning records</li>
-          <li>Badge &amp; token issuance</li>
-          <li>Future credentialing</li>
-          <li>Fast, low-cost transactions</li>
-        </ul>
-      </div>
-      <div class="col-card glass" style="padding:18px;">
-        <h3>Design Principles</h3>
-        <ul>
-          <li>Education before wallet</li>
-          <li>Consent before connection</li>
-          <li>App works without any wallet</li>
-          <li>No speculation layer</li>
-        </ul>
-      </div>
+      <div class="col-card glass" style="padding:18px;"><h3>Why XRPL</h3><ul><li>Low-friction learning records</li><li>Badge &amp; token issuance</li><li>Future credentialing</li><li>Fast, low-cost transactions</li></ul></div>
+      <div class="col-card glass" style="padding:18px;"><h3>Design Principles</h3><ul><li>Education before wallet</li><li>Consent before connection</li><li>App works without any wallet</li><li>No speculation layer</li></ul></div>
     </div>
-    <div class="callout" style="margin-top:18px;">
-      The current platform is fully functional without blockchain. XRPL is a future layer — not a dependency.
-    </div>
+    <div class="callout" style="margin-top:18px;">The current platform is fully functional without blockchain. XRPL is a future layer — not a dependency.</div>
   </div>
 </section>
 
-<!-- ─── SLIDE 11: DIGITALVERSE ────────────── -->
-<section class="slide" id="slide-11" data-index="10"
-  aria-label="Slide 11: Digitalverse"
-  data-notes="Digitalverse is a planned section for emerging technology literacy. The same principles that guide our cultural knowledge work apply here: primary sources first, consent-based, depth over breadth. Learners who understand how XRPL works, how AI systems are built, and how their data is used — those learners can navigate the digital world with the same kind of sovereignty they bring to their cultural identity.">
-
+<!-- ─── 11: DIGITALVERSE ─── -->
+<section class="slide" id="slide-11" data-index="10" aria-label="Slide 11: Digitalverse"
+  data-notes="Digitalverse is a planned section for technology literacy. The same principles apply: primary sources first, consent-based, depth over breadth. Learners who understand how XRPL works, how AI systems are built, and how their data is used can navigate the digital world with the same sovereignty they bring to their cultural identity.">
   <div class="glass" style="padding:40px 52px;max-width:760px;width:100%;border-radius:20px;">
     <div class="label-sm">Digitalverse · Future Section</div>
     <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);margin-bottom:18px;">Technology literacy<br>rooted in sovereignty</h2>
@@ -1176,97 +577,54 @@ body.cursor-active .wayfinder-cursor--core {
       <div class="tile"><div class="tile-icon">📦</div><div class="tile-name">Data Ownership</div></div>
       <div class="tile"><div class="tile-icon">✅</div><div class="tile-name">Consent &amp; Responsibility</div></div>
     </div>
-    <div class="callout" style="margin-top:16px;">
-      Cultural sovereignty and digital sovereignty are the same conversation.
-    </div>
+    <div class="callout" style="margin-top:16px;">Cultural sovereignty and digital sovereignty are the same conversation.</div>
   </div>
 </section>
 
-<!-- ─── SLIDE 12: LIVE DEMO FLOW ──────────── -->
-<section class="slide" id="slide-12" data-index="11"
-  aria-label="Slide 12: Live Demo Flow"
-  data-notes="Here is the demo flow. Start on the galaxy homepage — let the experience land. Then open Cultural Journeys and pick a culture. Go into a specific culture section. Open a Kumulipo Wa lesson — show the Hawaiian source lines, the Scholar and Keiki toggle. Mark a lesson complete and watch Mana populate. Then go to the Profile galaxy and show how the planet for that culture has evolved.">
-
+<!-- ─── 12: LIVE DEMO ─── -->
+<section class="slide" id="slide-12" data-index="11" aria-label="Slide 12: Live Demo Flow"
+  data-notes="Here is the demo flow. Start on the galaxy homepage — let the experience land. Then open Cultural Journeys and pick a culture. Go into a Kumulipo Wa lesson — show the Hawaiian source lines, the Scholar and Keiki toggle. Mark a lesson complete and watch Mana populate. Then go to the Profile galaxy and show how the planet for that culture has evolved.">
   <div style="max-width:700px;width:100%;text-align:center;">
     <div class="label-sm">Live Demo Flow</div>
-    <h2 class="slide-title" style="margin-bottom:24px;">Six moments to show</h2>
+    <h2 class="slide-title" style="margin-bottom:24px;">Five moments to show</h2>
     <div class="steps">
-      <div class="step">
-        <div class="step-num">01</div>
-        <div class="step-text"><strong>Galaxy Homepage</strong>Land in the cosmos. Let the experience set the tone.</div>
-      </div>
-      <div class="step">
-        <div class="step-num">02</div>
-        <div class="step-text"><strong>Cultural Journeys</strong>Open a culture section. Show the roadmap and the module structure.</div>
-      </div>
-      <div class="step">
-        <div class="step-num">03</div>
-        <div class="step-text"><strong>Kumulipo Wā</strong>Open a Wā lesson. Show Hawaiian source lines. Toggle Scholar / Keiki.</div>
-      </div>
-      <div class="step">
-        <div class="step-num">04</div>
-        <div class="step-text"><strong>Mark Complete</strong>Complete a lesson. Watch Mana and badge populate.</div>
-      </div>
-      <div class="step">
-        <div class="step-num">05</div>
-        <div class="step-text"><strong>Wayfinder Profile</strong>Open the profile galaxy. Show the culture planet evolving.</div>
-      </div>
+      <div class="step"><div class="step-num">01</div><div class="step-text"><strong>Galaxy Homepage</strong>Land in the cosmos. Let the experience set the tone.</div></div>
+      <div class="step"><div class="step-num">02</div><div class="step-text"><strong>Cultural Journeys</strong>Open a culture section. Show the roadmap and module structure.</div></div>
+      <div class="step"><div class="step-num">03</div><div class="step-text"><strong>Kumulipo Wā</strong>Open a Wā lesson. Show Hawaiian source lines. Toggle Scholar / Keiki.</div></div>
+      <div class="step"><div class="step-num">04</div><div class="step-text"><strong>Mark Complete</strong>Complete a lesson. Watch Mana and badge populate.</div></div>
+      <div class="step"><div class="step-num">05</div><div class="step-text"><strong>Wayfinder Profile</strong>Open the profile galaxy. Show the culture planet evolving.</div></div>
     </div>
   </div>
 </section>
 
-<!-- ─── SLIDE 13: NEXT PHASE ──────────────── -->
-<section class="slide" id="slide-13" data-index="12"
-  aria-label="Slide 13: Next Phase"
-  data-notes="The next phase focuses on depth of content, community accountability, and infrastructure for growth. More cultures. Educator guides so teachers can bring this into classrooms. Community review workflows so culture-bearers can validate and correct. Admin publishing tools. A richer galaxy dashboard. And the Digitalverse buildout alongside XRPL-ready credentials for real-world portability.">
-
+<!-- ─── 13: NEXT PHASE ─── -->
+<section class="slide" id="slide-13" data-index="12" aria-label="Slide 13: Next Phase"
+  data-notes="The next phase focuses on depth of content, community accountability, and infrastructure for growth. More cultures. Educator guides for classrooms. Community review workflows so culture-bearers can validate and correct. Admin publishing tools. Richer galaxy dashboard. Digitalverse buildout alongside XRPL credentials.">
   <div class="glass" style="padding:40px 52px;max-width:820px;width:100%;border-radius:20px;">
     <div class="label-sm">Next Phase</div>
     <h2 class="slide-title" style="font-size:clamp(1.3rem,3vw,2.2rem);margin-bottom:20px;">What we are building toward</h2>
     <div class="two-col">
-      <div class="col-card glass" style="padding:18px;">
-        <h3>Content &amp; Community</h3>
-        <ul>
-          <li>More culture traditions added</li>
-          <li>Educator guides &amp; classroom tools</li>
-          <li>Community review workflows</li>
-          <li>Culture-bearer validation</li>
-          <li>Admin publishing tools</li>
-        </ul>
-      </div>
-      <div class="col-card glass" style="padding:18px;">
-        <h3>Platform &amp; Infrastructure</h3>
-        <ul>
-          <li>Richer galaxy dashboard</li>
-          <li>Digitalverse section buildout</li>
-          <li>XRPL-ready credentials</li>
-          <li>Portable learning records</li>
-          <li>Expanded Wayfinder Passport</li>
-        </ul>
-      </div>
+      <div class="col-card glass" style="padding:18px;"><h3>Content &amp; Community</h3><ul><li>More culture traditions added</li><li>Educator guides &amp; classroom tools</li><li>Community review workflows</li><li>Culture-bearer validation</li><li>Admin publishing tools</li></ul></div>
+      <div class="col-card glass" style="padding:18px;"><h3>Platform &amp; Infrastructure</h3><ul><li>Richer galaxy dashboard</li><li>Digitalverse section buildout</li><li>XRPL-ready credentials</li><li>Portable learning records</li><li>Expanded Wayfinder Passport</li></ul></div>
     </div>
   </div>
 </section>
 
-<!-- ─── SLIDE 14: CLOSING ─────────────────── -->
-<section class="slide" id="slide-14" data-index="13"
-  aria-label="Slide 14: Closing"
+<!-- ─── 14: CLOSING ─── -->
+<section class="slide" id="slide-14" data-index="13" aria-label="Slide 14: Closing"
   data-notes="Close with the principle. Knowledge is not only read — it is entered, remembered, practiced, and carried forward. That is what Ka Paepae Ike Ola is built to support. Mahalo.">
-
-  <div class="geo-circle" style="width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%);border-color:rgba(201,162,39,.06);" aria-hidden="true"></div>
-  <div class="orbit-ring" style="width:340px;height:340px;top:50%;left:50%;transform:translate(-50%,-50%);border-color:rgba(61,207,223,.07);" aria-hidden="true"></div>
-
-  <div style="text-align:center;">
+  <svg class="closing-mandala" aria-hidden="true" viewBox="0 0 400 400" fill="none">
+    <g transform="translate(200,200)">
+      <g stroke="rgba(201,162,39,.07)" stroke-width=".5"><line x1="0" y1="0" x2="0" y2="-190"/><line x1="0" y1="0" x2="49" y2="-183"/><line x1="0" y1="0" x2="95" y2="-164"/><line x1="0" y1="0" x2="134" y2="-134"/><line x1="0" y1="0" x2="164" y2="-95"/><line x1="0" y1="0" x2="183" y2="-49"/><line x1="0" y1="0" x2="190" y2="0"/><line x1="0" y1="0" x2="183" y2="49"/><line x1="0" y1="0" x2="164" y2="95"/><line x1="0" y1="0" x2="134" y2="134"/><line x1="0" y1="0" x2="95" y2="164"/><line x1="0" y1="0" x2="49" y2="183"/><line x1="0" y1="0" x2="0" y2="190"/><line x1="0" y1="0" x2="-49" y2="183"/><line x1="0" y1="0" x2="-95" y2="164"/><line x1="0" y1="0" x2="-134" y2="134"/><line x1="0" y1="0" x2="-164" y2="95"/><line x1="0" y1="0" x2="-183" y2="49"/><line x1="0" y1="0" x2="-190" y2="0"/><line x1="0" y1="0" x2="-183" y2="-49"/><line x1="0" y1="0" x2="-164" y2="-95"/><line x1="0" y1="0" x2="-134" y2="-134"/><line x1="0" y1="0" x2="-95" y2="-164"/><line x1="0" y1="0" x2="-49" y2="-183"/></g>
+      <circle r="50" stroke="rgba(201,162,39,.12)" stroke-width=".5"/><circle r="90" stroke="rgba(201,162,39,.09)" stroke-width=".5"/><circle r="130" stroke="rgba(61,207,223,.07)" stroke-width=".5"/><circle r="165" stroke="rgba(201,162,39,.06)" stroke-width=".5"/><circle r="190" stroke="rgba(61,207,223,.05)" stroke-width=".5"/>
+    </g>
+  </svg>
+  <div class="geo-circle" style="width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%);border-color:rgba(201,162,39,.05);" aria-hidden="true"></div>
+  <div style="text-align:center;position:relative;z-index:1;">
     <div class="label-sm">Ka Paepae Ike Ola</div>
-    <div class="main-title" style="font-family:var(--font-display);font-size:clamp(1.6rem,4vw,3rem);color:var(--gold2);margin-bottom:24px;text-shadow:0 0 40px rgba(201,162,39,.3);">
-      Ike · Knowledge
-    </div>
+    <div class="main-title" style="font-size:clamp(1.6rem,4vw,3rem);margin-bottom:24px;">Ike · Knowledge</div>
     <div class="divider"></div>
-    <div class="closing-quote">
-      Knowledge is not only <em>read</em>.<br>
-      It is entered, remembered, practiced,<br>
-      and <em>carried forward</em>.
-    </div>
+    <div class="closing-quote">Knowledge is not only <em>read</em>.<br>It is entered, remembered, practiced,<br>and <em>carried forward</em>.</div>
     <div style="margin-top:36px;" class="badge-row">
       <span class="badge gold">Ka Paepae Ike Ola</span>
       <span class="badge cyan">The Living Knowledge Platform</span>
@@ -1279,301 +637,331 @@ body.cursor-active .wayfinder-cursor--core {
   </div>
 </section>
 
-</main><!-- /#deck -->
+</main>
 
-<!-- ═══════════════════════════════════════════
-     JAVASCRIPT
-═══════════════════════════════════════════ -->
 <script type="module">
-/* ─── THREE.JS STARFIELD ──────────────────── */
-let threeLoaded = false;
+/* ══════════ NEBULA MOODS ══════════ */
+const MOODS=['radial-gradient(ellipse 70% 55% at 80% 85%, rgba(40,10,90,.5), transparent 55%), radial-gradient(ellipse 45% 35% at 20% 15%, rgba(10,40,80,.4), transparent 55%)','radial-gradient(ellipse 65% 50% at 15% 80%, rgba(80,10,25,.5), transparent 50%), radial-gradient(ellipse 40% 30% at 85% 20%, rgba(30,5,20,.35), transparent 50%)','radial-gradient(ellipse 60% 50% at 75% 25%, rgba(5,35,70,.5), transparent 55%), radial-gradient(ellipse 45% 35% at 25% 75%, rgba(5,20,50,.4), transparent 55%)','radial-gradient(ellipse 75% 55% at 50% 50%, rgba(5,25,55,.45), transparent 65%), radial-gradient(ellipse 35% 28% at 88% 12%, rgba(30,10,65,.3), transparent 50%)','radial-gradient(ellipse 60% 50% at 30% 65%, rgba(10,40,70,.45), transparent 58%), radial-gradient(ellipse 40% 32% at 70% 30%, rgba(5,15,45,.4), transparent 55%)','radial-gradient(ellipse 55% 50% at 20% 30%, rgba(35,10,75,.5), transparent 55%), radial-gradient(ellipse 45% 35% at 80% 68%, rgba(65,30,10,.3), transparent 55%)','radial-gradient(ellipse 75% 58% at 50% 50%, rgba(10,30,20,.4), transparent 65%), radial-gradient(ellipse 45% 35% at 12% 12%, rgba(55,20,10,.3), transparent 50%)','radial-gradient(ellipse 65% 52% at 50% 50%, rgba(5,15,55,.5), transparent 65%), radial-gradient(ellipse 38% 28% at 82% 18%, rgba(30,10,65,.35), transparent 50%)','radial-gradient(ellipse 55% 48% at 78% 68%, rgba(45,20,5,.4), transparent 55%), radial-gradient(ellipse 45% 35% at 22% 30%, rgba(5,30,55,.4), transparent 55%)','radial-gradient(ellipse 58% 48% at 68% 28%, rgba(5,25,65,.5), transparent 55%), radial-gradient(ellipse 42% 33% at 28% 68%, rgba(15,5,45,.38), transparent 55%)','radial-gradient(ellipse 65% 52% at 28% 42%, rgba(5,30,65,.48), transparent 60%), radial-gradient(ellipse 42% 32% at 72% 58%, rgba(10,52,30,.28), transparent 55%)','radial-gradient(ellipse 58% 48% at 50% 50%, rgba(10,20,55,.45), transparent 65%), radial-gradient(ellipse 38% 28% at 82% 82%, rgba(5,10,35,.38), transparent 50%)','radial-gradient(ellipse 62% 48% at 22% 50%, rgba(5,20,62,.45), transparent 60%), radial-gradient(ellipse 42% 32% at 78% 50%, rgba(20,5,52,.32), transparent 55%)','radial-gradient(ellipse 78% 68% at 50% 50%, rgba(32,12,75,.48), transparent 70%), radial-gradient(ellipse 48% 38% at 50% 50%, rgba(10,30,65,.28), transparent 55%)'];
 
+const SECTIONS=['Ka Paepae Ike Ola','The Problem','The Vision','Core Experience','Cultural Journeys','Kumulipo Wā','Knowledge Worlds',"Wayfinder's Galaxy",'Learn-To-Earn','XRPL Layer','Digitalverse','Live Demo','Next Phase','Closing'];
+
+/* ══════════ THREE.JS STARFIELD ══════════ */
 async function initStarfield() {
   try {
-    const THREE = await import('https://unpkg.com/three@0.160.0/build/three.module.js');
-
-    const canvas = document.getElementById('bg-canvas');
-    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.z = 400;
-
-    // Stars geometry
-    const COUNT = 1400;
-    const positions = new Float32Array(COUNT * 3);
-    const colors = new Float32Array(COUNT * 3);
-    const sizes = new Float32Array(COUNT);
-
-    const palettes = [
-      [1,.95,.7],   // warm white
-      [.78,.64,.16],// gold
-      [.24,.81,.87],// cyan
-      [.9,.9,1],    // cool white
-    ];
-
-    for (let i = 0; i < COUNT; i++) {
-      positions[i*3]   = (Math.random() - .5) * 900;
-      positions[i*3+1] = (Math.random() - .5) * 700;
-      positions[i*3+2] = (Math.random() - .5) * 600;
-      const pal = palettes[Math.floor(Math.random() * palettes.length)];
-      colors[i*3]   = pal[0];
-      colors[i*3+1] = pal[1];
-      colors[i*3+2] = pal[2];
-      sizes[i] = Math.random() * 2.2 + .4;
-    }
-
-    const geo = new THREE.BufferGeometry();
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-
-    const mat = new THREE.PointsMaterial({
-      size: 1.4, vertexColors: true, transparent: true,
-      opacity: .72, sizeAttenuation: true
-    });
-
-    scene.add(new THREE.Points(geo, mat));
-
-    // Soft drift nebula particles
-    const nCount = 80;
-    const nPos = new Float32Array(nCount * 3);
-    for (let i = 0; i < nCount; i++) {
-      nPos[i*3]   = (Math.random() - .5) * 700;
-      nPos[i*3+1] = (Math.random() - .5) * 500;
-      nPos[i*3+2] = (Math.random() - .5) * 200;
-    }
-    const nGeo = new THREE.BufferGeometry();
-    nGeo.setAttribute('position', new THREE.BufferAttribute(nPos, 3));
-    const nMat = new THREE.PointsMaterial({
-      size: 4, color: 0x3d8fa0, transparent: true, opacity: .08
-    });
-    scene.add(new THREE.Points(nGeo, nMat));
-
-    function resize() {
-      renderer.setSize(window.innerWidth, window.innerHeight);
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-    }
-    resize();
-    window.addEventListener('resize', resize, { passive: true });
-
-    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let frame;
-
-    function animate() {
-      frame = requestAnimationFrame(animate);
-      if (!prefersReduced) {
-        scene.rotation.y += 0.00015;
-        scene.rotation.x += 0.00006;
-      }
-      renderer.render(scene, camera);
-    }
-    animate();
-
-    // Hide CSS stars once Three.js is running
-    document.getElementById('css-stars').style.opacity = '0';
-    threeLoaded = true;
-
-  } catch (e) {
-    console.warn('Three.js starfield could not load. Using CSS fallback.', e);
-  }
+    const THREE=await import('https://unpkg.com/three@0.160.0/build/three.module.js');
+    const canvas=document.getElementById('bg-canvas');
+    const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false});
+    renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+    const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000);
+    camera.position.z=400;
+    const COUNT=1500,pos=new Float32Array(COUNT*3),col=new Float32Array(COUNT*3);
+    const pal=[[1,.95,.7],[.78,.64,.16],[.24,.81,.87],[.9,.9,1]];
+    for(let i=0;i<COUNT;i++){pos[i*3]=(Math.random()-.5)*900;pos[i*3+1]=(Math.random()-.5)*700;pos[i*3+2]=(Math.random()-.5)*600;const p=pal[Math.floor(Math.random()*pal.length)];col[i*3]=p[0];col[i*3+1]=p[1];col[i*3+2]=p[2];}
+    const geo=new THREE.BufferGeometry();
+    geo.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    geo.setAttribute('color',new THREE.BufferAttribute(col,3));
+    scene.add(new THREE.Points(geo,new THREE.PointsMaterial({size:1.4,vertexColors:true,transparent:true,opacity:.72})));
+    const nPos=new Float32Array(80*3);
+    for(let i=0;i<80;i++){nPos[i*3]=(Math.random()-.5)*700;nPos[i*3+1]=(Math.random()-.5)*500;nPos[i*3+2]=(Math.random()-.5)*200;}
+    const nGeo=new THREE.BufferGeometry();
+    nGeo.setAttribute('position',new THREE.BufferAttribute(nPos,3));
+    scene.add(new THREE.Points(nGeo,new THREE.PointsMaterial({size:4,color:0x3d8fa0,transparent:true,opacity:.07})));
+    const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+    function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}
+    resize();addEventListener('resize',resize,{passive:true});
+    (function animate(){requestAnimationFrame(animate);if(!reduced){scene.rotation.y+=.00014;scene.rotation.x+=.00006;}renderer.render(scene,camera);})();
+    document.getElementById('css-stars').style.opacity='0';
+  } catch(e){console.warn('Three.js unavailable — CSS stars active.',e);}
 }
-
 initStarfield();
 
-/* Wayfinder cursor */
-const cursorMedia = window.matchMedia('(hover: hover) and (pointer: fine)');
-if (cursorMedia.matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  const setCursor = event => {
-    document.documentElement.style.setProperty('--cursor-x', `${event.clientX}px`);
-    document.documentElement.style.setProperty('--cursor-y', `${event.clientY}px`);
-    document.body.classList.add('cursor-visible');
-  };
-
-  document.addEventListener('pointermove', setCursor, { passive: true });
-  document.addEventListener('pointerleave', () => document.body.classList.remove('cursor-visible'));
-
-  document.addEventListener('pointerover', event => {
-    if (event.target.closest('a,button,.dot,[role="button"]')) {
-      document.body.classList.add('cursor-active');
-    }
-  });
-
-  document.addEventListener('pointerout', event => {
-    if (event.target.closest('a,button,.dot,[role="button"]')) {
-      document.body.classList.remove('cursor-active');
-    }
-  });
-
-  document.addEventListener('pointermove', event => {
-    const card = event.target.closest('.glass,.tile,.step,.badge,.callout');
-    if (!card) return;
-
-    const rect = card.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * 100;
-    const y = ((event.clientY - rect.top) / rect.height) * 100;
-    const tiltX = ((event.clientX - rect.left) / rect.width - 0.5) * 5;
-    const tiltY = (((event.clientY - rect.top) / rect.height - 0.5) * -5);
-
-    card.style.setProperty('--card-x', `${x}%`);
-    card.style.setProperty('--card-y', `${y}%`);
-    card.style.setProperty('--tilt-x', `${tiltX}deg`);
-    card.style.setProperty('--tilt-y', `${tiltY}deg`);
-  }, { passive: true });
+/* ══════════ CURSOR TRAIL ══════════ */
+const trailCanvas=document.getElementById('trail-canvas');
+const trailCtx=trailCanvas.getContext('2d');
+const hasMouse=matchMedia('(hover:hover) and (pointer:fine)').matches;
+const prefRed=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let trailPts=[];
+function resizeTrail(){trailCanvas.width=innerWidth;trailCanvas.height=innerHeight;}
+resizeTrail();addEventListener('resize',resizeTrail,{passive:true});
+if(hasMouse&&!prefRed){
+  addEventListener('pointermove',e=>{trailPts.push({x:e.clientX,y:e.clientY,life:1,r:Math.random()*1.8+.5,gold:Math.random()>.55});if(trailPts.length>38)trailPts.shift();},{passive:true});
+  (function drawTrail(){requestAnimationFrame(drawTrail);trailCtx.clearRect(0,0,trailCanvas.width,trailCanvas.height);trailPts=trailPts.filter(p=>p.life>0);trailPts.forEach(p=>{trailCtx.beginPath();trailCtx.arc(p.x,p.y,p.r,0,Math.PI*2);trailCtx.fillStyle=p.gold?'rgba(201,162,39,'+p.life*.6+')':'rgba(135,232,240,'+p.life*.4+')';trailCtx.fill();p.life-=.042;});})();
 }
 
-/* ─── SLIDE DATA ──────────────────────────── */
-const slides = Array.from(document.querySelectorAll('.slide'));
-const TOTAL = slides.length;
-let current = 0;
-let prevSlide = -1;
+/* ══════════ CURSOR RING ══════════ */
+if(hasMouse&&!prefRed){
+  addEventListener('pointermove',e=>{document.documentElement.style.setProperty('--cx',e.clientX+'px');document.documentElement.style.setProperty('--cy',e.clientY+'px');document.body.classList.add('cur-vis');},{passive:true});
+  addEventListener('pointerleave',()=>document.body.classList.remove('cur-vis'));
+  addEventListener('pointerover',e=>{if(e.target.closest('a,button,.dot'))document.body.classList.add('cur-act');});
+  addEventListener('pointerout',e=>{if(e.target.closest('a,button,.dot'))document.body.classList.remove('cur-act');});
+  addEventListener('pointermove',e=>{
+    const card=e.target.closest('.glass,.tile,.step,.callout');if(!card)return;
+    const r=card.getBoundingClientRect();
+    card.style.setProperty('--card-x',((e.clientX-r.left)/r.width*100)+'%');
+    card.style.setProperty('--card-y',((e.clientY-r.top)/r.height*100)+'%');
+    card.style.setProperty('--tilt-x',((e.clientX-r.left)/r.width-.5)*5+'deg');
+    card.style.setProperty('--tilt-y',((e.clientY-r.top)/r.height-.5)*-5+'deg');
+  },{passive:true});
+}
 
-const notes = slides.map(s => s.dataset.notes || '');
+/* ══════════ WARP TRANSITION ══════════ */
+const warpCanvas=document.getElementById('warp-canvas');
+const warpCtx=warpCanvas.getContext('2d');
+function doWarp(){
+  warpCanvas.width=innerWidth;warpCanvas.height=innerHeight;
+  const W=warpCanvas.width,H=warpCanvas.height,cx=W/2,cy=H/2;
+  warpCanvas.style.opacity='1';
+  let t0=null;const DUR=450;
+  (function frame(ts){
+    if(!t0)t0=ts;const t=Math.min((ts-t0)/DUR,1);
+    warpCtx.clearRect(0,0,W,H);
+    warpCtx.fillStyle='rgba(4,8,15,'+(Math.sin(t*Math.PI)*.45)+')';
+    warpCtx.fillRect(0,0,W,H);
+    const la=Math.sin(t*Math.PI);
+    for(let i=0;i<110;i++){
+      const a=(i/110)*Math.PI*2,r1=30+t*Math.min(W,H)*.18,r2=r1+t*Math.min(W,H)*.38;
+      warpCtx.beginPath();
+      warpCtx.strokeStyle=i%3===0?'rgba(201,162,39,'+(la*.88)+')':i%5===0?'rgba(61,207,223,'+(la*.48)+')':'rgba(200,215,255,'+(la*.18)+')';
+      warpCtx.lineWidth=i%3===0?1.6:.8;
+      warpCtx.moveTo(cx+Math.cos(a)*r1,cy+Math.sin(a)*r1);
+      warpCtx.lineTo(cx+Math.cos(a)*r2,cy+Math.sin(a)*r2);
+      warpCtx.stroke();
+    }
+    if(t<1)requestAnimationFrame(frame);
+    else{warpCanvas.style.opacity='0';warpCtx.clearRect(0,0,W,H);}
+  })(performance.now());
+}
 
-/* ─── DOM REFS ────────────────────────────── */
-const progressFill  = document.getElementById('progress-fill');
-const slideCounter  = document.getElementById('slide-counter');
-const notesPanel    = document.getElementById('notes-panel');
-const notesContent  = document.getElementById('notes-content');
-const notesClose    = document.getElementById('notes-close');
-const btnNotes      = document.getElementById('btn-notes');
-const btnFullscreen = document.getElementById('btn-fullscreen');
-const btnPrev       = document.getElementById('btn-prev');
-const btnNext       = document.getElementById('btn-next');
-const dotsContainer = document.getElementById('dots');
+/* ══════════ SLIDE ENGINE ══════════ */
+const slides=Array.from(document.querySelectorAll('.slide'));
+const TOTAL=slides.length;
+const notesArr=slides.map(s=>s.dataset.notes||'');
+const nebulaEl=document.getElementById('nebula-mood');
+const pFill=document.getElementById('progress-fill');
+const counter=document.getElementById('slide-counter');
+const secLabel=document.getElementById('section-label');
+const nPanel=document.getElementById('notes-panel');
+const nContent=document.getElementById('notes-content');
+const nClose=document.getElementById('notes-close');
+const btnNotes=document.getElementById('btn-notes');
+const btnFS=document.getElementById('btn-fullscreen');
+const btnAmb=document.getElementById('btn-ambient');
+const btnOv=document.getElementById('btn-overview');
+const btnPrev=document.getElementById('btn-prev');
+const btnNext=document.getElementById('btn-next');
+const dotsEl=document.getElementById('dots');
+let current=-1,prev=-1,inTrans=false;
 
-/* ─── BUILD DOTS ──────────────────────────── */
-slides.forEach((_, i) => {
-  const d = document.createElement('button');
-  d.className = 'dot';
-  d.setAttribute('aria-label', `Go to slide ${i + 1}`);
-  d.addEventListener('click', () => goTo(i));
-  dotsContainer.appendChild(d);
+slides.forEach((_,i)=>{const d=document.createElement('button');d.className='dot';d.setAttribute('aria-label','Slide '+(i+1));d.addEventListener('click',()=>goTo(i));dotsEl.appendChild(d);});
+const dotEls=Array.from(dotsEl.querySelectorAll('.dot'));
+
+requestAnimationFrame(()=>{
+  const navR=dotsEl.getBoundingClientRect();
+  const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+  svg.id='constellation-svg';svg.setAttribute('width',navR.width);svg.setAttribute('height','14');
+  svg.style.cssText='position:absolute;top:50%;left:0;transform:translateY(-50%);pointer-events:none;overflow:visible;';
+  const defs=document.createElementNS('http://www.w3.org/2000/svg','defs');
+  const f=document.createElementNS('http://www.w3.org/2000/svg','filter');
+  f.id='sglow';f.innerHTML='<feGaussianBlur stdDeviation="1.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>';
+  defs.appendChild(f);svg.appendChild(defs);
+  dotEls.forEach((dot,i)=>{
+    if(i===0)return;
+    const p=dotEls[i-1].getBoundingClientRect(),c=dot.getBoundingClientRect();
+    const ln=document.createElementNS('http://www.w3.org/2000/svg','line');
+    ln.setAttribute('x1',p.left+p.width/2-navR.left);ln.setAttribute('y1',7);
+    ln.setAttribute('x2',c.left+c.width/2-navR.left);ln.setAttribute('y2',7);
+    ln.setAttribute('stroke','rgba(201,162,39,.08)');ln.setAttribute('stroke-width','1');
+    ln.id='cl-'+i;svg.appendChild(ln);
+  });
+  dotsEl.style.position='relative';dotsEl.appendChild(svg);
+  updateConst(0);
 });
-const dotEls = Array.from(dotsContainer.querySelectorAll('.dot'));
 
-/* ─── RENDER SLIDE ────────────────────────── */
-function goTo(idx, dir = 1) {
-  if (idx < 0 || idx >= TOTAL) return;
-
-  // Exit previous
-  if (prevSlide >= 0 && prevSlide !== idx) {
-    slides[prevSlide].classList.remove('active');
-    slides[prevSlide].classList.add(dir > 0 ? 'exit-left' : 'exit-right');
-    const prev = prevSlide;
-    setTimeout(() => slides[prev].classList.remove('exit-left', 'exit-right'), 650);
+function updateConst(idx){
+  for(let i=1;i<TOTAL;i++){const ln=document.getElementById('cl-'+i);if(!ln)continue;
+    if(i<=idx){ln.setAttribute('stroke','rgba(201,162,39,.52)');ln.setAttribute('filter','url(#sglow)');}
+    else{ln.setAttribute('stroke','rgba(201,162,39,.08)');ln.removeAttribute('filter');}
   }
-
-  current = idx;
-  prevSlide = idx;
-
-  slides.forEach((s, i) => {
-    s.classList.toggle('active', i === idx);
-  });
-
-  // Update progress
-  const pct = ((idx + 1) / TOTAL) * 100;
-  progressFill.style.width = pct + '%';
-
-  // Counter
-  slideCounter.textContent = `${idx + 1} / ${TOTAL}`;
-
-  // Dots
-  dotEls.forEach((d, i) => d.classList.toggle('active', i === idx));
-
-  // Notes
-  notesContent.textContent = notes[idx] || 'No notes for this slide.';
 }
 
-/* ─── NAV ─────────────────────────────────── */
-btnNext.addEventListener('click', () => {
-  const next = (current + 1) % TOTAL;
-  goTo(next, 1);
-});
-btnPrev.addEventListener('click', () => {
-  const prev = (current - 1 + TOTAL) % TOTAL;
-  goTo(prev, -1);
+function goTo(idx,dir=1){
+  if(idx<0||idx>=TOTAL||idx===current||inTrans)return;
+  inTrans=true;
+  if(!prefRed)doWarp();
+  const DELAY=prefRed?0:130;
+  setTimeout(()=>{
+    if(prev>=0){slides[prev].classList.remove('active');slides[prev].classList.add(dir>0?'exit-left':'exit-right');const p=prev;setTimeout(()=>slides[p].classList.remove('exit-left','exit-right'),660);}
+    current=idx;prev=idx;
+    slides[idx].classList.remove('exit-left','exit-right');slides[idx].classList.add('active');
+    pFill.style.width=((idx+1)/TOTAL*100)+'%';
+    counter.textContent=(idx+1)+' / '+TOTAL;
+    secLabel.textContent=SECTIONS[idx]||'';
+    nebulaEl.style.background=MOODS[idx]||'';
+    nContent.textContent=notesArr[idx]||'—';
+    dotEls.forEach((d,i)=>d.classList.toggle('active',i===idx));
+    updateConst(idx);
+    setTimeout(()=>{inTrans=false;},350);
+  },DELAY);
+}
+
+/* ── CONTROLS ── */
+btnNext.addEventListener('click',()=>goTo((current+1)%TOTAL,1));
+btnPrev.addEventListener('click',()=>goTo((current-1+TOTAL)%TOTAL,-1));
+
+/* ── NOTES ── */
+function toggleNotes(){nPanel.classList.toggle('open');btnNotes.classList.toggle('active',nPanel.classList.contains('open'));}
+function closeNotes(){nPanel.classList.remove('open');btnNotes.classList.remove('active');}
+nClose.addEventListener('click',closeNotes);
+btnNotes.addEventListener('click',toggleNotes);
+
+/* ── FULLSCREEN ── */
+function toggleFS(){if(!document.fullscreenElement)document.documentElement.requestFullscreen?.().catch(()=>{});else document.exitFullscreen?.();}
+btnFS.addEventListener('click',toggleFS);
+document.addEventListener('fullscreenchange',()=>{btnFS.textContent=document.fullscreenElement?'⛶':'⛶';});
+
+/* ── AMBIENT ── */
+function toggleAmbient(){document.body.classList.toggle('ambient-mode');btnAmb.classList.toggle('active',document.body.classList.contains('ambient-mode'));}
+btnAmb.addEventListener('click',toggleAmbient);
+
+/* ── TOUCH ── */
+let tx=null;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50)dx<0?goTo((current+1)%TOTAL,1):goTo((current-1+TOTAL)%TOTAL,-1);tx=null;},{passive:true});
+
+/* ══════════ OVERVIEW MAP ══════════ */
+const ovPanel=document.getElementById('overview-panel');
+const ovGrid=document.getElementById('overview-grid');
+function buildOverview(){
+  ovGrid.innerHTML='';
+  slides.forEach((slide,i)=>{
+    const sec=slide.querySelector('.label-sm')?.textContent||'';
+    const title=(slide.querySelector('.slide-title,.main-title,h1,h2')?.textContent||'').trim().slice(0,44);
+    const card=document.createElement('button');
+    card.className='ov-card'+(i===current?' is-current':'');
+    card.innerHTML='<div class="ov-num">— '+(i+1)+' / '+TOTAL+'</div><div class="ov-sec">'+sec+'</div><div class="ov-title">'+title+'</div>';
+    card.addEventListener('click',()=>{closeOverview();goTo(i);});
+    ovGrid.appendChild(card);
+  });
+}
+function openOverview(){buildOverview();ovPanel.classList.add('open');}
+function closeOverview(){ovPanel.classList.remove('open');}
+btnOv.addEventListener('click',()=>{ovPanel.classList.contains('open')?closeOverview():openOverview();});
+
+/* ══════════ AI LIVING GUIDE ══════════ */
+const AI_SYS=`You are the Living Guide of Ka Paepae Ike Ola — The Living Knowledge Platform. Speak with wisdom, warmth, and cultural respect. Keep responses to 2-4 concise, meaningful sentences. Speak as a guide, never as a chatbot.
+
+Ka Paepae Ike Ola holds knowledge as relationship, memory, and responsibility:
+- Cultural Journeys: 9 traditions — Kanaka Maoli (anchor), Kemet, Dogon, Vedic, Dreamtime, Maori, Yoruba, Chinese, Bridge Lessons
+- Kumulipo Wa: deep study of the Hawaiian creation chant — all 16 Wa, Hawaiian source first, always
+- Scholar & Keiki modes: same source content, different depth levels
+- Wayfinder's Galaxy: each culture becomes a living planet that evolves with the learner's progress
+- Learn-To-Earn: Mana, badges, stewardship quests — no speculation, culture is not a commodity
+- XRPL Layer (planned): blockchain credentials, education before wallet, consent before connection
+- Digitalverse (planned): technology literacy rooted in sovereignty
+- Core principle: primary source first, then meaning, then interpretation.
+
+Current slide context: SLIDE_CTX`;
+
+let chatHistory=[];
+let aiKey=sessionStorage.getItem('lkp-guide-key')||'';
+let aiConnected=!!aiKey;
+const aiToggleBtn=document.getElementById('ai-toggle');
+const aiPanel=document.getElementById('ai-panel');
+const aiClosBtn=document.getElementById('ai-close-btn');
+const aiSetup=document.getElementById('ai-setup');
+const aiConvo=document.getElementById('ai-convo');
+const aiMsgs=document.getElementById('ai-messages');
+const aiInput=document.getElementById('ai-input');
+const aiSend=document.getElementById('ai-send');
+const aiStatus=document.getElementById('ai-status');
+const aiKeyIn=document.getElementById('ai-key-input');
+const aiConnB=document.getElementById('ai-connect-btn');
+const aiInArea=document.getElementById('ai-input-area');
+
+function showAISetup(){aiSetup.style.display='block';aiConvo.style.display='none';aiInArea.style.display='none';aiStatus.classList.remove('on');}
+function showAIConvo(){aiSetup.style.display='none';aiConvo.style.display='flex';aiInArea.style.display='flex';aiStatus.classList.add('on');}
+function initAIPanel(){aiConnected?showAIConvo():showAISetup();}
+
+aiConnB.addEventListener('click',()=>{
+  const k=aiKeyIn.value.trim();
+  if(!k.startsWith('sk-ant-')){aiKeyIn.style.borderColor='rgba(220,80,80,.6)';setTimeout(()=>{aiKeyIn.style.borderColor='';},1400);return;}
+  aiKey=k;sessionStorage.setItem('lkp-guide-key',k);aiConnected=true;showAIConvo();
+  addGuideMsg('The Living Guide is connected. Ask me anything about Ka Paepae Ike Ola — its philosophy, its traditions, or how it works.');
 });
 
-/* ─── KEYBOARD ────────────────────────────── */
-document.addEventListener('keydown', e => {
-  // Skip if typing in an input
-  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+function addGuideMsg(text){
+  const d=document.createElement('div');d.className='ai-msg ai-msg--guide';
+  d.innerHTML='<div class="ai-msg-text">'+text+'</div>';
+  aiMsgs.appendChild(d);aiMsgs.scrollTop=aiMsgs.scrollHeight;return d;
+}
+function addUserMsg(text){
+  const d=document.createElement('div');d.className='ai-msg ai-msg--user';
+  d.innerHTML='<div class="ai-slide-ctx">'+SECTIONS[current]+'</div><div class="ai-msg-text">'+text+'</div>';
+  aiMsgs.appendChild(d);aiMsgs.scrollTop=aiMsgs.scrollHeight;
+}
+function addThinking(){
+  const d=document.createElement('div');d.className='ai-msg ai-msg--guide';
+  d.innerHTML='<div class="ai-thinking"><span></span><span></span><span></span></div>';
+  aiMsgs.appendChild(d);aiMsgs.scrollTop=aiMsgs.scrollHeight;return d;
+}
 
-  switch (e.key) {
-    case 'ArrowRight':
-    case ' ':
-      e.preventDefault();
-      goTo((current + 1) % TOTAL, 1);
-      break;
-    case 'ArrowLeft':
-      e.preventDefault();
-      goTo((current - 1 + TOTAL) % TOTAL, -1);
-      break;
-    case 'Home':
-      goTo(0);
-      break;
-    case 'End':
-      goTo(TOTAL - 1);
-      break;
-    case 'n':
-    case 'N':
-      toggleNotes();
-      break;
-    case 'f':
-    case 'F':
-      toggleFullscreen();
+async function sendToGuide(q){
+  if(!q.trim()||!aiConnected)return;
+  aiInput.value='';aiSend.disabled=true;
+  addUserMsg(q);
+  const thinking=addThinking();
+  const sys=AI_SYS.replace('SLIDE_CTX',SECTIONS[current]+' — '+(slides[current].querySelector('.slide-title,.main-title,h1,h2')?.textContent?.trim()||''));
+  const msgs=[...chatHistory,{role:'user',content:q}];
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':aiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:220,system:sys,messages:msgs})
+    });
+    const data=await resp.json();
+    const reply=data.content?.[0]?.text||'The stars are quiet. Please try again.';
+    thinking.remove();addGuideMsg(reply);
+    chatHistory.push({role:'user',content:q},{role:'assistant',content:reply});
+    if(chatHistory.length>10)chatHistory=chatHistory.slice(-10);
+  }catch(e){thinking.remove();addGuideMsg('The connection wavered. Please check your key or try again.');}
+  aiSend.disabled=false;aiInput.focus();
+}
+
+aiSend.addEventListener('click',()=>sendToGuide(aiInput.value));
+aiInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendToGuide(aiInput.value);}});
+aiToggleBtn.addEventListener('click',()=>{
+  aiPanel.classList.toggle('open');
+  aiToggleBtn.classList.toggle('active',aiPanel.classList.contains('open'));
+  if(aiPanel.classList.contains('open')){initAIPanel();if(aiConnected)setTimeout(()=>aiInput.focus(),120);}
+});
+aiClosBtn.addEventListener('click',()=>{aiPanel.classList.remove('open');aiToggleBtn.classList.remove('active');});
+
+/* ══════════ KEYBOARD ══════════ */
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  switch(e.key){
+    case 'ArrowRight':case ' ':e.preventDefault();goTo((current+1)%TOTAL,1);break;
+    case 'ArrowLeft':e.preventDefault();goTo((current-1+TOTAL)%TOTAL,-1);break;
+    case 'Home':goTo(0);break;case 'End':goTo(TOTAL-1);break;
+    case 'n':case 'N':toggleNotes();break;
+    case 'f':case 'F':toggleFS();break;
+    case 'a':case 'A':toggleAmbient();break;
+    case 'o':case 'O':ovPanel.classList.contains('open')?closeOverview():openOverview();break;
+    case '?':case '/':
+      aiPanel.classList.toggle('open');
+      aiToggleBtn.classList.toggle('active',aiPanel.classList.contains('open'));
+      if(aiPanel.classList.contains('open')){initAIPanel();if(aiConnected)setTimeout(()=>aiInput.focus(),120);}
       break;
     case 'Escape':
-      if (notesPanel.classList.contains('open')) closeNotes();
+      if(nPanel.classList.contains('open'))closeNotes();
+      if(ovPanel.classList.contains('open'))closeOverview();
+      if(aiPanel.classList.contains('open')){aiPanel.classList.remove('open');aiToggleBtn.classList.remove('active');}
       break;
   }
 });
 
-/* ─── NOTES ───────────────────────────────── */
-function toggleNotes() {
-  notesPanel.classList.toggle('open');
-  btnNotes.classList.toggle('active', notesPanel.classList.contains('open'));
-}
-function closeNotes() {
-  notesPanel.classList.remove('open');
-  btnNotes.classList.remove('active');
-}
-btnNotes.addEventListener('click', toggleNotes);
-notesClose.addEventListener('click', closeNotes);
-
-/* ─── FULLSCREEN ──────────────────────────── */
-function toggleFullscreen() {
-  if (!document.fullscreenElement) {
-    document.documentElement.requestFullscreen?.()
-      .then(() => btnFullscreen.textContent = '⛶')
-      .catch(() => {});
-  } else {
-    document.exitFullscreen?.();
-  }
-}
-btnFullscreen.addEventListener('click', toggleFullscreen);
-document.addEventListener('fullscreenchange', () => {
-  btnFullscreen.textContent = document.fullscreenElement ? '⛶' : '⛶';
-});
-
-/* ─── TOUCH SWIPE ─────────────────────────── */
-let touchX = null;
-document.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
-document.addEventListener('touchend', e => {
-  if (touchX === null) return;
-  const dx = e.changedTouches[0].clientX - touchX;
-  if (Math.abs(dx) > 50) {
-    dx < 0 ? goTo((current+1)%TOTAL, 1) : goTo((current-1+TOTAL)%TOTAL, -1);
-  }
-  touchX = null;
-}, { passive: true });
-
-/* ─── INIT ────────────────────────────────── */
+/* ══════════ INIT ══════════ */
 goTo(0);
 </script>
-
 </body>
 </html>
