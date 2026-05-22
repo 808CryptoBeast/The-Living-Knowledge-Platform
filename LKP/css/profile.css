@@ -1105,8 +1105,11 @@ body.profile-is-guest #access {
 }
 
 body.profile-is-guest .profile-mobile-dock a[href="#continuePath"],
-body.profile-is-guest .profile-mobile-dock a[href="#rewards"],
-body.profile-is-guest .profile-mobile-dock a[href="#reflections"] {
+body.profile-is-guest .profile-mobile-dock a[href="#rewards"] {
+  display: none;
+}
+
+body.profile-is-signed-in .profile-mobile-dock a[href="#authPanel"] {
   display: none;
 }
 
@@ -2799,6 +2802,22 @@ body.profile-theme-light .lesson-row__status.is-done {
     padding-bottom: 110px;
   }
 
+  body.profile-is-guest .profile-content {
+    order: 1;
+  }
+
+  body.profile-is-guest .profile-auth-card {
+    order: 2;
+  }
+
+  body.profile-is-guest #path {
+    order: 3;
+  }
+
+  .profile-stage {
+    gap: 14px;
+  }
+
   .profile-brand__logo-frame,
   .profile-brand__sigil {
     width: 42px;
@@ -2847,7 +2866,13 @@ body.profile-theme-light .lesson-row__status.is-done {
   .profile-stat-grid,
   .profile-stat-grid--rewards,
   .rewards-mini-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .profile-stat-grid div:nth-child(2n),
+  .profile-stat-grid--rewards div:nth-child(2n),
+  .rewards-mini-grid div:nth-child(2n) {
+    border-right: 0;
   }
 
   .lesson-row {
@@ -2872,11 +2897,13 @@ body.profile-theme-light .lesson-row__status.is-done {
 
   .profile-galaxy-panel,
   .profile-galaxy-panel__inner {
-    min-height: 360px;
+    min-height: clamp(420px, 72vh, 560px);
   }
 
   .profile-galaxy-panel__overlay p {
-    display: none;
+    max-width: 26rem;
+    font-size: 0.9rem;
+    line-height: 1.35;
   }
 
   .profile-galaxy-selection {
@@ -2902,7 +2929,7 @@ body.profile-theme-light .lesson-row__status.is-done {
     bottom: calc(10px + var(--safe-bottom));
     z-index: 60;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(58px, 1fr));
     gap: 5px;
     padding: 7px;
     border: 1px solid rgba(255,255,255,0.08);
@@ -2970,6 +2997,26 @@ body.profile-theme-light .lesson-row__status.is-done {
     min-height: 32px;
     padding: 7px 9px;
     font-size: 10px;
+  }
+
+  .profile-galaxy-panel,
+  .profile-galaxy-panel__inner {
+    min-height: clamp(400px, 68vh, 520px);
+  }
+
+  .profile-galaxy-panel__overlay {
+    left: 14px;
+    right: 14px;
+    top: 14px;
+  }
+
+  .profile-galaxy-panel__overlay h2 {
+    max-width: 14rem;
+    font-size: clamp(1.8rem, 12vw, 2.45rem);
+  }
+
+  .profile-galaxy-panel__overlay p {
+    display: none;
   }
 }
 
