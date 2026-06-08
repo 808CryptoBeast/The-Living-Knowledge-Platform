@@ -16,6 +16,7 @@
   'use strict';
 
   if (typeof window === 'undefined') return;
+  const DEBUG = window.LKP_DEBUG === true || /[?&]lkpDebug=1\b/.test(window.location.search);
 
   /**
    * Deterministic pseudo-random number generator seeded by culture id
@@ -316,5 +317,5 @@
     getAllThemeColors
   };
 
-  console.log('[LKP Galaxy Builder] Loaded and exposed globally');
+  if (DEBUG) console.log('[LKP Galaxy Builder] Loaded and exposed globally');
 })();

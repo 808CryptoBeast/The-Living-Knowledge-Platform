@@ -6,6 +6,10 @@
 
 (function() {
   'use strict';
+  const DEBUG = window.LKP_DEBUG === true || /[?&]lkpDebug=1\b/.test(window.location.search);
+  const debugLog = (...args) => {
+    if (DEBUG) console.log(...args);
+  };
 
   // Wā data extracted from enrichments
   const WA_DATA = [
@@ -369,7 +373,7 @@
   function initWaInteractivity(container = document, lessonMode = 'scholar', modeGetter = null) {
     // Select Wā button clicked - show single view
     const selectButtons = container.querySelectorAll('[data-wa-select]');
-    console.log(`[KUMULIPO_WA] Found ${selectButtons.length} Wā select buttons`);
+    debugLog(`[KUMULIPO_WA] Found ${selectButtons.length} Wā select buttons`);
 
     selectButtons.forEach((btn, idx) => {
       btn.addEventListener('click', function(e) {
@@ -379,7 +383,7 @@
         const waNum = parseInt(this.getAttribute('data-wa-select'), 10);
         const currentMode = modeGetter ? modeGetter() : lessonMode;
         
-        console.log(`[KUMULIPO_WA] Wā ${waNum} selected (mode: ${currentMode})`);
+        debugLog(`[KUMULIPO_WA] Wā ${waNum} selected (mode: ${currentMode})`);
         showWaSingleView(waNum, currentMode);
       });
     });
@@ -391,7 +395,7 @@
         e.preventDefault();
         e.stopPropagation();
         
-        console.log('[KUMULIPO_WA] Back to all Wā');
+        debugLog('[KUMULIPO_WA] Back to all Wā');
         showWaNavigation();
       });
     });
@@ -406,7 +410,7 @@
         const waNum = parseInt(this.getAttribute('data-wa-prev'), 10);
         const currentMode = modeGetter ? modeGetter() : lessonMode;
         
-        console.log(`[KUMULIPO_WA] Previous Wā: ${waNum}`);
+        debugLog(`[KUMULIPO_WA] Previous Wā: ${waNum}`);
         showWaSingleView(waNum, currentMode);
       });
     });
@@ -420,14 +424,14 @@
         const waNum = parseInt(this.getAttribute('data-wa-next'), 10);
         const currentMode = modeGetter ? modeGetter() : lessonMode;
         
-        console.log(`[KUMULIPO_WA] Next Wā: ${waNum}`);
+        debugLog(`[KUMULIPO_WA] Next Wā: ${waNum}`);
         showWaSingleView(waNum, currentMode);
       });
     });
 
     // Handle related lesson navigation
     const relatedLinks = container.querySelectorAll('[data-navigate-lesson]');
-    console.log(`[KUMULIPO_WA] Found ${relatedLinks.length} related lesson links`);
+    debugLog(`[KUMULIPO_WA] Found ${relatedLinks.length} related lesson links`);
     
     relatedLinks.forEach(link => {
       link.addEventListener('click', function(e) {
@@ -435,7 +439,7 @@
         e.stopPropagation();
         
         const lessonId = this.getAttribute('data-navigate-lesson');
-        console.log(`[KUMULIPO_WA] Navigate to lesson: ${lessonId}`);
+        debugLog(`[KUMULIPO_WA] Navigate to lesson: ${lessonId}`);
         
         if (window.LESSON_RENDERER && typeof window.LESSON_RENDERER.navigateTo === 'function') {
           window.LESSON_RENDERER.navigateTo(lessonId);
@@ -493,7 +497,7 @@
    * @param {string} lessonMode - 'scholar' or 'keiki'
    */
   function insertWaUI(actionStrip, lessonMode = 'scholar') {
-    console.log('[KUMULIPO_WA] Inserting Wā UI in', lessonMode, 'mode');
+    debugLog('[KUMULIPO_WA] Inserting Wā UI in', lessonMode, 'mode');
     
     if (!actionStrip) {
       console.warn('[KUMULIPO_WA] actionStrip element not found');
@@ -503,7 +507,7 @@
     // Remove existing Wā UI if present
     const existing = document.querySelector('.kumulipo-wa-container');
     if (existing) {
-      console.log('[KUMULIPO_WA] Removing existing Wā UI');
+      debugLog('[KUMULIPO_WA] Removing existing Wā UI');
       existing.parentElement.remove();
     }
 
@@ -511,7 +515,7 @@
     const waWrapper = document.createElement('div');
     waWrapper.className = 'kumulipo-wa-wrapper';
     const html = renderWaNavigation(1); // Start with navigation view, Wā 1 header
-    console.log('[KUMULIPO_WA] Rendered navigation HTML length:', html.length);
+    debugLog('[KUMULIPO_WA] Rendered navigation HTML length:', html.length);
     
     const container = document.createElement('div');
     container.className = 'kumulipo-wa-container';
@@ -522,14 +526,14 @@
     // Insert after action strip
     if (actionStrip.parentElement) {
       actionStrip.parentElement.insertBefore(waWrapper, actionStrip.nextElementSibling);
-      console.log('[KUMULIPO_WA] Wā UI inserted into DOM');
+      debugLog('[KUMULIPO_WA] Wā UI inserted into DOM');
     } else {
       console.warn('[KUMULIPO_WA] actionStrip.parentElement not found');
       return;
     }
 
     // Initialize interactivity within this wrapper only
-    console.log('[KUMULIPO_WA] Initializing event listeners');
+    debugLog('[KUMULIPO_WA] Initializing event listeners');
     initWaInteractivity(container, lessonMode, () => {
       // Dynamic mode getter - looks for current lesson mode
       if (window.LESSON_MODE) return window.LESSON_MODE;
@@ -555,11 +559,11 @@
       const match = progressText.match(/(\d+) of 16/);
       const waNum = match ? parseInt(match[1], 10) : 1;
       
-      console.log(`[KUMULIPO_WA] Updating single view Wā ${waNum} to mode: ${newMode}`);
+      debugLog(`[KUMULIPO_WA] Updating single view Wā ${waNum} to mode: ${newMode}`);
       showWaSingleView(waNum, newMode);
     } else {
       // Navigation view - no need to update, just reinitialize listeners with new mode
-      console.log(`[KUMULIPO_WA] Updating navigation listeners to mode: ${newMode}`);
+      debugLog(`[KUMULIPO_WA] Updating navigation listeners to mode: ${newMode}`);
       initWaInteractivity(container, newMode);
     }
   }

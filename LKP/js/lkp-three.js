@@ -14,6 +14,10 @@ import { UnrealBloomPass } from "three/addons/postprocessing/UnrealBloomPass.js"
 // ─────────────────────────────────────────────────────────────────────────────
 
 const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const LKP_DEBUG = window.LKP_DEBUG === true || /[?&]lkpDebug=1\b/.test(window.location.search);
+const debugLog = (...args) => {
+  if (LKP_DEBUG) console.log(...args);
+};
 
 function getIsMobile() {
   return window.innerWidth <= 760 || window.matchMedia("(pointer: coarse)").matches;
@@ -135,7 +139,7 @@ function loadImageFromUrl(key, url) {
     img.onload = () => {
       loadedImages[key] = img;
       loadedImageUrls[key] = url;
-      console.log(`[LKP] Loaded image "${key}":`, url);
+      debugLog(`[LKP] Loaded image "${key}":`, url);
       resolve(img);
     };
 
@@ -434,7 +438,7 @@ function makeGoldCompassTexture(imgEl) {
   clipCtx.fillRect(0, 0, size, size);
   clipCtx.restore();
 
-  console.log("[LKP] Compass texture ok — visRatio:", visibleRatio.toFixed(4),
+  debugLog("[LKP] Compass texture ok — visRatio:", visibleRatio.toFixed(4),
     "src:", sourceW + "x" + sourceH, "crop:", size + "x" + size);
 
   return canvasToTexture(clipCanvas);
@@ -1497,7 +1501,7 @@ function makeConstellations() {
     }
   });
 
-  console.log(`[LKP Constellations] Found ${foundConnections} connections, ${missingConnections} missing`);
+  debugLog(`[LKP Constellations] Found ${foundConnections} connections, ${missingConnections} missing`);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1739,7 +1743,7 @@ function makeCompassImageOverlay() {
   aura.renderOrder = 11;
   compassGrp.add(aura);
 
-  console.log("[LKP] 3D compass built — size:", size, "R:", R.toFixed(2),
+  debugLog("[LKP] 3D compass built — size:", size, "R:", R.toFixed(2),
     "src:", imgEl.naturalWidth + "x" + imgEl.naturalHeight);
 }
 
@@ -2563,9 +2567,9 @@ async function init() {
       }));
 
       CONNECTIONS.push(...intraConnections, ...crossConnections);
-      console.log('[LKP Three] Generated', intraConnections.length, 'intra-culture and', crossConnections.length, 'cross-culture connections');
+      debugLog('[LKP Three] Generated', intraConnections.length, 'intra-culture and', crossConnections.length, 'cross-culture connections');
 
-      console.log('[LKP Three] Generated', GALAXY_DEFS.length, 'galaxies from CULTURALVERSE_DATA');
+      debugLog('[LKP Three] Generated', GALAXY_DEFS.length, 'galaxies from CULTURALVERSE_DATA');
     } else {
       console.warn('[LKP Three] Galaxy builder or data unavailable; using legacy approach');
     }

@@ -36,7 +36,7 @@
   // Profile and About are always at repo root
   const PROFILE_PATH = IN_LKP_FOLDER ? '../profile.html' : 'profile.html';
   const ABOUT_PATH   = IN_LKP_FOLDER ? '../about.html'   : 'about.html';
-  const ADMIN_PATH   = IN_LKP_FOLDER ? 'admin.html'      : 'LKP/admin.html';
+  const ADMIN_PATH   = IN_LKP_FOLDER ? '../admin.html'   : 'admin.html';
 
   function assetPath(file) { return ASSET_ROOT + file; }
 
@@ -379,7 +379,7 @@
       buildProfilePanel();
       buildBottomSheet();
       buildBottomNav();
-      switchTab('home');
+      switchTab('chart');
       initSwipe();
       requestAnimationFrame(() => dismissLoader());
     } catch (err) {
@@ -492,10 +492,14 @@
           <p class="lkp-m-home__sub">${liveCount} live ${liveCount===1?'galaxy':'galaxies'}, ${totalCount} total culture orbits. Every lesson is linked to the full lesson page.</p>
         </div>
         <div class="lkp-m-home__pills">${buildHomePills()}</div>
-        <div class="lkp-m-home-galaxy-wrap" style="position:relative;width:100%;height:240px;margin:1.5rem 0;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,rgba(15,3,10,0.8) 0%,rgba(20,8,18,0.9) 100%);border:1px solid rgba(84,198,238,0.12);">
-          <canvas id="lkp-m-home-galaxy" class="lkp-m-home-galaxy" style="display:block;width:100%;height:100%;" aria-label="Living Knowledge Galaxy"></canvas>
-          <div style="position:absolute;bottom:8px;right:8px;font-size:10px;color:rgba(240,201,106,0.5);font-weight:600;">Tap or drag to explore</div>
-        </div>
+        <button class="lkp-m-galaxy-launch" type="button" data-tab="chart">
+          <span class="lkp-m-galaxy-launch__orb">✦</span>
+          <span>
+            <strong>Open the Living Galaxy</strong>
+            <small>Explore culture nebulas, lesson stars, and orbiting moons</small>
+          </span>
+          <i class="fas fa-arrow-right" aria-hidden="true"></i>
+        </button>
         <div class="lkp-m-compass-portal" aria-label="Living Hawaiian star compass gateway">
           <div class="lkp-m-compass-aura lkp-m-compass-aura--gold"></div>
           <div class="lkp-m-compass-aura lkp-m-compass-aura--cyan"></div>
@@ -513,7 +517,6 @@
       </div>`;
     bindTabButtons(el);
     activateMobileCompassImage(el);
-    requestAnimationFrame(()=>initMobileHomeGalaxy());
   }
 
   /* ── Lesson row renderer (RICHER INFO) ────────────────────────────────── */
@@ -656,10 +659,20 @@
   function buildKiloHokuPanel() {
     const el=document.getElementById('lkp-m-chart');
     el.innerHTML=`
-      <div class="lkp-m-section-head">
+      <div class="lkp-m-section-head lkp-m-section-head--galaxy">
         <span class="lkp-m-eyebrow">Kilo Hōkū — Living Knowledge Galaxy</span>
         <h2>Ka ʻIke Hōkū</h2>
         <p>Each culture generates its own living galaxy: layered nebulas, ecosystem planets, and lesson stars with moon orbits. As cultures grow, the cosmos expands automatically. Tap a culture core to zoom in, then tap any star or moon to open its lesson.</p>
+        <div class="lkp-m-galaxy-actions">
+          <button class="lkp-m-galaxy-action lkp-m-galaxy-action--primary" type="button" data-tab="galaxies">
+            <i class="fas fa-layer-group" aria-hidden="true"></i>
+            Lesson Cards
+          </button>
+          <a class="lkp-m-galaxy-action" href="${LESSONS_PATH}">
+            <i class="fas fa-book-open" aria-hidden="true"></i>
+            Library
+          </a>
+        </div>
       </div>
       <div class="lkp-m-three-galaxy-wrap">
         <canvas id="lkp-m-three-galaxy" class="lkp-m-three-galaxy" aria-label="Ka ʻIke Hōkū — Living Knowledge Galaxy"></canvas>
@@ -683,6 +696,7 @@
     el.querySelectorAll('[data-focus-culture]').forEach(btn=>{
       btn.addEventListener('click',()=>focusCultureGalaxy(parseInt(btn.dataset.focusCulture,10)));
     });
+    bindTabButtons(el);
 
     requestAnimationFrame(()=>initMobileThreeLessonGalaxy());
   }
@@ -1573,6 +1587,11 @@
     {id:'profile',  icon:'fa-user-astronaut', label:'Profile',   type:'link', href:PROFILE_PATH}
   ];
 
+  const NAV_ORDER = { chart: 0, galaxies: 1, home: 2, ecosystem: 3, profile: 4 };
+  NAV_TABS.sort((a, b) => (NAV_ORDER[a.id] ?? 99) - (NAV_ORDER[b.id] ?? 99));
+  const galaxyNav = NAV_TABS.find(item => item.id === 'chart');
+  if (galaxyNav) galaxyNav.label = 'Galaxy';
+
   function buildBottomNav(){
     const nav=document.getElementById('lkp-m-nav');if(!nav)return;
     nav.innerHTML=NAV_TABS.map(item=>{const activeClass=item.type==='tab'&&item.id===activeTab?'is-active':'';return `<button class="lkp-m-nav__btn ${activeClass}" data-tab="${item.id}" data-type="${item.type}" ${item.href?`data-href="${item.href}"`:''}  aria-label="${item.label}" type="button"><i class="fas ${item.icon} lkp-m-nav__icon" aria-hidden="true"></i><span class="lkp-m-nav__label">${item.label}</span></button>`;}).join('');
@@ -1616,7 +1635,7 @@
       if (swipeBlocked || Date.now() < blockSwipeUntil) return;
       const dx=e.changedTouches[0].clientX-startX,dy=e.changedTouches[0].clientY-startY;
       if(Math.abs(dx)<GESTURE.swipeMinX||Math.abs(dy)>Math.abs(dx)*GESTURE.swipeAspect||Math.abs(dy)>GESTURE.swipeMaxY)return;
-      const order=['home','galaxies','bridge','chart','ecosystem'];const cur=order.indexOf(activeTab);
+      const order=['chart','galaxies','home','bridge','ecosystem'];const cur=order.indexOf(activeTab);
       if(dx<0&&cur<order.length-1)switchTab(order[cur+1]);if(dx>0&&cur>0)switchTab(order[cur-1]);
       blockSwipeUntil = Date.now() + GESTURE.lockAfterSwipeMs;
     },{passive:true});

@@ -403,6 +403,59 @@ code {
   white-space: nowrap;
 }
 
+.lkp-m-galaxy-launch {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 76px;
+  padding: 14px 16px;
+  border-radius: 22px;
+  border: 1px solid rgba(84, 198, 238, 0.28);
+  background:
+    radial-gradient(circle at 0 0, rgba(84, 198, 238, 0.18), transparent 48%),
+    radial-gradient(circle at 100% 100%, rgba(240, 201, 106, 0.13), transparent 52%),
+    rgba(4, 10, 26, 0.76);
+  box-shadow:
+    0 0 26px rgba(84, 198, 238, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.045);
+  text-align: left;
+}
+
+.lkp-m-galaxy-launch__orb {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid rgba(240, 201, 106, 0.38);
+  color: var(--m-gold);
+  background:
+    radial-gradient(circle, rgba(240, 201, 106, 0.30), transparent 62%),
+    rgba(1, 3, 10, 0.72);
+  box-shadow: 0 0 22px rgba(240, 201, 106, 0.18);
+}
+
+.lkp-m-galaxy-launch strong {
+  display: block;
+  color: rgba(255, 239, 198, 0.98);
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.lkp-m-galaxy-launch small {
+  display: block;
+  margin-top: 3px;
+  color: var(--m-muted);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.lkp-m-galaxy-launch i {
+  color: var(--m-cyan);
+}
+
 /* ─── LIVING COMPASS PORTAL ─────────────────────────────────────────────── */
 
 .lkp-m-compass-portal {
@@ -1061,13 +1114,71 @@ code {
 
 /* ─── MOBILE THREE.JS PIKO CORE GALAXY ─────────────────────────────────── */
 
+.lkp-m-panel[data-panel="chart"] {
+  padding-inline: 10px;
+  padding-top: calc(12px + var(--m-safe-t));
+}
+
+.lkp-m-section-head--galaxy {
+  gap: 8px;
+  margin: 0 2px 10px;
+}
+
+.lkp-m-section-head--galaxy h2 {
+  font-size: clamp(30px, 9vw, 44px);
+}
+
+.lkp-m-section-head--galaxy p {
+  max-width: 58em;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.lkp-m-galaxy-actions {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 0 1px;
+  scrollbar-width: none;
+}
+
+.lkp-m-galaxy-actions::-webkit-scrollbar {
+  display: none;
+}
+
+.lkp-m-galaxy-action {
+  flex: 1 0 auto;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border-radius: 999px;
+  border: 1px solid rgba(240, 201, 106, 0.22);
+  background: rgba(1, 3, 10, 0.58);
+  color: rgba(255, 239, 198, 0.92);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.lkp-m-galaxy-action--primary {
+  border-color: rgba(84, 198, 238, 0.34);
+  background: rgba(84, 198, 238, 0.11);
+  color: var(--m-cyan);
+}
+
 .lkp-m-three-galaxy-wrap {
   position: relative;
   width: 100%;
-  height: min(66vh, 620px);
-  min-height: 440px;
+  height: min(72dvh, 690px);
+  min-height: 500px;
   overflow: hidden;
-  border-radius: 30px;
+  border-radius: 22px;
   border: 1px solid rgba(240, 201, 106, 0.20);
   background:
     radial-gradient(circle at 50% 20%, rgba(84, 198, 238, 0.10), transparent 38%),
@@ -1227,7 +1338,7 @@ code {
   display: flex;
   gap: 8px;
   overflow-x: auto;
-  padding: 12px 2px 4px;
+  padding: 10px 2px 4px;
   scrollbar-width: none;
 }
 
@@ -1868,8 +1979,8 @@ code {
   }
 
   .lkp-m-three-galaxy-wrap {
-    height: 62vh;
-    min-height: 400px;
+    height: 70dvh;
+    min-height: 460px;
     border-radius: 24px;
   }
 
