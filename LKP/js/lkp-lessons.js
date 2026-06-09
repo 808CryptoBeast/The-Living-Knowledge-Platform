@@ -1135,9 +1135,14 @@
     ].find(item => item && Array.isArray(item.cultures) && item.cultures.length > 0);
 
     if (data) {
-      window.CULTURALVERSE_DATA = data;
-      window.LKP_DATA = data;
-      window.IKEVERSE_DATA = data;
+      const patched = window.LKPLessonOverrides
+        ? window.LKPLessonOverrides.applyOverrides(data)
+        : data;
+
+      window.CULTURALVERSE_DATA = patched;
+      window.LKP_DATA = patched;
+      window.IKEVERSE_DATA = patched;
+      return patched;
     }
 
     return data || null;
