@@ -53,6 +53,40 @@
     !SUPABASE_ANON_KEY.includes('PASTE_YOUR');
 
   let supabaseClient = null;
+  let localModeActive = false;
+
+  /* Detects whether an error is a network/connectivity failure vs. an auth
+     error. Used to choose between "offline" and "wrong password" messaging. */
+  function isNetworkError(err) {
+    return (
+      !navigator.onLine ||
+      err?.name === 'AuthRetryableFetchError' ||
+      err?.message?.includes('Failed to fetch') ||
+      err?.message?.includes('NetworkError') ||
+      err?.message?.includes('ERR_NAME_NOT_RESOLVED')
+    );
+  }
+
+  /* ─── Quick synchronous session check ──────────────────────────────────
+     Supabase v2 persists the session in localStorage under the key
+     'sb-{project-ref}-auth-token'.  Reading it is instant and requires no
+     network call, so we can decide before any async work whether to show
+     the sign-in form or the full profile loading state.
+  ──────────────────────────────────────────────────────────────────────── */
+  function hasCachedSession() {
+    if (!isSupabaseConfigured) return false;
+    try {
+      const ref = SUPABASE_URL.replace(/^https?:\/\//, '').split('.')[0];
+      const raw = localStorage.getItem('sb-' + ref + '-auth-token');
+      if (!raw) return false;
+      const parsed = JSON.parse(raw);
+      const expiresAt = parsed && parsed.expires_at;
+      // expires_at is Unix seconds; require at least 30 s still valid
+      return typeof expiresAt === 'number' && expiresAt * 1000 > Date.now() + 30000;
+    } catch {
+      return false;
+    }
+  }
 
   /* ═══════════════════════════════════════════════════════════════════════
      STORAGE KEYS
@@ -1401,6 +1435,15 @@
   async function setupSupabaseClient() {
     if (!isSupabaseConfigured) return null;
 
+    /* Skip client creation when offline — prevents the repeated token-refresh
+       retry spam (ERR_NAME_NOT_RESOLVED) that Supabase fires when it can't
+       reach the auth server. We recreate the client on reconnect. */
+    if (!navigator.onLine) {
+      console.warn('[Profile] Offline — skipping Supabase client setup.');
+      localModeActive = true;
+      return null;
+    }
+
     const supaLib = await waitForSupabaseLibrary();
 
     if (!supaLib) {
@@ -1472,10 +1515,33 @@
       renderLessonPath();
       rebuildProfileGalaxyForRole();
     } catch (err) {
-      console.error(err);
       state.sessionReady = true;
-      renderDashboard();
-      setSessionState('Could not load Supabase session. Guest mode active.', 'warning');
+
+      if (isNetworkError(err)) {
+        /* Offline or server unreachable — restore from localStorage cache so
+           returning users still see their Passport data. */
+        const cachedProfile =
+          readJSON(PROFILE_CACHE_KEY, null) ||
+          readJSON(LEGACY_PROFILE_CACHE_KEY, null);
+
+        if (cachedProfile) {
+          state.profile  = cachedProfile;
+          state.user     = { id: cachedProfile.id, email: cachedProfile.email };
+          state.isAdmin  = ['admin', 'owner'].includes(cachedProfile.role);
+          localModeActive = true;
+          renderDashboard();
+          setSessionState('Offline — showing your saved Passport. Sync when reconnected.', 'warning');
+          showOfflineBanner(true);
+        } else {
+          renderDashboard();
+          setSessionState('Offline — no saved Passport found. Connect to sign in.', 'warning');
+          showOfflineBanner(true);
+        }
+      } else {
+        console.error(err);
+        renderDashboard();
+        setSessionState('Could not load session. Guest mode active.', 'warning');
+      }
     } finally {
       document.body.classList.remove('profile-loading');
     }
@@ -4583,6 +4649,20 @@
     state.mana = parseInt(localStorage.getItem(MANA_KEY) || '0', 10) || 0;
 
     startBackgroundClock();
+
+    /* ── Guest fast path ────────────────────────────────────────────────────
+       If there is no valid cached session in localStorage, drop the loading
+       state immediately so the sign-in form is visible right away.  The rest
+       of the init (lesson data, galaxy, Supabase library) still runs in the
+       background so the UI is fully wired by the time the user submits the
+       form.  loadSession() will re-confirm the absence of a session when it
+       finishes and will call remove('profile-loading') again (harmless no-op).
+    ──────────────────────────────────────────────────────────────────────── */
+    if (!hasCachedSession()) {
+      document.body.classList.remove('profile-loading');
+      document.body.classList.add('profile-is-guest');
+      document.body.classList.remove('profile-is-signed-in');
+    }
 
     const staticData = await waitForLessonData();
     await hydrateLessonsFromData(staticData);

@@ -126,37 +126,79 @@
       </div>
     </section>
 
-    <!-- Auth / Guard -->
-    <section id="adminAuthPanel" class="admin-card admin-auth-panel">
-      <div class="admin-card-head">
-        <span class="admin-card-icon">👑</span>
-        <div>
-          <h2>Admin Access</h2>
-          <p>Sign in with an account whose profile role is <strong>admin</strong> or <strong>owner</strong>.</p>
+    <!-- Auth Gate (full-screen overlay, exits after sign-in confirmed) -->
+    <div id="adminAuthGate" class="admin-auth-gate" role="dialog" aria-modal="true" aria-label="Admin sign in">
+      <div class="admin-auth-gate__card">
+
+        <div class="admin-auth-gate__orb" aria-hidden="true">
+          <img src="LKP/assets/images/LKP-1.png" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" />
+          <span class="admin-auth-gate__orb-fallback">◈</span>
         </div>
+
+        <div class="admin-auth-gate__brand">
+          <span class="admin-eyebrow">Ka Paepae ʻIke Ola</span>
+          <h1 class="admin-auth-gate__title">Admin Deck</h1>
+          <p class="admin-auth-gate__role-note">Admin &amp; Owner access only</p>
+        </div>
+
+        <form id="adminAuthForm" class="admin-auth-gate__form" autocomplete="on" novalidate>
+
+          <div class="admin-auth-field" id="adminEmailField">
+            <label class="admin-auth-field__label" for="adminEmail">
+              <i class="fas fa-envelope" aria-hidden="true"></i>
+              Email
+            </label>
+            <input
+              id="adminEmail"
+              type="email"
+              class="admin-auth-field__input"
+              autocomplete="email"
+              placeholder="you@example.com"
+              inputmode="email"
+              required
+            />
+            <p class="admin-auth-field__error" id="adminEmailError" aria-live="polite"></p>
+          </div>
+
+          <div class="admin-auth-field" id="adminPasswordField">
+            <label class="admin-auth-field__label" for="adminPassword">
+              <i class="fas fa-lock" aria-hidden="true"></i>
+              Password
+            </label>
+            <div class="admin-auth-field__pw-row">
+              <input
+                id="adminPassword"
+                type="password"
+                class="admin-auth-field__input"
+                autocomplete="current-password"
+                placeholder="Your password"
+                required
+              />
+              <button
+                id="adminPasswordToggle"
+                type="button"
+                class="admin-auth-pw-toggle"
+                aria-label="Show password"
+              >
+                <i class="fas fa-eye" id="adminPasswordEyeIcon" aria-hidden="true"></i>
+              </button>
+            </div>
+            <p class="admin-auth-field__error" id="adminPasswordError" aria-live="polite"></p>
+          </div>
+
+          <button id="adminSignInBtn" class="admin-auth-gate__submit" type="submit">
+            <i class="fas fa-user-shield" id="adminSignInIcon" aria-hidden="true"></i>
+            <span id="adminSignInBtnText">Sign In</span>
+          </button>
+
+        </form>
+
+        <p id="adminAccessStatus" class="admin-auth-gate__status" aria-live="polite">
+          Checking session…
+        </p>
+
       </div>
-
-      <div class="admin-auth-grid">
-        <label>
-          Email
-          <input id="adminEmail" type="email" autocomplete="email" placeholder="you@email.com" />
-        </label>
-
-        <label>
-          Password
-          <input id="adminPassword" type="password" autocomplete="current-password" placeholder="Your password" />
-        </label>
-
-        <button id="adminSignInBtn" class="admin-main-btn" type="button">
-          <i class="fas fa-user-shield"></i>
-          Sign In
-        </button>
-      </div>
-
-      <p id="adminAccessStatus" class="admin-note">
-        Waiting for admin session...
-      </p>
-    </section>
+    </div>
 
     <!-- Admin App -->
     <section id="adminApp" class="admin-app is-hidden">

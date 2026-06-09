@@ -1084,8 +1084,42 @@ body.profile-theme-light .profile-session-state.is-bad {
 }
 
 body.profile-loading .profile-layout {
-  opacity: 0;
+  /* Auth card stays fully visible so users can sign in immediately */
+}
+
+/* Dim only the main content section while session is loading */
+body.profile-loading .profile-content {
+  opacity: 0.06;
   pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+
+/* Thin sweep bar along the bottom of the topbar during loading */
+.profile-topbar {
+  position: relative;
+}
+
+body.profile-loading .profile-topbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    rgba(212,174,90,0) 0%,
+    rgba(212,174,90,0.90) 30%,
+    rgba(84,198,238,0.90) 70%,
+    rgba(212,174,90,0) 100%
+  );
+  background-size: 200% 100%;
+  animation: profile-topbar-sweep 1.3s ease-in-out infinite;
+}
+
+@keyframes profile-topbar-sweep {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 body.profile-is-signed-in .profile-auth-card {
@@ -3065,5 +3099,194 @@ body.profile-theme-light .lesson-row__status.is-done {
     animation: none !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROFILE LOADING SCREEN
+   Shown while body.profile-loading is active (CSS-driven, zero extra JS).
+   Fades in when class is added by init(), fades out when removed by loadSession().
+═══════════════════════════════════════════════════════════════════════════ */
+
+.profile-loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: rgba(1, 3, 10, 0.97);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.38s ease;
+}
+
+body.profile-loading .profile-loading-screen {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Orb container */
+.profile-loading-screen__orb {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  display: grid;
+  place-items: center;
+}
+
+.profile-loading-screen__orb img {
+  position: relative;
+  z-index: 1;
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 14px rgba(240, 201, 106, 0.40));
+  animation: plso-pulse 2.4s ease-in-out infinite;
+}
+
+.profile-loading-screen__orb-fallback {
+  display: none;
+  position: absolute;
+  inset: 0;
+  align-items: center;
+  justify-content: center;
+  font-size: 34px;
+  color: var(--profile-gold, #f0c96a);
+  text-shadow: 0 0 18px rgba(240, 201, 106, 0.52);
+  z-index: 1;
+  animation: plso-pulse 2.4s ease-in-out infinite;
+}
+
+/* Spinning ring around the orb */
+.profile-loading-screen__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(240, 201, 106, 0.14);
+  border-top-color: rgba(240, 201, 106, 0.72);
+  animation: plso-spin 1.1s linear infinite;
+}
+
+@keyframes plso-pulse {
+  0%, 100% { filter: drop-shadow(0 0 10px rgba(240, 201, 106, 0.32)); }
+  50%       { filter: drop-shadow(0 0 26px rgba(240, 201, 106, 0.64)); }
+}
+
+@keyframes plso-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Title */
+.profile-loading-screen__title {
+  font-family: var(--profile-font-title, 'Pirata One', 'Cormorant Garamond', serif);
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 400;
+  color: var(--profile-gold, #f0c96a);
+  letter-spacing: 0.04em;
+  margin: 0;
+  line-height: 1;
+  text-shadow: 0 0 20px rgba(240, 201, 106, 0.22);
+}
+
+/* Subtitle */
+.profile-loading-screen__sub {
+  font-size: 12px;
+  color: rgba(168, 190, 228, 0.52);
+  margin: 0;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* Skip link */
+.profile-loading-screen__skip {
+  margin-top: 10px;
+  font-size: 13px;
+  color: rgba(168, 190, 228, 0.48);
+  text-decoration: underline;
+  text-decoration-color: rgba(168, 190, 228, 0.22);
+  transition: color 0.18s ease;
+  cursor: pointer;
+}
+
+.profile-loading-screen__skip:hover {
+  color: rgba(168, 190, 228, 0.82);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   GUEST STATE IMPROVEMENTS
+   Makes the sign-in card more prominent and adds a banner when not signed in.
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* Glow the auth card to draw attention */
+body.profile-is-guest .profile-auth-card {
+  border-color: rgba(240, 201, 106, 0.28);
+  box-shadow:
+    0 0 44px rgba(240, 201, 106, 0.08),
+    0 22px 60px rgba(0, 0, 0, 0.30);
+}
+
+/* Guest CTA banner above the layout */
+.profile-guest-cta {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  margin-bottom: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(240, 201, 106, 0.22);
+  background: rgba(240, 201, 106, 0.065);
+  color: var(--profile-gold, #f0c96a);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+body.profile-is-guest .profile-guest-cta {
+  display: flex;
+}
+
+.profile-guest-cta i {
+  flex-shrink: 0;
+  font-size: 16px;
+  opacity: 0.80;
+}
+
+.profile-guest-cta span {
+  flex: 1;
+  min-width: 0;
+}
+
+.profile-guest-cta__btn {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(240, 201, 106, 0.30);
+  background: rgba(240, 201, 106, 0.10);
+  color: var(--profile-gold, #f0c96a);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.profile-guest-cta__btn:hover {
+  background: rgba(240, 201, 106, 0.18);
+  border-color: rgba(240, 201, 106, 0.48);
+}
+
+@media (max-width: 600px) {
+  .profile-guest-cta {
+    flex-wrap: wrap;
+  }
+  .profile-guest-cta__btn {
+    width: 100%;
+    text-align: center;
   }
 }

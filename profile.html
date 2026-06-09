@@ -60,7 +60,7 @@
   <!-- Sign out helper and main profile renderer -->
   <script defer src="LKP/js/lkp-signout.js?v=signout-2"></script>
   <script defer src="LKP/js/lkp-cursor.js?v=cursor-2"></script>
-  <script defer src="LKP/js/profile.js?v=user-profile-4"></script>
+  <script defer src="LKP/js/profile.js?v=user-profile-5"></script>
 </head>
 
 <body class="profile-page profile-theme-dark profile-is-guest" data-time-phase="night" data-bg-variant="0">
@@ -304,9 +304,36 @@
       </div>
     </section>
 
+    <!-- Compact loading banner — shows inline above layout, does not block auth card -->
+    <div id="profileLoadingScreen" class="profile-loading-screen" aria-hidden="true">
+      <div class="profile-loading-screen__icon-wrap">
+        <div class="profile-loading-screen__fill"></div>
+        <img
+          class="profile-loading-screen__icon"
+          src="LKP/assets/images/LKP-1.png"
+          alt=""
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+        />
+        <span class="profile-loading-screen__icon-fallback">◈</span>
+        <div class="profile-loading-screen__ring"></div>
+        <div class="profile-loading-screen__beam"></div>
+      </div>
+      <div class="profile-loading-screen__text">
+        <p class="profile-loading-screen__title">Preparing your Passport…</p>
+        <p class="profile-loading-screen__sub">Connecting to the knowledge galaxy</p>
+      </div>
+    </div>
+
     <section id="profileSessionState" class="profile-session-state">
       Loading profile session...
     </section>
+
+    <!-- Guest CTA banner — shown via CSS when body.profile-is-guest -->
+    <div class="profile-guest-cta" role="status" aria-live="polite">
+      <i class="fas fa-user-astronaut" aria-hidden="true"></i>
+      <span>Sign in to track your progress and carry your Passport across devices.</span>
+      <a href="#authPanel" class="profile-guest-cta__btn">Sign In</a>
+    </div>
 
     <div class="profile-layout">
 
@@ -314,8 +341,8 @@
         <div class="profile-card-head">
           <span class="profile-card-icon">◈</span>
           <div>
-            <h2>Enter Your Passport</h2>
-            <p>Sign in to sync your learning profile across devices.</p>
+            <h2>Sign In or Create a Profile</h2>
+            <p>Sign in to carry your progress across devices — or create a free Passport to get started.</p>
           </div>
         </div>
 
