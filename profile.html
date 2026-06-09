@@ -118,6 +118,13 @@
     </nav>
   </header>
 
+  <!-- Offline banner — shown automatically when network is unreachable -->
+  <div id="profileOfflineBanner" class="profile-offline-banner" hidden aria-hidden="true" role="status" aria-live="polite">
+    <i class="fas fa-wifi-slash" aria-hidden="true"></i>
+    <span>Offline — showing your saved Passport. Sign-in and sync require internet.</span>
+    <span class="profile-offline-banner__dot"></span>
+  </div>
+
   <div id="profileSettingsBackdrop" class="profile-settings-backdrop" hidden></div>
 
   <aside id="profileSettingsDrawer" class="profile-settings-drawer" role="dialog" aria-modal="true" aria-labelledby="profileSettingsTitle" hidden>
@@ -778,5 +785,11 @@
       </section>
     </div>
   </main>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    }
+  </script>
 </body>
 </html>

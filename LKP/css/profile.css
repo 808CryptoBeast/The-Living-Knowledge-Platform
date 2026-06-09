@@ -2833,7 +2833,8 @@ body.profile-theme-light .lesson-row__status.is-done {
 @media (max-width: 760px) {
   .profile-shell {
     width: min(100% - 18px, 1420px);
-    padding-bottom: 110px;
+    /* dock (≈56px) + gap (10px) + bottom safe-area so content never hides behind the dock */
+    padding-bottom: calc(80px + var(--safe-bottom));
   }
 
   body.profile-is-guest .profile-content {
@@ -2993,6 +2994,80 @@ body.profile-theme-light .lesson-row__status.is-done {
   }
 }
 
+/* ── Tablet / large-phone (600px) ───────────────────────────────────── */
+@media (max-width: 600px) {
+  /* Stack auth card above content so guests see sign-in first */
+  .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  body.profile-is-signed-in .profile-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* Give topbar nav enough room to scroll without clipping */
+  .profile-topbar__links {
+    gap: 6px;
+    padding-right: 10px;
+  }
+
+  .profile-topbar__links a,
+  .profile-topbar__button {
+    font-size: 12px;
+    padding: 7px 11px;
+  }
+
+  /* Tighten hero */
+  .profile-hero {
+    padding: 18px;
+    gap: 14px;
+  }
+
+  /* Compact loading banner */
+  body.profile-loading .profile-loading-screen {
+    padding: 12px 16px;
+    gap: 12px;
+  }
+
+  .profile-loading-screen__icon-wrap {
+    width: 44px;
+    height: 44px;
+  }
+
+  .profile-loading-screen__icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .profile-loading-screen__title {
+    font-size: 1.1rem;
+  }
+
+  /* Guest CTA — stack vertically */
+  .profile-guest-cta {
+    flex-wrap: wrap;
+    padding: 12px 14px;
+    gap: 8px;
+  }
+
+  .profile-guest-cta__btn {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+  }
+
+  /* Make auth form inputs easier to tap */
+  .profile-auth-form input,
+  .profile-auth-form select {
+    font-size: 16px; /* prevents iOS zoom-in on focus */
+    min-height: 48px;
+  }
+
+  .profile-auth-form button {
+    min-height: 48px;
+  }
+}
+
 @media (max-width: 460px) {
   .profile-card,
   .profile-auth-card {
@@ -3054,6 +3129,61 @@ body.profile-theme-light .lesson-row__status.is-done {
   }
 }
 
+/* ── Mobile dock — force single row on all phones ────────────────────── */
+@media (max-width: 760px) and (max-width: 480px) {
+  .profile-mobile-dock {
+    grid-template-columns: repeat(6, 1fr);
+  }
+
+  .profile-mobile-dock a {
+    font-size: 9px;
+    min-height: 40px;
+    padding: 4px 2px;
+  }
+}
+
+/* ── Very small phones (360px and below) ─────────────────────────────── */
+@media (max-width: 360px) {
+  .profile-shell {
+    width: calc(100% - 12px);
+    padding-bottom: calc(86px + var(--safe-bottom));
+  }
+
+  .profile-brand__text strong {
+    font-size: 1.15rem;
+  }
+
+  .profile-hero h1 {
+    font-size: clamp(2.6rem, 18vw, 3.6rem);
+  }
+
+  .profile-stat-grid,
+  .profile-stat-grid--rewards,
+  .rewards-mini-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-mobile-dock {
+    left: 6px;
+    right: 6px;
+    bottom: calc(6px + var(--safe-bottom));
+    gap: 3px;
+    padding: 5px;
+    border-radius: 18px;
+  }
+
+  .profile-mobile-dock a {
+    font-size: 8px;
+    min-height: 38px;
+  }
+
+  .profile-auth-form input,
+  .profile-auth-form select {
+    font-size: 16px;
+    padding: 12px 14px;
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════════════════
    MOTION
 ═══════════════════════════════════════════════════════════════════════════ */
@@ -3103,117 +3233,206 @@ body.profile-theme-light .lesson-row__status.is-done {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
-   PROFILE LOADING SCREEN
-   Shown while body.profile-loading is active (CSS-driven, zero extra JS).
-   Fades in when class is added by init(), fades out when removed by loadSession().
+   PROFILE LOADING SCREEN — compact inline banner (not full-screen)
+   Uses the same home-loader icon style: circular img, conic fill, dual-color
+   ring, float animation, upload beam.  Slides in/out via max-height so it
+   does NOT block the auth card underneath.
 ═══════════════════════════════════════════════════════════════════════════ */
 
 .profile-loading-screen {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 16px;
-  background: rgba(1, 3, 10, 0.97);
+  gap: 18px;
+  overflow: hidden;
+  max-height: 0;
+  padding: 0 24px;
+  margin-bottom: 0;
+  border-radius: 18px;
+  border: 1px solid transparent;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.38s ease;
+  transition:
+    max-height 0.40s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity    0.30s ease,
+    padding    0.30s ease,
+    margin     0.30s ease,
+    border-color 0.30s ease;
 }
 
 body.profile-loading .profile-loading-screen {
+  max-height: 100px;
+  padding: 16px 24px;
+  margin-bottom: 18px;
+  border-color: rgba(212, 174, 90, 0.14);
+  background: rgba(5, 12, 30, 0.72);
   opacity: 1;
-  pointer-events: all;
 }
 
-/* Orb container */
-.profile-loading-screen__orb {
+/* ── Icon wrap — same proportions as the home loader but scaled down ── */
+.profile-loading-screen__icon-wrap {
   position: relative;
-  width: 96px;
-  height: 96px;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
   display: grid;
   place-items: center;
 }
 
-.profile-loading-screen__orb img {
-  position: relative;
-  z-index: 1;
-  width: 58px;
-  height: 58px;
-  object-fit: contain;
-  filter: drop-shadow(0 0 14px rgba(240, 201, 106, 0.40));
-  animation: plso-pulse 2.4s ease-in-out infinite;
+/* Conic gradient fill that rises — matches lkp-loader__fill */
+.profile-loading-screen__fill {
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 180deg,
+    rgba(84, 198, 238, 0.12) 0deg,
+    rgba(84, 198, 238, 0.12) 70deg,
+    rgba(143, 160, 255, 0.72) 180deg,
+    rgba(240, 201, 106, 0.96) 300deg,
+    rgba(240, 201, 106, 0.98) 360deg
+  );
+  transform: scaleY(0.14);
+  transform-origin: center bottom;
+  animation: plso-fill-rise 1.35s ease-in-out infinite;
 }
 
-.profile-loading-screen__orb-fallback {
+/* Circular icon — border-radius: 50% matches the home loader */
+.profile-loading-screen__icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  position: relative;
+  z-index: 1;
+  box-shadow:
+    0 0 12px rgba(240, 201, 106, 0.18),
+    0 0 24px rgba(84, 198, 238, 0.10);
+  animation: plso-float 1.55s ease-in-out infinite alternate;
+}
+
+.profile-loading-screen__icon-fallback {
   display: none;
   position: absolute;
   inset: 0;
   align-items: center;
   justify-content: center;
-  font-size: 34px;
-  color: var(--profile-gold, #f0c96a);
-  text-shadow: 0 0 18px rgba(240, 201, 106, 0.52);
+  font-size: 18px;
+  color: rgba(240, 201, 106, 0.9);
   z-index: 1;
-  animation: plso-pulse 2.4s ease-in-out infinite;
+  animation: plso-float 1.55s ease-in-out infinite alternate;
 }
 
-/* Spinning ring around the orb */
+/* Dual-color spinning ring — matches lkp-loader__ring */
 .profile-loading-screen__ring {
   position: absolute;
-  inset: 0;
+  inset: 4px;
   border-radius: 50%;
-  border: 2px solid rgba(240, 201, 106, 0.14);
-  border-top-color: rgba(240, 201, 106, 0.72);
+  border: 2px solid rgba(212, 174, 90, 0.12);
+  border-top-color:  rgba(212, 174, 90, 0.90);
+  border-right-color: rgba(84, 198, 238, 0.48);
   animation: plso-spin 1.1s linear infinite;
 }
 
-@keyframes plso-pulse {
-  0%, 100% { filter: drop-shadow(0 0 10px rgba(240, 201, 106, 0.32)); }
-  50%       { filter: drop-shadow(0 0 26px rgba(240, 201, 106, 0.64)); }
+/* Upload beam below icon */
+.profile-loading-screen__beam {
+  position: absolute;
+  left: 50%;
+  bottom: -2px;
+  width: 2px;
+  height: 24px;
+  background: linear-gradient(
+    180deg,
+    rgba(84, 198, 238, 0),
+    rgba(84, 198, 238, 0.48),
+    rgba(240, 201, 106, 0.92)
+  );
+  transform-origin: top center;
+  animation: plso-beam 1.35s ease-in-out infinite;
 }
 
-@keyframes plso-spin {
-  to { transform: rotate(360deg); }
+/* ── Text alongside icon ── */
+.profile-loading-screen__text {
+  min-width: 0;
 }
 
-/* Title */
 .profile-loading-screen__title {
   font-family: var(--profile-font-title, 'Pirata One', 'Cormorant Garamond', serif);
-  font-size: clamp(1.8rem, 4vw, 2.6rem);
-  font-weight: 400;
-  color: var(--profile-gold, #f0c96a);
-  letter-spacing: 0.04em;
-  margin: 0;
+  font-size: 1.35rem;
+  color: rgba(218, 181, 88, 0.94);
+  margin: 0 0 4px;
   line-height: 1;
-  text-shadow: 0 0 20px rgba(240, 201, 106, 0.22);
 }
 
-/* Subtitle */
 .profile-loading-screen__sub {
-  font-size: 12px;
-  color: rgba(168, 190, 228, 0.52);
+  font-size: 11px;
+  color: rgba(84, 198, 238, 0.50);
   margin: 0;
-  letter-spacing: 0.10em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   font-weight: 700;
 }
 
-/* Skip link */
-.profile-loading-screen__skip {
-  margin-top: 10px;
-  font-size: 13px;
-  color: rgba(168, 190, 228, 0.48);
-  text-decoration: underline;
-  text-decoration-color: rgba(168, 190, 228, 0.22);
-  transition: color 0.18s ease;
-  cursor: pointer;
+/* ── Shared keyframes ── */
+@keyframes plso-float {
+  from { transform: translateY(0)    scale(0.98); }
+  to   { transform: translateY(-3px) scale(1.02); }
 }
 
-.profile-loading-screen__skip:hover {
-  color: rgba(168, 190, 228, 0.82);
+@keyframes plso-fill-rise {
+  0%   { transform: scaleY(0.14); opacity: 0.60; }
+  35%  { transform: scaleY(0.48); opacity: 0.84; }
+  65%  { transform: scaleY(0.86); opacity: 1;    }
+  100% { transform: scaleY(1);    opacity: 1;    }
+}
+
+@keyframes plso-beam {
+  0%, 100% { opacity: 0.34; transform: translateX(-50%) scaleY(0.72); }
+  50%       { opacity: 1;    transform: translateX(-50%) scaleY(1.06); }
+}
+
+@keyframes plso-spin { to { transform: rotate(360deg); } }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   OFFLINE BANNER
+   Shown when network is unreachable. Wired by handleOffline() in profile.js.
+═══════════════════════════════════════════════════════════════════════════ */
+
+.profile-offline-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: rgba(255, 150, 40, 0.08);
+  border-bottom: 1px solid rgba(255, 165, 60, 0.20);
+  color: rgba(255, 195, 100, 0.92);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.profile-offline-banner[hidden] { display: none; }
+
+.profile-offline-banner i {
+  font-size: 14px;
+  flex-shrink: 0;
+  opacity: 0.80;
+}
+
+/* Pulsing dot to signal live offline status */
+.profile-offline-banner__dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 165, 60, 0.80);
+  margin-left: auto;
+  flex-shrink: 0;
+  animation: offline-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes offline-pulse {
+  0%, 100% { opacity: 0.40; transform: scale(0.85); }
+  50%       { opacity: 1;    transform: scale(1.15); }
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════

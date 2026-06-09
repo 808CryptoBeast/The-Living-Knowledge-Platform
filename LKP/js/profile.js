@@ -100,8 +100,9 @@
   const THEME_KEY = 'lkp_profile_theme';
   const BACKGROUND_VARIANT_KEY = 'lkp_profile_bg_variant';
   const PROFILE_PREFERENCES_KEY = 'lkp_profile_preferences_v1';
-  const LAST_LESSON_KEY = 'lkp_last_lesson_id_v1';
-  const REFLECTIONS_KEY = 'lkp_lesson_reflections_v2';
+  const LAST_LESSON_KEY  = 'lkp_last_lesson_id_v1';
+  const REFLECTIONS_KEY  = 'lkp_lesson_reflections_v2';
+  const SYNC_QUEUE_KEY   = 'lkp_progress_sync_queue_v1';
   const BACKGROUND_ROTATION_MS = 90000;
 
   const DEFAULT_PROFILE_PREFERENCES = {
@@ -1597,14 +1598,22 @@
       renderRewardsPanel();
       renderEcosystem();
       renderLessonPath();
+
+      /* Boot the galaxy now if it was skipped during guest init */
+      if (!state.three.initialized) await initProfileGalaxy();
       rebuildProfileGalaxyForRole();
 
       showToast('Signed in successfully.');
     } catch (err) {
-      console.error(err);
       if (window.LKPSignOut?.hideSignInLoading) window.LKPSignOut.hideSignInLoading(submitBtn);
-      showToast(err.message || 'Sign-in failed.');
-      setSessionState('Sign-in failed. Check your email/password.', 'warning');
+      if (isNetworkError(err)) {
+        showToast('No internet connection. Sign-in requires the server.');
+        setSessionState('Offline — sign in unavailable. Your local progress is saved.', 'warning');
+      } else {
+        console.error(err);
+        showToast(err.message || 'Sign-in failed.');
+        setSessionState('Sign-in failed. Check your email and password.', 'warning');
+      }
     }
   }
 
@@ -1666,10 +1675,15 @@
 
       showToast('Profile created. Check email confirmation if Supabase requires it.');
     } catch (err) {
-      console.error(err);
       if (window.LKPSignOut?.hideSignInLoading) window.LKPSignOut.hideSignInLoading(signUpBtn);
-      showToast(err.message || 'Profile creation failed.');
-      setSessionState('Profile creation failed.', 'warning');
+      if (isNetworkError(err)) {
+        showToast('No internet connection. Creating a Passport requires the server.');
+        setSessionState('Offline — sign up unavailable. Connect to create your Passport.', 'warning');
+      } else {
+        console.error(err);
+        showToast(err.message || 'Profile creation failed.');
+        setSessionState('Profile creation failed.', 'warning');
+      }
     }
   }
 
@@ -1846,8 +1860,65 @@
   }
 
   /* CHANGE 6: uses lkp_user_progress table with mana_earned / xp_earned columns */
-  async function saveRemoteProgress(lessonId, completed) {
+  /* Adds a progress record to the offline outbox.  Flushed on reconnect. */
+  function enqueueProgressSync(lessonId, completed) {
+    const queue = readJSON(SYNC_QUEUE_KEY, []);
+    /* Replace any existing record for this lesson so there are no duplicates */
+    const filtered = queue.filter(item => item.lessonId !== lessonId);
+    const lesson   = state.lessons.find(item => item.id === lessonId);
+    filtered.push({
+      lessonId,
+      completed,
+      completedAt: completed ? new Date().toISOString() : null,
+      manaEarned:  completed ? (lesson?.mana || 10) : 0,
+      xpEarned:    completed ? (lesson?.xp   || 25) : 0
+    });
+    writeJSON(SYNC_QUEUE_KEY, filtered);
+  }
+
+  /* Flushes all queued progress records to Supabase.  Called on reconnect. */
+  async function flushSyncQueue() {
     if (!supabaseClient || !state.user) return;
+
+    const queue = readJSON(SYNC_QUEUE_KEY, []);
+    if (!queue.length) return;
+
+    const successes = [];
+
+    for (const item of queue) {
+      try {
+        const { error } = await supabaseClient
+          .from('lkp_user_progress')
+          .upsert({
+            user_id:      state.user.id,
+            lesson_id:    item.lessonId,
+            completed:    item.completed,
+            completed_at: item.completedAt,
+            mana_earned:  item.manaEarned,
+            xp_earned:    item.xpEarned
+          }, { onConflict: 'user_id,lesson_id' });
+
+        if (error) throw error;
+        successes.push(item.lessonId);
+      } catch (err) {
+        if (isNetworkError(err)) break; /* still offline — stop trying */
+        console.warn('[Profile] Sync queue flush error for', item.lessonId, err.message);
+      }
+    }
+
+    if (successes.length) {
+      const remaining = queue.filter(item => !successes.includes(item.lessonId));
+      writeJSON(SYNC_QUEUE_KEY, remaining);
+      showToast(`Synced ${successes.length} lesson${successes.length > 1 ? 's' : ''} to your Passport.`);
+    }
+  }
+
+  async function saveRemoteProgress(lessonId, completed) {
+    if (!supabaseClient || !state.user) {
+      /* Offline or not signed in — queue for later sync */
+      if (state.user) enqueueProgressSync(lessonId, completed);
+      return;
+    }
 
     try {
       const lesson = state.lessons.find(item => item.id === lessonId);
@@ -1867,7 +1938,11 @@
 
       if (error) throw error;
     } catch (err) {
-      console.warn('[Profile] Could not save remote progress:', err.message);
+      if (isNetworkError(err)) {
+        enqueueProgressSync(lessonId, completed);
+      } else {
+        console.warn('[Profile] Could not save remote progress:', err.message);
+      }
     }
   }
 
@@ -4674,7 +4749,13 @@
     renderEcosystem();
     renderLessonPath();
 
-    await initProfileGalaxy();
+    /* Only initialise the heavy THREE.js galaxy when the user has an active
+       session. Guests never see the galaxy, so we skip it entirely and save
+       2-4 seconds of background work. It will be initialised after sign-in
+       via rebuildProfileGalaxyForRole() → initProfileGalaxy(). */
+    if (hasCachedSession()) {
+      await initProfileGalaxy();
+    }
 
     await setupSupabaseClient();
 
@@ -4683,13 +4764,34 @@
       state.sessionReady = true;
       renderDashboard();
 
-      setSessionState(
-        isSupabaseConfigured
-          ? 'Supabase library is not ready. Guest/local profile mode is active.'
-          : 'Supabase is not configured yet. Guest/local profile mode is active.',
-        'warning'
-      );
+      if (localModeActive) {
+        /* Offline path — show banner, restore cached profile if available */
+        showOfflineBanner(true);
+        const cachedProfile =
+          readJSON(PROFILE_CACHE_KEY, null) ||
+          readJSON(LEGACY_PROFILE_CACHE_KEY, null);
+        if (cachedProfile) {
+          state.profile = cachedProfile;
+          state.user    = { id: cachedProfile.id, email: cachedProfile.email };
+          state.isAdmin = ['admin', 'owner'].includes(cachedProfile.role);
+          renderDashboard();
+          setSessionState('Offline — showing your saved Passport. Reconnect to sync.', 'warning');
+        } else {
+          setSessionState('Offline — no saved Passport found. Connect to sign in.', 'warning');
+        }
+      } else {
+        setSessionState(
+          isSupabaseConfigured
+            ? 'Supabase library is not ready. Guest/local profile mode is active.'
+            : 'Supabase is not configured yet. Guest/local profile mode is active.',
+          'warning'
+        );
+      }
 
+      /* Still wire online/offline events so reconnect works */
+      window.addEventListener('online',  handleOnline);
+      window.addEventListener('offline', handleOffline);
+      if (!navigator.onLine) showOfflineBanner(true);
       return;
     }
 
@@ -4720,6 +4822,46 @@
       renderLessonPath();
       rebuildProfileGalaxyForRole();
     });
+
+    window.addEventListener('online',  handleOnline);
+    window.addEventListener('offline', handleOffline);
+    if (!navigator.onLine) showOfflineBanner(true);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     OFFLINE / RECONNECT HELPERS
+  ═══════════════════════════════════════════════════════════════════════ */
+
+  function showOfflineBanner(visible) {
+    const banner = document.getElementById('profileOfflineBanner');
+    if (!banner) return;
+    banner.hidden = !visible;
+    banner.setAttribute('aria-hidden', String(!visible));
+  }
+
+  function handleOffline() {
+    localModeActive = true;
+    showOfflineBanner(true);
+    setSessionState('Offline — showing saved data. Reconnect to sync.', 'warning');
+  }
+
+  async function handleOnline() {
+    localModeActive = false;
+    showOfflineBanner(false);
+    showToast('Back online — reconnecting…');
+
+    if (!supabaseClient && isSupabaseConfigured) {
+      await setupSupabaseClient();
+    }
+
+    if (supabaseClient) {
+      await loadSession();
+      await flushSyncQueue();
+      renderDashboard();
+      renderRewardsPanel();
+      renderEcosystem();
+      renderLessonPath();
+    }
   }
 
   document.addEventListener('DOMContentLoaded', init);

@@ -334,5 +334,11 @@
   <!-- Lesson renderer with cloud sync -->
   <script src="js/lkp-lessons.js?v=v38-completion-lock" defer></script>
 
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(function () {});
+    }
+  </script>
+
 </body>
 </html>
