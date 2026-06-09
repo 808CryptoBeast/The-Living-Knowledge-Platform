@@ -642,27 +642,15 @@
     });
   }
 
-  /* ── Reveal admin app (local mode) ───────────────────────────────────── */
+  /* ── Core workbench boot (called after auth confirmed) ───────────────── */
 
-  function revealAdminApp() {
-    var app = document.getElementById('adminApp');
-    if (app) app.classList.remove('is-hidden');
+  function bootWorkbench() {
+    if (window._lkpWorkbenchBooted) return;
+    window._lkpWorkbenchBooted = true;
 
-    var statusNote = document.getElementById('adminAccessStatus');
-    if (statusNote) {
-      statusNote.textContent = 'Local mode — lesson overrides active. Supabase auth optional.';
-    }
-
-    var signOutBtn = document.getElementById('adminSignOutBtn');
-    if (signOutBtn) signOutBtn.classList.remove('is-hidden');
-  }
-
-  /* ── Init ─────────────────────────────────────────────────────────────── */
-
-  function init() {
     var data = getBaseData();
     if (!data) {
-      console.warn('[LKP Workbench] Base data not found — data scripts may not be loaded yet.');
+      console.warn('[LKP Workbench] Base data not found — data scripts may not be loaded.');
       return;
     }
 
@@ -670,12 +658,26 @@
       window.LKPLessonOverrides.applyAndExpose();
     }
 
-    revealAdminApp();
     initTabs();
     initModal();
     initDashboard();
     initLessonPanel();
     buildStats();
+  }
+
+  /* ── Init — waits for lkp:admin-authed before booting ────────────────── */
+
+  function init() {
+    /* If auth already confirmed (race-condition guard) */
+    if (window.LKP_ADMIN_AUTHED) {
+      bootWorkbench();
+      return;
+    }
+
+    /* Otherwise wait for the auth gate to signal access */
+    window.addEventListener('lkp:admin-authed', function () {
+      bootWorkbench();
+    });
   }
 
   if (document.readyState === 'loading') {
