@@ -3270,6 +3270,11 @@
     const next = index < state.lessons.length - 1 ? state.lessons[index + 1] : null;
     const current = findLesson(state.activeLessonId);
 
+    const completedCount = state.completed.length;
+    const totalCount = state.lessons.length;
+    const mana = getMana();
+    const pct = totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0;
+
     scrubber.innerHTML = `
       <button
         class="cv-mobile-scrubber__btn"
@@ -3282,8 +3287,11 @@
       </button>
 
       <div class="cv-mobile-scrubber__center">
-        <small>Lesson ${index + 1} of ${state.lessons.length}</small>
+        <small>Lesson ${index + 1} of ${totalCount} &nbsp;·&nbsp; <i class="fas fa-star" style="color:#f0c96a;font-size:0.7em"></i> ${mana} Mana</small>
         <strong>${escapeHTML(current?.title || '')}</strong>
+        <div class="cv-mobile-scrubber__bar" aria-hidden="true" title="${pct}% complete">
+          <span style="width:${pct}%"></span>
+        </div>
       </div>
 
       <button
@@ -3800,6 +3808,8 @@
         manaAdded: mana
       }
     }));
+
+    checkCertificateEligibility(lesson);
   }
 
   function showToast(message) {
@@ -3838,6 +3848,95 @@
     setTimeout(() => {
       burst.remove();
     }, 1700);
+  }
+
+  function showCertificate({ type, title, cultureName, emoji, completedCount }) {
+    const existing = document.getElementById('lkp-cert-modal');
+    if (existing) existing.remove();
+
+    const learnerName = window.LKP_ADMIN_PROFILE?.display_name
+      || window.LKPProfileSync?.state?.profile?.display_name
+      || 'Wayfinder';
+
+    const now = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const mana = getMana();
+
+    const modal = document.createElement('div');
+    modal.id = 'lkp-cert-modal';
+    modal.setAttribute('role', 'dialog');
+    modal.setAttribute('aria-modal', 'true');
+    modal.setAttribute('aria-label', 'Completion Certificate');
+    modal.innerHTML = `
+      <div class="lkp-cert-overlay"></div>
+      <div class="lkp-cert-sheet" id="lkpCertSheet">
+        <div class="lkp-cert-glyph">${escapeHTML(emoji || '✦')}</div>
+        <p class="lkp-cert-eyebrow">Certificate of Completion</p>
+        <p class="lkp-cert-presented">This certifies that</p>
+        <h2 class="lkp-cert-learner">${escapeHTML(learnerName)}</h2>
+        <p class="lkp-cert-has">has completed the</p>
+        <h3 class="lkp-cert-title">${escapeHTML(title)}</h3>
+        ${cultureName ? `<p class="lkp-cert-culture">${escapeHTML(cultureName)}</p>` : ''}
+        <p class="lkp-cert-meta">
+          ${type === 'culture' ? `All ${completedCount} lessons complete` : `Module complete · ${completedCount} lessons`}
+          &nbsp;·&nbsp; ${escapeHTML(now)}
+          &nbsp;·&nbsp; <i class="fas fa-star"></i> ${mana} Mana
+        </p>
+        <div class="lkp-cert-seal" aria-hidden="true">◈</div>
+        <div class="lkp-cert-platform">Ka Paepae ʻIke Ola — The Living Knowledge Platform</div>
+        <div class="lkp-cert-actions">
+          <button class="lkp-cert-btn lkp-cert-btn--print" type="button" id="lkpCertPrint">
+            <i class="fas fa-print"></i> Print / Save PDF
+          </button>
+          <button class="lkp-cert-btn lkp-cert-btn--close" type="button" id="lkpCertClose">
+            <i class="fas fa-xmark"></i> Close
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    document.getElementById('lkpCertClose').addEventListener('click', () => modal.remove());
+    modal.querySelector('.lkp-cert-overlay').addEventListener('click', () => modal.remove());
+    document.getElementById('lkpCertPrint').addEventListener('click', () => {
+      document.body.classList.add('lkp-cert-printing');
+      window.print();
+      setTimeout(() => document.body.classList.remove('lkp-cert-printing'), 500);
+    });
+
+    setTimeout(() => modal.classList.add('is-visible'), 50);
+  }
+
+  function checkCertificateEligibility(lesson) {
+    const culture = state.cultures.find(c => c.id === lesson.cultureId);
+    if (!culture) return;
+
+    const module = culture.modules.find(m => m.id === lesson.moduleId);
+    if (module) {
+      const moduleDone = module.lessons.every(l => isCompleted(l.id));
+      if (moduleDone) {
+        const cultureDone = culture.modules.every(m =>
+          m.lessons.every(l => isCompleted(l.id))
+        );
+
+        if (cultureDone) {
+          setTimeout(() => showCertificate({
+            type: 'culture',
+            title: culture.name,
+            emoji: culture.emoji || '✦',
+            completedCount: culture.modules.reduce((n, m) => n + m.lessons.length, 0)
+          }), 2000);
+        } else {
+          setTimeout(() => showCertificate({
+            type: 'module',
+            title: module.title,
+            cultureName: culture.name,
+            emoji: culture.emoji || '✦',
+            completedCount: module.lessons.length
+          }), 2000);
+        }
+      }
+    }
   }
 
   function setLessonMode(mode) {
@@ -3970,6 +4069,31 @@
         }
 
         return;
+      }
+
+      // Explicit handler for all other <details> toggles — fixes display:flex + overflow:hidden
+      // compatibility issues in Safari and older Chromium builds.
+      const anySummary = event.target.closest('summary');
+      if (anySummary && !anySummary.closest('.kumu-wa-panel') && !anySummary.closest('.kumu-wa-vocab__item')) {
+        const detailsEl = anySummary.closest('details');
+        if (detailsEl) {
+          event.preventDefault();
+          const wasOpen = detailsEl.open;
+          detailsEl.open = !wasOpen;
+
+          const notesHint = anySummary.querySelector('.cv-lesson-notes__hint');
+          if (notesHint) {
+            notesHint.textContent = detailsEl.open ? 'click to collapse' : 'click to open';
+          }
+          const reflectHint = anySummary.querySelector('.cv-reflection__hint');
+          if (reflectHint) {
+            reflectHint.textContent = detailsEl.open ? 'click to collapse' : 'click to open';
+          }
+          const arrow = anySummary.querySelector('.cv-objectives__arrow, .cv-lesson-notes__arrow');
+          if (arrow) arrow.style.transform = detailsEl.open ? 'rotate(180deg)' : '';
+
+          return;
+        }
       }
 
       const cultureFilter = event.target.closest('[data-culture-filter]');

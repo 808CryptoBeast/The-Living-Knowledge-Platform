@@ -8,7 +8,7 @@
      • Everything else              — Network with cache fallback
 ═══════════════════════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'lkp-v1';
+const CACHE_VERSION = 'lkp-v2';
 const SHELL_CACHE   = CACHE_VERSION + '-shell';
 const DATA_CACHE    = CACHE_VERSION + '-data';
 const IMAGE_CACHE   = CACHE_VERSION + '-images';
@@ -19,6 +19,7 @@ const SHELL_URLS = [
   '/index.html',
   '/profile.html',
   '/LKP/lessons.html',
+  '/LKP/journal.html',
   '/about.html',
 
   /* CSS */
@@ -39,7 +40,11 @@ const SHELL_URLS = [
   '/LKP/js/lkp-galaxy-builder.js',
   '/LKP/js/lkp-lessons.js',
   '/LKP/js/lkp-lesson-overrides.js',
+  '/LKP/js/lkp-glossary.js',
+  '/LKP/js/lkp-journal.js',
+  '/LKP/js/lkp-xrpl.js',
   '/LKP/js/profile.js',
+  '/LKP/css/lkp-journal.css',
 
   /* Brand images */
   '/LKP/assets/images/LKP-1.png',
@@ -176,7 +181,8 @@ async function cacheFirst(request, cacheName, { maxAge } = {}) {
 
 async function staleWhileRevalidate(request, cacheName) {
   const cache  = await caches.open(cacheName);
-  const cached = await cache.match(request);
+  /* ignoreSearch lets versioned ?v=... requests hit cached unversioned entries */
+  const cached = await cache.match(request, { ignoreSearch: true });
 
   /* Kick off a network refresh regardless */
   const networkPromise = fetch(request).then(response => {

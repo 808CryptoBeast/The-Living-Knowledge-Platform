@@ -241,6 +241,9 @@
           <a class="lkp-nav__link" href="#ecosystem">Ecosystem</a>
         </li>
         <li>
+          <a class="lkp-nav__link" href="LKP/journal.html"><i class="fas fa-feather"></i> Journal</a>
+        </li>
+        <li>
           <a class="lkp-nav__link" href="about.html">About</a>
         </li>
         <li>
@@ -314,7 +317,7 @@
         </div>
 
         <div class="lkp-hero__actions">
-          <a href="LKP/lessons.html" class="lkp-btn lkp-btn--primary">
+          <a href="LKP/lessons.html" class="lkp-btn lkp-btn--primary" id="heroBeginBtn">
             <i class="fas fa-book-open"></i>
             Begin Learning
           </a>
@@ -325,6 +328,16 @@
           <a href="profile.html#authPanel" class="lkp-btn lkp-btn--secondary">
             <i class="fas fa-sign-in-alt"></i>
             Sign In / Create Passport
+          </a>
+        </div>
+        <div id="heroResumeBanner" style="display:none;margin-top:14px;">
+          <a id="heroResumeBtn" href="LKP/lessons.html" class="lkp-btn lkp-btn--secondary" style="font-size:0.85rem;opacity:0.85;">
+            <i class="fas fa-compass"></i>
+            Resume last lesson
+          </a>
+          <a href="LKP/journal.html" class="lkp-btn lkp-btn--secondary" style="font-size:0.85rem;opacity:0.85;">
+            <i class="fas fa-feather"></i>
+            Open Journal
           </a>
         </div>
       </div>
@@ -960,6 +973,21 @@
         }
       });
     }
+
+    /* Resume banner */
+    (function () {
+      var lastId = localStorage.getItem('lkp_last_lesson_id_v1');
+      if (!lastId) return;
+      var banner = document.getElementById('heroResumeBanner');
+      var resumeBtn = document.getElementById('heroResumeBtn');
+      var beginBtn = document.getElementById('heroBeginBtn');
+      if (banner) banner.style.display = 'flex';
+      if (resumeBtn) resumeBtn.href = 'LKP/lessons.html#' + encodeURIComponent(lastId);
+      if (beginBtn) {
+        beginBtn.innerHTML = '<i class="fas fa-compass"></i> Continue Journey';
+        beginBtn.href = 'LKP/lessons.html#' + encodeURIComponent(lastId);
+      }
+    })();
 
     /* Year */
     var yr = document.getElementById("year");

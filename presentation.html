@@ -888,7 +888,7 @@ Ka Paepae Ike Ola holds knowledge as relationship, memory, and responsibility:
 Current slide context: SLIDE_CTX`;
 
 let chatHistory=[];
-let aiKey=sessionStorage.getItem('lkp-guide-key')||'';
+let aiKey=localStorage.getItem('lkp-guide-key')||'';
 let aiConnected=!!aiKey;
 const aiToggleBtn=document.getElementById('ai-toggle');
 const aiPanel=document.getElementById('ai-panel');
@@ -910,7 +910,7 @@ function initAIPanel(){aiConnected?showAIConvo():showAISetup();}
 aiConnB.addEventListener('click',()=>{
   const k=aiKeyIn.value.trim();
   if(!k.startsWith('sk-ant-')){aiKeyIn.style.borderColor='rgba(220,80,80,.6)';setTimeout(()=>{aiKeyIn.style.borderColor='';},1400);return;}
-  aiKey=k;sessionStorage.setItem('lkp-guide-key',k);aiConnected=true;showAIConvo();
+  aiKey=k;localStorage.setItem('lkp-guide-key',k);aiConnected=true;showAIConvo();
   addGuideMsg('The Living Guide is connected. Ask me anything about Ka Paepae Ike Ola — its philosophy, its traditions, or how it works.');
 });
 
