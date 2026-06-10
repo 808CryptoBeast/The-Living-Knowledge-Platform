@@ -1884,11 +1884,16 @@
     return next;
   }
 
+  function hasReflection(lessonId) {
+    const refs = state.reflections[lessonId] || {};
+    return Object.values(refs).some(v => String(v || '').trim().length > 0);
+  }
+
   function canCompleteLesson(lesson) {
-    return Boolean(lesson?.id) && (
-      isCompleted(lesson.id) ||
-      getLessonReadProgress(lesson.id) >= COMPLETION_REQUIRED_PROGRESS
-    );
+    if (!lesson?.id) return false;
+    if (isCompleted(lesson.id)) return true;
+    return getLessonReadProgress(lesson.id) >= COMPLETION_REQUIRED_PROGRESS
+      && hasReflection(lesson.id);
   }
 
   function updateLessonReadProgress(options = {}) {
@@ -2817,6 +2822,8 @@
         state.reflections[lesson.id] = reflections;
         writeJSON(REFLECTIONS_KEY, state.reflections);
 
+        updateCompleteButton(lesson);
+
         if (window.LKPProfileSync && window.LKPProfileSync.state.user) {
           window.LKPProfileSync.saveReflection(
             lesson.id,
@@ -3357,7 +3364,12 @@
           : '';
         const creationArc = buildCreationArcView(lesson);
 
-        body.innerHTML = creationArc + baseContent + kemetScaffold + maoriScaffold + dreamtimeScaffold;
+        const ARC_MARKER = '<!-- CV_CREATION_ARC -->';
+        if (creationArc && baseContent.includes(ARC_MARKER)) {
+          body.innerHTML = baseContent.replace(ARC_MARKER, creationArc) + kemetScaffold + maoriScaffold + dreamtimeScaffold;
+        } else {
+          body.innerHTML = creationArc + baseContent + kemetScaffold + maoriScaffold + dreamtimeScaffold;
+        }
       }
 
       if (state.mode === 'scholar' && !body.querySelector('.cv-reflection')) {
@@ -3535,26 +3547,36 @@
 
     const done = isCompleted(lesson.id);
     const progress = getLessonReadProgress(lesson.id);
-    const locked = !done && progress < COMPLETION_REQUIRED_PROGRESS;
-    const remaining = Math.max(0, COMPLETION_REQUIRED_PROGRESS - progress);
+    const readDone = progress >= COMPLETION_REQUIRED_PROGRESS;
+    const reflected = hasReflection(lesson.id);
+    const locked = !done && (!readDone || !reflected);
 
     btn.classList.toggle('is-complete', done);
     btn.classList.toggle('is-locked', locked);
     btn.setAttribute('aria-disabled', locked ? 'true' : 'false');
     btn.dataset.completionLocked = locked ? 'true' : 'false';
-    btn.title = locked
-      ? `Read ${remaining}% more of this lesson before completing it.`
-      : done
-        ? 'Lesson complete'
-        : 'Mark this lesson complete';
 
-    if (locked) {
+    if (done) {
+      btn.title = 'Lesson complete';
+      btn.innerHTML = '<i class="fas fa-check-circle"></i> Complete';
+      return;
+    }
+
+    if (!readDone) {
+      const remaining = Math.max(0, COMPLETION_REQUIRED_PROGRESS - progress);
+      btn.title = `Read ${remaining}% more to unlock completion.`;
       btn.innerHTML = `<i class="fas fa-lock"></i> Read ${remaining}% more`;
       return;
     }
-    btn.innerHTML = done
-      ? '<i class="fas fa-check-circle"></i> Complete'
-      : `<i class="fas fa-star"></i> Mark Complete · +${lesson.mana || DEFAULT_MANA} Mana`;
+
+    if (!reflected) {
+      btn.title = 'Answer a reflection prompt to complete this lesson.';
+      btn.innerHTML = '<i class="fas fa-pen"></i> Answer a reflection to complete';
+      return;
+    }
+
+    btn.title = 'Mark this lesson complete';
+    btn.innerHTML = `<i class="fas fa-star"></i> Mark Complete · +${lesson.mana || DEFAULT_MANA} Mana`;
   }
 
   function renderWelcome() {
@@ -3704,9 +3726,13 @@
     const readProgress = getLessonReadProgress(lesson.id);
 
     if (!canCompleteLesson(lesson)) {
-      const remaining = Math.max(0, COMPLETION_REQUIRED_PROGRESS - readProgress);
       updateCompleteButton(lesson);
-      showToast(`Keep reading first. ${remaining}% more unlocks completion.`);
+      if (readProgress < COMPLETION_REQUIRED_PROGRESS) {
+        const remaining = Math.max(0, COMPLETION_REQUIRED_PROGRESS - readProgress);
+        showToast(`Keep reading — ${remaining}% more to go.`);
+      } else {
+        showToast('Write a reflection first — nānā i ke kumu.');
+      }
       return;
     }
 

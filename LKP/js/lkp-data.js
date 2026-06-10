@@ -1228,98 +1228,76 @@ const CULTURALVERSE_DATA = {
               readTime: '12 min',
               content: `
 <section class="kumu-hero kumu-reveal">
-  <p class="kumu-hero__eyebrow">Kanaka Maoli Sacred Knowledge</p>
+  <p class="kumu-hero__eyebrow">Kānaka Maoli Sacred Knowledge</p>
   <h2 class="kumu-hero__title">Kumulipo</h2>
   <p class="kumu-hero__subtitle">A Genealogy of Creation, Life, and Living Knowledge</p>
-  <p class="kumu-hero__lead">This lesson is designed as an immersive Culturalverse/Ikeverse entry into the Kumulipo, beginning with Wā 1 and extending outward into the chant's wider architecture of creation. The aim is to encounter the Kumulipo first as Kanaka Maoli ancestral knowledge, then to read its patterns in careful dialogue with modern questions about origin, life, relationship, and responsibility.</p>
+  <p class="kumu-hero__lead">2,102 lines. 16 epochs. A complete cosmological genealogy from deep darkness into kuleana. The Kumulipo is the most profound knowledge system in Hawaiian tradition — and your entry point into everything Kānaka Maoli.</p>
 </section>
 
 <facts>2,102::Lines in the Chant|16 Wā::Epochs of Unfolding|Pō::Generative Darkness, Not Emptiness|1897::Liliʻuokalani Translation</facts>
 
 <section class="kumu-section kumu-reveal">
   <h4>What Is the Kumulipo?</h4>
-  <p>The Kumulipo is a sacred Kanaka Maoli creation chant, genealogy, cosmology, and living knowledge system. It is a profound framework of pō, emergence, life, genealogy, ecology, relationship, and kuleana. It carries ancestral intelligence through chant, memory, protocol, and transmission across generations.</p>
-  <p>The Kumulipo should not be reduced to mythology, poetry, or Western scientific explanation. Modern science offers one framework, while the Kumulipo offers a Kanaka Maoli ancestral framework. Where meaningful parallels appear, they can be used carefully to support understanding, without collapsing difference.</p>
-  <callout>The opening line, <strong>"O ke au i kahuli wela ka honua"</strong>, describes transformation in conditions of heat, motion, and becoming. Creation is presented as unfolding process, not static event.</callout>
+  <p>The Kumulipo is a sacred Kānaka Maoli creation chant, genealogy, cosmology, and living knowledge system. It is a framework of pō, emergence, life, genealogy, ecology, relationship, and kuleana — carrying ancestral intelligence through chant, memory, protocol, and transmission across generations.</p>
+  <p>It should not be reduced to mythology, poetry, or Western scientific explanation. Modern science offers one framework. The Kumulipo offers a distinct Kānaka Maoli ancestral framework. Where meaningful parallels appear, they can be used carefully to support understanding — without collapsing difference.</p>
 </section>
 
 <section class="kumu-section kumu-reveal">
-  <h4>Beyond Royal Lineage</h4>
-  <p>The Kumulipo has historically been used to affirm aliʻi genealogy and chiefly authority. That historical use is real and important. But it is not the whole meaning of the chant. Its deeper function is broader: preserving a worldview in which creation is genealogical, life is interconnected, and humans emerge within the same relational system as coral, ocean, plants, animals, stars, land, and sky.</p>
-  <p>This makes the Kumulipo a living body of ancestral knowledge, not a narrow political text. It preserves layered insight into origins, ecological relationships, continuity of life, and humanity's place within creation.</p>
-</section>
-
-<section class="kumu-section kumu-reveal">
-  <h4>Transition: The Wā as Layered Stages of Unfolding Reality</h4>
-  <p>The wā can be understood as layered stages of becoming. Each wā carries specific cultural meaning while also resonating with modern ideas in cosmology, evolution, ecology, systems thinking, and relational ethics. These parallels do not replace Hawaiian meaning. They help modern readers recognize the depth and sophistication of the knowledge system.</p>
-  <p>This lesson begins with Wā 1 as the interpretive foundation: darkness is generative, relationship is primary, and life begins in continuity rather than separation.</p>
-</section>
-
-<section class="kumu-section kumu-reveal">
-  <h4>Reading the Kumulipo Through Interconnection, Resonance, and Participation</h4>
-  <p>Many modern readers need a way to feel the Kumulipo as a living pattern rather than a distant text. A careful bridge is to notice that the chant describes reality as deeply interconnected, layered, and participatory. It begins in pō, a fertile depth of becoming, and unfolds through relationships rather than isolated things.</p>
-  <p>This does not mean the Kumulipo is "really quantum physics" in disguise. That would flatten Hawaiian knowledge into another system's vocabulary. But modern ideas about non-isolation, resonance, emergence, and observer participation can help contemporary learners recognize what Hawaiian ancestors already preserved in chant form: life is relational, power is alignment, and knowing carries consequences.</p>
-  <div class="kumu-parallel-grid">
-    <article class="kumu-parallel-card">
-      <h5>Interconnection</h5>
-      <p>The Kumulipo teaches that coral, sea life, plants, animals, celestial forces, ancestors, and humans belong to one genealogical continuum. A useful modern comparison is the idea that reality is not made of isolated parts, but of relationships and fields of influence.</p>
-    </article>
-    <article class="kumu-parallel-card">
-      <h5>Resonance and Mana</h5>
-      <p>A respectful bridge is resonance: strength comes through alignment within a larger pattern. Hawaiian teachings on mana point less toward domination and more toward the quality of one\'s relation, integrity, and presence within the living web.</p>
-    </article>
-    <article class="kumu-parallel-card">
-      <h5>Participatory Knowledge</h5>
-      <p>The Kumulipo is not merely observed from outside. Chant, protocol, memory, and conduct all matter. A modern learner might say that awareness participates in reality; the Kumulipo would add that this participation must be guided by kuleana, humility, and ancestral respect.</p>
-    </article>
-  </div>
-  <callout type="bridge">Use modern frameworks as orientation aids, not as replacements. The point is not to prove that Hawaiian ancestors were secretly using the language of physics. The point is to help modern readers recover the depth of a knowledge system built on relation, emergence, and responsibility.</callout>
+  <h4>The Kumulipo Begins in Pō — Not in Coral</h4>
+  <p>The chant does not begin with coral. It begins in <strong>Pō</strong> — deep, generative darkness. Pō is not empty void or absence. It is a fertile depth of becoming: charged with potential, not yet visible, not yet named. This is the opening condition of the universe in Hawaiian thought.</p>
+  <p>The first line — <strong>"O ke au i kahuli wela ka honua"</strong> — describes heat, turning, and motion within that primordial state. What modern cosmology might loosely compare to the earliest conditions of cosmic expansion: extreme heat, undifferentiated energy, before matter settles into form. Only from within that Pō do the first beings emerge in Wā 1 — beginning with <strong>koʻa</strong>, the coral polyp. Coral is the first named life, the first genealogical ancestor in the chain. But it comes <em>from</em> the darkness. Pō is prior to everything.</p>
+  <callout>To read the Kumulipo correctly, begin where it begins: in deep darkness, in potential before form. Everything else — coral, sea life, land, animals, humans — emerges from that source. The chant is not a catalog of species. It is a genealogy of becoming.</callout>
 </section>
 
 <!-- KM_KUMULIPO_SOURCE_INSERT -->
 
 <section class="kumu-section kumu-reveal">
-  <h4>Modern Parallels</h4>
-  <div class="kumu-parallel-grid">
-    <article class="kumu-parallel-card">
-      <h5>Cosmology</h5>
-      <p><strong>This parallels modern cosmology</strong> in its movement from hidden depth toward emergence, order, and structure. The opening emphasis on heat, turning, and becoming can help modern readers think about early conditions, formation, and unfolding process, without claiming that the Kumulipo is a scientific statement of Big Bang theory.</p>
-    </article>
-    <article class="kumu-parallel-card">
-      <h5>Emergence and Development</h5>
-      <p><strong>This resonates with staged emergence</strong> because life appears through ordered phases rather than instant completion. Complexity grows through relation, sequence, and continuity, which gives modern learners a careful bridge to discussions of development and evolving life systems.</p>
-    </article>
-    <article class="kumu-parallel-card">
-      <h5>Ecology</h5>
-      <p><strong>This can be compared to ecological interdependence</strong> because coral, sea life, plants, animals, land, and people are treated as connected relations rather than isolated objects. The chant maps living systems through kinship.</p>
-    </article>
-    <article class="kumu-parallel-card">
-      <h5>Interconnection</h5>
-      <p><strong>A useful contemporary bridge is relational interconnection</strong>: reality is not best understood as isolated parts, but as linked presences influencing one another. This does not reduce the chant to physics language; it helps modern readers recognize the depth of Hawaiian relational thought.</p>
-    </article>
-    <article class="kumu-parallel-card">
-      <h5>Genealogy</h5>
-      <p><strong>This reflects continuity of life</strong> through moʻokūʻauhau. Human identity emerges inside ancestral and ecological continuity, not outside it, which makes genealogy a structure of belonging as well as descent.</p>
-    </article>
-    <article class="kumu-parallel-card">
-      <h5>Systems Thinking</h5>
-      <p><strong>This reflects a systems-based understanding of relationship and interdependence</strong> in which each phase of emergence creates the conditions for what follows. Meaning comes from relational pattern, not isolated parts.</p>
-    </article>
-    <article class="kumu-parallel-card">
-      <h5>Resonance and Participation</h5>
-      <p><strong>Another careful bridge is resonance and participatory knowing</strong>. Presence, chant, memory, intention, and conduct all matter in Hawaiian thought. Modern readers may hear an echo of participation here, but the Kumulipo frames that participation through protocol, humility, and kuleana.</p>
-    </article>
-    <article class="kumu-parallel-card">
-      <h5>Kuleana</h5>
-      <p><strong>This frames responsibility as integral to knowledge.</strong> To know creation is to inherit obligation toward balance, stewardship, and right relationship. Knowledge does not end in insight; it becomes conduct.</p>
-    </article>
-  </div>
-  <callout type="bridge">These parallels are orientation aids for contemporary readers. They are most useful when they clarify interconnection, resonance, emergence, and participatory knowing without replacing Hawaiian meanings, sources, or protocols.</callout>
+  <h4>Beyond Royal Lineage</h4>
+  <p>The Kumulipo has historically been used to affirm aliʻi genealogy and chiefly authority. That use is real and important. But it is not the whole meaning of the chant. Its deeper function is broader: preserving a worldview in which creation is genealogical, life is interconnected, and humans emerge within the same relational system as coral, ocean, plants, animals, stars, land, and sky.</p>
+  <p>This makes the Kumulipo a living body of ancestral knowledge, not a narrow political text. It preserves layered insight into origins, ecological relationships, continuity of life, and humanity's place within creation.</p>
 </section>
 
 <section class="kumu-section kumu-reveal">
-  <h4>Kumulipo Wā Study Pages</h4>
-  <p class="kumu-section__intro">Each wā now has its own dedicated lesson page with specific cultural framing, emergence focus, careful modern dialogue, and present-day relevance. Use this as the guided pathway instead of a single compressed timeline.</p>
+  <h4>Four Living Parallels</h4>
+  <p>Hawaiian ancestors embedded deep structural wisdom in the Kumulipo. Modern learners can recognize resonances with contemporary frameworks — as long as the comparison clarifies Hawaiian meaning rather than flattening it into another system's vocabulary.</p>
+  <callout type="bridge">Use these as orientation aids, not replacements. The Kumulipo is not "evolution" or "systems theory" in disguise. It is a distinct ancestral knowledge system that holds structural parallels worth noticing with humility.</callout>
+  <div class="kumu-parallel-grid">
+    <article class="kumu-parallel-card">
+      <h5>Ecology</h5>
+      <p>Coral, sea life, plants, animals, land, and people are connected relations within one genealogical system — not isolated species in separate categories. The chant maps living systems through kinship, not taxonomy.</p>
+    </article>
+    <article class="kumu-parallel-card">
+      <h5>Genealogy as Structure</h5>
+      <p>Moʻokūʻauhau — genealogy — is not just lineage record. Human identity emerges inside ancestral and ecological continuity. You belong to creation, not above it. This reorders how identity, land, and responsibility connect.</p>
+    </article>
+    <article class="kumu-parallel-card">
+      <h5>Emergence</h5>
+      <p>Life appears through ordered, relational phases — not instant completion. Each wā establishes conditions for what follows. Creation is process, not event. Order unfolds from depth, not from nothing.</p>
+    </article>
+    <article class="kumu-parallel-card">
+      <h5>Kuleana</h5>
+      <p>Knowledge is never neutral in the Kumulipo. To know creation is to inherit obligation toward balance, stewardship, and right relationship. Wisdom always becomes kuleana — responsibility that must be lived, not just understood.</p>
+    </article>
+  </div>
+</section>
+
+<section class="kumu-section kumu-reveal">
+  <h4>Cross-Cultural Resonance</h4>
+  <p>The Kumulipo can be placed in respectful dialogue with other knowledge systems without collapsing difference. In Kemet thought, Nun names primordial waters before ordered creation. In the Kumulipo, pō and marine emergence hold a related structural role. The resonance is not identity — it is a shared insight that order emerges from primordial depth through distinct ancestral languages and protocols.</p>
+  <twocol left="Wā 1 in Kumulipo" right="Resonance in Kemet">Pō is generative darkness; koʻa marks foundational life; creation unfolds through genealogy and relation.||Nun is primordial depth before ordered form; creation emerges through named principles and cosmic ordering.</twocol>
+</section>
+
+<!-- CV_CREATION_ARC -->
+
+<section class="kumu-section kumu-reveal kumu-section--final">
+  <h4>Why the Kumulipo Matters Today</h4>
+  <p>The Kumulipo is not a simple origin story. It is a living knowledge system that speaks directly to modern questions about identity, ecology, sustainability, ancestry, consciousness, and responsibility. It teaches that creation is relational, life unfolds through genealogy, and knowledge carries kuleana.</p>
+  <p>Humans are part of nature, not above it. Relationship precedes hierarchy. Wisdom must become stewardship. These are not abstract principles — they are the interpretive key that opens everything in Kānaka Maoli cultural learning.</p>
+</section>
+
+<section class="kumu-section kumu-reveal">
+  <h4>Continue the Journey — The 16 Wā</h4>
+  <p class="kumu-section__intro">Each wā has its own dedicated lesson page with specific cultural framing, emergence focus, and modern dialogue. Follow this pathway after reading KM·01.</p>
   <ul>
     <li><a href="#km-wa-01">Wā 1 — Wā o ke Koʻa: Pō, Coral, and Foundational Marine Emergence</a></li>
     <li><a href="#km-wa-02">Wā 2 — Wā o nā Iʻa: The Great Fish Genealogy</a></li>
@@ -1336,25 +1314,9 @@ const CULTURALVERSE_DATA = {
     <li><a href="#km-wa-13">Wā 13 — Wā o ka Hānau Moʻokūʻauhau: Human Genealogical Emergence</a></li>
     <li><a href="#km-wa-14">Wā 14 — Wā o ka Hoʻonui Hanauna: Expansion of Descendant Lines</a></li>
     <li><a href="#km-wa-15">Wā 15 — Wā o ke Kauoha a me ke Kuleana: Charge and Responsibility</a></li>
-    <li><a href="#km-wa-16">Wā 16 — Wā o ke Ao Kanaka: Human Realm in Light</a></li>
+    <li><a href="#km-wa-16">Wā 16 — Wā o ke Ao Kānaka: Human Realm in Light</a></li>
   </ul>
-  <callout type="bridge">Replacement learning flow: (1) Read KM·01 as cosmological framing, (2) move through each dedicated Wā page, (3) return to KM·01 final section to integrate the whole sequence.</callout>
-</section>
-
-<section class="kumu-section kumu-reveal">
-  <h4>Wā 1 and Cross-Cultural Resonance</h4>
-  <p>Wā 1 can be placed in respectful dialogue with other knowledge systems without collapsing difference. In Kemet thought, Nun names primordial waters before ordered creation. In the Kumulipo, pō and marine emergence hold a related structural role. The resonance is not identity. It is a shared insight that order emerges from primordial depth through distinct ancestral languages and protocols.</p>
-  <twocol left="Wā 1 in Kumulipo" right="Resonance in Kemet">Pō is generative darkness; koʻa marks foundational life; creation unfolds through genealogy and relation.||Nun is primordial depth before ordered form; creation emerges through named principles and cosmic ordering.</twocol>
-</section>
-
-<section class="kumu-section kumu-reveal">
-  <h4>What Replaces the Timeline and Activity Blocks</h4>
-  <p>Instead of one interactive timeline and broad teacher activity stack, this lesson now serves as the orientation gateway. Detailed learning happens in dedicated Wā pages, each focused on a single stage with more depth and less repetition.</p>
-  <ul>
-    <li><strong>Wā-specific pages:</strong> one page per wā with targeted interpretation and modern dialogue.</li>
-    <li><strong>Comparative lens notes:</strong> focused comparison statements kept careful and non-reductive.</li>
-    <li><strong>Reflection studio:</strong> short reflective prompts at the end of each wā page rather than one large activity block.</li>
-  </ul>
+  <callout type="bridge">Suggested path: (1) Read KM·01 as cosmological orientation → (2) Move through each dedicated Wā page → (3) Return to KM·01 to integrate the whole sequence.</callout>
 </section>
 
 <reflect title="Reflection Prompts">
@@ -1362,13 +1324,6 @@ How does understanding darkness as generative change your view of beginnings?
 Where do you see relational thinking in your own community, ecology, or family history?
 What does kuleana look like when humans are understood as part of creation rather than above it?
 </reflect>
-
-<section class="kumu-section kumu-reveal kumu-section--final">
-  <h4>Why the Kumulipo Matters Today</h4>
-  <p>The Kumulipo is not a simple origin story. It is a living knowledge system that speaks directly to modern questions about identity, ecology, sustainability, ancestry, consciousness, and responsibility. It teaches that creation is relational, life unfolds through genealogy, and knowledge carries kuleana.</p>
-  <p>For Culturalverse and Ikeverse, the Kumulipo is both introduction and return point. Wā 1 opens the learning journey, and at the end of study it becomes the interpretive key again: humans are part of nature, not above it; relationship precedes hierarchy; and wisdom must become stewardship.</p>
-  <callout>This does not reduce the Kumulipo to science. It reveals the layered intelligence of Kanaka Maoli ancestral knowledge and its continuing relevance for the present and future.</callout>
-</section>
 `
             },
             {
@@ -1378,6 +1333,8 @@ What does kuleana look like when humans are understood as part of creation rathe
               readTime: '8 min',
               content: `
 <p class="lead">Beyond the Kumulipo's cosmic genealogy, the creation narrative of <strong>Wākea</strong> (sky father) and <strong>Papahānaumoku</strong> (earth mother) provides the deepest spiritual framework for the Hawaiian relationship to land, family, and food. This is the story that makes kalo the elder sibling of all human beings.</p>
+
+<facts>Wākea::Sky Father — Wide Expanse|Papahānaumoku::She Who Births Islands|Hāloa::Elder Sibling — Sacred Kalo|Aloha ʻĀina::Love of Land as Genealogical Obligation</facts>
 
 <h4>The Names Themselves</h4>
 <p><strong>Wākea</strong> means "wide expanse" — the sky, infinite space, the masculine expansive principle. <strong>Papahānaumoku</strong> means "she who gives birth to islands" — Papa (flat foundation, earth) + hānau (to give birth) + moku (island). The earth mother is literally defined by her generative act: birthing the islands of Hawaiʻi.</p>
@@ -1390,6 +1347,12 @@ What does kuleana look like when humans are understood as part of creation rathe
 
 <h4>The Islands as Family</h4>
 <p>The islands themselves are children of Papahānaumoku and Wākea — born in sequence, each with its own name and personality. Hawaiʻi (the Big Island) is the eldest, then Maui, Kahoʻolawe, Lānaʻi, Molokaʻi, Oʻahu, Kauaʻi, Niʻihau. Each island is not a place — it is a being, a family member, an ancestor. <strong>Aloha ʻāina</strong> — love of the land — is not a sentiment. It is the natural expression of knowing that the land is your relative.</p>
+
+<reflect>
+How does kalo being your elder sibling change the meaning of food, farming, and wasting food?
+What does aloha ʻāina demand in practice when the land is literally your ancestor?
+How does the Wākea-Papahānaumoku story reframe the relationship between identity, land, and belonging?
+</reflect>
 `
             },
           ]
@@ -2004,6 +1967,12 @@ What does kuleana look like when humans are understood as part of creation rathe
 </ul>
 
 <callout>Kilokilo Hōkū — "star gazing" — was a sacred science. The navigator held not just technical knowledge but spiritual responsibility: every life on the canoe depended on their clarity of mind and their relationship with the stars, wind, and ocean. Navigation was a practice of alignment — with the natural world and with oneself.</callout>
+
+<reflect>
+What does it mean to navigate by relationship with the natural world rather than by instrument?
+How does memorizing 150 stars as reliable friends change the navigator's understanding of the night sky?
+Where in your own life could sustained observation of natural patterns serve as orientation?
+</reflect>
 `
             },
             {
@@ -2026,6 +1995,12 @@ What does kuleana look like when humans are understood as part of creation rathe
 
 <h4>What Hōkūleʻa Proved</h4>
 <p>Hōkūleʻa's voyages answered definitively: Did Polynesian people intentionally navigate and settle the Pacific, or did they drift there by accident? They navigated. Every island in Polynesia — from Aotearoa to Rapa Nui to Hawaiʻi — was found, settled, and connected by intentional, skilled, deeply scientific ocean navigation. It was not luck. It was genius.</p>
+
+<reflect>
+How does proving intentional Pacific navigation change the historical narrative about Polynesian peoples?
+What does the Hōkūleʻa revival suggest about what else might be reclaimed when a culture reconnects with suppressed knowledge?
+What forms of knowledge in your own community might need a similar act of revival?
+</reflect>
 `
             }
           ]
@@ -2061,6 +2036,12 @@ What does kuleana look like when humans are understood as part of creation rathe
 </ul>
 
 <callout>The ahupuaʻa sustained a Hawaiian population estimated at 300,000 to 1,000,000 people — entirely from island resources, without external trade — for over 1,000 years. No landfill. No watershed pollution. Complete circularity of nutrients from mountain to sea and back. Modern ecological sustainability science is still catching up to what Hawaiian communities understood a millennium ago.</callout>
+
+<reflect>
+How does the mountain-to-sea design of the ahupuaʻa reflect an understanding of ecology that modern land management often lacks?
+What does resource sovereignty look like when each community has built-in access to every ecological zone it needs?
+If you were designing a sustainable community land system today, what elements of the ahupuaʻa would you want to preserve?
+</reflect>
 `
             },
             {
@@ -2082,6 +2063,12 @@ What does kuleana look like when humans are understood as part of creation rathe
 <p>The loko kuapā (walled coastal fishpond) uses a mākāhā — a sluice gate built into the stone wall, sized so that juvenile fish can swim through the openings into the pond, feeding on the abundant algae inside. As the fish grow, they become too large to pass back through the gate. They are effectively self-harvesting. The fishpond ecosystem is self-sustaining.</p>
 
 <callout>The loʻi kalo and loko iʻa together embodied the principle of mālama ʻāina — caring for the land. Not as a philosophical abstraction, but as daily practice: you maintain the ʻauwai channels, you observe the mākāhā, you harvest sustainably, you return nutrients to the system. The land and sea care for you only as long as you care for them.</callout>
+
+<reflect>
+How does tending the loʻi kalo as an act of caring for your elder sibling change the meaning of agricultural labor?
+What does the mākāhā's self-regulating design teach about the difference between extraction and managed reciprocity?
+Where in contemporary life do you see systems that operate on continuous flow and return rather than take-and-discard?
+</reflect>
 `
             }
           ]
@@ -2111,6 +2098,12 @@ What does kuleana look like when humans are understood as part of creation rathe
 <p>After the illegal overthrow of the Hawaiian Kingdom in 1893, and annexation by the United States in 1898, ʻōlelo Hawaiʻi was banned from schools in 1896. Children were punished for speaking Hawaiian at school. By 1981, fewer than 50 children spoke Hawaiian as their first language. A language that had carried 2,102 lines of the Kumulipo, generations of genealogy, and an entire ecological knowledge system was nearly gone within three generations.</p>
 
 <callout type="gold">In 1983, a group of Hawaiian educators and families created the first Hawaiian language immersion preschool — Pūnana Leo (Language Nest). Today, there are over 20 Pūnana Leo schools and a full Hawaiian-medium school system from preschool through university. An estimated 18,000–20,000 people now speak Hawaiian with varying fluency. The language is not just surviving — it is being transmitted to a new generation of children for whom Hawaiian is their first language.</callout>
+
+<reflect>
+Why did colonizers specifically target ʻōlelo Hawaiʻi — what did they understand about language that their suppression policy reveals?
+What is contained inside a language that cannot be fully translated into another, and what does that mean for cultural loss?
+How does the fact that every Hawaiian place name carries ecological and historical meaning change how you understand the relationship between language and land?
+</reflect>
 `
             },
             {
@@ -2129,6 +2122,12 @@ What does kuleana look like when humans are understood as part of creation rathe
 <p>The hālau hula (hula school) is a sacred institution. The relationship between <strong>kumu hula</strong> (teacher, literally "source of hula") and <strong>haumāna</strong> (student) is not merely educational — it is genealogical and spiritual. The kumu transmits not just technique but the akua (spiritual essence) of the tradition.</p>
 
 <callout>When missionaries banned hula in the 1820s, calling it "licentious and heathen," they understood something important about it — they just understood it wrong. Hula was dangerous to colonialism precisely because it was the primary vehicle for transmitting Hawaiian identity, history, and values. The fact that hula survived, was revived in the Hawaiian Renaissance of the 1970s, and now thrives worldwide is one of the most powerful acts of cultural preservation in human history.</callout>
+
+<reflect>
+If hula is a technology for knowledge transmission, what does that imply about the body as a medium of cultural memory?
+Why would colonizers target hula specifically — what does its suppression reveal about the relationship between artistic practice and power?
+How does understanding art as a knowledge system change the way you value or practice any creative form in your own life?
+</reflect>
 `
             }
           ]
@@ -2218,6 +2217,12 @@ What does kuleana look like when humans are understood as part of creation rathe
 <p>The Hawaiian cultural renaissance of the 1970s brought renewed attention to laʻau lapaʻau. Efforts to document, preserve, and revive traditional healing knowledge have been led by organizations including <strong>Papa Ola Lōkahi</strong> (the Native Hawaiian Health Care consortium), the University of Hawaiʻi's ethnobotany and Hawaiian Studies programs, and individual kahuna who maintained the tradition through generations of suppression.</p>
 
 <callout>Laʻau lapaʻau reveals a principle at the heart of Kānaka Maoli knowledge: that the land — the <em>ʻāina</em> — provides everything needed for human health and flourishing. The plants are not resources to be extracted but relatives to be respected. The healer is not separate from the land but its student and steward. This is not a metaphor. It is the operating system of an entire civilization.</callout>
+
+<reflect>
+How does the integration of pule, protocol, and botanical knowledge in laʻau lapaʻau challenge modern distinctions between medicine and spirituality?
+What is the significance of a healing tradition that requires the healer to maintain personal purity and balance as a prerequisite for effective treatment?
+How might healthcare change if it operated from the premise that illness is often a symptom of disrupted relationship — with family, land, or the divine?
+</reflect>
 `
             }
           ]
@@ -2315,6 +2320,12 @@ What changes when creation is read as responsibility rather than only origin?
 </ol>
 
 <callout type="bridge">Similarity note: Nun and Pō both teach that darkness/depth is generative rather than empty. But Nun is Kemetic primordial water and cosmic precondition; Pō is Kanaka Maoli generative night carried through genealogical chant. The resonance is real, but the traditions remain distinct.</callout>
+
+<reflect>
+How does treating darkness as full potential rather than empty void change how you understand beginnings — personal, creative, or cosmological?
+Where else do you see the principle that conditions for creation can be present and active before anything visible has formed?
+What does Nun's continued presence at the margins of the created world suggest about the relationship between origin and ongoing existence?
+</reflect>
 `
             },
             {
@@ -2345,6 +2356,12 @@ What changes when creation is read as responsibility rather than only origin?
 </ul>
 
 <callout>Notice the deep architecture: creation begins in darkness and water (Nun), a self-conscious principle arises (Atum), everything unfolds through paired complementary forces, and the final stage brings human experience — love, death, chaos, magic, and resurrection — into the cosmic order. This is not mythology. It is a complete cosmological model.</callout>
+
+<reflect>
+How does the Ennead's paired structure — air and moisture, earth and sky — model a fundamentally relational understanding of creation rather than a solo creator?
+What does it mean that love, death, chaos, and restoration are built into the cosmic order from its earliest stages, not added later as human problems?
+How does this Heliopolitan sequence compare with other creation traditions you have encountered — what is shared, what is distinctive?
+</reflect>
 `
             },
             {
@@ -2361,6 +2378,12 @@ What changes when creation is read as responsibility rather than only origin?
 <twocol left="Creation Through the Heart (Ib)" right="Creation Through the Tongue (Ns)">Ptah first conceived all things in his mind — the heart (ib) being understood as the seat of thought and intention in Kemetic anatomy. Every being, every principle, every aspect of creation was first a thought in the mind of Ptah. The universe begins as an idea. This is a radical philosophical position: consciousness precedes matter.||Ptah then spoke, and what he had conceived became real. The tongue is the instrument that bridges thought and existence — when Ptah named something, it came into being. The creative power of language is not metaphorical here; it is literal. Words are generative. This idea shaped Kemetic ritual, medicine, and law for 3,000 years.</twocol>
 
 <callout type="gold">The Shabaka Stone records: "The Ennead of Ptah is the teeth and lips... which pronounced the name of everything." Ptah's theology subsumes and transcends the Heliopolitan Ennead — rather than replacing it, it explains how Atum himself came to exist: through the creative thought and speech of a deeper principle. This is philosophical sophistication of the highest order.</callout>
+
+<reflect>
+What are the ethical implications of a philosophy where consciousness conceives reality before matter exists — where thought precedes and shapes the world?
+How does the creative power attributed to speech and naming change your understanding of the responsibility that comes with language?
+Where do you experience language as genuinely generative — actually creating or reshaping reality rather than simply describing it?
+</reflect>
 `
             }
           ]
@@ -2396,6 +2419,12 @@ What changes when creation is read as responsibility rather than only origin?
 <concepts>"I have not committed sin" · "I have not murdered" · "I have not told lies" · "I have not caused pain" · "I have not damaged the fields" · "I have not polluted the water" · "I have not spoken against the poor" · "I have not caused weeping" · "I have lived with truth"</concepts>
 
 <callout>Notice the scope: these declarations cover interpersonal ethics, environmental ethics, economic justice, and cosmic alignment in a single integrated framework. Harming another person and polluting a river were equally violations of Maʻat — because both disrupted the divine order. This is the most integrated ethical system in ancient history.</callout>
+
+<reflect>
+The 42 Declarations treat harm to persons, animals, water, and community as equally serious violations of cosmic order. How does this integrated ethics compare with modern legal frameworks that separate environmental law from human rights?
+If your heart were weighed by Maʻat today, which declarations would carry the most weight for you personally?
+How does understanding justice as maintenance of cosmic order — rather than just human agreement — change what justice demands?
+</reflect>
 `
             },
             {
@@ -2415,6 +2444,12 @@ What changes when creation is read as responsibility rather than only origin?
 </ul>
 
 <callout type="gold">The Maxims of Ptahhotep contain passages on leadership, humility, family life, and the treatment of others that are indistinguishable in sophistication and compassion from the best moral philosophy of any era. They were written approximately 4,400 years ago. The idea that sophisticated ethical thinking is a recent or Western achievement is a colonial fiction. Kemet was thinking about justice, humility, and the good life millennia before Athens.</callout>
+
+<reflect>
+What would political leadership look like today if rulers were evaluated first by their alignment with ethical principle rather than accumulation of power?
+How does the Maxim "consult the ignorant man as well as the wise" challenge modern hierarchies about whose knowledge deserves attention?
+What is the cost to a civilization when it forgets that governance exists to serve the principle of order, not the other way around?
+</reflect>
 `
             }
           ]
@@ -2445,6 +2480,12 @@ What changes when creation is read as responsibility rather than only origin?
 </ul>
 
 <callout>When Egypt was conquered and eventually lost control of its own narrative, hieroglyphics were forgotten. The last known hieroglyphic inscription was written in 394 CE. For 1,400 years, no one could read them. The Rosetta Stone — inscribed in 196 BCE in three scripts — was the key that unlocked 3,000 years of recorded human thought. Champollion's decipherment in 1822 was one of the greatest intellectual achievements of the 19th century. Kemet began speaking again.</callout>
+
+<reflect>
+What is lost when a civilization can no longer read its own writing — what aspects of continuity break beyond just the texts themselves?
+How does understanding hieroglyphics as "words of the gods" rather than utilitarian record-keeping change the spiritual stakes of writing?
+What does the 1,400 years of silence followed by redecipherment teach about the relationship between knowledge, power, and cultural survival?
+</reflect>
 `
             },
             {
@@ -2492,6 +2533,12 @@ What changes when creation is read as responsibility rather than only origin?
 <p>A common Western misreading of Kemetic medicine is to see it as split between "rational" (Edwin Smith type) and "magical" (Ebers type) treatments — as if these represented competing schools of thought. This is a projection of modern Western categories onto an entirely different worldview. For Kemetic physicians, prayer, herbs, surgery, and cosmic alignment were not competing approaches. They were different instruments in a single orchestra. The physical and spiritual dimensions of illness were not separate — they were expressions of a single disruption of Maʻat.</p>
 
 <callout type="gold">When Hippocrates — the "father of Western medicine" — visited Kemet, he was entering a medical tradition already thousands of years old. Greek medicine did not invent rational, empirical healing. It inherited and repackaged a tradition with deep African roots. Knowing this changes everything about how we understand the history of medicine.</callout>
+
+<reflect>
+How does the integrated Kemetic model — where physical, spiritual, and cosmic alignment are inseparable components of health — challenge modern medicine's division of symptom from context?
+What does it mean that Hippocrates was learning from a tradition already thousands of years old when he is called the "father" of Western medicine?
+How might healthcare be transformed if practitioners were evaluated not only on technical skill but on personal balance and right relationship with patients?
+</reflect>
 `
             }
           ]
@@ -2533,6 +2580,12 @@ What changes when creation is read as responsibility rather than only origin?
 <p>The pattern is striking: creation begins not with a command from above, but from below — from depth, darkness, water, and heat. Both traditions reject the idea that darkness is evil or empty. Darkness is the womb. Darkness is where life begins. The light emerges from the dark; it does not conquer it.</p>
 
 <callout type="bridge">Modern cosmology tells us the universe began in conditions of extreme heat and density, before light could travel freely — a dark, hot, undifferentiated state. The Kumulipo's "earth became hot" and Nun's primordial waters are not scientific statements in the modern sense, but they preserve a profound intuition: reality emerges from a dark, dense, generative beginning. Ancient cosmology and modern cosmology are asking the same question with different instruments.</callout>
+
+<reflect>
+Why might the insight that creation begins in generative darkness appear independently in cultures separated by thousands of miles and thousands of years?
+How does reframing darkness as full potential rather than empty absence change the way you relate to uncertainty, unknowing, or difficult beginnings?
+What does it mean for wisdom traditions and modern cosmology to be asking the same fundamental question with different instruments?
+</reflect>
 `
             },
             {
@@ -2562,6 +2615,12 @@ What changes when creation is read as responsibility rather than only origin?
 </div>
 
 <callout type="bridge"><strong>The Pattern:</strong> Both cultures understood that personal integrity, ecological responsibility, and cosmic alignment are not separate concerns — they are one. If you damage the land, you damage the cosmic order. If you lie, you damage the cosmic order. Aloha and Maʻat are the same principle wearing different names — and both traditions made that principle the ethical foundation of an entire civilization. This is not a coincidence. It is what civilizations look like when they are built from wisdom rather than conquest.</callout>
+
+<reflect>
+What does it mean that two civilizations separated by thousands of miles independently placed the same integrating principle at the center of everything they built?
+How does understanding personal integrity, ecological care, and cosmic alignment as one single concern change how you approach daily decisions?
+Where in your own life can you see Aloha or Maʻat as active — not as historical concepts, but as living demands?
+</reflect>
 `
             },
             {
@@ -2608,7 +2667,14 @@ What changes when creation is read as responsibility rather than only origin?
 <li><strong>Purpose:</strong> The Kumulipo connects living humans to cosmic origin — it is genealogical, relational, sacred. Evolution (in its scientific form) describes mechanism without inherent purpose. These answer different questions.</li>
 </ul>
 
-<callout type=\"bridge\"><strong>The point is not equivalence, but resonance.</strong> When a Hawaiian elder and a modern cosmologist stand together and ask \"How did the universe come to contain life, consciousness, complexity?\" they are asking the same fundamental question. They have observed the same pattern — that the universe unfolds from simple to complex, from potential to form. They have structured their knowledge differently, for different purposes, using different tools. But the underlying pattern is recognizable in both. This is what the bridge does: it reveals structural resonance without collapsing distinct knowledge systems into false equivalence.</callout>\n`
+<callout type=\"bridge\"><strong>The point is not equivalence, but resonance.</strong> When a Hawaiian elder and a modern cosmologist stand together and ask \"How did the universe come to contain life, consciousness, complexity?\" they are asking the same fundamental question. They have observed the same pattern — that the universe unfolds from simple to complex, from potential to form. They have structured their knowledge differently, for different purposes, using different tools. But the underlying pattern is recognizable in both. This is what the bridge does: it reveals structural resonance without collapsing distinct knowledge systems into false equivalence.</callout>
+
+<reflect>
+How does treating the Kumulipo as a distinct ancestral knowledge system — rather than an imperfect version of evolutionary biology — actually deepen what both traditions can offer?
+What is the difference between structural resonance and equivalence, and why does honoring that distinction matter?
+Where in your own experience have you encountered emergence — genuinely new properties arising from the interaction of simpler elements that could not have been predicted alone?
+</reflect>
+`
             }
           ]
         }
@@ -2669,21 +2735,21 @@ How can oral knowledge be honored without turning it into spectacle?
               num:      'DG·01',
               title:    'The Sirius Triplet — The Hidden Companion Star',
               readTime: '11 min',
-              content: `\n<p class=\"lead\">The Dogon peoples of Mali preserve sophisticated sky knowledge through oral tradition, ritual, architecture, agriculture, and initiation. Central to the famous Griaule/Dieterlen account is <strong>Sirius</strong> and a hidden companion called <em>Po Tolo</em>. This material is powerful, but it must be handled with care because later scholarship debates how ancient, widespread, and uncontaminated the Sirius claims are.</p>\n\n<callout>Historical astronomy confirms that Sirius has a white dwarf companion, Sirius B: Friedrich Wilhelm Bessel inferred an unseen companion in 1844, and Alvan Clark observed it in 1862. Griaule and Dieterlen later reported Dogon knowledge of a hidden Sirius companion. Walter van Beek and others questioned parts of that report. The right lesson posture is respect plus caution, not sensational certainty.</callout>\n\n<h4>Po Tolo & Cosmic Order</h4>\n<p>Within the reported Dogon cosmological system, Po Tolo is more than an astronomical object. Po is small, dense, hidden, seed-like, and difficult to perceive directly. This makes it a teaching about hidden structure: reality contains forces known by pattern, effect, rhythm, and initiation, not only by immediate visibility.</p>\n\n<h4>The Nommo — Waters of Creation</h4>\n<p>The Dogon cosmology centers on the <strong>Nommo</strong> — beings/principles linked with water, speech, life, moisture, sacrifice, and restoration. The universe is not merely an object to observe; it is a living order that must be instructed, repaired, and spoken rightly. This resonates with Kemetic Nun and Kanaka Maoli Pō as generative depth, while remaining its own West African tradition.</p>\n`
+              content: `\n<p class=\"lead\">The Dogon peoples of Mali preserve sophisticated sky knowledge through oral tradition, ritual, architecture, agriculture, and initiation. Central to the famous Griaule/Dieterlen account is <strong>Sirius</strong> and a hidden companion called <em>Po Tolo</em>. This material is powerful, but it must be handled with care because later scholarship debates how ancient, widespread, and uncontaminated the Sirius claims are.</p>\n\n<callout>Historical astronomy confirms that Sirius has a white dwarf companion, Sirius B: Friedrich Wilhelm Bessel inferred an unseen companion in 1844, and Alvan Clark observed it in 1862. Griaule and Dieterlen later reported Dogon knowledge of a hidden Sirius companion. Walter van Beek and others questioned parts of that report. The right lesson posture is respect plus caution, not sensational certainty.</callout>\n\n<h4>Po Tolo & Cosmic Order</h4>\n<p>Within the reported Dogon cosmological system, Po Tolo is more than an astronomical object. Po is small, dense, hidden, seed-like, and difficult to perceive directly. This makes it a teaching about hidden structure: reality contains forces known by pattern, effect, rhythm, and initiation, not only by immediate visibility.</p>\n\n<h4>The Nommo — Waters of Creation</h4>\n<p>The Dogon cosmology centers on the <strong>Nommo</strong> — beings/principles linked with water, speech, life, moisture, sacrifice, and restoration. The universe is not merely an object to observe; it is a living order that must be instructed, repaired, and spoken rightly. This resonates with Kemetic Nun and Kanaka Maoli Pō as generative depth, while remaining its own West African tradition.</p>\n\n<reflect>\nHow does the concept of Po Tolo as hidden, dense, and perceivable only by pattern — not by direct sight — serve as a teaching about the structure of knowledge itself?\nHow should learners hold the Sirius material with respect and care without overclaiming or sensationalizing?\nWhat does the Nommo's role in teaching, repairing, and rightly speaking suggest about the obligations of knowledge transmission?\n</reflect>\n`
             },
             {
               id:       'dg-ammas-world',
               num:      'DG·02',
               title:    'Amma & the Creation of the World — The Cosmic Egg',
               readTime: '10 min',
-              content: `\n<p class=\"lead\">Central to Dogon cosmology is <strong>Amma</strong> — the creator principle, the cosmic consciousness, the source of all being. In the beginning, Amma existed alone in an infinite void. From Amma emerged all creation, not through external command, but through internal unfoldment — like a cosmic egg that gestates, differentiates, and births worlds.</p>\n\n<h4>The Four Placenta — Sacred Geometry</h4>\n<p>The Dogon spoke of creation in terms of sacred geometry — the spiral, the circle, the cross. These are not arbitrary symbols. They encode actual principles of how the cosmos organizes: from the spiral of galaxies to the circular orbits of planets to the four-fold organization of space and time. The Dogon understanding that reality is fundamentally mathematical and geometric — expressed long before modern physics revealed that all of nature operates according to mathematical principles.</p>\n\n<callout type=\"bridge\">Modern physics describes the universe as emerging from quantum fields — mathematical potentials that become actual through interaction and observation. The Dogon intuition that creation unfolds from a cosmic principle (Amma) through sacred geometric patterns parallels modern theoretical physics in striking ways: reality at its foundation is mathematical and organizational, not material and simple.</callout>\n`
+              content: `\n<p class=\"lead\">Central to Dogon cosmology is <strong>Amma</strong> — the creator principle, the cosmic consciousness, the source of all being. In the beginning, Amma existed alone in an infinite void. From Amma emerged all creation, not through external command, but through internal unfoldment — like a cosmic egg that gestates, differentiates, and births worlds.</p>\n\n<h4>The Four Placenta — Sacred Geometry</h4>\n<p>The Dogon spoke of creation in terms of sacred geometry — the spiral, the circle, the cross. These are not arbitrary symbols. They encode actual principles of how the cosmos organizes: from the spiral of galaxies to the circular orbits of planets to the four-fold organization of space and time. The Dogon understanding that reality is fundamentally mathematical and geometric — expressed long before modern physics revealed that all of nature operates according to mathematical principles.</p>\n\n<callout type=\"bridge\">Modern physics describes the universe as emerging from quantum fields — mathematical potentials that become actual through interaction and observation. The Dogon intuition that creation unfolds from a cosmic principle (Amma) through sacred geometric patterns parallels modern theoretical physics in striking ways: reality at its foundation is mathematical and organizational, not material and simple.</callout>\n\n<reflect>\nWhat does it mean to say that creation is fundamentally architectural — that the cosmos begins as hidden structure before it unfolds?\nHow should learners hold the bridge between Dogon sacred geometry and modern physics without allowing one to subsume the other?\nWhere in your own experience does pattern recognition become the beginning of real knowledge?\n</reflect>\n`
             },
             {
               id:       'dg-syncretism',
               num:      'DG·03',
               title:    'Knowledge Keepers & Transmission — Dogon Wisdom in the World',
               readTime: '9 min',
-              content: `\n<p class=\"lead\">The Dogon maintained their astronomical knowledge through oral transmission, ritual, and sacred societies. Initiated knowledge keepers passed understanding to initiates through symbolic instruction and direct observation. This method preserved knowledge across generations without written text — a sophistication that modern scholarship is only beginning to appreciate.</p>\n\n<h4>The Challenge of Transmission</h4>\n<p>When Western scholars first encountered Dogon astronomical knowledge in the 1940s, they faced a crisis of credibility: How could non-literate peoples have such precise astronomical knowledge? This question reveals the bias embedded in Western assumptions — that knowledge requires written language, that oral transmission is less reliable, that \"primitive\" peoples could not possess sophisticated science.</p>\n<p>In fact, oral transmission creates precision through a different mechanism: ritual repetition, mnemonic poetry, direct observation, and corrective feedback from the community of knowledge keepers. This is not less reliable than writing — it is reliably different, optimized for different purposes.</p>\n\n<callout>The Dogon case teaches us to question our assumptions about what kinds of peoples can develop sophisticated knowledge, what forms that knowledge takes, and how it is preserved and transmitted. The universe does not require a university to reveal its patterns. A careful observer, a good memory, a community committed to precision, and centuries of unbroken transmission can preserve and refine knowledge as well as any written tradition.</callout>\n`
+              content: `\n<p class=\"lead\">The Dogon maintained their astronomical knowledge through oral transmission, ritual, and sacred societies. Initiated knowledge keepers passed understanding to initiates through symbolic instruction and direct observation. This method preserved knowledge across generations without written text — a sophistication that modern scholarship is only beginning to appreciate.</p>\n\n<h4>The Challenge of Transmission</h4>\n<p>When Western scholars first encountered Dogon astronomical knowledge in the 1940s, they faced a crisis of credibility: How could non-literate peoples have such precise astronomical knowledge? This question reveals the bias embedded in Western assumptions — that knowledge requires written language, that oral transmission is less reliable, that \"primitive\" peoples could not possess sophisticated science.</p>\n<p>In fact, oral transmission creates precision through a different mechanism: ritual repetition, mnemonic poetry, direct observation, and corrective feedback from the community of knowledge keepers. This is not less reliable than writing — it is reliably different, optimized for different purposes.</p>\n\n<callout>The Dogon case teaches us to question our assumptions about what kinds of peoples can develop sophisticated knowledge, what forms that knowledge takes, and how it is preserved and transmitted. The universe does not require a university to reveal its patterns. A careful observer, a good memory, a community committed to precision, and centuries of unbroken transmission can preserve and refine knowledge as well as any written tradition.</callout>\n\n<reflect>\nWhat does the Dogon case reveal about Western assumptions that equate literacy with intelligence or sophistication?\nHow does oral precision differ from written precision — what might each method preserve or transmit better than the other?\nWhat does it mean that the universe does not require a university to reveal its patterns?\n</reflect>\n`
             }
           ]
         }
@@ -2713,21 +2779,21 @@ How can oral knowledge be honored without turning it into spectacle?
               num:      'VD·01',
               title:    'The Nasadiya Sukta — \"Not Then Was\"',
               readTime: '12 min',
-              content: `\n<p class=\"lead\">The Nasadiya Sukta (Rigveda 10.129) is one of the most philosophically sophisticated creation hymns in any human tradition. Its name comes from its opening: <strong>\"Na asit\"</strong> — \"Not then was.\" What does it mean to begin a creation story by describing what did NOT exist? This single choice reveals a radically different approach to cosmology.</p>\n\n<h4>Not Being & Pure Potential</h4>\n<p>The Nasadiya begins: <em>\"Not then was nor not-was; there was no sky nor the heavens beyond. What stirred? Where? And in whose protection? What was the water, the deep and mighty water?\"</em></p>\n<p>The Nasadiya does not posit a creator god who shapes pre-existing material. It begins in a state that is neither being nor non-being — what Hindu philosophy calls <strong>Brahman</strong>, the ultimate undifferentiated reality. From this state of pure potential, without external agent or command, the universe emerges through an inherent principle of manifestation.</p>\n\n<callout>Modern quantum cosmology describes something strikingly similar: the universe may have emerged not from \"nothing\" (which itself requires definition) but from a state of quantum potential — described mathematically but not physically manifest. The Nasadiya\'s \"not-being and being\" resonates with quantum superposition: a state that is neither definitively this nor that, until the act of emergence/observation collapses potential into actual.</callout>\n\n<h4>Emergence Without External Creator</h4>\n<p>The Nasadiya concludes: <em>\"Whence this creation hath arisen, perhaps it formed itself, or perhaps it did not. The one who looks down on it in the highest heaven, only he knows, or perhaps even he does not know.\"</em></p>\n<p>This is radical philosophical honesty: the text acknowledges uncertainty at the very heart of the cosmological question. It does not claim final knowledge. It describes a process of emergence that is fundamentally self-organizing and mysterious — not reducible to simple causation by external will.</p>\n`
+              content: `\n<p class=\"lead\">The Nasadiya Sukta (Rigveda 10.129) is one of the most philosophically sophisticated creation hymns in any human tradition. Its name comes from its opening: <strong>\"Na asit\"</strong> — \"Not then was.\" What does it mean to begin a creation story by describing what did NOT exist? This single choice reveals a radically different approach to cosmology.</p>\n\n<h4>Not Being & Pure Potential</h4>\n<p>The Nasadiya begins: <em>\"Not then was nor not-was; there was no sky nor the heavens beyond. What stirred? Where? And in whose protection? What was the water, the deep and mighty water?\"</em></p>\n<p>The Nasadiya does not posit a creator god who shapes pre-existing material. It begins in a state that is neither being nor non-being — what Hindu philosophy calls <strong>Brahman</strong>, the ultimate undifferentiated reality. From this state of pure potential, without external agent or command, the universe emerges through an inherent principle of manifestation.</p>\n\n<callout>Modern quantum cosmology describes something strikingly similar: the universe may have emerged not from \"nothing\" (which itself requires definition) but from a state of quantum potential — described mathematically but not physically manifest. The Nasadiya\'s \"not-being and being\" resonates with quantum superposition: a state that is neither definitively this nor that, until the act of emergence/observation collapses potential into actual.</callout>\n\n<h4>Emergence Without External Creator</h4>\n<p>The Nasadiya concludes: <em>\"Whence this creation hath arisen, perhaps it formed itself, or perhaps it did not. The one who looks down on it in the highest heaven, only he knows, or perhaps even he does not know.\"</em></p>\n<p>This is radical philosophical honesty: the text acknowledges uncertainty at the very heart of the cosmological question. It does not claim final knowledge. It describes a process of emergence that is fundamentally self-organizing and mysterious — not reducible to simple causation by external will.</p>\n\n<reflect>\nWhat is philosophically significant about a creation hymn that begins by describing what did NOT exist — and ends by admitting even the highest observer may not know the ultimate source?\nHow does the Nasadiya\'s state of neither being nor non-being compare with Nun, Pō, and Te Kore — and where must the comparison stop?\nWhat changes when a sacred text invites honest uncertainty rather than requiring the reader to claim certainty they do not have?\n</reflect>\n`
             },
             {
               id:       'vd-brahma-cycles',
               num:      'VD·02',
               title:    'Brahma Cycles — Time at Cosmic Scale',
               readTime: '11 min',
-              content: `\n<p class=\"lead\">Hindu cosmology structures time in cycles within cycles — a nested hierarchy of temporal organization. The smallest unit is the <strong>paramanu</strong> (smallest particle), and time scales up through increasingly vast cycles called <strong>yugas</strong> (ages) and <strong>kalpas</strong> (cosmic days).</p>\n\n<h4>The Four Yugas — Cosmic Ages</h4>\n<p>A full cosmic cycle consists of four yugas:</p>\n<ul>\n<li><strong>Satya Yuga</strong> — The Age of Truth. Dharma (cosmic order) is perfect. Humans live in harmony. Duration: 1,728,000 years.</li>\n<li><strong>Treta Yuga</strong> — The Age of Ritual. Dharma begins to decline. Humans must work. Duration: 1,296,000 years.</li>\n<li><strong>Dvapara Yuga</strong> — The Age of Doubt. Dharma erodes further. Conflict increases. Duration: 864,000 years.</li>\n<li><strong>Kali Yuga</strong> — The Age of Darkness/Conflict. Dharma nearly disappears. Humanity struggles. Duration: 432,000 years.</li>\n</ul>\n<p>One complete cycle of four yugas = 4,320,000 years = one <strong>Mahayuga</strong> (great age). One thousand Mahayugas = one Kalpa (cosmic day). One Brahman lifetime = 311 trillion years, then the universe collapses into chaos, and the cycle begins anew.</p>\n\n<callout type=\"bridge\">Modern cosmology describes the universe as approximately 13.8 billion years old, with a finite lifespan measured in trillions of years before heat death. The Hindu model posits a similar vastness and cyclical renewal. While the exact numbers differ, the structural intuition is the same: the universe is old beyond human comprehension, operates in grand cycles, and will eventually return to primal state before beginning again.</callout>\n\n<h4>Dharma — The Principle of Order</h4>\n<p>Crucial to this cosmology is the concept of <strong>Dharma</strong> — cosmic order, ethics, righteousness, the natural law that maintains the universe\'s function. As the universe ages through the yugas, Dharma naturally declines. This is not moralistic judgment — it is structural inevitability, like entropy. The cycle must complete itself; a new cycle must begin.</p>\n`
+              content: `\n<p class=\"lead\">Hindu cosmology structures time in cycles within cycles — a nested hierarchy of temporal organization. The smallest unit is the <strong>paramanu</strong> (smallest particle), and time scales up through increasingly vast cycles called <strong>yugas</strong> (ages) and <strong>kalpas</strong> (cosmic days).</p>\n\n<h4>The Four Yugas — Cosmic Ages</h4>\n<p>A full cosmic cycle consists of four yugas:</p>\n<ul>\n<li><strong>Satya Yuga</strong> — The Age of Truth. Dharma (cosmic order) is perfect. Humans live in harmony. Duration: 1,728,000 years.</li>\n<li><strong>Treta Yuga</strong> — The Age of Ritual. Dharma begins to decline. Humans must work. Duration: 1,296,000 years.</li>\n<li><strong>Dvapara Yuga</strong> — The Age of Doubt. Dharma erodes further. Conflict increases. Duration: 864,000 years.</li>\n<li><strong>Kali Yuga</strong> — The Age of Darkness/Conflict. Dharma nearly disappears. Humanity struggles. Duration: 432,000 years.</li>\n</ul>\n<p>One complete cycle of four yugas = 4,320,000 years = one <strong>Mahayuga</strong> (great age). One thousand Mahayugas = one Kalpa (cosmic day). One Brahman lifetime = 311 trillion years, then the universe collapses into chaos, and the cycle begins anew.</p>\n\n<callout type=\"bridge\">Modern cosmology describes the universe as approximately 13.8 billion years old, with a finite lifespan measured in trillions of years before heat death. The Hindu model posits a similar vastness and cyclical renewal. While the exact numbers differ, the structural intuition is the same: the universe is old beyond human comprehension, operates in grand cycles, and will eventually return to primal state before beginning again.</callout>\n\n<h4>Dharma — The Principle of Order</h4>\n<p>Crucial to this cosmology is the concept of <strong>Dharma</strong> — cosmic order, ethics, righteousness, the natural law that maintains the universe\'s function. As the universe ages through the yugas, Dharma naturally declines. This is not moralistic judgment — it is structural inevitability, like entropy. The cycle must complete itself; a new cycle must begin.</p>\n\n<reflect>\nHow does understanding time as vast, cyclical, and eventually self-renewing change your relationship with urgency, failure, or loss in daily life?\nWhat does the natural decline of Dharma through the yugas teach about the nature of order — that it requires active maintenance, not passive assumption?\nHow do Hindu cosmological timescales compare structurally with modern science\'s timeline for the universe — what does the convergence reveal?\n</reflect>\n`
             },
             {
               id:       'vd-vedic-astronomy',
               num:      'VD·03',
               title:    'Vedic Mathematics & Astronomy — Numbers of the Gods',
               readTime: '10 min',
-              content: `\n<p class=\"lead\">Ancient Indian civilization developed mathematics and astronomy of stunning sophistication. The Vedas contain astronomical data — observations of planetary motion, predictions of eclipses, descriptions of the structure of the cosmos in terms of mathematical relationships.</p>\n\n<h4>Decimal Mathematics & the Zero</h4>\n<p>Indian mathematicians developed the decimal system and the concept of <strong>zero</strong> as a number, not merely a placeholder. This innovation — which seems obvious now — was revolutionary. It enabled calculation at scales that were practically impossible with Roman or Greek numerals. The very concept of zero required philosophical sophistication: the recognition that non-being (zero) could be a mathematical entity with computational reality.</p>\n\n<callout>The term \"zero\" comes from the Sanskrit <em>sunya</em>, meaning \"empty\" or \"void.\" This carries philosophical weight: zero is not nothing in the sense of annihilation. It is the fertile emptiness — like the Brahman of the Nasadiya Sukta. From zero (potential), calculations unfold, structures emerge. The mathematics of the Vedas and the metaphysics of the Nasadiya teach the same lesson: potential is real, void is generative.</callout>\n\n<h4>Astronomical Precision</h4>\n<p>Vedic texts contain descriptions of planetary positions and motions with precision that matches modern observation. The Aryabhata, composed around 500 CE, describes the cosmos as heliocentric — the Sun at the center, planets orbiting. This description predates Copernicus by 1,000 years. Whether this was theoretical model or observational discovery remains debated — but the sophistication of Vedic astronomy is beyond question.</p>\n`
+              content: `\n<p class=\"lead\">Ancient Indian civilization developed mathematics and astronomy of stunning sophistication. The Vedas contain astronomical data — observations of planetary motion, predictions of eclipses, descriptions of the structure of the cosmos in terms of mathematical relationships.</p>\n\n<h4>Decimal Mathematics & the Zero</h4>\n<p>Indian mathematicians developed the decimal system and the concept of <strong>zero</strong> as a number, not merely a placeholder. This innovation — which seems obvious now — was revolutionary. It enabled calculation at scales that were practically impossible with Roman or Greek numerals. The very concept of zero required philosophical sophistication: the recognition that non-being (zero) could be a mathematical entity with computational reality.</p>\n\n<callout>The term \"zero\" comes from the Sanskrit <em>sunya</em>, meaning \"empty\" or \"void.\" This carries philosophical weight: zero is not nothing in the sense of annihilation. It is the fertile emptiness — like the Brahman of the Nasadiya Sukta. From zero (potential), calculations unfold, structures emerge. The mathematics of the Vedas and the metaphysics of the Nasadiya teach the same lesson: potential is real, void is generative.</callout>\n\n<h4>Astronomical Precision</h4>\n<p>Vedic texts contain descriptions of planetary positions and motions with precision that matches modern observation. The Aryabhata, composed around 500 CE, describes the cosmos as heliocentric — the Sun at the center, planets orbiting. This description predates Copernicus by 1,000 years. Whether this was theoretical model or observational discovery remains debated — but the sophistication of Vedic astronomy is beyond question.</p>\n\n<reflect>\nWhat does the zero — rooted in Sanskrit sunya, meaning fertile emptiness — reveal about the philosophical depth embedded in mathematical innovation?\nHow does placing Aryabhata\'s heliocentric model a thousand years before Copernicus change the conventional history of astronomical knowledge?\nWhere do you see mathematical precision and metaphysical insight arising from the same source in any tradition you have studied?\n</reflect>\n`
             }
           ]
         }
@@ -2757,21 +2823,21 @@ How can oral knowledge be honored without turning it into spectacle?
               num:      'DT·01',
               title:    'The Songlines — Stories That Are Maps',
               readTime: '13 min',
-              content: `\n<p class=\"lead\">Across the Australian continent, thousands of stories form a vast interconnected network called the <strong>Songlines</strong> or <strong>Dreaming Tracks</strong>. A Songline is not merely a story or a poem or a map. It is all of these simultaneously — a narrative that simultaneously describes the journey of ancestral beings, encodes the geography of the continent, preserves kinship relationships, teaches practical ecological knowledge, and connects the living present to the sacred time of the Dreaming.</p>\n\n<h4>The Dreaming — Eternal Creative Time</h4>\n<p>The Dreaming (or Dreamtime) is not a time in the past — it is not historical. Rather, it is a permanent dimension of reality, accessible through song, story, ceremony, and connection to Country. During the Dreaming, ancestral beings — Dreamings — traveled across the landscape, shaping the features we see today: mountains, rivers, rock formations. Their actions created relationships between places, between peoples, between humans and the land itself.</p>\n<p>The Songlines trace these ancestral journeys. To sing the Songline is to travel the path, to recall the story, to reconnect with the sacred power of the place, and to maintain the relationship between the human community and Country.</p>\n\n<callout>A single Songline might stretch thousands of kilometers across the continent, passing through the territories of dozens of different Aboriginal nations, each of whom maintain their own portion of the story, their own verses, their own relationship to the places the Songline traverses. The entire continent is covered by intersecting, overlapping Songlines, forming a vast poetic geography encoded in the bodies and voices of the people who live there.</callout>\n\n<h4>Knowledge Encoded in Story</h4>\n<p>Within the Songlines are encoded practical, actionable knowledge: the locations of water sources in the desert; which plants are edible and when to harvest them; animal migration patterns; seasonal indicators; the locations of sacred sites; the kinship relationships between groups; protocols for sharing land and resources. This knowledge is preserved not in written form, but in narrative structure — in the characters, their actions, the geographic features they created, the songs that describe them.</p>\n<p>To know the Songline is to possess a map, a history, a spiritual practice, and a set of ecological knowledge simultaneously. The distinction between \"story\" and \"information,\" between \"sacred\" and \"practical,\" between \"past\" and \"present,\" does not apply. These categories are creations of literate, separated from the land cultures. For Aboriginal peoples, knowledge and story, place and meaning, past and present are unified.</p>\n`
+              content: `\n<p class=\"lead\">Across the Australian continent, thousands of stories form a vast interconnected network called the <strong>Songlines</strong> or <strong>Dreaming Tracks</strong>. A Songline is not merely a story or a poem or a map. It is all of these simultaneously — a narrative that simultaneously describes the journey of ancestral beings, encodes the geography of the continent, preserves kinship relationships, teaches practical ecological knowledge, and connects the living present to the sacred time of the Dreaming.</p>\n\n<h4>The Dreaming — Eternal Creative Time</h4>\n<p>The Dreaming (or Dreamtime) is not a time in the past — it is not historical. Rather, it is a permanent dimension of reality, accessible through song, story, ceremony, and connection to Country. During the Dreaming, ancestral beings — Dreamings — traveled across the landscape, shaping the features we see today: mountains, rivers, rock formations. Their actions created relationships between places, between peoples, between humans and the land itself.</p>\n<p>The Songlines trace these ancestral journeys. To sing the Songline is to travel the path, to recall the story, to reconnect with the sacred power of the place, and to maintain the relationship between the human community and Country.</p>\n\n<callout>A single Songline might stretch thousands of kilometers across the continent, passing through the territories of dozens of different Aboriginal nations, each of whom maintain their own portion of the story, their own verses, their own relationship to the places the Songline traverses. The entire continent is covered by intersecting, overlapping Songlines, forming a vast poetic geography encoded in the bodies and voices of the people who live there.</callout>\n\n<h4>Knowledge Encoded in Story</h4>\n<p>Within the Songlines are encoded practical, actionable knowledge: the locations of water sources in the desert; which plants are edible and when to harvest them; animal migration patterns; seasonal indicators; the locations of sacred sites; the kinship relationships between groups; protocols for sharing land and resources. This knowledge is preserved not in written form, but in narrative structure — in the characters, their actions, the geographic features they created, the songs that describe them.</p>\n<p>To know the Songline is to possess a map, a history, a spiritual practice, and a set of ecological knowledge simultaneously. The distinction between \"story\" and \"information,\" between \"sacred\" and \"practical,\" between \"past\" and \"present,\" does not apply. These categories are creations of literate, separated from the land cultures. For Aboriginal peoples, knowledge and story, place and meaning, past and present are unified.</p>\n\n<reflect>\nWhat is lost when knowledge is separated from story, place, and the body — when information is extracted from the living context that made it meaningful?\nHow does the unity of history, map, spiritual practice, and ecological knowledge in the Songlines challenge the modern tendency to compartmentalize disciplines?\nWhat would it mean for your own community\'s knowledge to be encoded in the landscape itself — spoken through land rather than stored in archives?\n</reflect>\n`
             },
             {
               id:       'dt-celestial-navigation',
               num:      'DT·02',
               title:    'Stars & Navigation — The Celestial Songlines',
               readTime: '11 min',
-              content: `\n<p class=\"lead\">The Aboriginal peoples of Australia were sophisticated navigators who used the stars to orient themselves across vast distances of desert and ocean. The stars themselves form Songlines — narratives written in the night sky that tell stories and encode navigational information.</p>\n\n<h4>The Pleiades — Seven Sisters</h4>\n<p>One of the most widespread Songlines across Aboriginal Australia involves the Pleiades — known as the Seven Sisters (or Pleiadies, or Makara). The story of the Seven Sisters appears in hundreds of variations across different Aboriginal nations, but the core narrative is consistent: celestial beings, often represented as young women, whose movements and positions encode seasonal knowledge and navigation information.</p>\n\n<h4>Orion & the Southern Cross</h4>\n<p>Major constellations visible from Australia — including Orion and the Southern Cross — are incorporated into Songlines and navigation knowledge. The Southern Cross (Crux) particularly served as a reliable orientation marker: it circles Polaris Australis, nearly directly above the southern celestial pole. For navigators traveling across deserts or open ocean, knowing the position of the Southern Cross provided constant orientation.</p>\n\n<callout type=\"bridge\">Modern GPS satellites provide the same function today — orienting travelers across vast distances by reference to fixed celestial points. Aboriginal navigators achieved similar precision through direct observation and encoded knowledge rather than technological instrument. The principle is identical: know the positions of reliable celestial markers, use them to orient yourself across terrain where ground-based landmarks are unavailable or unreliable.</callout>\n\n<h4>Seasonal Astronomy</h4>\n<p>Aboriginal astronomers tracked not just locations of stars, but their rising and setting positions throughout the year — which shift as Earth\'s axis tilts through its yearly cycle. This created a celestial calendar: the rising of particular stars signaled particular seasons — times to prepare for migration of animals, times to harvest certain plants, times for ceremony. The night sky was a living calendar, constantly teaching those who knew how to read it.</p>\n`
+              content: `\n<p class=\"lead\">The Aboriginal peoples of Australia were sophisticated navigators who used the stars to orient themselves across vast distances of desert and ocean. The stars themselves form Songlines — narratives written in the night sky that tell stories and encode navigational information.</p>\n\n<h4>The Pleiades — Seven Sisters</h4>\n<p>One of the most widespread Songlines across Aboriginal Australia involves the Pleiades — known as the Seven Sisters (or Pleiadies, or Makara). The story of the Seven Sisters appears in hundreds of variations across different Aboriginal nations, but the core narrative is consistent: celestial beings, often represented as young women, whose movements and positions encode seasonal knowledge and navigation information.</p>\n\n<h4>Orion & the Southern Cross</h4>\n<p>Major constellations visible from Australia — including Orion and the Southern Cross — are incorporated into Songlines and navigation knowledge. The Southern Cross (Crux) particularly served as a reliable orientation marker: it circles Polaris Australis, nearly directly above the southern celestial pole. For navigators traveling across deserts or open ocean, knowing the position of the Southern Cross provided constant orientation.</p>\n\n<callout type=\"bridge\">Modern GPS satellites provide the same function today — orienting travelers across vast distances by reference to fixed celestial points. Aboriginal navigators achieved similar precision through direct observation and encoded knowledge rather than technological instrument. The principle is identical: know the positions of reliable celestial markers, use them to orient yourself across terrain where ground-based landmarks are unavailable or unreliable.</callout>\n\n<h4>Seasonal Astronomy</h4>\n<p>Aboriginal astronomers tracked not just locations of stars, but their rising and setting positions throughout the year — which shift as Earth\'s axis tilts through its yearly cycle. This created a celestial calendar: the rising of particular stars signaled particular seasons — times to prepare for migration of animals, times to harvest certain plants, times for ceremony. The night sky was a living calendar, constantly teaching those who knew how to read it.</p>\n\n<reflect>\nHow does Aboriginal celestial navigation challenge the assumption that sophisticated science requires modern technology?\nWhat does it mean to be truly fluent in the night sky — to read it as calendar, map, story, and seasonal guide simultaneously?\nHow does connecting star knowledge to the seasonal behavior of animals and plants create a more complete intelligence than any single scientific discipline alone?\n</reflect>\n`
             },
             {
               id:       'dt-country-consciousness',
               num:      'DT·03',
               title:    'Country as Living — Kinship & Custodianship',
               readTime: '10 min',
-              content: `\n<p class=\"lead\">At the heart of Aboriginal philosophy is the understanding that <strong>Country</strong> — the land, water, sky, creatures, plants, and people — is alive, conscious, and relational. This is not metaphor. Country is person. The Aboriginal relationship to land is not that of owner to property, or even steward to resource. It is kinship.</p>\n\n<h4>Country Speaks — Language of Connection</h4>\n<p>To \"know Country\" is to speak its language, to understand its structures, to recognize one\'s relationship within its patterns. Country communicates through the Songlines, through the behavior of animals, through the arrangement of rocks and water, through the positions of stars. Those who are deeply connected to Country learn to read these communications — they become fluent in the language their Country speaks.</p>\n\n<h4>Custodianship & Obligation</h4>\n<p>Aboriginal peoples are not owners of Country — they are custodians, responsible for maintaining the relationships and obligations encoded in the Songlines. To perform ceremony at the right time in the right place is to strengthen the connection, to maintain the sacred relationships, to ensure that the land continues to provide, that the seasons continue to cycle, that the creatures and plants continue to flourish. This is not charity offered by humans to nature — it is reciprocal relationship. Country cares for those who care for it.</p>\n\n<callout>Modern environmental science has largely adopted a similar understanding: ecosystems are not resources to be extracted but living systems in which humans are participants, with obligations and relationships. The Aboriginal understanding preceded Western ecology by thousands of years. It is knowledge carried in the bodies, ceremonies, and Songlines of living people — knowledge that Western science is finally learning to recognize and honor.</callout>\n`
+              content: `\n<p class=\"lead\">At the heart of Aboriginal philosophy is the understanding that <strong>Country</strong> — the land, water, sky, creatures, plants, and people — is alive, conscious, and relational. This is not metaphor. Country is person. The Aboriginal relationship to land is not that of owner to property, or even steward to resource. It is kinship.</p>\n\n<h4>Country Speaks — Language of Connection</h4>\n<p>To \"know Country\" is to speak its language, to understand its structures, to recognize one\'s relationship within its patterns. Country communicates through the Songlines, through the behavior of animals, through the arrangement of rocks and water, through the positions of stars. Those who are deeply connected to Country learn to read these communications — they become fluent in the language their Country speaks.</p>\n\n<h4>Custodianship & Obligation</h4>\n<p>Aboriginal peoples are not owners of Country — they are custodians, responsible for maintaining the relationships and obligations encoded in the Songlines. To perform ceremony at the right time in the right place is to strengthen the connection, to maintain the sacred relationships, to ensure that the land continues to provide, that the seasons continue to cycle, that the creatures and plants continue to flourish. This is not charity offered by humans to nature — it is reciprocal relationship. Country cares for those who care for it.</p>\n\n<callout>Modern environmental science has largely adopted a similar understanding: ecosystems are not resources to be extracted but living systems in which humans are participants, with obligations and relationships. The Aboriginal understanding preceded Western ecology by thousands of years. It is knowledge carried in the bodies, ceremonies, and Songlines of living people — knowledge that Western science is finally learning to recognize and honor.</callout>\n\n<reflect>\nWhat becomes possible in land stewardship when Country is understood as a conscious person rather than a resource or property?\nHow does the distinction between owner and custodian change the obligations, authority, and responsibilities that come with place?\nWhere do you experience a living relationship with a place — where does a particular landscape feel like it communicates, teaches, or requires something of you?\n</reflect>\n`
             },
             {
               id:       'dt-protocol-country',
