@@ -1,0 +1,196 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   KA PAEPAE ʻIKE OLA — JOURNAL PAGE
+   File: LKP/css/lkp-journal.css
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Page shell ─────────────────────────────────────────────────── */
+body {
+  min-height:100vh;
+  background:var(--bg, #070b14);
+  color:var(--text-1, rgba(240,239,230,0.95));
+  font-family:var(--font-body, 'DM Sans', sans-serif);
+}
+
+#starfield {
+  position:fixed; inset:0; pointer-events:none;
+  opacity:0.35; z-index:0;
+}
+
+/* ── Main layout ────────────────────────────────────────────────── */
+.lkp-journal-main {
+  position:relative; z-index:1;
+  max-width:860px; margin:0 auto;
+  padding:100px 20px 80px;
+}
+
+/* ── Header ─────────────────────────────────────────────────────── */
+.lkp-journal-header {
+  text-align:center;
+  margin-bottom:48px;
+}
+.lkp-journal-header__eyebrow {
+  font-size:11px; letter-spacing:0.12em; text-transform:uppercase;
+  color:rgba(240,201,106,0.65); margin:0 0 8px;
+}
+.lkp-journal-header__title {
+  font-family:var(--font-display, 'Cormorant Garamond', serif);
+  font-size:clamp(2rem, 5vw, 3.2rem);
+  font-weight:600; line-height:1.1;
+  color:rgba(240,239,230,0.97);
+  margin:0 0 12px;
+}
+.lkp-journal-header__sub {
+  font-size:15px; color:var(--text-2, rgba(240,239,230,0.65));
+  max-width:520px; margin:0 auto 28px; line-height:1.6;
+}
+
+.lkp-journal-header__actions {
+  display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+  margin-bottom:20px;
+}
+
+.lkp-journal-search {
+  display:flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:999px; padding:0 14px;
+  min-width:220px;
+}
+.lkp-journal-search i { color:var(--text-3, rgba(240,239,230,0.4)); font-size:13px; }
+.lkp-journal-search input {
+  background:none; border:none; outline:none;
+  font-size:13.5px; color:var(--text-1);
+  padding:8px 0; flex:1;
+}
+.lkp-journal-search input::placeholder { color:var(--text-3); }
+
+.lkp-journal-export-btn {
+  display:flex; align-items:center; gap:7px;
+  background:rgba(240,201,106,0.08);
+  border:1px solid rgba(240,201,106,0.22);
+  border-radius:999px; padding:8px 18px;
+  font-size:13px; font-weight:600;
+  color:rgba(240,201,106,0.85);
+  cursor:pointer; transition:background 0.2s;
+}
+.lkp-journal-export-btn:hover { background:rgba(240,201,106,0.15); }
+
+/* ── Stats bar ──────────────────────────────────────────────────── */
+.lkp-journal-stats {
+  display:flex; gap:20px; justify-content:center; flex-wrap:wrap;
+  font-size:12px; color:var(--text-3);
+  margin-top:6px;
+}
+.lkp-journal-stats span {
+  display:flex; align-items:center; gap:5px;
+}
+.lkp-journal-stats i { color:rgba(240,201,106,0.5); }
+
+/* ── Culture group ──────────────────────────────────────────────── */
+.lkp-journal-culture {
+  margin-bottom:48px;
+}
+.lkp-journal-culture__heading {
+  display:flex; align-items:center; gap:10px;
+  font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em;
+  color:rgba(240,201,106,0.75);
+  padding-bottom:10px;
+  border-bottom:1px solid rgba(240,201,106,0.12);
+  margin-bottom:20px;
+}
+.lkp-journal-culture__emoji { font-size:18px; }
+
+/* ── Lesson block ───────────────────────────────────────────────── */
+.lkp-journal-lesson {
+  background:rgba(255,255,255,0.025);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:16px;
+  padding:22px 24px;
+  margin-bottom:16px;
+  transition:border-color 0.2s;
+}
+.lkp-journal-lesson:hover { border-color:rgba(240,201,106,0.18); }
+
+.lkp-journal-lesson__meta {
+  display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+  margin-bottom:18px;
+}
+.lkp-journal-lesson__info { flex:1 1 auto; min-width:0; }
+.lkp-journal-lesson__num {
+  font-size:10px; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+  color:rgba(240,201,106,0.6); margin-bottom:3px;
+}
+.lkp-journal-lesson__title {
+  font-family:var(--font-display, 'Cormorant Garamond', serif);
+  font-size:1.25rem; font-weight:600;
+  color:rgba(240,239,230,0.95); line-height:1.25;
+}
+.lkp-journal-lesson__module {
+  font-size:11.5px; color:var(--text-3); margin-top:2px;
+}
+.lkp-journal-lesson__link {
+  flex-shrink:0; display:flex; align-items:center; gap:5px;
+  font-size:11.5px; font-weight:600; color:rgba(240,201,106,0.7);
+  text-decoration:none; padding:5px 12px; border-radius:999px;
+  border:1px solid rgba(240,201,106,0.18);
+  background:rgba(240,201,106,0.05);
+  transition:background 0.2s, color 0.2s;
+  white-space:nowrap;
+}
+.lkp-journal-lesson__link:hover { background:rgba(240,201,106,0.12); color:rgba(240,201,106,1); }
+
+/* ── Reflection entry ───────────────────────────────────────────── */
+.lkp-journal-entry {
+  margin-bottom:18px;
+}
+.lkp-journal-entry:last-child { margin-bottom:0; }
+.lkp-journal-entry__prompt {
+  font-size:12.5px; font-style:italic;
+  color:var(--text-2, rgba(240,239,230,0.6));
+  margin-bottom:8px; line-height:1.5;
+}
+.lkp-journal-entry__prompt::before { content:'"'; }
+.lkp-journal-entry__prompt::after { content:'"'; }
+.lkp-journal-entry__text {
+  font-size:14.5px; line-height:1.7;
+  color:rgba(240,239,230,0.9);
+  background:rgba(255,255,255,0.035);
+  border-left:3px solid rgba(240,201,106,0.35);
+  border-radius:0 8px 8px 0;
+  padding:12px 16px;
+}
+
+/* ── Empty state ────────────────────────────────────────────────── */
+.lkp-journal-empty {
+  text-align:center; padding:64px 20px;
+  color:var(--text-3);
+}
+.lkp-journal-empty i {
+  font-size:2.5rem; color:rgba(240,201,106,0.3);
+  display:block; margin-bottom:16px;
+}
+.lkp-journal-empty p { font-size:14.5px; margin-bottom:6px; }
+.lkp-journal-cta {
+  display:inline-flex; align-items:center; gap:8px;
+  margin-top:20px; padding:10px 24px;
+  background:rgba(240,201,106,0.08);
+  border:1px solid rgba(240,201,106,0.22);
+  border-radius:999px; color:rgba(240,201,106,0.85);
+  font-size:14px; font-weight:600; text-decoration:none;
+  transition:background 0.2s;
+}
+.lkp-journal-cta:hover { background:rgba(240,201,106,0.15); }
+
+/* ── No-match message ───────────────────────────────────────────── */
+.lkp-journal-no-match {
+  text-align:center; padding:40px 20px;
+  color:var(--text-3); font-size:14px;
+}
+
+/* ── Mobile ─────────────────────────────────────────────────────── */
+@media (max-width:600px) {
+  .lkp-journal-main { padding:80px 14px 60px; }
+  .lkp-journal-lesson { padding:16px; }
+  .lkp-journal-lesson__meta { flex-direction:column; }
+  .lkp-journal-lesson__link { align-self:flex-start; }
+}

@@ -1043,6 +1043,14 @@ ${config.lineTranslations.join('\n')}
     `
     : chantExcerpt;
 
+  const narrativeSection = config.narrativeSection || '';
+
+  const reflectSection = `
+<reflect>Reading ${config.waLabel} — what aspect of this Wā most shifts how you understand your relationship with the living world?</reflect>
+<reflect>The crisis of this Wā: ${deep.crisis.replace(/\.$/, '')}. Where do you see this pattern active in your own life, community, or place?</reflect>
+<reflect>This Wā cultivates ${deep.intelligence}. Name one specific way you could practice this capacity in the coming week.</reflect>
+`;
+
   return `
 <section class="kumu-wa-module">
   <section class="kumu-wa-hero kumu-reveal">
@@ -1052,6 +1060,8 @@ ${config.lineTranslations.join('\n')}
     <p class="kumu-wa-hero__lead">${config.heroLead}</p>
     ${deep.arc ? `<p class="kumu-wa-arc-statement">${deep.arc}</p>` : ''}
   </section>
+
+  ${narrativeSection}
 
   <section class="kumu-section kumu-wa-chant-card kumu-wa-chant-card--primary kumu-reveal">
     <h4>Full Kumulipo Verse</h4>
@@ -1158,6 +1168,8 @@ ${config.lineTranslations.join('\n')}
     <h4>Continuity Anchor</h4>
     ${continuityAnchor}
   </section>
+
+  ${reflectSection}
 </section>
 `;
 }
@@ -1239,14 +1251,14 @@ const CULTURALVERSE_DATA = {
 <section class="kumu-section kumu-reveal">
   <h4>What Is the Kumulipo?</h4>
   <p>The Kumulipo is a sacred Kānaka Maoli creation chant, genealogy, cosmology, and living knowledge system. It is a framework of pō, emergence, life, genealogy, ecology, relationship, and kuleana — carrying ancestral intelligence through chant, memory, protocol, and transmission across generations.</p>
-  <p>It should not be reduced to mythology, poetry, or Western scientific explanation. Modern science offers one framework. The Kumulipo offers a distinct Kānaka Maoli ancestral framework. Where meaningful parallels appear, they can be used carefully to support understanding — without collapsing difference.</p>
+  <p>The Kumulipo is its own complete knowledge system — cosmology, genealogy, ethics, and ecology held together in living form. Modern science offers one lens on origins. The Kumulipo offers a distinct Kānaka Maoli ancestral lens. Where meaningful parallels arise, they can deepen understanding of both — each tradition keeping its own integrity.</p>
 </section>
 
 <section class="kumu-section kumu-reveal">
-  <h4>The Kumulipo Begins in Pō — Not in Coral</h4>
-  <p>The chant does not begin with coral. It begins in <strong>Pō</strong> — deep, generative darkness. Pō is not empty void or absence. It is a fertile depth of becoming: charged with potential, not yet visible, not yet named. This is the opening condition of the universe in Hawaiian thought.</p>
-  <p>The first line — <strong>"O ke au i kahuli wela ka honua"</strong> — describes heat, turning, and motion within that primordial state. What modern cosmology might loosely compare to the earliest conditions of cosmic expansion: extreme heat, undifferentiated energy, before matter settles into form. Only from within that Pō do the first beings emerge in Wā 1 — beginning with <strong>koʻa</strong>, the coral polyp. Coral is the first named life, the first genealogical ancestor in the chain. But it comes <em>from</em> the darkness. Pō is prior to everything.</p>
-  <callout>To read the Kumulipo correctly, begin where it begins: in deep darkness, in potential before form. Everything else — coral, sea life, land, animals, humans — emerges from that source. The chant is not a catalog of species. It is a genealogy of becoming.</callout>
+  <h4>Pō — The Source Before All Things</h4>
+  <p><strong>Pō</strong> is where the Kumulipo opens. Deep, generative darkness — not void, not absence, but a fertile depth of potential before anything takes visible form. This is the first condition of the universe in Hawaiian thought.</p>
+  <p>The opening line — <strong>"O ke au i kahuli wela ka honua"</strong> — describes heat, turning, and motion within that primordial state. What modern cosmology might loosely compare to the earliest conditions before matter settles into form. From within Pō, the first beings begin to emerge in Wā 1, with <strong>koʻa</strong> — the coral polyp — as the first named life, the first genealogical ancestor in a long chain of becoming.</p>
+  <callout>The Kumulipo traces how coral, sea life, land, animals, and people all arise from the same generative source. Pō is prior. Everything else is emergence.</callout>
 </section>
 
 <!-- KM_KUMULIPO_SOURCE_INSERT -->
@@ -1259,8 +1271,8 @@ const CULTURALVERSE_DATA = {
 
 <section class="kumu-section kumu-reveal">
   <h4>Four Living Parallels</h4>
-  <p>Hawaiian ancestors embedded deep structural wisdom in the Kumulipo. Modern learners can recognize resonances with contemporary frameworks — as long as the comparison clarifies Hawaiian meaning rather than flattening it into another system's vocabulary.</p>
-  <callout type="bridge">Use these as orientation aids, not replacements. The Kumulipo is not "evolution" or "systems theory" in disguise. It is a distinct ancestral knowledge system that holds structural parallels worth noticing with humility.</callout>
+  <p>Hawaiian ancestors embedded deep structural wisdom in the Kumulipo. Modern learners can recognize resonances with contemporary frameworks — and the most meaningful connections are those that open Hawaiian understanding wider rather than translating it into a different vocabulary.</p>
+  <callout type="bridge">Use these as orientation aids, not replacements. The Kumulipo carries its own ancestral logic — where modern parallels appear, they can illuminate Hawaiian meaning without becoming the frame for it.</callout>
   <div class="kumu-parallel-grid">
     <article class="kumu-parallel-card">
       <h5>Ecology</h5>
@@ -1378,6 +1390,14 @@ How does the Wākea-Papahānaumoku story reframe the relationship between identi
                 lineTranslations: KUMULIPO_WA_1_TRANSLATIONS,
                 startLine: 1,
                 endLine: 122,
+                narrativeSection: `
+<section class="kumu-section kumu-reveal">
+  <h4>Opening in Pō — What Wā 1 Actually Does</h4>
+  <p>The Kumulipo opens in darkness. Not the darkness of absence, but <strong>Pō</strong> — a generative depth so dense with ancestral potential that the first words of the chant describe it as <em>heat and turning motion</em>: <strong>"O ke au i kahuli wela ka honua"</strong> — the time of the overturning heat of the earth.</p>
+  <p>This is the cosmological condition before life takes named form. And then, from within that Pō, the first named being emerges: <strong>koʻa</strong> — the coral polyp. Not a symbol. An actual living form that modern ecology recognizes as foundational to reef systems. The Kumulipo names it as genealogical ancestor — the first in a chain that runs, without break, all the way to humans.</p>
+  <p>The pattern that opens here repeats throughout the chant: <em>born at night, lives in the sea, emerges from darkness</em>. Each creature is not just named but placed in relation — to what came before, to what it shares the world with, to what its emergence makes possible next.</p>
+  <callout>Wā 1 is the interpretive key for all 16 Wā. Once you understand that <em>life</em> here means genealogical relation rather than biological category, every subsequent wā opens differently.</callout>
+</section>`,
                 emergence: 'Generative movement in pō, heat, turning, and early marine emergence associated with koʻa as foundational life threshold.',
                 relationships: 'This wā introduces relation between darkness, transformation, oceanic life, and ordered unfolding rather than instant completion.',
                 structureRole: 'Wā 1 grounds all later wā by establishing source-depth, emergence, and continuity as the governing pattern.',
@@ -1413,6 +1433,14 @@ How does the Wākea-Papahānaumoku story reframe the relationship between identi
                 lineTranslations: KUMULIPO_WA_2_TRANSLATIONS,
                 startLine: 123,
                 endLine: 272,
+                narrativeSection: `
+<section class="kumu-section kumu-reveal">
+  <h4>When One Becomes Many — The Sea Fills With Kin</h4>
+  <p>Wā 2 takes what Wā 1 began and multiplies it. The ocean, already seeded with koʻa and its first descendants, now fills with named sea life — fish, mollusks, echinoderms — species that Kānaka Maoli fishers and divers knew intimately over generations of direct relationship. But the chant is not a catalog. Each creature appears as a named genealogical member of a living family.</p>
+  <p>The structural move of Wā 2 is <em>patterned abundance</em>. Emergence is not random; it follows sequence. Each new form relates to what came before it. Complexity arrives as relationship becoming denser, richer, more intricate — not as scattered accumulation.</p>
+  <p>For Kānaka Maoli, this is not metaphor. The ocean is literally full of ancestors. The fish in the net is kin. Harvesting from it carries obligation — kuleana — because you are taking from family, not extracting from inventory.</p>
+  <callout>Where Wā 1 established the first life and the first threshold, Wā 2 establishes abundance as genealogical — not property to be owned, but kin to be tended and reciprocated.</callout>
+</section>`,
                 emergence: 'Sea beings multiply and diversify, expanding the living architecture of the ocean.',
                 relationships: 'This wā strengthens oceanic kinship by showing how many forms of life arise through relational unfolding rather than isolated events.',
                 structureRole: 'Wā 2 extends Wā 1 by turning foundational emergence into patterned marine abundance.',
@@ -1448,6 +1476,15 @@ How does the Wākea-Papahānaumoku story reframe the relationship between identi
                 lineTranslations: KUMULIPO_WA_3_TRANSLATIONS,
                 startLine: 273,
                 endLine: 377,
+                narrativeSection: `
+<section class="kumu-section kumu-reveal">
+  <h4>The First Great Transformation — Parents Who Birth What Flies</h4>
+  <p>Wā 3 introduces something the first two wā did not: <em>radical transformation</em>. Not just more creatures, but creatures born as a fundamentally different kind of being than their parent. A woodborer gives birth to a moth. A caterpillar to a butterfly. Parents of the ground give birth to children of the sky.</p>
+  <p>The chant names this with a phrase that echoes through the entire wā: <strong>"puka kana keiki, lele"</strong> — <em>out came its child, and it flew</em>. The rhythm builds — parent after parent, emergence after emergence — and each time, the child takes flight. The repetition is the teaching. It is the Kumulipo insisting, again and again, that transformation across forms is not rupture — it is genealogy.</p>
+  <p>In the Kumulipo, transformation does not break the line. The woodborer holds the moth into being. The ancestral form carries the new form forward into a new domain. This is what the chant means by genealogy: not just biological lineage, but the way one form of existence makes the next possible.</p>
+  <p>Wā 3 closes by pairing sea birds with land birds, showing that the flying world spans all realms. Hawaiʻi once had more bird species per land area than almost anywhere on earth. Many are now gone. This wā is simultaneously a creation account and an ancestral record of a world that no longer fully exists — and a reminder of what is carried forward through memory.</p>
+  <callout>The rhythm of <em>"puka kana keiki, lele"</em> is one of the most powerful teaching moments in the chant. Transformation, here, is always genealogical — something ancestral is always holding the new form into being.</callout>
+</section>`,
                 emergence: 'Insects emerge as parents, and their children take flight — the wā moves from crawling to flying, from grub to bird, in a sustained genealogical sequence.',
                 relationships: 'This wā links every insect parent to its flying child, and closes by pairing sea birds with land birds — the flying world spans all domains.',
                 structureRole: 'Wā 3 marks the first great threshold of transformation in the chant: from creatures of the earth and sea to creatures of the air.',

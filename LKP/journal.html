@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Reflection Journal | Ka Paepae ʻIke Ola</title>
+  <meta name="description" content="Your personal reflection journal — all written reflections from your cultural journeys in Ka Paepae ʻIke Ola." />
+  <meta name="theme-color" content="#070b14" />
+
+  <link rel="icon" type="image/png" href="assets/images/LKP-1.png" />
+  <link rel="apple-touch-icon" href="assets/images/LKP-1.png" />
+  <link rel="manifest" href="../site.webmanifest" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pirata+One&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=DM+Sans:wght@400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="stylesheet" href="css/lkp-brand.css" />
+  <link rel="stylesheet" href="css/lkp-cursor.css?v=cursor-2" />
+  <link rel="stylesheet" href="css/lkp-journal.css?v=journal-1" />
+
+  <script>
+    window.SUPABASE_URL = "https://fmrjdvsqdfyaqtzwbbqi.supabase.co";
+    window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtcmpkdnNxZGZ5YXF0endiYnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTE2MzYsImV4cCI6MjA5MTE2NzYzNn0.UKyvX02bG4cNhb7U2TK96t8XFREHYYwHJIKbPK06nqs";
+  </script>
+</head>
+
+<body data-culture="default">
+
+  <canvas id="starfield" aria-hidden="true"></canvas>
+
+  <nav class="lkp-nav" id="lkpNav">
+    <a class="lkp-nav__brand" href="../index.html" aria-label="Ka Paepae ʻIke Ola — home">
+      <img class="lkp-nav__logo" src="assets/images/LKP-1.png" alt="Ka Paepae ʻIke Ola"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='grid';" />
+      <span class="lkp-nav__glyph" style="display:none">◈</span>
+      <div class="lkp-nav__brand-text">
+        <span class="lkp-nav__title">Ka Paepae ʻIke Ola</span>
+        <span class="lkp-nav__sub">The Knowledge Platform</span>
+      </div>
+    </a>
+    <ul class="lkp-nav__links" id="lkpNavLinks">
+      <li><a class="lkp-nav__link" href="../index.html"><i class="fas fa-house"></i> Home</a></li>
+      <li><a class="lkp-nav__link" href="lessons.html"><i class="fas fa-book-open"></i> Lessons</a></li>
+      <li><a class="lkp-nav__link is-active" href="journal.html"><i class="fas fa-feather"></i> Journal</a></li>
+      <li><a class="lkp-nav__link" href="../profile.html"><i class="fas fa-user-astronaut"></i> Profile</a></li>
+    </ul>
+    <div class="lkp-nav__right">
+      <a class="lkp-nav__btn" href="../profile.html" aria-label="Open profile">
+        <i class="fas fa-user-astronaut"></i><span>Profile</span>
+      </a>
+      <button class="lkp-nav__hamburger" id="lkpMobileToggle"
+        aria-label="Toggle navigation" aria-controls="lkpNavLinks" aria-expanded="false" type="button">
+        <span></span><span></span><span></span>
+        <span class="lkp-nav__hamburger-label">Menu</span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="lkp-journal-main" id="journalMain">
+    <header class="lkp-journal-header">
+      <p class="lkp-journal-header__eyebrow">Ka Paepae ʻIke Ola</p>
+      <h1 class="lkp-journal-header__title">Reflection Journal</h1>
+      <p class="lkp-journal-header__sub">Your written reflections across all cultural journeys — a living record of your engagement with ancestral knowledge.</p>
+
+      <div class="lkp-journal-header__actions">
+        <div class="lkp-journal-search">
+          <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+          <input type="search" id="journalSearch" placeholder="Search your reflections…" autocomplete="off" aria-label="Search reflections" />
+        </div>
+        <button class="lkp-journal-export-btn" id="journalExportBtn" type="button">
+          <i class="fas fa-download"></i> Export
+        </button>
+      </div>
+
+      <div class="lkp-journal-stats" id="journalStats" hidden></div>
+    </header>
+
+    <div class="lkp-journal-body" id="journalBody">
+      <div class="lkp-journal-empty" id="journalEmpty" hidden>
+        <i class="fas fa-feather-pointed" aria-hidden="true"></i>
+        <p>No reflections yet.</p>
+        <p>Complete reflection prompts in any lesson to begin your journal.</p>
+        <a class="lkp-journal-cta" href="lessons.html"><i class="fas fa-compass"></i> Start a Journey</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="lkp-footer">
+    <div class="lkp-footer__inner">
+      <p>© <span id="footerYear"></span> Ka Paepae ʻIke Ola — The Living Knowledge Platform.</p>
+      <nav class="lkp-footer__links">
+        <a href="../index.html">Home</a>
+        <a href="lessons.html">Lessons</a>
+        <a href="../profile.html">Profile</a>
+        <a href="../about.html">About</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+  <script src="js/lkp-kumulipo-full-verses.js?v=full-wa-2" defer></script>
+  <script src="js/lkp-data.js?v=base-23-dreamtime-nations" defer></script>
+  <script src="js/lkp-data-rich-additions.js?v=rich-10-dreamtime-nations" defer></script>
+  <script src="js/lkp-data-primary-sources.js?v=ps-1" defer></script>
+  <script src="js/lkp-cursor.js?v=cursor-2" defer></script>
+  <script src="js/lkp-journal.js?v=journal-1" defer></script>
+</body>
+</html>

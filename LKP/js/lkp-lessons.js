@@ -2226,6 +2226,7 @@
               ${filteredModules.map(module => {
                 const moduleDone = module.lessons.filter(l => isCompleted(l.id)).length;
                 const moduleTotal = module.lessons.length;
+                const modulePct = moduleTotal > 0 ? Math.round((moduleDone / moduleTotal) * 100) : 0;
                 const moduleMins = module.lessons.reduce((sum, l) => {
                   const m = parseInt(l.readTime) || 0;
                   return sum + m;
@@ -2242,6 +2243,7 @@
                       <span class="cv-tree-module__prog">${moduleDone}/${moduleTotal}</span>
                     </span>
                   </div>
+                  <div class="cv-tree-module__bar" aria-hidden="true"><span style="width:${modulePct}%"></span></div>
 
                   ${module.lessons.map(lesson => {
                     const done = isCompleted(lesson.id);
@@ -3381,6 +3383,10 @@
         if (lesson.id === 'km-kumulipo' && window.KUMULIPO_WA_UI && typeof window.KUMULIPO_WA_UI.insert === 'function') {
           window.KUMULIPO_WA_UI.insert(document.getElementById('lessonActionStrip'), state.mode);
         }
+      }
+
+      if (window.LKPGlossary && typeof window.LKPGlossary.apply === 'function') {
+        window.LKPGlossary.apply(body);
       }
     }
 
