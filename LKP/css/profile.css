@@ -1692,6 +1692,32 @@ body.profile-theme-light .profile-note {
   border-right: 0;
 }
 
+.profile-streak-stat {
+  grid-column: 1 / -1;
+  flex-direction: row !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 16px !important;
+  border-top: 1px solid rgba(255, 120, 40, 0.18);
+  border-right: 0 !important;
+  background: linear-gradient(90deg, rgba(255,100,30,0.06), transparent, rgba(255,100,30,0.06));
+  transition: opacity 0.2s;
+}
+.profile-streak-stat strong {
+  color: #ff8844 !important;
+  font-size: 1.3rem !important;
+}
+.profile-streak-stat span {
+  color: rgba(255, 136, 68, 0.8) !important;
+  font-size: 11px !important;
+}
+.profile-streak-stat span i { margin-right: 3px; }
+.profile-streak-stat:not(.is-active) {
+  opacity: 0.4;
+}
+
 .profile-stat-grid strong {
   color: var(--profile-cyan);
   font-size: clamp(1.45rem, 3vw, 1.8rem);

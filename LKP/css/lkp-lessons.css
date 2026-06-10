@@ -3621,11 +3621,17 @@ body.is-reading-mode .cv-lesson-article { width:min(880px,100%); }
   .cv-lesson-article__body > * {
     max-width:100%;
   }
-  .cv-action-strip { padding:12px 14px; gap:10px; }
+  .cv-action-strip { padding:12px 14px; gap:8px; }
   .cv-btn-complete { width:100%; justify-content:center; }
-  .cv-mode-toggle { width:100%; justify-content:center; }
-  .cv-font-controls { width:100%; justify-content:center; }
-  .cv-btn-icon[data-reading-mode] { margin-left:auto; }
+  .cv-mode-toggle { flex:1 1 auto; justify-content:center; }
+  .cv-font-controls { display:inline-flex; gap:4px; }
+  .cv-btn-reading-mode,
+  .cv-btn-bookmark,
+  .cv-btn-share { padding:6px 9px; }
+  .cv-font-controls,
+  .cv-btn-reading-mode,
+  .cv-btn-bookmark,
+  .cv-btn-share { margin-top:0; }
   .cv-callout {
     margin:1.1rem 0;
     padding:0.9rem 1rem;
@@ -3781,4 +3787,290 @@ body.is-reading-mode .cv-lesson-article { width:min(880px,100%); }
     padding:8px;
     font-size:0.8rem;
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════
+   LESSON ENHANCEMENTS v1
+   Search · Module stats · Bookmarks · Share · Resume banner
+══════════════════════════════════════════════════════════════════════ */
+
+/* ── Sidebar search ──────────────────────────────────────────────── */
+.lkp-sidebar__search {
+  display:flex; align-items:center; gap:8px;
+  margin:10px 18px 2px;
+  padding:0 11px;
+  min-height:34px;
+  border:1px solid var(--border);
+  border-radius:999px;
+  background:rgba(255,255,255,0.04);
+  color:var(--text-3);
+  transition:border-color 0.14s;
+}
+.lkp-sidebar__search:focus-within {
+  border-color:var(--active-border);
+  background:rgba(255,255,255,0.06);
+}
+.lkp-sidebar__search i { font-size:11px; flex-shrink:0; }
+.lkp-sidebar__search input {
+  width:100%; border:0; outline:0; background:transparent;
+  color:var(--text-1); font-size:12px;
+  font-size:16px; /* iOS zoom prevention */
+}
+@media (min-width:481px) {
+  .lkp-sidebar__search input { font-size:12px; }
+}
+.lkp-sidebar__search input::placeholder { color:var(--text-3); }
+
+/* ── Module title with stats ─────────────────────────────────────── */
+.cv-tree-module__title {
+  display:flex !important;
+  align-items:center;
+  gap:6px;
+}
+.cv-tree-module__name { flex:1 1 auto; min-width:0; }
+.cv-tree-module__stats {
+  display:flex; gap:5px; align-items:center;
+  margin-left:auto; flex-shrink:0;
+}
+.cv-tree-module__time,
+.cv-tree-module__prog {
+  font-size:9.5px; font-weight:700;
+  padding:1px 6px; border-radius:999px;
+  border:1px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.05);
+  color:var(--text-3);
+  white-space:nowrap;
+}
+.cv-tree-module__prog { color:rgba(240,201,106,0.7); border-color:rgba(240,201,106,0.18); }
+
+/* ── Lesson row: icons column ────────────────────────────────────── */
+.cv-tree-lesson__icons {
+  display:flex; align-items:center; gap:4px;
+  flex-shrink:0;
+}
+.cv-tree-lesson__bookmark-pip {
+  font-size:9px;
+  color:var(--lkp-gold);
+  opacity:0.8;
+}
+
+/* ── Action strip: bookmark + share buttons ──────────────────────── */
+.cv-btn-bookmark { position:relative; }
+.cv-btn-bookmark.is-bookmarked {
+  color:var(--lkp-gold);
+  border-color:rgba(240,201,106,0.45);
+  background:rgba(240,201,106,0.08);
+}
+.cv-btn-bookmark.is-bookmarked:hover {
+  background:rgba(240,201,106,0.14);
+}
+.cv-btn-share:hover {
+  color:var(--active-text);
+  border-color:var(--active-border);
+  background:var(--active-mid);
+}
+
+/* ── Sidebar bookmarks panel ─────────────────────────────────────── */
+#lessonBookmarksPanel { padding:0 12px 8px; }
+.cv-sidebar-bookmarks {
+  border:1px solid rgba(240,201,106,0.2);
+  border-radius:12px;
+  background:rgba(240,201,106,0.04);
+  overflow:hidden;
+}
+.cv-sidebar-bookmarks__heading {
+  display:flex; align-items:center; gap:7px;
+  padding:9px 12px 7px;
+  color:rgba(240,201,106,0.85);
+  font-size:10px; font-weight:900; letter-spacing:0.05em; text-transform:uppercase;
+  border-bottom:1px solid rgba(240,201,106,0.1);
+}
+.cv-sidebar-bookmark-item {
+  display:flex; align-items:center;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+}
+.cv-sidebar-bookmark-item:last-child { border-bottom:0; }
+.cv-sidebar-bookmark-item.is-active .cv-sidebar-bookmark-item__nav {
+  color:var(--lkp-gold);
+}
+.cv-sidebar-bookmark-item__nav {
+  flex:1 1 auto; min-width:0;
+  display:flex; align-items:center; gap:8px;
+  padding:8px 10px;
+  background:transparent; border:0; border-radius:0;
+  color:var(--text-2); text-align:left;
+  transition:background 0.12s;
+}
+.cv-sidebar-bookmark-item__nav:hover { background:rgba(255,255,255,0.04); }
+.cv-sidebar-bookmark-item__emoji { font-size:13px; flex-shrink:0; }
+.cv-sidebar-bookmark-item__info { display:grid; min-width:0; }
+.cv-sidebar-bookmark-item__title {
+  font-size:11px; font-weight:700;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  color:var(--text-1);
+}
+.cv-sidebar-bookmark-item__culture {
+  font-size:9.5px; color:var(--text-3);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.cv-sidebar-bookmark-item__remove {
+  flex-shrink:0;
+  padding:6px 10px;
+  background:transparent; border:0; border-radius:0;
+  color:var(--text-3); font-size:11px;
+  transition:color 0.12s;
+}
+.cv-sidebar-bookmark-item__remove:hover { color:var(--lkp-rose, #e87b8a); }
+
+/* ── Resume / continue banner (in lessonHome) ────────────────────── */
+#lessonResumeBanner {
+  margin:0 0 18px;
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:14px;
+  background:rgba(255,255,255,0.04);
+  overflow:hidden;
+}
+.cv-resume-banner__label {
+  display:block;
+  padding:7px 14px 5px;
+  font-size:9.5px; font-weight:900; letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--text-3);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.cv-resume-banner__btn {
+  width:100%;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  grid-template-rows:auto auto;
+  column-gap:10px;
+  padding:12px 14px;
+  background:transparent; border:0; border-radius:0;
+  text-align:left;
+  transition:background 0.14s;
+}
+.cv-resume-banner__btn:hover { background:rgba(255,255,255,0.06); }
+.cv-resume-banner__emoji {
+  grid-row:1/3; align-self:center;
+  font-size:20px;
+}
+.cv-resume-banner__title {
+  font-size:13px; font-weight:700;
+  color:var(--text-1);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.cv-resume-banner__culture {
+  font-size:10.5px; color:var(--text-3);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+
+/* ── Connection indicator in lesson row ──────────────────────────── */
+.cv-tree-lesson small .fa-circle-nodes {
+  font-size:8px;
+  color:rgba(var(--active-color-rgb, 100, 160, 255), 0.7);
+  vertical-align:middle;
+}
+
+@media (max-width:600px) {
+  .lkp-sidebar__search { margin:8px 14px 0; }
+  .cv-tree-module__time { display:none; }
+}
+
+/* ── Streak badge (lessonHome) ───────────────────────────────────── */
+.cv-streak-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:5px 14px; border-radius:999px;
+  background:linear-gradient(135deg, rgba(255,120,40,0.18), rgba(255,80,20,0.08));
+  border:1px solid rgba(255,120,40,0.35);
+  color:#ff8844;
+  font-size:12px; font-weight:900;
+  margin-bottom:12px;
+  animation:streak-pulse 2.4s ease infinite;
+}
+.cv-streak-badge i { font-size:13px; }
+@keyframes streak-pulse {
+  0%,100% { box-shadow:0 0 0 0 rgba(255,100,40,0); }
+  50%      { box-shadow:0 0 12px 3px rgba(255,100,40,0.22); }
+}
+
+/* ── Featured lesson card ────────────────────────────────────────── */
+.cv-featured-lesson { margin:0 0 18px; }
+.cv-featured-lesson__label {
+  font-size:9.5px; font-weight:900; letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--lkp-gold); opacity:0.75;
+  margin-bottom:6px;
+  display:flex; align-items:center; gap:5px;
+}
+.cv-featured-lesson__card {
+  width:100%; display:flex; align-items:center; gap:12px;
+  padding:13px 16px; border-radius:14px;
+  border:1px solid rgba(240,201,106,0.2);
+  background:linear-gradient(135deg, rgba(240,201,106,0.06), rgba(255,255,255,0.02));
+  color:var(--text-1); text-align:left;
+  transition:background 0.14s, border-color 0.14s, transform 0.12s;
+}
+.cv-featured-lesson__card:hover {
+  background:linear-gradient(135deg, rgba(240,201,106,0.12), rgba(255,255,255,0.04));
+  border-color:rgba(240,201,106,0.4);
+  transform:translateY(-1px);
+}
+.cv-featured-lesson__emoji { font-size:22px; flex-shrink:0; }
+.cv-featured-lesson__info { display:grid; gap:2px; min-width:0; flex:1; }
+.cv-featured-lesson__info strong { font-size:13px; font-weight:700; }
+.cv-featured-lesson__info small  { font-size:10.5px; color:var(--text-3); }
+.cv-featured-lesson__arrow { margin-left:auto; font-size:16px; color:var(--lkp-gold); opacity:0.7; }
+.cv-featured-lesson__done { margin-left:auto; font-size:14px; color:var(--lkp-gold); }
+
+/* ── Personal notes panel ────────────────────────────────────────── */
+.cv-lesson-notes {
+  margin:clamp(16px,3vw,32px) clamp(16px,4vw,44px);
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:rgba(255,255,255,0.025);
+  overflow:hidden;
+}
+.cv-lesson-notes__toggle {
+  display:flex; align-items:center; gap:8px;
+  padding:13px 18px;
+  cursor:pointer; list-style:none; user-select:none;
+  color:var(--text-2); font-size:13px; font-weight:700;
+  transition:background 0.12s, color 0.12s;
+}
+.cv-lesson-notes__toggle::-webkit-details-marker { display:none; }
+.cv-lesson-notes__toggle:hover { background:rgba(255,255,255,0.03); color:var(--text-1); }
+.cv-lesson-notes__hint { font-size:10.5px; font-weight:400; color:var(--text-3); }
+.cv-lesson-notes__arrow { margin-left:auto; font-size:11px; transition:transform 0.2s; }
+.cv-lesson-notes[open] .cv-lesson-notes__arrow { transform:rotate(180deg); }
+.cv-lesson-notes__body { padding:0 18px 16px; }
+.cv-lesson-notes__textarea {
+  width:100%; resize:vertical; min-height:100px;
+  padding:12px 14px; border-radius:10px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.04); color:var(--text-1);
+  font-family:var(--font-body, sans-serif); font-size:14px; line-height:1.65;
+  transition:border-color 0.14s;
+}
+.cv-lesson-notes__textarea:focus { outline:0; border-color:var(--active-border); }
+.cv-lesson-notes__textarea::placeholder { color:var(--text-3); }
+.cv-lesson-notes__footer {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-top:8px; gap:10px;
+}
+.cv-lesson-notes__status {
+  font-size:11px; color:var(--text-3);
+  min-height:16px;
+}
+.cv-lesson-notes__export-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:5px 12px; border-radius:999px;
+  border:1px solid var(--border); background:rgba(255,255,255,0.04);
+  color:var(--text-3); font-size:11px; font-weight:700;
+  transition:border-color 0.12s, color 0.12s, background 0.12s;
+}
+.cv-lesson-notes__export-btn:hover {
+  border-color:var(--active-border); color:var(--active-text); background:var(--active-mid);
+}
+
+@media (max-width:600px) {
+  .cv-lesson-notes { margin:14px 12px; }
+  .cv-featured-lesson__card { padding:11px 13px; }
 }

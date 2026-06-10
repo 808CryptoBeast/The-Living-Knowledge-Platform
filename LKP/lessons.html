@@ -43,14 +43,14 @@
 
   <link rel="stylesheet" href="css/lkp-brand.css" />
   <link rel="stylesheet" href="css/lkp-cursor.css?v=cursor-2" />
-  <link rel="stylesheet" href="css/lkp-lessons.css?v=journey-completion-lock-1" />
+  <link rel="stylesheet" href="css/lkp-lessons.css?v=journey-enhancements-2" />
 
   <!-- Supabase browser config.
        Replace these with your real project values.
        Use the anon public key only. Never use the service-role key in frontend code. -->
   <script>
-    window.SUPABASE_URL = "https://YOUR-PROJECT-REF.supabase.co";
-    window.SUPABASE_ANON_KEY = "YOUR-SUPABASE-ANON-KEY";
+    window.SUPABASE_URL = "https://fmrjdvsqdfyaqtzwbbqi.supabase.co";
+    window.SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtcmpkdnNxZGZ5YXF0endiYnFpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU1OTE2MzYsImV4cCI6MjA5MTE2NzYzNn0.UKyvX02bG4cNhb7U2TK96t8XFREHYYwHJIKbPK06nqs";
   </script>
 </head>
 
@@ -148,7 +148,20 @@
           <h2 class="lkp-sidebar__title">Cultural Journeys</h2>
 
           <div class="lkp-sidebar__filters" id="cultureFilters"></div>
+
+          <div class="lkp-sidebar__search">
+            <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+            <input
+              type="search"
+              id="lessonTreeSearch"
+              placeholder="Search lessons…"
+              autocomplete="off"
+              aria-label="Search lessons"
+            />
+          </div>
         </div>
+
+        <div id="lessonBookmarksPanel" hidden></div>
 
         <div class="cv-sidebar__tree" id="lessonTree" role="navigation" aria-label="Cultural journey lessons"></div>
       </div>
@@ -162,10 +175,8 @@
         <div class="cv-lesson-home__inner">
           <p class="cv-lesson-welcome__eyebrow">Cultural Journeys</p>
           <h1>Choose a pathway.</h1>
-          <p>
-            Use the culture navigation to enter a lesson, resume your last journey,
-            or open the roadmap for the full view of what this learning section holds.
-          </p>
+          <div id="lessonStreakBadge" hidden></div>
+          <div id="lessonResumeBanner" hidden></div>
 
           <div class="cv-lesson-welcome__actions">
             <button class="cv-welcome-primary" type="button" data-start-first-available>
@@ -174,9 +185,11 @@
             </button>
             <button class="cv-welcome-secondary" type="button" data-open-roadmap>
               <i class="fas fa-map"></i>
-              View Roadmap
+              Choose a Culture
             </button>
           </div>
+
+          <div id="lessonFeatured" hidden></div>
         </div>
       </section>
 
@@ -257,6 +270,9 @@
         <!-- Cross-culture connections -->
         <div id="lessonConnections"></div>
 
+        <!-- Personal notes -->
+        <div id="lessonNotes"></div>
+
         <!-- Sources -->
         <div id="lessonSources"></div>
 
@@ -332,7 +348,7 @@
   <script src="js/lkp-lesson-overrides.js?v=lesson-overrides-1" defer></script>
 
   <!-- Lesson renderer with cloud sync -->
-  <script src="js/lkp-lessons.js?v=v38-completion-lock" defer></script>
+  <script src="js/lkp-lessons.js?v=v41-flow-fixes" defer></script>
 
   <script>
     if ('serviceWorker' in navigator) {

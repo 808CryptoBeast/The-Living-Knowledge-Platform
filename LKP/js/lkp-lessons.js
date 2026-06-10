@@ -22,6 +22,9 @@
   const LAST_LESSON_KEY = 'lkp_last_lesson_id_v1';
   const SKIP_ROADMAP_KEY = 'lkp_skip_journey_roadmap_v1';
   const READ_PROGRESS_KEY = 'lkp_lesson_read_progress_v1';
+  const BOOKMARKS_KEY   = 'lkp_bookmarks_v1';
+  const STREAK_KEY      = 'lkp_streak_v1';
+  const NOTES_KEY       = 'lkp_notes_v1';
   const COMPLETION_REQUIRED_PROGRESS = 70;
   const DEFAULT_MANA    = 10;
 
@@ -1109,6 +1112,218 @@
     } catch {}
   }
 
+  function getBookmarks() {
+    return readJSON(BOOKMARKS_KEY, []);
+  }
+
+  function isBookmarked(lessonId) {
+    return getBookmarks().includes(lessonId);
+  }
+
+  function toggleBookmark(lessonId) {
+    const bookmarks = getBookmarks();
+    const idx = bookmarks.indexOf(lessonId);
+    if (idx >= 0) {
+      bookmarks.splice(idx, 1);
+    } else {
+      bookmarks.unshift(lessonId);
+    }
+    writeJSON(BOOKMARKS_KEY, bookmarks);
+    const btn = document.querySelector(`[data-bookmark-lesson="${CSS.escape(lessonId)}"]`);
+    if (btn) {
+      const bookmarked = bookmarks.includes(lessonId);
+      btn.classList.toggle('is-bookmarked', bookmarked);
+      btn.title = bookmarked ? 'Remove bookmark' : 'Bookmark this lesson';
+      btn.setAttribute('aria-pressed', bookmarked ? 'true' : 'false');
+    }
+    renderSidebarBookmarks();
+    showToast(bookmarks.includes(lessonId) ? 'Lesson bookmarked.' : 'Bookmark removed.');
+  }
+
+  function renderSidebarBookmarks() {
+    const panel = document.getElementById('lessonBookmarksPanel');
+    if (!panel) return;
+    const ids = getBookmarks();
+    const lessons = ids.map(id => findLesson(id)).filter(Boolean);
+    if (!lessons.length) {
+      panel.hidden = true;
+      return;
+    }
+    panel.hidden = false;
+    panel.innerHTML = `
+      <div class="cv-sidebar-bookmarks">
+        <div class="cv-sidebar-bookmarks__heading">
+          <i class="fas fa-bookmark" aria-hidden="true"></i>
+          Bookmarks
+        </div>
+        ${lessons.map(lesson => `
+          <div class="cv-sidebar-bookmark-item${lesson.id === state.activeLessonId ? ' is-active' : ''}">
+            <button class="cv-sidebar-bookmark-item__nav" type="button" data-lesson-id="${escapeHTML(lesson.id)}">
+              <span class="cv-sidebar-bookmark-item__emoji">${escapeHTML(lesson.cultureEmoji)}</span>
+              <span class="cv-sidebar-bookmark-item__info">
+                <span class="cv-sidebar-bookmark-item__title">${escapeHTML(lesson.title)}</span>
+                <span class="cv-sidebar-bookmark-item__culture">${escapeHTML(lesson.cultureName)}</span>
+              </span>
+            </button>
+            <button
+              class="cv-sidebar-bookmark-item__remove"
+              type="button"
+              data-remove-bookmark="${escapeHTML(lesson.id)}"
+              aria-label="Remove bookmark"
+            ><i class="fas fa-xmark"></i></button>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+
+  /* ── Streak ──────────────────────────────────────────────────────── */
+
+  function todayStr() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function updateStreak() {
+    const today = todayStr();
+    const data = readJSON(STREAK_KEY, { lastDate: '', count: 0 });
+    if (data.lastDate === today) return data.count;
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yStr = yesterday.toISOString().slice(0, 10);
+    const newCount = data.lastDate === yStr ? data.count + 1 : 1;
+    writeJSON(STREAK_KEY, { lastDate: today, count: newCount });
+    return newCount;
+  }
+
+  function getStreak() {
+    const data = readJSON(STREAK_KEY, { lastDate: '', count: 0 });
+    const today = todayStr();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yStr = yesterday.toISOString().slice(0, 10);
+    return (data.lastDate === today || data.lastDate === yStr) ? data.count : 0;
+  }
+
+  /* ── Lesson notes ────────────────────────────────────────────────── */
+
+  function renderLessonNotes(lesson) {
+    const holder = document.getElementById('lessonNotes');
+    if (!holder) return;
+    const notes = readJSON(NOTES_KEY, {});
+    const existing = notes[lesson.id] || '';
+    holder.innerHTML = `
+      <details class="cv-lesson-notes"${existing ? ' open' : ''}>
+        <summary class="cv-lesson-notes__toggle">
+          <i class="fas fa-pen-to-square" aria-hidden="true"></i>
+          My Notes
+          <span class="cv-lesson-notes__hint">${existing ? 'click to collapse' : 'click to open'}</span>
+          <i class="fas fa-chevron-down cv-lesson-notes__arrow" aria-hidden="true"></i>
+        </summary>
+        <div class="cv-lesson-notes__body">
+          <textarea
+            class="cv-lesson-notes__textarea"
+            id="lessonNotesTextarea"
+            placeholder="Write your personal notes about this lesson…"
+            rows="5"
+          >${escapeHTML(existing)}</textarea>
+          <div class="cv-lesson-notes__footer">
+            <span class="cv-lesson-notes__status" id="lessonNotesStatus"></span>
+            <button class="cv-lesson-notes__export-btn" type="button" data-export-reflections>
+              <i class="fas fa-download" aria-hidden="true"></i>
+              Export all reflections
+            </button>
+          </div>
+        </div>
+      </details>
+    `;
+    const textarea = holder.querySelector('#lessonNotesTextarea');
+    if (textarea) {
+      let saveTimer;
+      textarea.addEventListener('input', () => {
+        const allNotes = readJSON(NOTES_KEY, {});
+        allNotes[lesson.id] = textarea.value;
+        writeJSON(NOTES_KEY, allNotes);
+        const status = document.getElementById('lessonNotesStatus');
+        if (status) status.textContent = 'Saved';
+        clearTimeout(saveTimer);
+        saveTimer = setTimeout(() => { if (status) status.textContent = ''; }, 1800);
+      });
+    }
+  }
+
+  /* ── Featured lesson ─────────────────────────────────────────────── */
+
+  function renderFeaturedLesson() {
+    const holder = document.getElementById('lessonFeatured');
+    if (!holder || !state.lessons.length) return;
+    const dayIndex = Math.floor(Date.now() / 86400000);
+    const lesson = state.lessons[dayIndex % state.lessons.length];
+    const done = isCompleted(lesson.id);
+    holder.hidden = false;
+    holder.innerHTML = `
+      <div class="cv-featured-lesson">
+        <div class="cv-featured-lesson__label"><i class="fas fa-star" aria-hidden="true"></i> Featured today</div>
+        <button class="cv-featured-lesson__card" type="button" data-lesson-id="${escapeHTML(lesson.id)}">
+          <span class="cv-featured-lesson__emoji">${escapeHTML(lesson.cultureEmoji)}</span>
+          <div class="cv-featured-lesson__info">
+            <strong>${escapeHTML(lesson.title)}</strong>
+            <small>${escapeHTML(lesson.cultureName)} · ${escapeHTML(lesson.readTime || 'Lesson')}</small>
+          </div>
+          ${done
+            ? '<span class="cv-featured-lesson__done"><i class="fas fa-check-circle"></i></span>'
+            : '<span class="cv-featured-lesson__arrow">→</span>'}
+        </button>
+      </div>
+    `;
+  }
+
+  /* ── Reflection export ───────────────────────────────────────────── */
+
+  function exportReflections() {
+    const reflections = readJSON(REFLECTIONS_KEY, {});
+    const ids = Object.keys(reflections);
+    const filled = ids.filter(id => {
+      const answers = reflections[id];
+      return answers && Object.values(answers).some(v => String(v).trim());
+    });
+
+    if (!filled.length) {
+      showToast('No reflections saved yet.');
+      return;
+    }
+
+    const lines = [
+      'Ka Paepae ʻIke Ola — Reflection Journal',
+      `Exported: ${new Date().toLocaleDateString()}`,
+      '═'.repeat(50),
+      ''
+    ];
+
+    filled.forEach(id => {
+      const lesson = findLesson(id);
+      const answers = reflections[id];
+      if (!lesson || !answers) return;
+      lines.push(`${lesson.cultureEmoji} ${lesson.cultureName} · ${lesson.moduleTitle}`);
+      lines.push(lesson.title);
+      lines.push('─'.repeat(40));
+      Object.values(answers).forEach(answer => {
+        if (String(answer).trim()) lines.push('', String(answer).trim());
+      });
+      lines.push('');
+    });
+
+    const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `lkp-reflections-${todayStr()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Reflections exported.');
+  }
+
   function stripHTML(value) {
     return String(value || '')
       .replace(/<[^>]*>/g, ' ')
@@ -2003,16 +2218,31 @@
             <div class="cv-tree-culture__body-inner">
               ${progressBar}
 
-              ${filteredModules.map(module => `
+              ${filteredModules.map(module => {
+                const moduleDone = module.lessons.filter(l => isCompleted(l.id)).length;
+                const moduleTotal = module.lessons.length;
+                const moduleMins = module.lessons.reduce((sum, l) => {
+                  const m = parseInt(l.readTime) || 0;
+                  return sum + m;
+                }, 0);
+                const moduleTimeLabel = moduleMins > 0 ? `${moduleMins} min` : '';
+
+                return `
                 <div class="cv-tree-module">
                   <div class="cv-tree-module__title">
-                    <span>${escapeHTML(module.emoji)}</span>
-                    ${escapeHTML(module.title)}
+                    <span class="cv-tree-module__emoji">${escapeHTML(module.emoji)}</span>
+                    <span class="cv-tree-module__name">${escapeHTML(module.title)}</span>
+                    <span class="cv-tree-module__stats">
+                      ${moduleTimeLabel ? `<span class="cv-tree-module__time">${escapeHTML(moduleTimeLabel)}</span>` : ''}
+                      <span class="cv-tree-module__prog">${moduleDone}/${moduleTotal}</span>
+                    </span>
                   </div>
 
                   ${module.lessons.map(lesson => {
                     const done = isCompleted(lesson.id);
                     const active = lesson.id === state.activeLessonId;
+                    const bookmarked = isBookmarked(lesson.id);
+                    const hasConnections = Array.isArray(lesson.connections) && lesson.connections.length > 0;
 
                     return `
                       <button
@@ -2024,14 +2254,17 @@
                         <span class="cv-tree-lesson__dot" aria-hidden="true"></span>
                         <span class="cv-tree-lesson__text">
                           <strong>${escapeHTML(lesson.num || 'LESSON')} · ${escapeHTML(lesson.title)}</strong>
-                          <small>${escapeHTML(culture.name)} · ${escapeHTML(lesson.readTime || 'Lesson')}</small>
+                          <small>${escapeHTML(lesson.readTime || 'Lesson')}${hasConnections ? ' · <i class="fas fa-circle-nodes" aria-label="cross-culture connections" title="Cross-culture connections"></i>' : ''}</small>
                         </span>
-                        <span class="cv-tree-lesson__check" aria-hidden="true">${done ? '✓' : ''}</span>
+                        <span class="cv-tree-lesson__icons" aria-hidden="true">
+                          ${bookmarked ? '<i class="fas fa-bookmark cv-tree-lesson__bookmark-pip"></i>' : ''}
+                          ${done ? '<span class="cv-tree-lesson__check">✓</span>' : ''}
+                        </span>
                       </button>
                     `;
                   }).join('')}
                 </div>
-              `).join('')}
+              `; }).join('')}
             </div>
           </div>
         </section>
@@ -2146,8 +2379,22 @@
           <button class="cv-btn-icon" type="button" data-font-adjust="+">A+</button>
         </div>
 
-        <button class="cv-btn-icon" type="button" data-reading-mode title="Focus mode">
-          <i class="fas fa-expand"></i>
+        <button class="cv-btn-icon cv-btn-reading-mode" type="button" data-reading-mode title="Reading focus mode">
+          <i class="fas fa-glasses"></i>
+        </button>
+
+        <button
+          class="cv-btn-icon cv-btn-bookmark${isBookmarked(lesson.id) ? ' is-bookmarked' : ''}"
+          type="button"
+          data-bookmark-lesson="${escapeHTML(lesson.id)}"
+          title="${isBookmarked(lesson.id) ? 'Remove bookmark' : 'Bookmark this lesson'}"
+          aria-pressed="${isBookmarked(lesson.id) ? 'true' : 'false'}"
+        >
+          <i class="fas fa-bookmark"></i>
+        </button>
+
+        <button class="cv-btn-icon cv-btn-share" type="button" data-share-lesson="${escapeHTML(lesson.id)}" title="Share this lesson">
+          <i class="fas fa-share-nodes"></i>
         </button>
       </div>
     `;
@@ -3135,10 +3382,12 @@
     if (name) name.textContent = `${lesson.cultureName} · ${lesson.moduleTitle}`;
 
     renderConnections(lesson);
+    renderLessonNotes(lesson);
     renderLessonVisuals(lesson);
     renderLessonImageStrip(lesson);
     renderSources(lesson);
     renderLessonNav();
+    updateStreak();
     renderMobileScrubber();
     renderRelatedLessons(lesson);
     
@@ -3322,7 +3571,63 @@
     if (skip) skip.checked = localStorage.getItem(SKIP_ROADMAP_KEY) === 'true';
 
     state.activeLessonId = null;
+
+    const lastId = localStorage.getItem(LAST_LESSON_KEY);
+    const lastLesson = lastId ? findLesson(lastId) : null;
+
+    const resumeBtns = document.querySelectorAll('[data-start-first-available]');
+    resumeBtns.forEach(btn => {
+      if (lastLesson) {
+        btn.innerHTML = `<i class="fas fa-compass"></i> Continue: ${escapeHTML(lastLesson.title)}`;
+        btn.setAttribute('title', `Continue: ${escapeHTML(lastLesson.title)}`);
+      } else {
+        btn.innerHTML = '<i class="fas fa-compass"></i> Start First Journey';
+        btn.removeAttribute('title');
+      }
+    });
+
+    const homeH1 = document.querySelector('#lessonHome h1');
+    const homeP = document.querySelector('#lessonHome > .cv-lesson-home__inner > p');
+    if (homeH1 && homeP) {
+      if (lastLesson) {
+        homeH1.textContent = 'Welcome back.';
+        homeP.textContent = 'Pick up where you left off, explore a new culture, or browse today\'s featured lesson below.';
+      } else {
+        homeH1.textContent = 'Choose your path.';
+        homeP.textContent = 'Open the culture map to find your first journey, or tap the list icon on mobile to browse all lessons.';
+      }
+    }
+
+    const resumeBanner = document.getElementById('lessonResumeBanner');
+    if (resumeBanner) {
+      if (lastLesson) {
+        resumeBanner.hidden = false;
+        resumeBanner.innerHTML = `
+          <span class="cv-resume-banner__label">Last visited</span>
+          <button class="cv-resume-banner__btn" type="button" data-lesson-id="${escapeHTML(lastLesson.id)}">
+            <span class="cv-resume-banner__emoji">${escapeHTML(lastLesson.cultureEmoji)}</span>
+            <span class="cv-resume-banner__title">${escapeHTML(lastLesson.title)}</span>
+            <span class="cv-resume-banner__culture">${escapeHTML(lastLesson.cultureName)} · ${escapeHTML(lastLesson.moduleTitle)}</span>
+          </button>
+        `;
+      } else {
+        resumeBanner.hidden = true;
+      }
+    }
+
+    renderFeaturedLesson();
     renderLessonTree();
+
+    const streakBadge = document.getElementById('lessonStreakBadge');
+    if (streakBadge) {
+      const n = getStreak();
+      if (n > 0) {
+        streakBadge.hidden = false;
+        streakBadge.innerHTML = `<span class="cv-streak-badge"><i class="fas fa-fire" aria-hidden="true"></i> ${n} day${n === 1 ? '' : 's'} in a row</span>`;
+      } else {
+        streakBadge.hidden = true;
+      }
+    }
   }
 
   function closeRoadmapOverlay() {
@@ -3707,6 +4012,37 @@
         return;
       }
 
+      if (event.target.closest('[data-export-reflections]')) {
+        exportReflections();
+        return;
+      }
+
+      const bookmarkBtn = event.target.closest('[data-bookmark-lesson]');
+      if (bookmarkBtn) {
+        toggleBookmark(bookmarkBtn.dataset.bookmarkLesson);
+        return;
+      }
+
+      const removeBookmarkBtn = event.target.closest('[data-remove-bookmark]');
+      if (removeBookmarkBtn) {
+        toggleBookmark(removeBookmarkBtn.dataset.removeBookmark);
+        return;
+      }
+
+      const shareBtn = event.target.closest('[data-share-lesson]');
+      if (shareBtn) {
+        const lessonId = shareBtn.dataset.shareLesson;
+        const url = window.location.origin + window.location.pathname + '#' + encodeURIComponent(lessonId);
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(url).then(() => showToast('Link copied to clipboard.')).catch(() => {
+            prompt('Copy this link:', url);
+          });
+        } else {
+          prompt('Copy this link:', url);
+        }
+        return;
+      }
+
       const lessonBtn = event.target.closest('[data-lesson-id]');
       if (lessonBtn) {
         renderLesson(lessonBtn.dataset.lessonId);
@@ -3934,8 +4270,12 @@
       'lessons'
     );
 
+    window.LKPLessons = window.LKPLessons || {};
+    window.LKPLessons.getStreak = getStreak;
+
     renderCultureFilters();
     renderLessonTree();
+    renderSidebarBookmarks();
 
     const opened = openLessonFromHash({ noScroll: true });
 

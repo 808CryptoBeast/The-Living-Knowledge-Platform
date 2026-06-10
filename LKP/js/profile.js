@@ -2233,6 +2233,22 @@
     setText('#statProgress', `${progress}%`);
     setText('#statProgressMirror', `${progress}%`);
 
+    try {
+      const streakData = JSON.parse(localStorage.getItem('lkp_streak_v1') || '{}');
+      const today = new Date().toISOString().slice(0, 10);
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yStr = yesterday.toISOString().slice(0, 10);
+      const streakCount = (streakData.lastDate === today || streakData.lastDate === yStr)
+        ? (streakData.count || 0)
+        : 0;
+      setText('#statStreak', streakCount);
+      const wrap = document.getElementById('statStreakWrap');
+      if (wrap) wrap.classList.toggle('is-active', streakCount > 0);
+    } catch (_e) {
+      setText('#statStreak', 0);
+    }
+
     setText('#pathTitle', state.user ? 'Learning Path' : 'Cultures & Lessons');
     setText(
       '#pathIntro',
