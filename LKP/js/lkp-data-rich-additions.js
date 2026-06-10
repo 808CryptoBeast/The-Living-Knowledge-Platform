@@ -1244,6 +1244,91 @@ What responsibility do we have when learning initiated or debated knowledge thro
       related: ['dg-po-creation', 'dt-songlines-intro']
     },
 
+    'dg-pale-fox': {
+      mana: 14,
+      xp: 40,
+      sceneType: 'cosmology',
+      concepts: ['Yurugu', 'Incompleteness', 'Disruption', 'Divination', 'Pale Fox', 'Twinness', 'Cosmic order'],
+      sources: SOURCE_SETS.dogonCore,
+      related: ['dg-po-creation', 'dg-nommo-descent', 'dg-ammas-world'],
+      connections: [
+        {
+          cultureId: 'kemet',
+          lessonId: 'ke-maat',
+          axis: 'Philosophy',
+          note: 'Both Yurugu and Set represent principles of disruption within a cosmos that needs them, without which order has no contrast — but each within its own tradition.'
+        }
+      ]
+    },
+
+    'dg-nommo-descent': {
+      mana: 15,
+      xp: 44,
+      sceneType: 'cosmology',
+      concepts: ['Nommo', 'Eight ancestors', 'Cosmic ark', 'Twinness', 'Language as water', 'Sigi So', 'Civilization'],
+      sources: SOURCE_SETS.dogonCore,
+      related: ['dg-po-creation', 'dg-pale-fox', 'dg-sigui-cycle'],
+      connections: [
+        {
+          cultureId: 'kanaka',
+          lessonId: 'km-kumulipo',
+          axis: 'Creation',
+          note: 'The Nommo descent as founding of human order in Dogon thought and the Kumulipo as genealogical foundation of human order in Hawaiian thought — each its own tradition, but both treat the cosmic descent as the origin of relationship, language, and responsibility.'
+        }
+      ]
+    },
+
+    'dg-sacred-granary': {
+      mana: 14,
+      xp: 41,
+      sceneType: 'architecture',
+      concepts: ['Sacred architecture', 'Cosmological design', 'Eight compartments', 'Village plan', 'Togu na', 'Embodied cosmology'],
+      sources: SOURCE_SETS.dogonCore,
+      related: ['dg-nommo-descent', 'dg-dama-ceremony'],
+      connections: [
+        {
+          cultureId: 'kemet',
+          lessonId: 'ke-temple-cosmos',
+          axis: 'Cosmology',
+          note: 'Both Dogon sacred architecture and Kemetic temple design encode cosmological principles in built form — each tradition generating its own architectural language for the same underlying insight that space is not neutral.'
+        }
+      ]
+    },
+
+    'dg-dama-ceremony': {
+      mana: 16,
+      xp: 46,
+      sceneType: 'ceremony',
+      concepts: ['Dama', 'Nyama', 'Vital force', 'Masks', 'Awa society', 'Death as process', 'Cosmic maintenance'],
+      sources: SOURCE_SETS.dogonCore,
+      related: ['dg-sacred-granary', 'dg-sigui-cycle', 'dg-nommo-descent'],
+      connections: [
+        {
+          cultureId: 'vedic',
+          lessonId: 'vd-yajna-fire',
+          axis: 'Philosophy',
+          note: 'Both the Dama and the Vedic yajna treat ceremony as cosmic maintenance — the living world requires active, regular, communal participation to sustain the order it benefits from.'
+        }
+      ]
+    },
+
+    'dg-sigui-cycle': {
+      mana: 16,
+      xp: 47,
+      sceneType: 'ceremony',
+      concepts: ['Sigui', 'Sigi So', 'Sixty-year cycle', 'Imina na', 'Generational transmission', 'Great mask', 'Living archive'],
+      sources: SOURCE_SETS.dogonCore,
+      related: ['dg-nommo-descent', 'dg-dama-ceremony', 'dg-syncretism'],
+      connections: [
+        {
+          cultureId: 'vedic',
+          lessonId: 'vd-oral-transmission',
+          axis: 'Epistemology',
+          note: 'Both the Sigui transmission cycle and Vedic oral transmission are designed around the full arc of a human lifetime — ensuring knowledge survives not by writing but by building the transmission into the structure of a life.'
+        }
+      ]
+    },
+
     'vd-nasadiya': {
       mana: 12,
       xp: 34,
@@ -1268,7 +1353,104 @@ What responsibility do we have when learning initiated or debated knowledge thro
       sceneType: 'astronomy',
       concepts: ['Decimal system', 'Zero', 'Heliocentric', 'Mathematics', 'Ancient knowledge'],
       sources: SOURCE_SETS.vedicCore,
-      related: ['dg-sirius-triplet', 'dt-celestial-navigation']
+      related: ['dg-sirius-triplet', 'dt-celestial-navigation', 'vd-dharma-rta']
+    },
+
+    'vd-dharma-rta': {
+      mana: 14,
+      xp: 41,
+      sceneType: 'philosophy',
+      concepts: ['Dharma', 'Ṛta', 'Cosmic order', 'Moral law', 'Varuna', 'Nishkama karma', 'Right action'],
+      sources: SOURCE_SETS.vedicCore,
+      related: ['vd-nasadiya', 'vd-brahma-cycles', 'vd-purusha'],
+      connections: [
+        {
+          cultureId: 'kemet',
+          lessonId: 'ke-maat',
+          axis: 'Philosophy',
+          note: 'Vedic Ṛta and Kemetic Maʻat are among the most developed articulations of cosmic moral order in human philosophy — each tradition developing its own form of the insight that right action aligns with something larger than personal preference.'
+        },
+        {
+          cultureId: 'kanaka',
+          lessonId: 'km-ea-aloha',
+          axis: 'Philosophy',
+          note: 'Vedic Dharma as cosmic alignment and Kānaka Maoli Aloha as the practice of living in right relationship to all — parallel expressions of embedded ethics, each within its own tradition and vocabulary.'
+        }
+      ]
+    },
+
+    'vd-purusha': {
+      mana: 15,
+      xp: 44,
+      sceneType: 'cosmology',
+      concepts: ['Purusha Sukta', 'Cosmic person', 'Brahman', 'Atman', 'Sacrifice as creation', 'Microcosm', 'Macrocosm'],
+      sources: SOURCE_SETS.vedicCore,
+      related: ['vd-nasadiya', 'vd-dharma-rta', 'vd-yoga-cosmos'],
+      connections: [
+        {
+          cultureId: 'kanaka',
+          lessonId: 'km-kumulipo',
+          axis: 'Creation',
+          note: 'Purusha as cosmic body whose sacrifice generates the world and the Kumulipo as genealogical chant whose recitation generates the lineage of life — both treat creation as something that requires active participation to bring fully into being.'
+        }
+      ]
+    },
+
+    'vd-oral-transmission': {
+      mana: 15,
+      xp: 44,
+      sceneType: 'epistemology',
+      concepts: ['Svara', 'Pitch accent', 'Padapatha', 'Error correction', 'Living transmission', 'Memory', 'Precision'],
+      sources: SOURCE_SETS.vedicCore,
+      related: ['vd-nasadiya', 'dg-syncretism', 'dg-sigui-cycle'],
+      connections: [
+        {
+          cultureId: 'dogon',
+          lessonId: 'dg-sigui-cycle',
+          axis: 'Epistemology',
+          note: 'Vedic oral transmission with built-in error-correction and the Dogon Sigui cycle both solve the same problem — sustaining exact knowledge across the full arc of a human lifetime — through entirely different but equally sophisticated methods.'
+        }
+      ]
+    },
+
+    'vd-yajna-fire': {
+      mana: 14,
+      xp: 42,
+      sceneType: 'ceremony',
+      concepts: ['Agni', 'Yajna', 'Fire sacrifice', 'Ghee', 'Oblation', 'Three sacred fires', 'Cosmic maintenance'],
+      sources: SOURCE_SETS.vedicCore,
+      related: ['vd-oral-transmission', 'vd-dharma-rta', 'vd-yoga-cosmos'],
+      connections: [
+        {
+          cultureId: 'dogon',
+          lessonId: 'dg-dama-ceremony',
+          axis: 'Philosophy',
+          note: 'Vedic yajna and the Dogon Dama both enact a principle of cosmic maintenance — the living order must be actively sustained through communal ceremony, not passively assumed to continue.'
+        },
+        {
+          cultureId: 'kemet',
+          lessonId: 'ke-temple-ritual',
+          axis: 'Ceremony',
+          note: 'Vedic fire offering and Kemetic temple ritual both treat ceremony as a real transaction with cosmic forces — not symbolism but actual maintenance of the order that sustains life.'
+        }
+      ]
+    },
+
+    'vd-yoga-cosmos': {
+      mana: 14,
+      xp: 41,
+      sceneType: 'philosophy',
+      concepts: ['Yoga', 'Brahman equals Atman', 'Subtle body', 'Chakras', 'Prana', 'Microcosm', 'Epistemological practice'],
+      sources: SOURCE_SETS.vedicCore,
+      related: ['vd-purusha', 'vd-dharma-rta', 'vd-oral-transmission'],
+      connections: [
+        {
+          cultureId: 'kanaka',
+          lessonId: 'km-ea-aloha',
+          axis: 'Philosophy',
+          note: 'Vedic Atman inquiry — "Who am I at my deepest?" — and Kānaka Maoli Ea — the breath and sovereignty of self — both ground identity in something larger than the individual personality, each within its own philosophical vocabulary.'
+        }
+      ]
     },
 
     'dt-songlines-intro': {

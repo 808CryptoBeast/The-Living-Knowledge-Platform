@@ -2787,6 +2787,155 @@ How can oral knowledge be honored without turning it into spectacle?
               title:    'Knowledge Keepers & Transmission — Dogon Wisdom in the World',
               readTime: '9 min',
               content: `\n<p class=\"lead\">The Dogon maintained their astronomical knowledge through oral transmission, ritual, and sacred societies. Initiated knowledge keepers passed understanding to initiates through symbolic instruction and direct observation. This method preserved knowledge across generations without written text — a sophistication that modern scholarship is only beginning to appreciate.</p>\n\n<h4>The Challenge of Transmission</h4>\n<p>When Western scholars first encountered Dogon astronomical knowledge in the 1940s, they faced a crisis of credibility: How could non-literate peoples have such precise astronomical knowledge? This question reveals the bias embedded in Western assumptions — that knowledge requires written language, that oral transmission is less reliable, that \"primitive\" peoples could not possess sophisticated science.</p>\n<p>In fact, oral transmission creates precision through a different mechanism: ritual repetition, mnemonic poetry, direct observation, and corrective feedback from the community of knowledge keepers. This is not less reliable than writing — it is reliably different, optimized for different purposes.</p>\n\n<callout>The Dogon case teaches us to question our assumptions about what kinds of peoples can develop sophisticated knowledge, what forms that knowledge takes, and how it is preserved and transmitted. The universe does not require a university to reveal its patterns. A careful observer, a good memory, a community committed to precision, and centuries of unbroken transmission can preserve and refine knowledge as well as any written tradition.</callout>\n\n<reflect>\nWhat does the Dogon case reveal about Western assumptions that equate literacy with intelligence or sophistication?\nHow does oral precision differ from written precision — what might each method preserve or transmit better than the other?\nWhat does it mean that the universe does not require a university to reveal its patterns?\n</reflect>\n`
+            },
+            {
+              id:       'dg-pale-fox',
+              num:      'DG·04',
+              title:    'Yurugu — The Pale Fox and the First Disruption',
+              readTime: '12 min',
+              content: `
+<p class="lead">Not all of Dogon cosmology moves toward order. At the heart of the creation story stands <strong>Yurugu</strong> — also called Ogo — the incomplete being who disrupted the unfolding of cosmic completeness before it could finish. His story is essential: without understanding Yurugu, the Nommo do not fully make sense.</p>
+
+<callout type="gold">Yurugu is a principle, not a villain. Dogon cosmology does not divide neatly into good and evil. It describes forces of completion and forces of incompletion, both of which are real and active in the world.</callout>
+
+<h4>Born Before His Time</h4>
+<p>In the Griaule/Dieterlen account, Yurugu was formed inside the cosmic egg alongside his twin — but he emerged before completion, stealing a portion of the placenta that should have been shared. This act of premature birth broke the twinness, the pairing that is fundamental to Dogon cosmological order. He became, forever, a being who lacks the feminine counterpart that would make him whole.</p>
+<p>His frantic movement across the cosmic landscape — spinning the stolen placenta, seeking what cannot be returned — generates the earth's form, creates the disorder that makes the present world imperfect. He is not merely destructive; his movement is generative. But what he generates is world-as-we-actually-know-it: incomplete, seeking, unresolved.</p>
+
+<h4>The Pale Fox as Divination Oracle</h4>
+<p>Yurugu's earthly form is the <em>Vulpes pallida</em> — the pale fox of the Sahel. Dogon diviners use the tracks the fox leaves in prepared sand to read messages about the present and future. The fox, as an embodiment of Yurugu, moves in the space between the human world and the cosmic unknown — its traces are legible to those trained to see them.</p>
+<p>This is profound: the very principle of cosmic disruption becomes a tool of knowledge. Disorder, read rightly, reveals what ordered speech cannot. The fox's tracks carry information precisely because the fox does not follow the patterns of completion.</p>
+
+<h4>What Yurugu Teaches</h4>
+<p>Dogon cosmology needs Yurugu. Without him, the story is too clean, too orderly, too distant from the actual condition of the world. Yurugu names the experience of incompleteness: the seeking that does not end, the isolation that comes from acting too early, the disruption that scatters what should remain whole. And yet that disruption also makes earth, makes texture, makes the very ground the living walk on.</p>
+
+<twocol left="Yurugu (Dogon)" right="Loki / Coyote (other traditions)">Yurugu is a principle of cosmological incompleteness — his disruption is structural, arising from premature action, and produces the actual world rather than just chaos.||Trickster figures across many cultures also occupy the edge of order — but their function, cosmological role, and cultural weight must not be collapsed into a single archetype.</twocol>
+
+<reflect>
+What is being taught when a tradition places an incomplete, disrupting principle at the heart of its creation story — not as villain, but as essential force?
+The pale fox's tracks are a knowledge system only because the fox is outside the normal order. What does this suggest about the relationship between disruption and insight?
+Where in your own experience has incompleteness or premature action shaped something that later became foundational?
+</reflect>
+`
+            },
+            {
+              id:       'dg-nommo-descent',
+              num:      'DG·05',
+              title:    'The Eight Nommo — Descent of the Ancestors',
+              readTime: '13 min',
+              content: `
+<p class="lead">While Yurugu disrupts, the <strong>Nommo</strong> restore. These eight ancestral pairs — four sets of male and female twins, born from Amma — descend from the celestial order to bring what the world needs to function: language, weaving, fire, agriculture, ceremony, and instruction. Their descent is not mythological metaphor. It is the Dogon account of how the present human order came to be organized.</p>
+
+<h4>Eight Pairs, Eight Principles</h4>
+<p>The eight Nommo are not simply eight identical beings. Each pair governs a domain of life and social order. Their distinctions correspond to Dogon clan organization, to agricultural cycles, to the organization of the granary, to the structure of the village. When Dogon people say a marriage or a harvest or a ceremony is properly conducted, they mean it aligns with the principles the Nommo established.</p>
+<p>Twinness — paired completeness — is the signature of the Nommo. Yurugu broke twinness. The Nommo embody it. Their pairing creates stability, reciprocity, balance: the very qualities the world needs that Yurugu's incomplete nature cannot provide.</p>
+
+<h4>The Cosmic Ark</h4>
+<p>In the Griaule/Dieterlen account, the Nommo descended in a great cosmic ark — a structure that carried the seed of every living thing. Its form is echoed in the Dogon granary, in the structure of the village, in the proportions of ceremonial objects. The descent is remembered in architectural form: the ark became the template for the built environment.</p>
+<p>This is what it means to say Dogon sacred geometry is cosmological. It is not decoration. The proportions of the granary, the layout of the village, the design of the sanctuary — all of these recapitulate the descent of the Nommo, the structure of the cosmic ark, the organization of the eight founding principles.</p>
+
+<h4>Nommo as Language</h4>
+<p>The Nommo are intimately connected to speech. Water and word share a common nature in Dogon thought — both flow, both carry life, both can heal or damage depending on how they are used. The <em>Sigi So</em> — the secret language used in ceremony — is attributed to Nommo transmission. To speak rightly is to channel the ordering principle that the Nommo represent. Careless or dishonest speech disrupts order the way Yurugu's movement disrupted the cosmic egg.</p>
+
+<facts>Eight Nommo pairs::Correspond to clans, seasons, crops, cosmic forces|Cosmic ark::Template for granary, village, and ceremonial proportions|Sigi So::Secret ceremonial language, transmitted by Nommo|Twinness::Structural principle of completeness and reciprocity</facts>
+
+<reflect>
+The Nommo descend carrying civilization — but the form civilization takes is specific: language, weaving, agriculture, ceremony. What does this list reveal about what the Dogon considered the essential supports of human order?
+Nommo are associated with water and speech. How does treating language as a fluid, living substance — something that can nourish or damage — change how you approach your own words?
+What is the relationship between twinness as a cosmological principle and the actual social practices of reciprocity, pairing, and balance that hold communities together?
+</reflect>
+`
+            }
+          ]
+        },
+        {
+          id:    'dogon-ceremony',
+          title: 'Ceremony, Architecture & Sacred Time',
+          emoji: '🥁',
+          desc:  'The Dogon ceremonial cycle, sacred architecture, and how cosmic order is maintained through living practice.',
+          lessons: [
+            {
+              id:       'dg-sacred-granary',
+              num:      'DG·06',
+              title:    'The Granary as Universe — Sacred Architecture',
+              readTime: '11 min',
+              content: `
+<p class="lead">One of the most striking aspects of Dogon knowledge is that it does not stay in the sky. Cosmology descends into architecture. The <strong>granary</strong> — the everyday structure that stores grain through the dry season — is built according to the proportions of the cosmic egg, organized around the principles of the eight Nommo, and oriented to the movements of significant stars. To enter a granary is to be inside a model of the universe.</p>
+
+<h4>Eight Compartments, Eight Nommo</h4>
+<p>A traditional Dogon granary has eight internal compartments. These eight divisions correspond to the eight Nommo pairs — and through them to the eight clans, the eight crops, the eight cardinal and intercardinal directions, the eight seeds Amma placed in the world egg. This is not symbolic decoration imposed after the fact. The eight-fold structure is the design principle: the granary works as a granary and as a cosmological map simultaneously.</p>
+<p>When grain is stored and accessed by season, family, and crop type, those practical decisions are made within a framework that reflects cosmic order. Daily life and cosmic structure are not separate domains requiring different modes of thought. They are one domain, visible at different scales.</p>
+
+<h4>Village as Body</h4>
+<p>The Dogon village plan is also cosmological. Read from above, a traditional village maps the shape of the Nommo's cosmic body. The smithy is the head. The communal meeting place is the chest. The altars are the hands. The women's dwellings form the legs. The layout is not merely aesthetic — it organizes collective life according to the same principles that organize the cosmos. Where you sit, where you gather, where you work — all of it locates you within the body of the founding ancestors.</p>
+
+<callout>This is what comparative studies call "cosmological architecture" — building that encodes a view of the universe in its proportions and organization. Examples appear in many traditions: Kemet temple alignments, Hawaiian heiau construction, Vedic mandir proportions, Aboriginal sacred site placement. Each tradition generates its own form. What they share is the principle that constructed space is not neutral: it is an argument about how the world is organized.</callout>
+
+<h4>Sanctuary and Sky</h4>
+<p>The <em>togu na</em> — the men's meeting shelter — is built low enough that no one can stand inside. Everyone who enters must sit. The low roof enforces posture: in the space of collective deliberation, nobody stands above others. This is not a safety feature. It is architectural ethics, cosmological governance made physical.</p>
+
+<reflect>
+If you were to design a space — a home, a classroom, a community building — whose architecture encoded your values about how the world is organized, what would it look like?
+The granary is cosmological and practical simultaneously. What would be lost and gained if we only understood it as one or the other?
+The togu na enforces equality through low ceilings rather than rules. What does it say about a culture that builds its ethics into its architecture rather than writing them down?
+</reflect>
+`
+            },
+            {
+              id:       'dg-dama-ceremony',
+              num:      'DG·07',
+              title:    'The Dama — Returning the Dead to the Ancestors',
+              readTime: '13 min',
+              content: `
+<p class="lead">When a Dogon adult dies, a funeral ceremony takes place — but the work of returning that person fully to the cosmic order is not complete until the <strong>Dama</strong>. Performed months or years after death, the Dama releases the <em>nyama</em> — the vital force — of the deceased, freeing it from the world of the living and returning it to the ancestors. It is one of the most complex ceremonial events in West African life.</p>
+
+<callout type="gold">The Dama is not public entertainment. It is sacred technology — a set of practices whose function is cosmological maintenance. What outsiders are permitted to witness, photograph, or describe is limited. This lesson works from published community accounts and scholarship that Dogon cultural organizations have consented to share. Approach with appropriate reserve.</callout>
+
+<h4>Nyama and the Unfinished Dead</h4>
+<p>In Dogon understanding, <em>nyama</em> is the vital force that animates all living things. At death, the body dissolves but nyama does not immediately return to the cosmic order. It lingers in the world of the living, incomplete, potentially disruptive — like Yurugu, it is force without proper form. The Dama provides the ceremonial structure that completes the transition, giving nyama the direction it needs to leave the living world and join the ancestors.</p>
+<p>Until the Dama, the deceased is considered neither fully among the living nor fully among the dead. The survivors carry an obligation: to perform the ceremony that completes the transit. This understanding makes death not an event but a process — one that requires active participation from the community to bring to proper completion.</p>
+
+<h4>The Masks</h4>
+<p>The Dama involves mask performances by initiated men of the <em>Awa</em> society. The masks are not costumes representing human characters. They are instruments that embody cosmic forces — Nommo, elemental powers, ancestral principles. When a man wears the mask, he is not pretending to be something else; he is temporarily becoming a vessel for the force the mask represents. Strict protocols govern who may make, wear, see, or inherit particular masks.</p>
+<p>The Kanaga mask — a cross-shaped form extending above the head — is one of the most recognized. Its shape encodes cosmological geometry: the connection between earth, the human, and the celestial order. Its movements during the Dama trace cosmological relationships in the air above the community.</p>
+
+<h4>Completion as a Social Act</h4>
+<p>What strikes comparative scholars is that the Dama makes cosmic completion a collective responsibility. The community must perform the ceremony or the dead are not properly returned. This is not superstition. It is a sophisticated understanding of what holds social and cosmic order together: active, repeated, communal ceremony. The cosmos does not maintain itself passively. It requires maintenance — the same principle found in Vedic yajna, in Hawaiian hula, in Kemetic temple ritual.</p>
+
+<reflect>
+What changes about your understanding of death when it becomes a process requiring communal action rather than an event that simply happens?
+The masks embody cosmic forces rather than representing human characters. What does this distinction teach about the difference between performance and transformation?
+The Dama is cosmic maintenance — the community actively sustains the order it lives within. Where do you see this principle of active maintenance at work in any tradition you know well?
+</reflect>
+`
+            },
+            {
+              id:       'dg-sigui-cycle',
+              num:      'DG·08',
+              title:    'The Sigui — Sixty Years of Living Transmission',
+              readTime: '12 min',
+              content: `
+<p class="lead">Every sixty years, the Dogon hold the <strong>Sigui</strong> — one of the most remarkable ceremonies in West African life. Lasting several years as it travels from village to village across Dogon country, the Sigui marks the renewal of the world, the transmission of the sacred language <em>Sigi So</em> to the next generation, and the commemoration of the first ancestor's death. Every living person experiences the Sigui once in their lifetime.</p>
+
+<h4>The Sixty-Year Cycle</h4>
+<p>The sixty-year period of the Sigui has drawn considerable attention because it appears to correlate with an astronomical cycle connected to the Sirius system — though, as with all the Sirius material, this connection should be held with careful attention to what is claimed and what is speculated. What is clear is that sixty years in Dogon life is more than a number: it is the human-scale cycle through which one generation fully hands the living tradition to the next.</p>
+<p>A child born in a Sigui year will be old when the next arrives. The ceremony thus spans the full arc of human working life. To be alive for two Sigui is to have lived a complete cycle. This is not mystical — it is a cultural technology for ensuring continuity across the length of a human generation, using the physical experience of aging and memory rather than written records.</p>
+
+<h4>Sigi So — The Language of the Ancestors</h4>
+<p>The <em>Sigi So</em> is a secret ceremonial language used during the Sigui and transmitted only at this ceremony. It is not the everyday Dogon language (Dogon-so). It is a specialized register carrying the vocabulary, formulas, and cadences of ancestral transmission. Learning Sigi So means entering a lineage of speakers that stretches back, in principle, to the first Sigui after the first ancestor's death.</p>
+<p>This is transmission as identity. To speak Sigi So correctly is to be connected to every Dogon man who spoke it before you and to every one who will speak it after. Language is not merely a communication tool; it is a carrier of lineage.</p>
+
+<h4>The Great Mask</h4>
+<p>Central to the Sigui is the <em>imina na</em> — the great mask, also called the serpent mask. This tall wooden structure, sometimes over ten meters, is carved at the beginning of each Sigui cycle and kept in a cave sanctuary afterward, joining the masks of previous cycles. The cave becomes a record of time: each mask a layer, each layer a generation, the whole a physical archive of the Sigui's unbroken chain.</p>
+
+<facts>Sixty-year cycle::Spans a human working lifetime, transmits knowledge generation to generation|Sigi So::Secret ceremonial language, spoken only during Sigui|Imina na::Great mask carved for each Sigui, stored in ancestral caves|Awa society::Initiated men responsible for mask ceremonies and Sigui performance</facts>
+
+<reflect>
+What does it mean to design a knowledge transmission system around the full arc of a human lifetime — so that each person can only be present for one full cycle?
+The cave storing the great masks becomes a physical archive of time. What does it mean to make time visible, layer by layer, in a single place?
+The Sigui transmits the sacred language across sixty years. What would it take, in your own community or tradition, to ensure that something essential survived a full human generation?
+</reflect>
+`
             }
           ]
         }
@@ -2831,6 +2980,166 @@ How can oral knowledge be honored without turning it into spectacle?
               title:    'Vedic Mathematics & Astronomy — Numbers of the Gods',
               readTime: '10 min',
               content: `\n<p class=\"lead\">Ancient Indian civilization developed mathematics and astronomy of stunning sophistication. The Vedas contain astronomical data — observations of planetary motion, predictions of eclipses, descriptions of the structure of the cosmos in terms of mathematical relationships.</p>\n\n<h4>Decimal Mathematics & the Zero</h4>\n<p>Indian mathematicians developed the decimal system and the concept of <strong>zero</strong> as a number, not merely a placeholder. This innovation — which seems obvious now — was revolutionary. It enabled calculation at scales that were practically impossible with Roman or Greek numerals. The very concept of zero required philosophical sophistication: the recognition that non-being (zero) could be a mathematical entity with computational reality.</p>\n\n<callout>The term \"zero\" comes from the Sanskrit <em>sunya</em>, meaning \"empty\" or \"void.\" This carries philosophical weight: zero is not nothing in the sense of annihilation. It is the fertile emptiness — like the Brahman of the Nasadiya Sukta. From zero (potential), calculations unfold, structures emerge. The mathematics of the Vedas and the metaphysics of the Nasadiya teach the same lesson: potential is real, void is generative.</callout>\n\n<h4>Astronomical Precision</h4>\n<p>Vedic texts contain descriptions of planetary positions and motions with precision that matches modern observation. The Aryabhata, composed around 500 CE, describes the cosmos as heliocentric — the Sun at the center, planets orbiting. This description predates Copernicus by 1,000 years. Whether this was theoretical model or observational discovery remains debated — but the sophistication of Vedic astronomy is beyond question.</p>\n\n<reflect>\nWhat does the zero — rooted in Sanskrit sunya, meaning fertile emptiness — reveal about the philosophical depth embedded in mathematical innovation?\nHow does placing Aryabhata\'s heliocentric model a thousand years before Copernicus change the conventional history of astronomical knowledge?\nWhere do you see mathematical precision and metaphysical insight arising from the same source in any tradition you have studied?\n</reflect>\n`
+            },
+            {
+              id:       'vd-dharma-rta',
+              num:      'VD·04',
+              title:    'Dharma and Ṛta — Cosmic Order and Right Action',
+              readTime: '12 min',
+              content: `
+<p class="lead">Before there was Dharma, there was <strong>Ṛta</strong>. Ṛta is one of the oldest concepts in the Vedas — it is the cosmic order itself: the principle that keeps the sun rising, the seasons turning, the rivers flowing, the moral fabric of the universe intact. Dharma, which comes later in Sanskrit philosophical development, is the human application of Ṛta — the right action, right conduct, right role that aligns a person with cosmic order.</p>
+
+<h4>Ṛta — The Rhythm Before Ethics</h4>
+<p>In the Rigveda, Ṛta is not a rule or a law in the legal sense. It is a structural reality — more like the laws of physics than the laws of a legislature. The sun follows Ṛta when it rises. The rains follow Ṛta when they come in their proper season. A person follows Ṛta when they act in accordance with their nature, their role, and their relationships.</p>
+<p>The custodians of Ṛta in the cosmic order are Varuna and Mitra — two Vedic deities who watch the moral fabric of the world with the same care that forces of nature watch the physical fabric. Violation of Ṛta — what the Vedas call <em>anṛta</em> — does not merely offend; it disrupts the cosmic order itself. Wrong action has cosmological consequences.</p>
+
+<h4>Dharma Emerging from Ṛta</h4>
+<p>Dharma carries the same root as the Sanskrit <em>dhṛ</em> — "to hold, to support, to maintain." Dharma is what holds the world together. In different contexts it means: cosmic law, individual duty, ethical conduct, the path of right living, the teaching of a tradition. Its many meanings are not contradictions — they are the same principle at different scales: cosmic, social, individual, momentary.</p>
+<p>The Bhagavad Gita — composed centuries after the Rigveda — places Dharma at the center of its ethical teaching. Arjuna hesitates before battle. Krishna's teaching is fundamentally about Dharma: about acting according to one's deepest nature and role, without attachment to results. This is not cold calculation; it is cosmic alignment.</p>
+
+<callout type="bridge">The concept of a natural moral order embedded in the structure of the cosmos appears across many traditions: Kemetic Maʻat, Confucian Tian-ming (Mandate of Heaven), Kānaka Maoli Ea (sovereignty/breath), Aboriginal Lore. Each tradition develops its own form of this insight. What the convergence suggests is that the intuition of cosmic moral order — that right action aligns with something larger than personal preference — is among humanity's most widely-shared philosophical discoveries.</callout>
+
+<h4>Right Action Without Attachment</h4>
+<p>One of the Gita's most important teachings is <em>nishkama karma</em> — action without attachment to results. This is not apathy. It is the understanding that Dharma-aligned action is complete in itself, regardless of outcome. The archer who shoots correctly has fulfilled their Dharma whether the arrow lands or not. Right action is its own justification — not a means to a separate end.</p>
+
+<reflect>
+Ṛta treats cosmic order and moral order as the same principle at different scales. What does this suggest about the relationship between physics and ethics — between how the universe works and how we ought to act?
+Dharma is often translated as "duty," but that translation is impoverished. What is lost when a concept of cosmic alignment is reduced to obligation?
+The teaching of action without attachment to results is offered to someone paralyzed by fear of consequences. What makes this teaching potentially liberating rather than merely cold?
+</reflect>
+`
+            },
+            {
+              id:       'vd-purusha',
+              num:      'VD·05',
+              title:    'Purusha — The Cosmic Person as All That Is',
+              readTime: '11 min',
+              content: `
+<p class="lead">The <strong>Purusha Sukta</strong> (Rigveda 10.90) describes the universe not as an empty container filled with matter, but as a <em>person</em> — a vast, conscious being whose body is all of existence. Sky, earth, sun, moon, directions, time, social order, fire, seasons: all emerge from the sacrifice of this primordial being. This hymn rewrites what cosmology can be.</p>
+
+<h4>Purusha — The Original Thousand-Limbed Being</h4>
+<p>The Purusha Sukta opens: <em>"Purusha has a thousand heads, a thousand eyes, a thousand feet. Enveloping the earth from all sides, he stood ten finger-breadths beyond."</em> Purusha is not merely large — he exceeds the cosmos he fills. He is three-quarters immortal in the celestial realm; only one-quarter descends into the manifest world of time and matter.</p>
+<p>This image of a being who exceeds the world it generates carries an important metaphysical claim: reality is larger than what appears. The manifest world is a portion of Purusha, but Purusha overflows it. Brahman — ultimate reality — cannot be contained by its own creations.</p>
+
+<h4>Sacrifice as Creation</h4>
+<p>The gods perform a sacrifice of Purusha himself — and from his sacrificed body, the entire world is constituted. From his mind comes the moon. From his eye, the sun. From his mouth, Indra and Agni. From his breath, the wind. From his navel, the sky's middle realm. From his head, the highest heaven. From his feet, the earth. From his ear, the directions.</p>
+<p>This is cosmology as anatomy: the world is a body, and each part of the world corresponds to a part of the original being. The sun is not merely a distant hot object — it is Purusha's eye, still looking. The earth is not merely ground — it is Purusha's feet, still supporting. Creation is not finished and done; it is the ongoing body of the one who generated it.</p>
+
+<h4>Microcosm and Macrocosm</h4>
+<p>The Purusha Sukta establishes one of Vedic philosophy's most enduring principles: the human body recapitulates the cosmic body. The same correspondences that organize the cosmos organize the person. The sun corresponds to the eye; the moon to the mind; the wind to the breath; the directions to the ears. To know your own body is to know, in miniature, the structure of the universe. This principle becomes explicit in later Vedic philosophy: <em>Brahman</em> (the ultimate reality of the cosmos) equals <em>Atman</em> (the ultimate reality of the individual).</p>
+
+<twocol left="Purusha Sukta (Vedic)" right="Kanaka Maoli Kumulipo">The cosmos as sacrificed body — reality emerging from the offering of a primordial person, whose limbs become sky, earth, sun, moon, social order.||The Kumulipo as genealogical chant — life forms emerging in sequence from primordial Pō, each birth a line, the chant itself the living record of the descent.</twocol>
+
+<reflect>
+What changes in how you relate to the sun, the wind, the earth when they are understood as parts of a living body rather than as physical forces operating mechanically?
+The Purusha exceeds the cosmos he fills — Brahman overflows its own creations. What does this claim protect against in a philosophy of the ultimate?
+The equation of Brahman (cosmic ultimate) with Atman (personal ultimate) is one of the most radical claims in human philosophy. What are its implications for how you understand your own identity?
+</reflect>
+`
+            }
+          ]
+        },
+        {
+          id:    'vedic-transmission',
+          title: 'Voice, Fire & Living Practice',
+          emoji: '🔥',
+          desc:  'How Vedic knowledge was preserved, transmitted through fire ritual, and embodied in practice.',
+          lessons: [
+            {
+              id:       'vd-oral-transmission',
+              num:      'VD·06',
+              title:    'The Rigveda as Living Voice — Oral Transmission',
+              readTime: '13 min',
+              content: `
+<p class="lead">The Rigveda is approximately 3,500 years old. It was transmitted orally — memorized and recited with exact pitch, rhythm, and pronunciation — for most of that time without a single written word. The manuscripts that eventually encoded it were produced centuries after the oral tradition was already ancient. That the text we have today matches those manuscripts with extraordinary precision is one of the greatest demonstrations of oral transmission in human history.</p>
+
+<h4>Svara — The Three Tones</h4>
+<p>Vedic Sanskrit uses a pitch accent system with three tones: <em>udātta</em> (raised), <em>anudātta</em> (lowered), and <em>svarita</em> (falling). These tones are not ornamental — they are part of the text itself. A word chanted at the wrong pitch carries a different meaning or no meaning at all. The tradition teaches that incorrectly chanted Veda can cause harm rather than the blessing it is meant to produce. This is not superstition; it is the understanding that the precise form of the chant is what gives it its power.</p>
+<p>Every syllable's tone is specified. Every vowel's length is measured. Every consonant's point of articulation is taught. The result is a phonological system of extraordinary precision — one that linguists today use to reconstruct the sound system of Proto-Indo-European, the ancestor language of Sanskrit, Greek, Latin, and most European languages.</p>
+
+<h4>Padapatha and Multiple Recitation Forms</h4>
+<p>To ensure that chanted Veda could not be corrupted over time, the tradition developed multiple recitation forms:</p>
+<ul>
+<li><strong>Saṃhitā pāṭha</strong> — the continuous, natural chant</li>
+<li><strong>Pada pāṭha</strong> — word-by-word recitation, stripping sandhi (sound-changes at word boundaries)</li>
+<li><strong>Krama pāṭha</strong> — overlapping recitation: AB, BC, CD... each pair twice</li>
+<li><strong>Jaṭā pāṭha</strong> — braided recitation: AB BA AB, BC CB BC...</li>
+<li><strong>Ghana pāṭha</strong> — the most complex, forward and backward multiple times</li>
+</ul>
+<p>A student who memorized only the saṃhitā pāṭha could, in theory, corrupt it unconsciously over generations. By also memorizing the pada pāṭha and krama pāṭha, any variation becomes detectable: the derived forms would not match. The tradition built error-correction directly into the transmission protocol.</p>
+
+<callout>UNESCO recognized Vedic chanting as an Intangible Cultural Heritage of Humanity in 2003. Living communities of Vedic chanters — particularly in certain regions of Kerala, Tamil Nadu, and Andhra Pradesh — still preserve these recitation forms in the same way they have been transmitted for millennia. This is not a museum artifact. It is a living transmission practice.</callout>
+
+<h4>What This Demands of a Learner</h4>
+<p>A young man beginning traditional Vedic training might spend eight to twelve years studying before being qualified to teach. He will have memorized thousands of hymns in multiple recitation forms, learned the grammar of an archaic Sanskrit that differs from the classical Sanskrit of later literature, mastered the phonological rules governing every sound change at every word boundary. This level of investment makes the transmission personal: the text lives in a body, not a book.</p>
+
+<reflect>
+The Vedic tradition built error-correction into the transmission protocol itself — memorizing multiple forms ensures that corruption would be detectable. What does this level of systematic care about precision reveal about what the tradition considered at stake?
+A text that lives in a body — that must be learned through years of physical practice, breath, and tone — has a different relationship to the people who carry it than a text that lives on a page. What is different?
+What would it mean to apply this standard of precision to any knowledge you consider important — to know it so completely that you could detect corruption by checking it against itself?
+</reflect>
+`
+            },
+            {
+              id:       'vd-yajna-fire',
+              num:      'VD·07',
+              title:    'Agni and the Sacred Fire — Yajna as Cosmic Maintenance',
+              readTime: '12 min',
+              content: `
+<p class="lead"><strong>Agni</strong> is the first word of the Rigveda. The Vedas open not with cosmology or abstract philosophy but with fire — the domestic, sacrificial, digestive, celestial fire that connects all realms of existence. Agni is not simply a deity of fire. He is fire as cosmic principle: the force of transformation, the carrier between worlds, the tongue that receives offerings and transmits them to the divine.</p>
+
+<h4>Agni in All Fires</h4>
+<p>In Vedic understanding, every fire is Agni. The cooking fire in every home is Agni. The digestive fire in every stomach is Agni. The lightning that strikes from cloud to earth is Agni. The sun is Agni in his celestial form. This is not poetic metaphor — it is an ontological claim: fire, wherever it appears, is a single principle expressing itself at different scales and in different contexts.</p>
+<p>This makes Agni intimate in a way that distant cosmic deities are not. He is present at every meal, at every sunrise, at every fever, at every moment of digestion and transformation. The sacred fire of the yajna is not importing something foreign into domestic life; it is making visible the cosmic force already present in it.</p>
+
+<h4>Yajna — The Mechanics of Offering</h4>
+<p>The <em>yajna</em> is the Vedic fire sacrifice — the central ritual practice of the Vedic tradition. At its most basic: a fire is built according to precise specifications, priests chant hymns, offerings (grain, ghee, soma, wood) are placed into the fire at specific moments in the chant, and Agni receives them and carries them to the appropriate deities and cosmic forces. The cosmos is maintained by this exchange.</p>
+<p>The cosmological logic of yajna is explicit in the texts: the gods maintain cosmic order; the gods are sustained by offerings; offerings are carried by Agni; therefore, performing yajna correctly maintains the cosmos. This is not magical thinking — it is a cosmological ecology, a model of reciprocal maintenance in which humans are participants rather than passive beneficiaries.</p>
+
+<h4>Three Sacred Fires</h4>
+<p>Traditional Vedic householders maintained three sacred fires at all times:</p>
+<ul>
+<li><strong>Gārhapatya</strong> — the householder's fire, perpetual, lit from the original family lineage fire</li>
+<li><strong>Āhavanīya</strong> — the offering fire, built facing east, used for oblations</li>
+<li><strong>Dakṣiṇāgni</strong> — the southern fire, facing ancestral spirits, used for protection</li>
+</ul>
+<p>These three fires triangulate the ritual space. The householder lives and works within this triangulation — surrounded by fire that marks the boundary between ordinary space and sacred space. This is not occasional ceremony. It is the permanent structure of a life lived as cosmic participation.</p>
+
+<callout type="bridge">The principle of fire as transformative intermediary — connecting the human world to the divine through sacrifice and offering — appears across many traditions: Kemetic incense and offering ritual, Aboriginal fire ceremony, Hawaiian imu preparation as sacred act, Christian Eucharist as transformative consumption. Each tradition develops its own form. What they share is the understanding that transformation — not merely transmission — is what makes offering sacred.</callout>
+
+<reflect>
+If Agni is the same principle in the cooking fire, the digestive fire, and the sacrificial fire, what does this say about the relationship between the sacred and the everyday?
+Yajna is cosmic maintenance — humans participate in sustaining the order they benefit from. How does this change the meaning of gratitude, offering, and reciprocity?
+The householder's fire is lit from an ancestral lineage fire and must never go out. What is being protected and transmitted in that unbroken flame?
+</reflect>
+`
+            },
+            {
+              id:       'vd-yoga-cosmos',
+              num:      'VD·08',
+              title:    'The Body as Universe — Yoga and Microcosm',
+              readTime: '11 min',
+              content: `
+<p class="lead">One of the most distinctive and enduring contributions of Vedic and later Hindu philosophy is the insistence that the body and the cosmos are structured by the same principles. This is not metaphor. It is a knowledge claim: to know your own body deeply — through practice, through breath, through sustained attention — is to know the structure of the universe. <strong>Yoga</strong> is the technology through which this knowledge is accessed.</p>
+
+<h4>Brahman = Atman</h4>
+<p>The Upanishads — the philosophical texts that elaborate and develop Vedic thought — state this principle with extraordinary directness: <em>Brahman</em> (the ultimate reality of the cosmos, the source behind all appearances) equals <em>Atman</em> (the ultimate reality of the individual self, the witnessing awareness behind all thought). These are not two things that are similar. They are one thing seen from two directions.</p>
+<p>This equation is one of the most radical claims in human philosophy. It dissolves the distinction between observer and observed, between self and universe, between personal liberation and cosmic realization. To know your own deepest nature is to know the deepest nature of reality itself. The two inquiries — "Who am I?" and "What is the cosmos?" — arrive at the same answer.</p>
+
+<h4>The Subtle Body — Prāṇa and the Chakras</h4>
+<p>Vedic and tantric philosophy describes a <em>subtle body</em> that underlies and interpenetrates the physical body. This subtle body is composed of prāṇa — life force, breath, the animating current — organized through channels (nāḍīs) and centers (chakras). The chakras correspond to levels of cosmic reality as well as to psychological and physiological functions. The base chakra relates to earth and physical survival; the crown chakra relates to pure awareness and the unmanifest source; the chakras between organize the full range of human experience in a map that is simultaneously anatomical and cosmological.</p>
+<p>This is the Purusha principle applied inward: if the cosmos is a body, then the body is a cosmos. Every organ, every breath, every posture is a cosmological statement.</p>
+
+<h4>Yoga as Epistemic Practice</h4>
+<p><em>Yoga</em> means "union" — from the same root as the English word "yoke." It is the practice of unifying the individual with the cosmic, the personal with the universal, the moving with the still. In its many forms — asana (posture), pranayama (breath), dhyana (meditation), jnana (inquiry), bhakti (devotion) — yoga is not primarily exercise or relaxation. It is an epistemological practice: a method for arriving at direct knowledge of the nature of the self and the cosmos.</p>
+<p>This is why Vedic philosophy is not merely theoretical. It demands practice. The texts describe the terrain; the practice navigates it. A philosopher who reads about Atman but does not practice has knowledge about something. The practitioner who reaches Atman in direct experience has knowledge of something. The Vedic tradition consistently distinguishes between these two kinds of knowing.</p>
+
+<reflect>
+If Brahman equals Atman — if the ultimate reality of the cosmos is identical to the ultimate reality of the self — what becomes possible in how you conduct the inquiry "Who am I?"?
+The subtle body maps cosmological principles onto physical anatomy. What does it mean to inhabit a body that is also a cosmological argument?
+Yoga distinguishes between knowing about and knowing directly through practice. Where in your own life have you experienced this distinction — where did understanding shift from intellectual to something more immediate?
+</reflect>
+`
             }
           ]
         }

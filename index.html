@@ -125,7 +125,7 @@
           return Promise.resolve(window.CULTURALVERSE_DATA);
         }
 
-        return window.LKP_LOAD_SCRIPT('LKP/js/lkp-data.js?v=cultures-2').then(function () {
+        return window.LKP_LOAD_SCRIPT('LKP/js/lkp-data.js?v=base-24-dogon-vedic-expand').then(function () {
           if (
             typeof CULTURALVERSE_DATA !== 'undefined' &&
             CULTURALVERSE_DATA &&
@@ -172,7 +172,7 @@
       window.LKP_LOAD_SHARED_DATA()
         .then(function () {
           // Load enrichments (connections, metadata, etc.)
-          return window.LKP_LOAD_SCRIPT('LKP/js/lkp-data-rich-additions.js?v=cultures-2');
+          return window.LKP_LOAD_SCRIPT('LKP/js/lkp-data-rich-additions.js?v=rich-11-dogon-vedic-expand');
         })
         .then(function () {
           // Load galaxy builder after enrichments are applied
