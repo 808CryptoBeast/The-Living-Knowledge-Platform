@@ -672,8 +672,8 @@ function resizeViewport(rendererRef, cameraRef, controlsRef, canvasRef) {
     controlsRef.zoomSpeed = IS_MOBILE ? 0.42 : 0.55;
     controlsRef.maxDistance = IS_MOBILE ? 150 : 220;
     controlsRef.panSpeed = IS_MOBILE ? 0.34 : 0.48;
-    controlsRef.rotateSpeed = IS_MOBILE ? -0.34 : -0.42;
-    controlsRef.autoRotateSpeed = IS_MOBILE ? 0.14 : 0.22;
+    controlsRef.rotateSpeed = IS_MOBILE ? -0.26 : -0.32;
+    controlsRef.autoRotateSpeed = IS_MOBILE ? 0.06 : 0.09;
   }
 }
 
@@ -743,7 +743,7 @@ composer.addPass(bloom);
 const controls = new OrbitControls(camera, renderer.domElement);
 
 controls.enableDamping = true;
-controls.dampingFactor = IS_MOBILE ? 0.075 : 0.06;
+controls.dampingFactor = IS_MOBILE ? 0.038 : 0.022;
 controls.enablePan = true;
 controls.panSpeed = IS_MOBILE ? 0.34 : 0.48;
 controls.screenSpacePanning = true;
@@ -751,11 +751,11 @@ controls.enableZoom = true;
 controls.zoomSpeed = IS_MOBILE ? 0.42 : 0.55;
 controls.minDistance = 1;
 controls.maxDistance = IS_MOBILE ? 150 : 220;
-controls.rotateSpeed = IS_MOBILE ? -0.34 : -0.42;
+controls.rotateSpeed = IS_MOBILE ? -0.26 : -0.32;
 controls.minPolarAngle = 0.28;
 controls.maxPolarAngle = Math.PI * 0.86;
 controls.autoRotate = !REDUCED_MOTION;
-controls.autoRotateSpeed = IS_MOBILE ? 0.14 : 0.22;
+controls.autoRotateSpeed = IS_MOBILE ? 0.06 : 0.09;
 controls.target.set(0, 0, 0);
 
 if (miniViewerCanvas) {
@@ -782,7 +782,7 @@ if (miniViewerCanvas) {
 
   miniControls = new OrbitControls(miniCamera, miniRenderer.domElement);
   miniControls.enableDamping = true;
-  miniControls.dampingFactor = IS_MOBILE ? 0.075 : 0.06;
+  miniControls.dampingFactor = IS_MOBILE ? 0.038 : 0.022;
   miniControls.enablePan = true;
   miniControls.panSpeed = IS_MOBILE ? 0.34 : 0.48;
   miniControls.screenSpacePanning = true;
@@ -790,11 +790,11 @@ if (miniViewerCanvas) {
   miniControls.zoomSpeed = IS_MOBILE ? 0.42 : 0.55;
   miniControls.minDistance = 1;
   miniControls.maxDistance = IS_MOBILE ? 150 : 220;
-  miniControls.rotateSpeed = IS_MOBILE ? -0.34 : -0.42;
+  miniControls.rotateSpeed = IS_MOBILE ? -0.26 : -0.32;
   miniControls.minPolarAngle = 0.28;
   miniControls.maxPolarAngle = Math.PI * 0.86;
   miniControls.autoRotate = !REDUCED_MOTION;
-  miniControls.autoRotateSpeed = IS_MOBILE ? 0.14 : 0.22;
+  miniControls.autoRotateSpeed = IS_MOBILE ? 0.06 : 0.09;
   miniControls.target.set(0, 0, 0);
 
   miniViewerCanvas.addEventListener("pointerdown", () => {
@@ -834,7 +834,7 @@ if (mobileViewerCanvas) {
 
   mobileControls = new OrbitControls(mobileCamera, mobileRenderer.domElement);
   mobileControls.enableDamping = true;
-  mobileControls.dampingFactor = IS_MOBILE ? 0.075 : 0.06;
+  mobileControls.dampingFactor = IS_MOBILE ? 0.038 : 0.022;
   mobileControls.enablePan = true;
   mobileControls.panSpeed = IS_MOBILE ? 0.34 : 0.48;
   mobileControls.screenSpacePanning = true;
@@ -842,11 +842,11 @@ if (mobileViewerCanvas) {
   mobileControls.zoomSpeed = IS_MOBILE ? 0.42 : 0.55;
   mobileControls.minDistance = 1;
   mobileControls.maxDistance = IS_MOBILE ? 150 : 220;
-  mobileControls.rotateSpeed = IS_MOBILE ? -0.34 : -0.42;
+  mobileControls.rotateSpeed = IS_MOBILE ? -0.26 : -0.32;
   mobileControls.minPolarAngle = 0.28;
   mobileControls.maxPolarAngle = Math.PI * 0.86;
   mobileControls.autoRotate = !REDUCED_MOTION;
-  mobileControls.autoRotateSpeed = IS_MOBILE ? 0.14 : 0.22;
+  mobileControls.autoRotateSpeed = IS_MOBILE ? 0.06 : 0.09;
   mobileControls.target.set(0, 0, 0);
 }
 
@@ -2320,14 +2320,7 @@ function onFrame() {
     const isHov  = hoveredId === cn.concept.id;
     const pulse  = REDUCED_MOTION ? 0 : Math.sin(t * 1.5 + cn.phase) * (IS_MOBILE ? 0.08 : 0.13);
     
-    // Count incoming connections for this concept
-    let connectionCount = 0;
-    CONNECTIONS.forEach((conn) => {
-      const aId = conn.aId;
-      const bId = conn.bId;
-      if (aId === cn.concept.id || bId === cn.concept.id) connectionCount++;
-    });
-    const connectionGlow = (connectionCount / Math.max(1, CONNECTIONS.length)) * 0.15;
+    const connectionGlow = (cn._connectionCount / Math.max(1, CONNECTIONS.length)) * 0.15;
 
     const revealNode = THREE.MathUtils.clamp((now - cn.revealAt) / (cn.isNewLesson ? 520 : 840), 0, 1);
     const guideIdx = storyFocus.active
@@ -2448,8 +2441,8 @@ function handleResize() {
   controls.zoomSpeed    = IS_MOBILE ? 0.42 : 0.55;
   controls.maxDistance  = IS_MOBILE ? 150 : 220;
   controls.panSpeed     = IS_MOBILE ? 0.34 : 0.48;
-  controls.rotateSpeed  = IS_MOBILE ? -0.34 : -0.42;
-  controls.autoRotateSpeed = IS_MOBILE ? 0.14 : 0.22;
+  controls.rotateSpeed  = IS_MOBILE ? -0.26 : -0.32;
+  controls.autoRotateSpeed = IS_MOBILE ? 0.06 : 0.09;
   resizeAuxViewers();
 }
 
@@ -2583,6 +2576,17 @@ async function init() {
 
     makeAllConceptNodes();
     makeConstellations();
+
+    /* Precompute per-concept connection count once so onFrame doesn't iterate
+       all CONNECTIONS for every node every frame (was O(nodes × edges) @ 60 fps) */
+    const _connTally = new Map();
+    CONNECTIONS.forEach(({ aId, bId }) => {
+      _connTally.set(aId, (_connTally.get(aId) || 0) + 1);
+      _connTally.set(bId, (_connTally.get(bId) || 0) + 1);
+    });
+    conceptNodes.forEach((cn) => {
+      cn._connectionCount = _connTally.get(cn.concept.id) || 0;
+    });
 
     makeStarCompass();
     makeCompassImageOverlay();

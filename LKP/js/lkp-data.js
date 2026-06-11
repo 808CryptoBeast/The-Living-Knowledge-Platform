@@ -3681,6 +3681,101 @@ What would change if destiny meant disciplined alignment rather than fixed fate?
             }
 
           ]
+        },
+
+        {
+          id:    'yoruba-orisa',
+          title: 'Òrìṣà — The Living Divine',
+          emoji: '⚡',
+          desc:  'The great Òrìṣà forces: Ògún, Ọṣun, Ṣàngó, and the ancestors who hold the community across time.',
+          lessons: [
+            {
+              id:       'yo-ogun',
+              num:      'YO·04',
+              title:    'Ògún — Iron, Labor, and the Path That Must Be Cleared',
+              readTime: '12 min',
+              content: `
+<p class="lead"><strong>Ògún</strong> is the Òrìṣà of iron, roads, labor, war, craft, hunting, and clearing. Where paths are blocked, Ògún cuts through. Every forge, every blade, every tool that shapes the world carries something of Ògún's principle.</p>
+
+<h4>Iron as Sacred Force</h4>
+<p>In Yoruba thought, iron is not merely a material. It is the substance of decisive action. Blacksmiths, hunters, soldiers, surgeons, and farmers all work with Ògún's energy. To use iron carelessly is to misuse a living force.</p>
+
+<h4>Clearing and Consequence</h4>
+<p>Ògún teaches that progress requires clearing, and clearing carries responsibility. A road must be opened — but to where, and at what cost? This Òrìṣà holds the ethics of action in the world: the knife that heals and the knife that harms are the same knife.</p>
+
+<h4>The Forest and Withdrawal</h4>
+<p>Ògún is also associated with the forest and with voluntary withdrawal. There are moments when the force that clears must rest. The one who acts most powerfully sometimes knows when to put down the blade and return to the deep.</p>
+
+<callout type="gold">Ògún is honored by those who work with iron and roads across West Africa and the diaspora — in Nigeria, Cuba, Haiti, Brazil, and Trinidad — a testament to the reach and vitality of Yoruba sacred knowledge.</callout>
+`
+            },
+            {
+              id:       'yo-osun',
+              num:      'YO·05',
+              title:    'Ọṣun — Water, Beauty, and Sacred Feminine Power',
+              readTime: '13 min',
+              content: `
+<p class="lead"><strong>Ọṣun</strong> is the Òrìṣà of sweet water, love, beauty, fertility, healing, and abundance. She is associated with the Ọṣun River in present-day Nigeria and with the knowledge that the deepest power often moves quietly.</p>
+
+<h4>Water as Living Intelligence</h4>
+<p>Ọṣun's domain is not simply emotion or romance. Sweet water is life itself — the force that cleanses, nourishes, and carries things forward. To honor Ọṣun is to honor the intelligence in tenderness, in patience, and in care.</p>
+
+<h4>Beauty as a Form of Knowledge</h4>
+<p>In Yoruba tradition, beauty is not decoration. It is a sign of alignment. The adorned, the graceful, the well-made carry àṣẹ. Ọṣun teaches that beauty in a person, a place, or an action reflects inner coherence. To tend beauty is to tend the world.</p>
+
+<h4>Ọṣun and the Councils of the Òrìṣà</h4>
+<p>Sacred accounts describe a time when the male Òrìṣà attempted to act without Ọṣun. Their efforts failed. Only when she was included did the work succeed. This is a teaching about completeness: power without the feminine principle is incomplete power.</p>
+
+<reflect>
+Where in your life do you treat tenderness as weakness rather than intelligence?
+What would it mean to treat beauty and care as forms of serious knowledge?
+</reflect>
+`
+            },
+            {
+              id:       'yo-sango',
+              num:      'YO·06',
+              title:    'Ṣàngó — Lightning, Justice, and Royal Memory',
+              readTime: '12 min',
+              content: `
+<p class="lead"><strong>Ṣàngó</strong> is the Òrìṣà of lightning, thunder, fire, justice, and royal power. He is also remembered as a historical king of Ọ̀yọ́ who became deified — a figure where political history, sacred memory, and living force converge.</p>
+
+<h4>Lightning as Judgment</h4>
+<p>The bolt does not negotiate. Ṣàngó's lightning strikes where it strikes. In Yoruba thought, this is not cruelty — it is a model of clear, undeniable judgment. Ṣàngó is invoked against liars, the unjust, and the arrogant. His fire reveals what is hidden.</p>
+
+<h4>Royal Power and Its Limits</h4>
+<p>The stories of Ṣàngó as king include his errors, his pride, and his eventual departure from Ọ̀yọ́. He is not remembered as perfect. He is remembered as powerful, real, and transformed. This honesty — that sacred figures carry human complexity — is itself a teaching.</p>
+
+<h4>The Ọ̀yọ́ Legacy</h4>
+<p>Ṣàngó's influence spread with the Ọ̀yọ́ Empire and traveled across the Atlantic through the slave trade. In Cuba he is Changó; in Brazil he is Xangô; in Trinidad he is Shango. The force did not disappear under colonial pressure — it moved and adapted.</p>
+
+<callout>The survival of Ṣàngó worship across centuries of suppression is a testament to the resilience of Yoruba sacred knowledge in the face of colonization and forced displacement.</callout>
+`
+            },
+            {
+              id:       'yo-egun',
+              num:      'YO·07',
+              title:    'Eégún & the Ancestors — Memory, Return, and the Living Community',
+              readTime: '12 min',
+              content: `
+<p class="lead">In Yoruba thought, the dead do not simply leave. <strong>Eégún</strong> (also Egúngún) refers to the collective ancestral force and to the masquerade tradition through which ancestors return, speak, counsel, and bless the community of the living.</p>
+
+<h4>The Ancestral Community</h4>
+<p>Yoruba cosmology understands the living, the dead, and the unborn as one community across time. Ancestors who lived well continue to be sources of guidance, protection, and àṣẹ. They are not gone — they have changed address.</p>
+
+<h4>The Masquerade as Return</h4>
+<p>The Egúngún masquerade embodies the return of ancestors in physical form. The masked figure is not a symbol — within the ritual frame, it is the ancestor. The community participates in something real: the compression of past into present, of lineage into voice.</p>
+
+<h4>Memory as Responsibility</h4>
+<p>To remember the dead well is a moral act. Orúkọ — names, praise-poems, and genealogies — are how the community keeps the ancestors alive in speech. Forgetting is not passive. It is a severing. Remembering is not nostalgia. It is maintenance of the living web.</p>
+
+<reflect>
+Who are the ancestors — biological, cultural, intellectual — whose memory you carry?
+What does remembering them well require of you?
+</reflect>
+`
+            }
+          ]
         }
       ]
     },
@@ -3754,6 +3849,101 @@ What would change if destiny meant disciplined alignment rather than fixed fate?
 <reflect>
 What does it mean to treat repair as a sacred act?
 Where does your world need mending rather than conquest?
+</reflect>
+`
+            }
+          ]
+        },
+
+        {
+          id:    'chinese-ethics-practice',
+          title: 'Ethics, Qì & Heaven',
+          emoji: '☯',
+          desc:  'Confucian humaneness, the I Ching, vital force, and the cosmic mandate that orders governance and life.',
+          lessons: [
+            {
+              id:       'zh-confucius',
+              num:      'ZH·04',
+              title:    'Kǒngzǐ & Rén — Humaneness, Ritual, and Relational Ethics',
+              readTime: '13 min',
+              content: `
+<p class="lead"><strong>Kǒngzǐ</strong> (Confucius) taught that the foundation of good society is not law or force but cultivated character. At the center of his teaching is <strong>rén</strong> — humaneness, benevolence, and the capacity to genuinely feel the humanity of others.</p>
+
+<h4>Rén and Lǐ</h4>
+<p><strong>Rén</strong> is the inner virtue; <strong>lǐ</strong> is its outer expression in ritual, ceremony, and proper conduct. Neither alone is sufficient. Inner goodness without form lacks direction. Ritual without genuine feeling becomes hollow performance. The two must move together.</p>
+
+<h4>Self-Cultivation and Relationship</h4>
+<p>For Kǒngzǐ, the self is not isolated. It is constituted through relationships: parent and child, ruler and minister, husband and wife, elder and younger sibling, friend and friend. Ethics is always relational. To cultivate yourself is to cultivate your relationships.</p>
+
+<h4>The Rectification of Names</h4>
+<p>One of Confucius's most important teachings is <em>zhèngmíng</em> — the rectification of names. Things must be called what they are. A ruler who does not govern should not be called a ruler. When names are wrong, language fails, and social order unravels. This is a teaching about honesty with deep political implications.</p>
+
+<callout type="bridge">Confucian relational ethics finds resonance with Yoruba community obligation, Māori whakapapa, and Kanaka Maoli aloha. Each insists that the self is always already embedded in relation.</callout>
+`
+            },
+            {
+              id:       'zh-iching',
+              num:      'ZH·05',
+              title:    'I Ching — Change, Divination, and the 64 Hexagrams',
+              readTime: '14 min',
+              content: `
+<p class="lead">The <strong>I Ching</strong> (Yìjīng — Book of Changes) is one of the oldest Chinese classical texts: a divination system, a cosmological map, and a guide to navigating change. Its 64 hexagrams describe every possible configuration of transition between yin and yang.</p>
+
+<h4>Structure of Change</h4>
+<p>Each hexagram is built from six lines — broken (yin) or unbroken (yang). The 64 combinations are not fortune-telling in the Western sense. They are a map of situations: their character, their movement, their likely transitions. Consulting the I Ching is a practice of disciplined attention to pattern.</p>
+
+<h4>Change as the Constant</h4>
+<p>The central teaching is that change is the only constant. The hexagram you receive is not permanent — it is already in the process of becoming something else. Wisdom is not about fixing things but reading their motion and responding with appropriate timing.</p>
+
+<h4>Commentary Traditions</h4>
+<p>The I Ching accumulated layers of commentary across centuries, including the Ten Wings attributed to Confucian tradition. These commentaries turned a divinatory text into a philosophical one, exploring fate, character, heaven, earth, and the proper response of the cultivated person.</p>
+
+<reflect>
+What situation in your life feels like a moment of transition?
+What would it mean to read the pattern of that change rather than resist it?
+</reflect>
+`
+            },
+            {
+              id:       'zh-qi',
+              num:      'ZH·06',
+              title:    'Qì — Vital Force, Breath, and the Body in Motion',
+              readTime: '12 min',
+              content: `
+<p class="lead"><strong>Qì</strong> (also romanized as chi or ki) is the vital force that animates living things, flows through the body, moves through the natural world, and can be cultivated, disrupted, or harmonized. It is one of the most far-reaching concepts in Chinese thought.</p>
+
+<h4>Qì in the Body</h4>
+<p>In Chinese medicine, health is the free and balanced flow of qì through the body's channels (meridians). Illness is blockage, excess, or deficiency. Treatment — through acupuncture, herbs, movement, and breath — aims to restore flow rather than suppress symptoms.</p>
+
+<h4>Qì in the World</h4>
+<p>Qì is not limited to bodies. It moves through landscapes (a central concern of <em>fēng shuǐ</em>), through seasons, through music, and through social atmospheres. The cultivated person learns to read the qì of a room, a moment, or a relationship — and to adjust accordingly.</p>
+
+<h4>Cultivation Practices</h4>
+<p>Qìgōng, tàijíquán, meditation, and breath work are all practices for cultivating and refining qì. These are not merely physical exercise. They are practices of attention — disciplined ways of learning how vital force moves and how to align with it rather than against it.</p>
+
+<callout>Qì finds resonance with prana in Vedic tradition, mana in Polynesian thought, and àṣẹ in Yoruba — a recurring recognition across cultures that life is not mechanical but animated by something that can be honored, cultivated, and lost.</callout>
+`
+            },
+            {
+              id:       'zh-tianming',
+              num:      'ZH·07',
+              title:    'Tiān Mìng — Heaven\'s Mandate and the Order of Governance',
+              readTime: '13 min',
+              content: `
+<p class="lead"><strong>Tiān Mìng</strong> — the Mandate of Heaven — is one of the most consequential ideas in Chinese political and cosmological thought. It holds that legitimate rulership is granted by Heaven, and that when a ruler fails in virtue, Heaven withdraws its mandate.</p>
+
+<h4>Heaven as Moral Order</h4>
+<p><strong>Tiān</strong> in classical Chinese thought is not simply the sky. It is a moral force, a cosmic order that responds to human conduct. Heaven does not merely observe — it reacts. Natural disaster, social upheaval, and dynastic collapse could all be read as Heaven's judgment on failed governance.</p>
+
+<h4>The Mandate and Its Limits</h4>
+<p>The Mandate of Heaven was both a grant of power and a constraint on it. A ruler could not simply inherit authority permanently. Authority had to be continually earned through just governance, ritual correctness, and care for the people. This gave philosophical legitimacy to the replacement of one dynasty by another.</p>
+
+<h4>Cosmology and Responsibility</h4>
+<p>The Son of Heaven stood at the axis connecting Heaven above and Earth below. The emperor's ritual conduct — his prayers, sacrifices, and seasonal ceremonies — was not merely symbolic. It maintained the alignment between cosmic order and human society. Governance was a cosmological act.</p>
+
+<reflect>
+What would it mean for those who hold power in your world to understand that power as a trust conditional on virtue?
+Where do you see the Mandate being upheld — or withdrawn?
 </reflect>
 `
             }
