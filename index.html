@@ -125,7 +125,23 @@
           return Promise.resolve(window.CULTURALVERSE_DATA);
         }
 
-        return window.LKP_LOAD_SCRIPT('LKP/js/lkp-data.js?v=base-24-yoruba-chinese-expand').then(function () {
+        var CULTURE_SCRIPTS = [
+          'LKP/js/cultures/kanaka/lkp-culture-kanaka.js?v=cul-1',
+          'LKP/js/cultures/kemet/lkp-culture-kemet.js?v=cul-1',
+          'LKP/js/cultures/bridge/lkp-culture-bridge.js?v=cul-1',
+          'LKP/js/cultures/dogon/lkp-culture-dogon.js?v=cul-1',
+          'LKP/js/cultures/vedic/lkp-culture-vedic.js?v=cul-1',
+          'LKP/js/cultures/dreamtime/lkp-culture-dreamtime.js?v=cul-1',
+          'LKP/js/cultures/maori/lkp-culture-maori.js?v=cul-1',
+          'LKP/js/cultures/yoruba/lkp-culture-yoruba.js?v=cul-1',
+          'LKP/js/cultures/chinese/lkp-culture-chinese.js?v=cul-1'
+        ];
+
+        return CULTURE_SCRIPTS.reduce(function (chain, src) {
+          return chain.then(function () { return window.LKP_LOAD_SCRIPT(src); });
+        }, Promise.resolve()).then(function () {
+          return window.LKP_LOAD_SCRIPT('LKP/js/lkp-data.js?v=base-24-yoruba-chinese-expand');
+        }).then(function () {
           if (
             typeof CULTURALVERSE_DATA !== 'undefined' &&
             CULTURALVERSE_DATA &&

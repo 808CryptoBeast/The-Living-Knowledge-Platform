@@ -8,7 +8,7 @@
      • Everything else              — Network with cache fallback
 ═══════════════════════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'lkp-v2';
+const CACHE_VERSION = 'lkp-v3';
 const SHELL_CACHE   = CACHE_VERSION + '-shell';
 const DATA_CACHE    = CACHE_VERSION + '-data';
 const IMAGE_CACHE   = CACHE_VERSION + '-images';
@@ -56,6 +56,17 @@ const SHELL_URLS = [
 
 /* Large lesson data files — cached separately so shell installs fast */
 const DATA_URLS = [
+  /* Culture files — load order matters: kanaka first (defines KUMULIPO helpers) */
+  '/LKP/js/cultures/kanaka/lkp-culture-kanaka.js',
+  '/LKP/js/cultures/kemet/lkp-culture-kemet.js',
+  '/LKP/js/cultures/bridge/lkp-culture-bridge.js',
+  '/LKP/js/cultures/dogon/lkp-culture-dogon.js',
+  '/LKP/js/cultures/vedic/lkp-culture-vedic.js',
+  '/LKP/js/cultures/dreamtime/lkp-culture-dreamtime.js',
+  '/LKP/js/cultures/maori/lkp-culture-maori.js',
+  '/LKP/js/cultures/yoruba/lkp-culture-yoruba.js',
+  '/LKP/js/cultures/chinese/lkp-culture-chinese.js',
+  /* Assembler + supplemental data */
   '/LKP/js/lkp-data.js',
   '/LKP/js/lkp-data-rich-additions.js',
   '/LKP/js/lkp-data-primary-sources.js',
