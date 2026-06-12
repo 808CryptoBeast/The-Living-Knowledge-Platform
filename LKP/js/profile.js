@@ -4765,13 +4765,9 @@
     renderEcosystem();
     renderLessonPath();
 
-    /* Only initialise the heavy THREE.js galaxy when the user has an active
-       session. Guests never see the galaxy, so we skip it entirely and save
-       2-4 seconds of background work. It will be initialised after sign-in
-       via rebuildProfileGalaxyForRole() → initProfileGalaxy(). */
-    if (hasCachedSession()) {
-      await initProfileGalaxy();
-    }
+    /* Always initialise the galaxy — stars and sun are visible from the very
+       first visit. Planets appear as lessons are completed. */
+    await initProfileGalaxy();
 
     await setupSupabaseClient();
 

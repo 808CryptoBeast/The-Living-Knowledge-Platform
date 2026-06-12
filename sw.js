@@ -139,6 +139,9 @@ self.addEventListener('fetch', event => {
 
   const url = new URL(event.request.url);
 
+  /* Skip non-HTTP(S) schemes (chrome-extension, data:, etc.) */
+  if (url.protocol !== 'https:' && url.protocol !== 'http:') return;
+
   /* Network-only: Supabase API and external CDN fonts/libraries */
   if (isSupabaseRequest(url) || isExternalFont(url)) return;
 
