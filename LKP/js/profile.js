@@ -765,6 +765,19 @@
     return map[theme] || '#54c6ee';
   }
 
+  /* Per-culture planet color palettes for the profile galaxy */
+  const CULTURE_PLANET_COLORS = {
+    kanaka:    { color: '#2ecc87', secondaryColor: '#54c6ee' },  /* emerald + Pacific blue */
+    kemet:     { color: '#e6b84a', secondaryColor: '#c17f24' },  /* rich gold + deep amber */
+    bridge:    { color: '#a29bfe', secondaryColor: '#74b9ff' },  /* indigo + sky blue */
+    dogon:     { color: '#d35400', secondaryColor: '#e6b84a' },  /* Dogon rust-red + gold */
+    vedic:     { color: '#f39c12', secondaryColor: '#e74c3c' },  /* saffron + vermilion */
+    dreamtime: { color: '#c0392b', secondaryColor: '#e67e22' },  /* ochre-red + warm amber */
+    maori:     { color: '#1abc9c', secondaryColor: '#2980b9' },  /* pounamu jade + ocean blue */
+    yoruba:    { color: '#9b59b6', secondaryColor: '#f1c40f' },  /* royal purple + Oshun gold */
+    chinese:   { color: '#e74c3c', secondaryColor: '#f1c40f' }   /* imperial red + imperial gold */
+  };
+
   function hexToRgba(hex, alpha) {
     const clean = String(hex || '#ffffff').replace('#', '');
     const full =
@@ -1174,8 +1187,8 @@
           shortName: lesson.cultureName || lesson.cultureId,
           emoji: lesson.cultureEmoji || '\u2736',
           theme: lesson.cultureTheme || 'default',
-          color: lesson.cultureColor || themeColor(lesson.cultureTheme),
-          secondaryColor: '#f0c96a',
+          color: (CULTURE_PLANET_COLORS[lesson.cultureId] || {}).color || lesson.cultureColor || themeColor(lesson.cultureTheme),
+          secondaryColor: (CULTURE_PLANET_COLORS[lesson.cultureId] || {}).secondaryColor || '#f0c96a',
           paletteName: 'Young culture planet',
           desc: 'A culture path waiting to be awakened by learning.',
           href: buildLessonUrl(lesson),
@@ -3479,6 +3492,9 @@
 
       buildIdentityGalaxy();
       resizeProfileGalaxy();
+
+      const loader = document.getElementById('profileGalaxyLoader');
+      if (loader) loader.style.display = 'none';
 
       window.addEventListener('resize', resizeProfileGalaxy, { passive: true });
 

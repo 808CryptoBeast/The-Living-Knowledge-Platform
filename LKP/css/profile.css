@@ -1830,6 +1830,34 @@ body.profile-theme-light .profile-galaxy-panel {
   line-height: 1.45;
 }
 
+.profile-galaxy-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  color: rgba(240, 201, 106, 0.72);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  pointer-events: none;
+}
+
+.profile-galaxy-loader__pulse {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #f0c96a 0%, transparent 70%);
+  animation: galaxy-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes galaxy-pulse {
+  0%, 100% { transform: scale(0.7); opacity: 0.4; }
+  50%       { transform: scale(1.2); opacity: 1; }
+}
+
 .profile-galaxy-canvas {
   position: absolute;
   inset: 0;

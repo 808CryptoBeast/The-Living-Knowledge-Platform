@@ -70,7 +70,8 @@ const DATA_URLS = [
   '/LKP/js/lkp-data.js',
   '/LKP/js/lkp-data-rich-additions.js',
   '/LKP/js/lkp-data-primary-sources.js',
-  '/LKP/js/lkp-kumulipo-full-verses.js',
+  '/LKP/js/cultures/kanaka/lkp-kumulipo-full-verses.js',
+  '/LKP/js/cultures/kanaka/lkp-kumulipo-wa-ui.js',
 ];
 
 /* ── Helpers ──────────────────────────────────────────────────────────── */
