@@ -3557,6 +3557,16 @@
         return;
       }
 
+      if (node.isCultureCore) {
+        animateCultureCore(node, t);
+        return;
+      }
+
+      if (node.isLessonStar) {
+        animateLessonStar(node, index, t, activeNode);
+        return;
+      }
+
       animateRealmNode(node, index, t, activeNode);
     });
 
@@ -3714,6 +3724,60 @@
       node.label.position.set(pos.x, pos.y + 1.55, pos.z);
       const labelScale = isFocused ? 5.2 : 4.4;
       node.label.scale.lerp(new THREE.Vector3(labelScale, 1.15, 1), 0.08);
+    }
+  }
+
+  function animateCultureCore(node, t) {
+    if (!node.mesh) return;
+    node.mesh.rotation.y += 0.004;
+    node.mesh.rotation.x = Math.sin(t * 0.7) * 0.04;
+    if (node.glow) {
+      node.glow.position.copy(node.mesh.position);
+      node.glow.material.opacity = (node.glow.userData.baseOpacity || 0.22) + Math.sin(t * 1.1) * 0.06;
+    }
+    if (node.nebula) {
+      node.nebula.position.copy(node.mesh.position);
+      node.nebula.rotation.z += 0.0008;
+      node.nebula.rotation.y += 0.0004;
+    }
+    if (node.gasCloud) {
+      node.gasCloud.position.copy(node.mesh.position);
+      node.gasCloud.rotation.y += 0.0007;
+    }
+    if (node.label) {
+      const p = node.mesh.position;
+      node.label.position.set(p.x, p.y + node.labelOffsetY, p.z);
+    }
+  }
+
+  function animateLessonStar(node, index, t, activeNode) {
+    const THREE = state.three.THREE;
+    if (!node.mesh || !node.clusterPos) return;
+
+    const isFocused = activeNode === node;
+    const focusSlowdown = activeNode ? 0.34 : 1;
+    const angle = node.baseAngle + t * node.orbitSpeed * focusSlowdown;
+
+    const local = new THREE.Vector3(
+      Math.cos(angle) * node.orbitRadius,
+      Math.sin(t * 1.15 + index * 0.7) * (node.verticalFloat || 0.06),
+      Math.sin(angle) * node.orbitRadius
+    );
+    local.applyEuler(new THREE.Euler(node.orbitTiltX || 0, 0, node.orbitTiltZ || 0));
+
+    const worldPos = node.clusterPos.clone().add(local);
+    node.mesh.position.copy(worldPos);
+    node.mesh.rotation.y += 0.005;
+
+    const targetScale = isFocused ? 1.6 : 1;
+    node.mesh.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.09);
+
+    if (node.glow) {
+      node.glow.position.copy(worldPos);
+      node.glow.material.opacity =
+        (node.glow.userData.baseOpacity || 0.2) +
+        Math.sin(t * 1.4 + index) * 0.05 +
+        (isFocused ? 0.15 : 0);
     }
   }
 
@@ -3982,6 +4046,37 @@
       return;
     }
 
+    /* ── Lesson star node ── */
+    if (node.isLessonStar) {
+      const statusRaw = node.item.desc || '';
+      const isDone    = statusRaw.includes('Complete');
+      const isOn      = statusRaw.includes('In Progress');
+      const statusBadge = isDone
+        ? '<span style="color:#2ecc87">✓ Complete</span>'
+        : isOn
+          ? '<span style="color:#f0c96a">⟳ In Progress</span>'
+          : '<span style="opacity:0.45">○ Not Started</span>';
+
+      setText('#profileGalaxySelectionKicker', 'Lesson Star');
+      setText('#profileGalaxySelectionTitle', node.item.name);
+      setText('#profileGalaxySelectionDesc', node.item.desc.replace(/ — .*$/, ''));
+      setHTML('#profileGalaxySelectionMeta', `<strong>${statusBadge}</strong>`);
+
+      const openLink = $('#profileGalaxySelectionOpen');
+      if (openLink) {
+        openLink.href = node.item.href || '#';
+        openLink.removeAttribute('target');
+        openLink.removeAttribute('rel');
+        openLink.textContent = isDone ? 'Review Lesson' : isOn ? 'Continue Lesson' : 'Begin Lesson';
+      }
+
+      panel.style.borderColor = hexToRgba(node.item.color, 0.42);
+      panel.classList.add('is-visible');
+      panel.setAttribute('aria-hidden', 'false');
+      return;
+    }
+
+    /* ── Culture core node ── */
     const completedCount = node.item.completedCount || 0;
     const totalLessons = node.item.totalLessons || 0;
     const progress = node.item.progress || 0;
@@ -3991,7 +4086,7 @@
 
     setText(
       '#profileGalaxySelectionKicker',
-      `Culture Planet · Level ${node.item.level || 1}`
+      node.isCultureCore ? 'Culture Nebula' : `Culture Planet · Level ${node.item.level || 1}`
     );
 
     setText('#profileGalaxySelectionTitle', node.item.name);
@@ -4003,11 +4098,10 @@
         <strong>${escapeHTML(node.item.shortName || node.item.name)}</strong>
         <span>
           ${completedCount}/${totalLessons} lessons complete ·
-          ${progress}% culture progress ·
-          ${escapeHTML(topicText)} ·
-          ${node.item.hasStar ? 'orbit active' : 'young planet forming'}
+          ${progress}% culture progress
+          ${node.item.hasStar ? ' · orbit active' : ''}
         </span>
-        ${node.item.nextLesson ? `<small>Next: ${escapeHTML(node.item.nextLesson.title)}</small>` : '<small>Culture path complete.</small>'}
+        ${node.item.nextLesson ? `<small>Next: ${escapeHTML(node.item.nextLesson.title)}</small>` : (completedCount > 0 ? '<small>Culture path complete.</small>' : '')}
       `
     );
 
@@ -4024,7 +4118,7 @@
         openLink.removeAttribute('rel');
       }
 
-      openLink.textContent = node.item.nextLesson ? 'Continue Learning' : 'Review Culture';
+      openLink.textContent = node.item.nextLesson ? 'Continue Learning' : completedCount > 0 ? 'Review Culture' : 'Begin Culture';
     }
 
     panel.style.borderColor = hexToRgba(node.item.color, 0.42);
@@ -4125,202 +4219,196 @@
     resizeProfileGalaxy();
   }
 
-  /* FIX: buildIdentityGalaxy fully restored — the original was truncated after
-     glow.userData.baseOpacity, missing all nebula/gasCloud/satellite/label
-     creation, the scene.add() calls, and the nodes.push() with the colon on
-     verticalFloat fixed. */
   function buildIdentityGalaxy() {
     const THREE = state.three.THREE;
     const scene = state.three.scene;
-
     if (!THREE || !scene) return;
 
     addDustField();
     addDistantGalaxies();
 
+    /* ── Sun — always rendered ── */
     const sun = makeSunCore();
     sun.group.userData.profileGalaxyGenerated = true;
     scene.add(sun.group);
-
     state.three.sunGroup = sun.group;
+    state.three.nodes.push({ mesh: sun.group, glow: sun.primaryGlow, extraObjects: sun.extras, baseY: 0, isSun: true });
 
-    state.three.nodes.push({
-      mesh: sun.group,
-      glow: sun.primaryGlow,
-      extraObjects: sun.extras,
-      baseY: 0,
-      isSun: true
-    });
+    const cultures = state.contentData?.cultures || [];
 
-    state.started = getStartedLessons();
-    const items = getCultureProgressItems();
-    const baseRadius = 8.8;
-    const isDesktopGalaxy = window.matchMedia('(min-width: 1024px)').matches;
-
-    if (!items.length) {
-      const emptyLabel = makeTextSprite('Begin a lesson to awaken your first culture planet', '#f0c96a');
-      emptyLabel.position.set(0, -3.25, 0);
-      emptyLabel.scale.set(7.2, 1.25, 1);
-      emptyLabel.userData.profileGalaxyGenerated = true;
-      scene.add(emptyLabel);
+    /* ── No data yet — show a guide label and return; will be rebuilt after data loads ── */
+    if (!cultures.length) {
+      const hint = makeTextSprite('Your galaxy is awakening…', '#f0c96a');
+      hint.position.set(0, -3.5, 0);
+      hint.scale.set(6.4, 1.15, 1);
+      hint.userData.profileGalaxyGenerated = true;
+      scene.add(hint);
       state.three.nodes.push({
-        mesh: emptyLabel,
-        label: emptyLabel,
-        item: {
-          name: 'Your Galaxy Is Waiting',
-          shortName: 'Empty Galaxy',
-          desc: 'Start a lesson and the first culture planet will appear here.',
-          href: 'LKP/lessons.html',
-          color: '#f0c96a'
-        },
-        baseY: -3.25,
-        isGuide: true
+        mesh: hint, label: hint,
+        item: { name: 'Galaxy Awakening', desc: 'Content is loading…', href: 'LKP/lessons.html', color: '#f0c96a' },
+        baseY: -3.5, isGuide: true
       });
       return;
     }
 
-    items.forEach((item, index) => {
-      const primaryColor = item.color;
-      const secondaryColor = item.secondaryColor || item.color;
-      const color = new THREE.Color(primaryColor);
-      const level = item.level || 1;
+    const startedSet  = new Set(getStartedLessons());
+    const completedSet = new Set(state.completed || []);
+    const liveCultures = cultures.filter(c => c.id && Array.isArray(c.modules) && c.modules.length);
+    const N = liveCultures.length || 1;
 
-      const orbitRadius = baseRadius + (index % 4) * 2.0;
-      const orbitTiltX = -0.34 + (index % 5) * 0.16;
-      const orbitTiltZ = -0.22 + (index % 4) * 0.14;
-      const orbitSpeed = item.hasStar ? 0.064 + (index % 4) * 0.011 : 0.018;
-      const baseAngle = -Math.PI / 2 + (Math.PI * 2 * index) / items.length;
-      const baseY = Math.sin(index * 1.7) * 0.55;
+    liveCultures.forEach((culture, cIdx) => {
+      const palette = CULTURE_PLANET_COLORS[culture.id] || { color: '#54c6ee', secondaryColor: '#8be8ff' };
+      const primaryColor   = palette.color;
+      const secondaryColor = palette.secondaryColor;
 
-      const orbitLine = makeOrbitRing(
-        orbitRadius,
-        primaryColor,
-        item.hasStar ? 0.06 + level * 0.014 : 0.018,
-        orbitTiltX,
-        orbitTiltZ
-      );
+      /* Cluster position — spread around the sun in a loose spheroid */
+      const azAngle  = (cIdx / N) * Math.PI * 2;
+      const elAngle  = 0.18 + Math.sin(cIdx * 1.17) * 0.32;
+      const dist     = 24 + Math.cos(cIdx * 0.83) * 5;
+      const cx = dist * Math.cos(azAngle) * Math.cos(elAngle);
+      const cy = dist * Math.sin(elAngle);
+      const cz = dist * Math.sin(azAngle) * Math.cos(elAngle);
+      const clusterPos = new THREE.Vector3(cx, cy, cz);
 
-      orbitLine.userData.profileGalaxyGenerated = true;
-      scene.add(orbitLine);
+      /* Track culture engagement */
+      const allLessons   = culture.modules.flatMap(m => Array.isArray(m.lessons) ? m.lessons : []);
+      const nCompleted   = allLessons.filter(l => completedSet.has(l.id)).length;
+      const anyStarted   = allLessons.some(l => startedSet.has(l.id) || completedSet.has(l.id));
+      const pct          = allLessons.length ? nCompleted / allLessons.length : 0;
 
-      const mesh = new THREE.Mesh(
-        new THREE.SphereGeometry(item.adminOnly ? 0.74 : 0.56, 28, 28),
+      /* ── Culture nebula + gas cloud (visual backdrop, always visible) ── */
+      const nebulaOp = anyStarted ? 0.22 + pct * 0.12 : 0.06;
+      const nebula = makeRealmNebulaCluster(primaryColor, secondaryColor, 4.8 + pct * 1.6, nebulaOp);
+      nebula.position.copy(clusterPos);
+      nebula.userData.profileGalaxyGenerated = true;
+      scene.add(nebula);
+
+      const gasCloud = makeGasCloud(primaryColor, secondaryColor, 3.8 + pct * 1.2, 120, nebulaOp * 0.8);
+      gasCloud.position.copy(clusterPos);
+      gasCloud.userData.profileGalaxyGenerated = true;
+      scene.add(gasCloud);
+
+      /* ── Culture core sphere (interactive node representing the culture) ── */
+      const coreSize   = anyStarted ? 0.64 + pct * 0.28 : 0.32;
+      const coreEmit   = anyStarted ? 0.55 + pct * 0.35 : 0.06;
+      const coreOpac   = anyStarted ? 1.0  : 0.28;
+      const coreColor  = new THREE.Color(primaryColor);
+      const coreMesh   = new THREE.Mesh(
+        new THREE.SphereGeometry(coreSize, 24, 24),
         new THREE.MeshPhysicalMaterial({
-          color,
-          emissive: color,
-          emissiveIntensity: 0.42 + level * 0.14,
-          metalness: 0.08,
-          roughness: 0.24,
-          transparent: true,
-          opacity: 0.96
+          color: coreColor, emissive: coreColor, emissiveIntensity: coreEmit,
+          metalness: 0.1, roughness: 0.2, transparent: true, opacity: coreOpac
         })
       );
+      coreMesh.position.copy(clusterPos);
+      coreMesh.userData.profileGalaxyGenerated = true;
+      coreMesh.userData.href = allLessons.length ? `LKP/lessons.html#${allLessons[0].id}` : 'LKP/lessons.html';
+      coreMesh.userData.name = culture.name;
+      scene.add(coreMesh);
 
-      mesh.userData.profileGalaxyGenerated = true;
-      mesh.userData.href = item.href;
-      mesh.userData.name = item.name;
+      const coreGlow = makeGlowSprite(primaryColor, anyStarted ? 5.5 + pct * 2.5 : 2.2, anyStarted ? 0.28 : 0.09);
+      coreGlow.position.copy(clusterPos);
+      coreGlow.userData.profileGalaxyGenerated = true;
+      coreGlow.userData.baseOpacity = anyStarted ? 0.26 + pct * 0.1 : 0.08;
+      scene.add(coreGlow);
 
-      const glow = makeGlowSprite(
-        primaryColor,
-        2.8 + level * 0.48,
-        item.atmosphere || 0.24
-      );
-
-      glow.userData.profileGalaxyGenerated = true;
-      glow.userData.baseOpacity = item.adminOnly ? 0.42 : 0.28;
-
-      /* FIX: these nebula/gasCloud/satellite/label lines were completely missing */
-      const nebula = makeRealmNebulaCluster(
-        primaryColor,
-        secondaryColor,
-        2.4 + level * 0.28,
-        item.nebulaOpacity ?? 0.22
-      );
-
-      nebula.userData.profileGalaxyGenerated = true;
-
-      const gasCloud = makeGasCloud(
-        primaryColor,
-        secondaryColor,
-        2.2 + level * 0.32,
-        90 + level * 34,
-        item.nebulaOpacity ?? 0.18
-      );
-
-      gasCloud.userData.profileGalaxyGenerated = true;
-
-      const satellite = makeSatelliteSystem(
-        primaryColor,
-        secondaryColor,
-        1.2 + level * 0.22,
-        item.moonCount
-      );
-
-      satellite.group.userData.profileGalaxyGenerated = true;
-
-      const label = makeTextSprite(item.name, primaryColor);
-      label.scale.set(4.4, 1, 1);
+      /* ── Culture label ── */
+      const labelColor = anyStarted ? primaryColor : '#3a3a5a';
+      const label = makeTextSprite(culture.name, labelColor);
+      label.position.set(cx, cy + coreSize + 1.6, cz);
+      label.scale.set(4.8, 1.1, 1);
       label.userData.profileGalaxyGenerated = true;
-
-      scene.add(mesh);
-      scene.add(glow);
-      scene.add(nebula);
-      scene.add(gasCloud);
-      if (item.moonCount > 0) scene.add(satellite.group);
       scene.add(label);
 
-      let star = null;
-      let ringSystem = null;
-      let companion = null;
-      if (item.hasStar) {
-        star = makeGlowSprite('#fff0b8', 1.2 + level * 0.24, 0.44);
-        star.userData.profileGalaxyGenerated = true;
-        scene.add(star);
-      }
-      if (item.hasRings) {
-        ringSystem = new THREE.Group();
-        const ringA = makeOrbitRing(0.92 + level * 0.1, primaryColor, 0.28, Math.PI / 2.6, Math.PI / 10);
-        const ringB = makeOrbitRing(1.12 + level * 0.12, secondaryColor, 0.18, Math.PI / 2.6, -Math.PI / 12);
-        ringSystem.add(ringA);
-        ringSystem.add(ringB);
-        ringSystem.userData.profileGalaxyGenerated = true;
-        scene.add(ringSystem);
-      }
-      if (item.hasCompanion) {
-        companion = new THREE.Mesh(
-          new THREE.SphereGeometry(0.18, 18, 18),
-          new THREE.MeshPhysicalMaterial({
-            color: new THREE.Color(secondaryColor),
-            emissive: new THREE.Color(secondaryColor),
-            emissiveIntensity: 0.48,
-            roughness: 0.28
-          })
-        );
-        companion.userData.profileGalaxyGenerated = true;
-        scene.add(companion);
-      }
-
-      /* FIX: verticalFloat had missing colon — was `verticalFloat 0.12` */
       state.three.nodes.push({
-        mesh,
-        glow,
-        nebula,
-        gasCloud,
-        label,
-        orbitLine,
-        star,
-        ringSystem,
-        companion,
-        satelliteSystem: satellite.group,
-        satellitePivots: satellite.pivots,
-        item,
-        orbitRadius,
-        orbitTiltX,
-        orbitTiltZ,
-        orbitSpeed,
-        baseAngle,
-        baseY,
-        verticalFloat: 0.12 + (index % 2) * 0.05
+        mesh: coreMesh, glow: coreGlow, nebula, gasCloud, label,
+        clusterPos,
+        labelOffsetY: coreSize + 1.6,
+        isCultureCore: true,
+        item: {
+          name: culture.name,
+          desc: `${nCompleted}/${allLessons.length} lessons complete`,
+          href: coreMesh.userData.href,
+          color: primaryColor,
+          completedCount: nCompleted,
+          totalLessons: allLessons.length,
+          progress: Math.round(pct * 100)
+        }
+      });
+
+      /* ── Lesson stars orbiting the culture cluster ── */
+      let lessonIdx = 0;
+      culture.modules.forEach(module => {
+        const lessons = Array.isArray(module.lessons) ? module.lessons : [];
+        const nL = lessons.length;
+
+        lessons.forEach((lesson, lIdx) => {
+          const isDone = completedSet.has(lesson.id);
+          const isOn   = !isDone && startedSet.has(lesson.id);
+
+          /* Visual params per state */
+          const starSize  = isDone ? 0.30 : isOn ? 0.22 : 0.13;
+          const emissInt  = isDone ? 0.88 : isOn ? 0.44 : 0.0;
+          const opacity   = isDone ? 1.0  : isOn ? 0.65 : 0.18;
+          const starCol   = isDone ? primaryColor : isOn ? primaryColor : '#1a1a2e';
+          const glowSize  = isDone ? 1.9  : isOn ? 1.1 : 0;
+          const glowOp    = isDone ? 0.38 : isOn ? 0.18 : 0;
+          const ringOp    = isDone ? 0.09 : isOn ? 0.045 : 0.012;
+          const orbitSpd  = isDone ? 0.072 + lessonIdx * 0.003 : isOn ? 0.038 : 0.016;
+
+          /* Stagger orbit radii in bands of 3 per lesson index within culture */
+          const band       = Math.floor(lessonIdx / 3);
+          const orbitRadius = 5.2 + band * 2.1 + (lessonIdx % 3) * 0.55;
+          const orbitTiltX = -0.28 + (lessonIdx % 5) * 0.13;
+          const orbitTiltZ = -0.18 + (lessonIdx % 4) * 0.11;
+          const baseAngle  = (Math.PI * 2 * lIdx) / Math.max(nL, 1) + cIdx * 0.42;
+
+          const orbitLine = makeOrbitRing(orbitRadius, primaryColor, ringOp, orbitTiltX, orbitTiltZ);
+          orbitLine.position.copy(clusterPos);
+          orbitLine.userData.profileGalaxyGenerated = true;
+          scene.add(orbitLine);
+
+          const starMesh = new THREE.Mesh(
+            new THREE.SphereGeometry(starSize, 14, 14),
+            new THREE.MeshPhysicalMaterial({
+              color: new THREE.Color(starCol),
+              emissive: new THREE.Color(isDone || isOn ? primaryColor : '#000010'),
+              emissiveIntensity: emissInt,
+              metalness: 0.08, roughness: 0.28,
+              transparent: true, opacity
+            })
+          );
+          starMesh.userData.profileGalaxyGenerated = true;
+          starMesh.userData.href = `LKP/lessons.html#${encodeURIComponent(lesson.id || '')}`;
+          starMesh.userData.name = lesson.title || lesson.id;
+          scene.add(starMesh);
+
+          let glow = null;
+          if (glowSize > 0) {
+            glow = makeGlowSprite(primaryColor, glowSize, glowOp);
+            glow.userData.profileGalaxyGenerated = true;
+            glow.userData.baseOpacity = glowOp;
+            scene.add(glow);
+          }
+
+          const statusLabel = isDone ? '✓ Complete' : isOn ? '⟳ In Progress' : '○ Not Started';
+
+          state.three.nodes.push({
+            mesh: starMesh, glow, orbitLine,
+            clusterPos,
+            orbitRadius, orbitTiltX, orbitTiltZ, orbitSpeed: orbitSpd,
+            baseAngle, baseY: cy, verticalFloat: 0.07 + (lessonIdx % 3) * 0.03,
+            isLessonStar: true,
+            item: {
+              name: lesson.title || lesson.id,
+              desc: `${culture.name} · ${module.title || ''} — ${statusLabel}`,
+              href: starMesh.userData.href,
+              color: isDone ? primaryColor : isOn ? primaryColor : '#4a4a6a'
+            }
+          });
+
+          lessonIdx++;
+        });
       });
     });
   }
