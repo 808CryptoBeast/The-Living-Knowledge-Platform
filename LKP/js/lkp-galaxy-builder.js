@@ -79,18 +79,18 @@
     };
 
     const cultureMap = {
-      kanaka: themeMap.emerald,
-      kemet: themeMap.gold,
-      bridge: themeMap.bridge,
-      dogon: themeMap.amber,
-      vedic: themeMap.saffron,
-      dreamtime: themeMap.rust,
-      maori: themeMap.emerald,
-      yoruba: themeMap.gold,
-      chinese: themeMap.cyan
+      kanaka:    { main: 0x2ecc87, dim: 0x1a8554, border: 0x5eeebb }, /* vibrant emerald + Pacific */
+      kemet:     { main: 0xe6b84a, dim: 0xb8923a, border: 0xffd700 }, /* rich gold + amber */
+      bridge:    { main: 0xa29bfe, dim: 0x7b74d4, border: 0xcc88ff }, /* indigo + sky violet */
+      dogon:     { main: 0xd35400, dim: 0xa03d00, border: 0xff6a1a }, /* Dogon rust-red + ember */
+      vedic:     { main: 0xf39c12, dim: 0xc47a0e, border: 0xffb347 }, /* saffron + orange */
+      dreamtime: { main: 0xc0392b, dim: 0x8e2a1f, border: 0xe74c3c }, /* ochre-red + deep rust */
+      maori:     { main: 0x1abc9c, dim: 0x148f75, border: 0x2eefca }, /* pounamu jade + teal */
+      yoruba:    { main: 0x9b59b6, dim: 0x7d4497, border: 0xc77dda }, /* royal purple + Oshun */
+      chinese:   { main: 0xe74c3c, dim: 0xb03a2e, border: 0xff8080 }  /* imperial red + vermilion */
     };
 
-    return themeMap[culture.theme] || cultureMap[culture.id] || { main: 0x54c6ee, dim: 0x247d9b, border: 0x8be8ff };
+    return cultureMap[culture.id] || themeMap[culture.theme] || { main: 0x54c6ee, dim: 0x247d9b, border: 0x8be8ff };
   }
 
   /**

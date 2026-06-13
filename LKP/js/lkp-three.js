@@ -1982,7 +1982,26 @@ renderer.domElement.addEventListener("click", () => {
     activeGalaxyId = galaxy.id;
     triggerConnectionSurge(c.id, galaxy.id, 0.9);
     startGuidedStory(galaxy.id);
+    window.dispatchEvent(new CustomEvent('lkp:galaxy-select', { detail: { id: galaxy.id, name: galaxy.name, hex: galaxy.hex } }));
   }
+});
+
+/* Chip-filter: highlight a culture's galaxy from the main-page culture pills */
+window.addEventListener('lkp:filter-culture', function (e) {
+  const id = e.detail && e.detail.id;
+  if (!id) {
+    selectedGalaxyId = null;
+    activeGalaxyId   = null;
+    if (controls) controls.autoRotate = true;
+    return;
+  }
+  const galaxy = GALAXY_DEFS.find(g => g.id === id);
+  if (!galaxy) return;
+  const pos = skyPos(galaxy.az, galaxy.alt, galaxy.r);
+  startZoomTo(pos);
+  selectedGalaxyId = galaxy.id;
+  activeGalaxyId   = galaxy.id;
+  startGuidedStory(galaxy.id);
 });
 
 function startZoomTo(pos) {

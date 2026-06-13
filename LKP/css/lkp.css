@@ -1909,3 +1909,253 @@ body.lkp-mobile-viewer-open { overflow: hidden; }
 .admin-modal-overlay[hidden] {
   display: none !important;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UX IMPROVEMENTS — interactive galaxy features
+════════════════════════════════════════════════════════════════════════════ */
+
+/* ─── #1 CULTURE PANEL ────────────────────────────────────────────────────── */
+.lkp-culture-panel {
+  position: fixed;
+  top: 50%;
+  right: -380px;
+  transform: translateY(-50%);
+  width: min(340px, calc(100vw - 32px));
+  max-height: 80vh;
+  overflow-y: auto;
+  background: rgba(7, 15, 36, 0.97);
+  border: 1px solid rgba(240, 201, 106, 0.22);
+  border-radius: 16px;
+  padding: 28px 24px 24px;
+  z-index: 900;
+  transition: right 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255,255,255,0.04);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(240,201,106,0.2) transparent;
+}
+.lkp-culture-panel.is-open { right: 20px; }
+@media (max-width: 600px) { .lkp-culture-panel.is-open { right: 12px; top: auto; bottom: 90px; transform: none; } }
+
+.lkp-culture-panel__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.55);
+  font-size: 15px;
+  cursor: pointer;
+  padding: 4px 9px;
+  border-radius: 6px;
+  line-height: 1.5;
+  transition: background 0.15s, color 0.15s;
+}
+.lkp-culture-panel__close:hover { background: rgba(255,255,255,0.12); color: #fff; }
+
+.lkp-culture-panel__glyph {
+  font-size: 38px;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.lkp-culture-panel__eyebrow {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(240, 201, 106, 0.55);
+  margin: 0 0 4px;
+}
+.lkp-culture-panel__title {
+  font-size: 21px;
+  font-weight: 700;
+  margin: 0 0 5px;
+  color: #fff;
+  line-height: 1.2;
+}
+.lkp-culture-panel__tagline {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.58);
+  margin: 0 0 14px;
+  font-style: italic;
+  line-height: 1.45;
+}
+.lkp-culture-panel__meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.45);
+}
+.lkp-culture-panel__badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(46, 204, 135, 0.14);
+  color: #2ecc87;
+  border: 1px solid rgba(46, 204, 135, 0.3);
+}
+.lkp-culture-panel__intro {
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0 0 22px;
+}
+.lkp-culture-panel__cta {
+  display: block;
+  text-align: center;
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: rgba(240, 201, 106, 0.1);
+  border: 1px solid rgba(240, 201, 106, 0.3);
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s;
+  letter-spacing: 0.01em;
+}
+.lkp-culture-panel__cta:hover { background: rgba(240, 201, 106, 0.2); }
+
+/* ─── #2 CULTURE PILL BUTTONS ─────────────────────────────────────────────── */
+.lkp-culture-pill {
+  cursor: pointer;
+  background: rgba(255,255,255,0.04);
+  transition: background 0.18s, transform 0.12s;
+  -webkit-tap-highlight-color: transparent;
+}
+.lkp-culture-pill:hover,
+.lkp-culture-pill:focus-visible { background: rgba(255,255,255,0.09); outline: none; }
+.lkp-culture-pill.is-active {
+  background: rgba(var(--culture-color-rgb, 255,255,255), 0.18);
+  box-shadow: 0 0 0 2px var(--culture-color, rgba(255,255,255,0.4));
+}
+.lkp-culture-pill--dynamic { color: var(--culture-color); border-color: color-mix(in srgb, var(--culture-color) 35%, transparent); background: color-mix(in srgb, var(--culture-color) 8%, transparent); }
+.lkp-culture-pill--dynamic.is-active { background: color-mix(in srgb, var(--culture-color) 22%, transparent); box-shadow: 0 0 0 2px var(--culture-color); }
+
+/* ─── #3 FIRST-VISIT GALAXY HINT ─────────────────────────────────────────── */
+.lkp-galaxy-hint {
+  position: fixed;
+  bottom: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: rgba(240, 201, 106, 0.85);
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  pointer-events: none;
+  z-index: 800;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.8);
+}
+.lkp-galaxy-hint.is-hidden {
+  opacity: 0;
+  transform: translateX(-50%) translateY(12px);
+  pointer-events: none;
+}
+.lkp-galaxy-hint__ring {
+  width: 46px;
+  height: 46px;
+  border: 2px solid rgba(240, 201, 106, 0.65);
+  border-radius: 50%;
+  animation: hint-ring-pulse 2.2s ease-in-out infinite;
+}
+@keyframes hint-ring-pulse {
+  0%, 100% { transform: scale(0.75); opacity: 0.35; }
+  50%       { transform: scale(1.18); opacity: 0.9; }
+}
+
+/* ─── #4 MOBILE BOTTOM NAV ────────────────────────────────────────────────── */
+.lkp-bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: rgba(7, 15, 36, 0.97);
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  z-index: 950;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+@media (max-width: 767px) { .lkp-bottom-nav { display: flex; } }
+.lkp-bottom-nav__item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  letter-spacing: 0.03em;
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+  padding-top: 4px;
+}
+.lkp-bottom-nav__item svg { width: 22px; height: 22px; }
+.lkp-bottom-nav__item--active,
+.lkp-bottom-nav__item:hover { color: var(--gold); }
+
+/* push page content up on mobile so bottom nav doesn't cover footer */
+@media (max-width: 767px) {
+  .lkp-footer { padding-bottom: 80px; }
+}
+
+/* ─── #5 HORIZONTAL SCROLL CULTURE CARDS (MOBILE) ────────────────────────── */
+@media (max-width: 767px) {
+  .lkp-culture-grid {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 14px;
+    padding: 4px 4px 16px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    grid-template-columns: unset;
+  }
+  .lkp-culture-grid::-webkit-scrollbar { display: none; }
+  .lkp-culture-card {
+    min-width: 78vw;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+}
+
+/* ─── #6 TAP RIPPLE ──────────────────────────────────────────────────────── */
+#lkp-ripple-root {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+}
+.lkp-tap-ripple {
+  position: absolute;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  background: radial-gradient(circle, rgba(240,201,106,0.55) 0%, transparent 70%);
+  animation: tap-ripple-out 0.6s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes tap-ripple-out {
+  0%   { transform: scale(0.2); opacity: 1; }
+  100% { transform: scale(2.8); opacity: 0; }
+}

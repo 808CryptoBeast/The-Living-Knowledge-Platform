@@ -95,8 +95,13 @@
 
       document.documentElement.dataset.experience = isMobile ? 'mobile' : 'desktop';
 
+      var _LKP_SCRIPT_CACHE = {};
+
       window.LKP_LOAD_SCRIPT = function loadScript(src, options) {
-        return new Promise(function (resolve, reject) {
+        /* Deduplicate: return cached promise if this URL is already loading/loaded */
+        if (_LKP_SCRIPT_CACHE[src]) return _LKP_SCRIPT_CACHE[src];
+
+        _LKP_SCRIPT_CACHE[src] = new Promise(function (resolve, reject) {
           var s = document.createElement('script');
 
           if (options && options.type) {
@@ -110,11 +115,14 @@
           };
 
           s.onerror = function () {
+            delete _LKP_SCRIPT_CACHE[src];
             reject(new Error('Failed to load script: ' + src));
           };
 
           document.head.appendChild(s);
         });
+
+        return _LKP_SCRIPT_CACHE[src];
       };
 
       window.LKP_LOAD_SHARED_DATA = function () {
@@ -124,6 +132,9 @@
         ) {
           return Promise.resolve(window.CULTURALVERSE_DATA);
         }
+
+        /* Return in-flight promise so concurrent callers don't double-load */
+        if (window._LKP_DATA_PROMISE) return window._LKP_DATA_PROMISE;
 
         var CULTURE_SCRIPTS = [
           'LKP/js/cultures/kanaka/lkp-culture-kanaka.js?v=cul-1',
@@ -137,11 +148,13 @@
           'LKP/js/cultures/chinese/lkp-culture-chinese.js?v=cul-1'
         ];
 
-        return CULTURE_SCRIPTS.reduce(function (chain, src) {
-          return chain.then(function () { return window.LKP_LOAD_SCRIPT(src); });
-        }, Promise.resolve()).then(function () {
+        window._LKP_DATA_PROMISE = Promise.all(CULTURE_SCRIPTS.map(function (src) {
+          return window.LKP_LOAD_SCRIPT(src);
+        })).then(function () {
           return window.LKP_LOAD_SCRIPT('LKP/js/lkp-data.js?v=base-24-yoruba-chinese-expand');
         }).then(function () {
+          window._LKP_DATA_PROMISE = null;
+
           if (
             typeof CULTURALVERSE_DATA !== 'undefined' &&
             CULTURALVERSE_DATA &&
@@ -159,6 +172,8 @@
 
           return window.CULTURALVERSE_DATA;
         });
+
+        return window._LKP_DATA_PROMISE;
       };
 
       if (isMobile) {
@@ -217,6 +232,50 @@
 
   <!-- ── TOOLTIP — driven by Three.js hover ── -->
   <div id="lkp-tooltip" class="hidden" aria-hidden="true"></div>
+
+  <!-- ── FIRST-VISIT HINT (#3) ── -->
+  <div id="lkp-galaxy-hint" class="lkp-galaxy-hint" aria-hidden="true">
+    <div class="lkp-galaxy-hint__ring"></div>
+    <span>Drag to explore · Click a star to enter</span>
+  </div>
+
+  <!-- ── GALAXY TAP RIPPLE container (#6) ── -->
+  <div id="lkp-ripple-root" aria-hidden="true"></div>
+
+  <!-- ── CULTURE PANEL — slides in on galaxy click (#1) ── -->
+  <aside id="lkp-culture-panel" class="lkp-culture-panel" aria-label="Culture details" aria-hidden="true">
+    <button id="lkp-culture-panel-close" class="lkp-culture-panel__close" aria-label="Close">✕</button>
+    <div class="lkp-culture-panel__glyph" id="lkp-panel-glyph">✦</div>
+    <p  class="lkp-culture-panel__eyebrow" id="lkp-panel-eyebrow">Culture</p>
+    <h2 class="lkp-culture-panel__title"   id="lkp-panel-title">—</h2>
+    <p  class="lkp-culture-panel__tagline" id="lkp-panel-tagline"></p>
+    <div class="lkp-culture-panel__meta">
+      <span id="lkp-panel-lessons">— Lessons</span>
+      <span id="lkp-panel-status" class="lkp-culture-panel__badge">Live</span>
+    </div>
+    <p class="lkp-culture-panel__intro" id="lkp-panel-intro"></p>
+    <a  class="lkp-culture-panel__cta" id="lkp-panel-cta" href="#">Enter this Culture →</a>
+  </aside>
+
+  <!-- ── MOBILE BOTTOM NAV (#4) ── -->
+  <nav class="lkp-bottom-nav" aria-label="Main navigation">
+    <a href="/" class="lkp-bottom-nav__item lkp-bottom-nav__item--active" aria-label="Home">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      <span>Home</span>
+    </a>
+    <a href="LKP/lessons.html" class="lkp-bottom-nav__item" aria-label="Learn">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+      <span>Learn</span>
+    </a>
+    <a href="LKP/journal.html" class="lkp-bottom-nav__item" aria-label="Journal">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      <span>Journal</span>
+    </a>
+    <a href="profile.html" class="lkp-bottom-nav__item" aria-label="Profile">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      <span>Profile</span>
+    </a>
+  </nav>
 
   <!-- ── PAGE CONTENT — overlays the canvas ── -->
   <div class="lkp-page">
@@ -1113,10 +1172,10 @@
       var heroPills = document.querySelector(".lkp-hero__cultures");
       if (heroPills) {
         heroPills.innerHTML = live.map(function (culture) {
-          return '<span class="lkp-culture-pill lkp-culture-pill--dynamic" style="--culture-color:' + lkpCultureColor(culture) + '">' +
+          return '<button class="lkp-culture-pill lkp-culture-pill--dynamic" data-culture-id="' + lkpEscape(culture.id) + '" style="--culture-color:' + lkpCultureColor(culture) + '" aria-label="Filter ' + lkpEscape(culture.name) + '">' +
             '<span class="lkp-culture-pill__dot"></span>' +
             lkpEscape(culture.name) +
-            '</span>';
+            '</button>';
         }).join("");
       }
 
@@ -1187,6 +1246,151 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').catch(function () {});
     }
+  </script>
+
+  <!-- ── UX INTERACTION WIRING (#1 panel, #2 chip filter, #3 hint, #6 ripple) ── -->
+  <script>
+  (function () {
+
+    /* ── helpers ── */
+    function lkpSafeText(t) { return t == null ? '' : String(t); }
+    function lkpEsc(t) { var d=document.createElement('div'); d.textContent=lkpSafeText(t); return d.innerHTML; }
+    function lkpLessonTotal(culture) {
+      return (Array.isArray(culture.modules) ? culture.modules : []).reduce(function (n, m) {
+        return n + (Array.isArray(m.lessons) ? m.lessons.length : 0);
+      }, 0);
+    }
+    function lkpFirstHref(culture) {
+      var mods = Array.isArray(culture.modules) ? culture.modules : [];
+      for (var i = 0; i < mods.length; i++) {
+        var ls = Array.isArray(mods[i].lessons) ? mods[i].lessons : [];
+        if (ls[0] && ls[0].id) return 'LKP/lessons.html#' + ls[0].id;
+      }
+      return 'LKP/lessons.html';
+    }
+
+    /* ── #1  CULTURE PANEL ── */
+    var panel      = document.getElementById('lkp-culture-panel');
+    var panelClose = document.getElementById('lkp-culture-panel-close');
+    var panelGlyph = document.getElementById('lkp-panel-glyph');
+    var panelEye   = document.getElementById('lkp-panel-eyebrow');
+    var panelTitle = document.getElementById('lkp-panel-title');
+    var panelTag   = document.getElementById('lkp-panel-tagline');
+    var panelLess  = document.getElementById('lkp-panel-lessons');
+    var panelBadge = document.getElementById('lkp-panel-status');
+    var panelIntro = document.getElementById('lkp-panel-intro');
+    var panelCta   = document.getElementById('lkp-panel-cta');
+
+    function openPanel(culture) {
+      if (!panel) return;
+      panelGlyph.textContent = culture.emoji || '✦';
+      panelEye.textContent   = 'Culture';
+      panelTitle.textContent = culture.name || '—';
+      panelTag.textContent   = culture.tagline || '';
+      panelLess.textContent  = lkpLessonTotal(culture) + ' Lessons';
+      panelBadge.textContent = culture.status === 'soon' ? 'Coming Soon' : 'Live';
+      panelBadge.style.color = culture.status === 'soon' ? '#f0c96a' : '#2ecc87';
+      panelIntro.textContent = (culture.intro || '').slice(0, 340) + ((culture.intro || '').length > 340 ? '…' : '');
+      panelCta.href = lkpFirstHref(culture);
+      panelCta.textContent = 'Enter ' + (culture.name || 'this Culture') + ' →';
+      panel.classList.add('is-open');
+      panel.setAttribute('aria-hidden', 'false');
+    }
+
+    function closePanel() {
+      if (!panel) return;
+      panel.classList.remove('is-open');
+      panel.setAttribute('aria-hidden', 'true');
+    }
+
+    if (panelClose) panelClose.addEventListener('click', closePanel);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closePanel();
+    });
+
+    window.addEventListener('lkp:galaxy-select', function (e) {
+      var id = e.detail && e.detail.id;
+      if (!id) return;
+      var data = window.CULTURALVERSE_DATA;
+      if (!data || !Array.isArray(data.cultures)) return;
+      var culture = data.cultures.find(function (c) { return c.id === id; });
+      if (culture) openPanel(culture);
+    });
+
+    /* ── #2  CULTURE CHIP FILTER ── */
+    var activeFilterId = null;
+
+    document.addEventListener('click', function (e) {
+      var pill = e.target.closest('[data-culture-id]');
+      if (!pill) return;
+      var id = pill.dataset.cultureId;
+
+      /* toggle off if already active */
+      if (activeFilterId === id) {
+        activeFilterId = null;
+        document.querySelectorAll('[data-culture-id]').forEach(function (p) {
+          p.classList.remove('is-active');
+        });
+        window.dispatchEvent(new CustomEvent('lkp:filter-culture', { detail: { id: null } }));
+        return;
+      }
+
+      activeFilterId = id;
+      document.querySelectorAll('[data-culture-id]').forEach(function (p) {
+        p.classList.toggle('is-active', p.dataset.cultureId === id);
+      });
+      window.dispatchEvent(new CustomEvent('lkp:filter-culture', { detail: { id: id } }));
+
+      /* also scroll culture cards section into view */
+      var card = document.getElementById(id);
+      if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    /* ── #3  FIRST-VISIT HINT ── */
+    var hint = document.getElementById('lkp-galaxy-hint');
+    var hintKey = 'lkp_hint_seen_v1';
+
+    if (hint) {
+      if (localStorage.getItem(hintKey)) {
+        hint.classList.add('is-hidden');
+      } else {
+        var dismissHint = function () {
+          hint.classList.add('is-hidden');
+          localStorage.setItem(hintKey, '1');
+          window.removeEventListener('pointermove', dismissHint);
+          window.removeEventListener('pointerdown', dismissHint);
+        };
+        window.addEventListener('pointermove', dismissHint, { passive: true });
+        window.addEventListener('pointerdown', dismissHint, { passive: true });
+      }
+    }
+
+    /* ── #6  TAP RIPPLE ── */
+    var rippleRoot = document.getElementById('lkp-ripple-root');
+    var canvas = document.getElementById('lkp-canvas');
+
+    function spawnRipple(x, y) {
+      if (!rippleRoot) return;
+      var el = document.createElement('div');
+      el.className = 'lkp-tap-ripple';
+      el.style.left = x + 'px';
+      el.style.top  = y + 'px';
+      rippleRoot.appendChild(el);
+      el.addEventListener('animationend', function () { el.remove(); });
+    }
+
+    if (canvas) {
+      canvas.addEventListener('touchstart', function (e) {
+        if (!e.touches.length) return;
+        var t = e.touches[0];
+        spawnRipple(t.clientX, t.clientY);
+      }, { passive: true });
+      canvas.addEventListener('click', function (e) {
+        spawnRipple(e.clientX, e.clientY);
+      }, { passive: true });
+    }
+
+  })();
   </script>
 
 </body>
