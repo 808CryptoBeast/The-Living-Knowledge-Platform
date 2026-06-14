@@ -257,6 +257,17 @@
     <a  class="lkp-culture-panel__cta" id="lkp-panel-cta" href="#">Enter this Culture →</a>
   </aside>
 
+  <!-- ── PWA INSTALL BANNER ── -->
+  <div id="lkp-install-banner" class="lkp-install-banner" role="complementary" aria-label="Install app" hidden>
+    <div class="lkp-install-banner__icon">⬇</div>
+    <div class="lkp-install-banner__text">
+      <strong>Add to Home Screen</strong>
+      <span>Install for offline access &amp; faster loading</span>
+    </div>
+    <button id="lkp-install-btn" class="lkp-install-banner__btn">Install</button>
+    <button id="lkp-install-dismiss" class="lkp-install-banner__dismiss" aria-label="Dismiss">✕</button>
+  </div>
+
   <!-- ── MOBILE BOTTOM NAV (#4) ── -->
   <nav class="lkp-bottom-nav" aria-label="Main navigation">
     <a href="/" class="lkp-bottom-nav__item lkp-bottom-nav__item--active" aria-label="Home">
@@ -1246,6 +1257,69 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').catch(function () {});
     }
+  </script>
+
+  <!-- ── PWA INSTALL PROMPT ── -->
+  <script>
+  (function () {
+    var DISMISS_KEY = 'lkp_pwa_install_dismissed_v1';
+    var deferredPrompt = null;
+    var banner = document.getElementById('lkp-install-banner');
+    var installBtn = document.getElementById('lkp-install-btn');
+    var dismissBtn = document.getElementById('lkp-install-dismiss');
+
+    if (!banner || localStorage.getItem(DISMISS_KEY)) return;
+
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      deferredPrompt = e;
+
+      /* Show banner after 30s or when the user has scrolled past the hero */
+      var shown = false;
+      function showBanner() {
+        if (shown) return;
+        shown = true;
+        banner.hidden = false;
+        banner.classList.add('is-visible');
+      }
+
+      setTimeout(showBanner, 30000);
+
+      var scrollTrigger = function () {
+        if (window.scrollY > 400) {
+          showBanner();
+          window.removeEventListener('scroll', scrollTrigger, { passive: true });
+        }
+      };
+      window.addEventListener('scroll', scrollTrigger, { passive: true });
+    });
+
+    if (installBtn) {
+      installBtn.addEventListener('click', function () {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(function (choice) {
+          deferredPrompt = null;
+          banner.hidden = true;
+          if (choice.outcome === 'accepted') {
+            localStorage.setItem(DISMISS_KEY, '1');
+          }
+        });
+      });
+    }
+
+    if (dismissBtn) {
+      dismissBtn.addEventListener('click', function () {
+        banner.hidden = true;
+        localStorage.setItem(DISMISS_KEY, '1');
+      });
+    }
+
+    window.addEventListener('appinstalled', function () {
+      banner.hidden = true;
+      localStorage.setItem(DISMISS_KEY, '1');
+    });
+  })();
   </script>
 
   <!-- ── UX INTERACTION WIRING (#1 panel, #2 chip filter, #3 hint, #6 ripple) ── -->

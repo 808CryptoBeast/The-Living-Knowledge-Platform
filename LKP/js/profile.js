@@ -1036,11 +1036,12 @@
       content:  lesson.content  || lesson.body      || lesson.text      || '',
       leadText: lesson.leadText || lesson.lead_text || lesson.intro     || '',
       excerpt:  lesson.excerpt  || lesson.summary   || '',
-      mana:     lesson.mana     || lesson.mana_value || 10,
-      xp:       lesson.xp      || lesson.xp_value   || 25,
+      mana:        lesson.mana        || lesson.mana_value  || 10,
+      xp:          lesson.xp          || lesson.xp_value    || 25,
+      connections: Array.isArray(lesson.connections) ? lesson.connections : [],
       // Preserve any explicit URL/slug the data file provides
-      href:     lesson.href     || lesson.url        || lesson.link     || '',
-      slug:     lesson.slug     || lesson.path       || ''
+      href:        lesson.href        || lesson.url         || lesson.link || '',
+      slug:        lesson.slug        || lesson.path        || ''
     })).filter(l => l.id);   // drop any entries with no id
   }
 
@@ -3570,6 +3571,8 @@
       animateRealmNode(node, index, t, activeNode);
     });
 
+    updateConnectionLines(t);
+
     if (state.three.distantGalaxies?.length) {
       state.three.distantGalaxies.forEach((galaxy, index) => {
         if (!galaxy.group) return;
@@ -3943,13 +3946,19 @@
       const holderRect = holder.getBoundingClientRect();
       const progress = Number(node.item.progress || 0);
 
+      const progressLine = node.item.totalLessons
+        ? `<small>${progress}% complete · ${node.item.completedCount}/${node.item.totalLessons} lessons</small>`
+        : node.item.readPct > 0 && node.item.readPct < 100
+          ? `<small>${node.item.readPct}% read</small>`
+          : '';
+
       tooltip.innerHTML = `
         <strong style="color:${node.item.color};display:block;margin-bottom:3px;">
           ${escapeHTML(node.item.name)}
         </strong>
-      <span>${escapeHTML(node.item.desc)}</span>
-      ${node.item.totalLessons ? `<small>${progress}% complete · ${node.item.completedCount}/${node.item.totalLessons} lessons</small>` : ''}
-    `;
+        <span>${escapeHTML(node.item.desc)}</span>
+        ${progressLine}
+      `;
 
     tooltip.style.left = `${event.clientX - holderRect.left}px`;
     tooltip.style.top = `${event.clientY - holderRect.top}px`;
@@ -4005,10 +4014,10 @@
   }
 
   function openActiveGalaxyNode() {
-    const node = state.three.activeNode;
+    const node = state.three.activeNode || state.three.hoveredNode;
 
     if (!node?.item?.href) {
-      showToast('Select a realm first.');
+      showToast('Double-click a star to open its lesson.');
       return;
     }
 
@@ -4203,6 +4212,13 @@
     state.three.distantGalaxies = [];
     state.three.sunGroup = null;
 
+    if (state.three.connectionLines) {
+      state.three.connectionLines.forEach(({ line }) => {
+        if (line) { scene.remove(line); disposeObject3D(line); }
+      });
+      state.three.connectionLines = [];
+    }
+
     const removable = scene.children.filter(child => child.userData?.profileGalaxyGenerated);
 
     removable.forEach(child => {
@@ -4214,9 +4230,93 @@
   function rebuildProfileGalaxyForRole() {
     if (!state.three.initialized) return;
 
+    const prevCompleted = new Set(state.completed || []);
+
     clearIdentityGalaxy();
     buildIdentityGalaxy();
     resizeProfileGalaxy();
+
+    /* Burst on newly completed lessons */
+    const newlyDone = (state.completed || []).filter(id => !prevCompleted.has(id));
+    if (newlyDone.length) {
+      window.requestAnimationFrame(() => spawnCompletionBursts(newlyDone));
+    }
+  }
+
+  function spawnCompletionBursts(lessonIds) {
+    lessonIds.forEach(id => {
+      const node = state.three.nodes.find(n => n.isLessonStar && n.lessonId === id);
+      if (!node) return;
+      const pos = node.mesh?.position;
+      if (!pos) return;
+      spawnBurst(pos.clone(), node.item?.color || '#f0c96a');
+    });
+  }
+
+  function spawnBurst(origin, hexColor) {
+    const THREE = state.three.THREE;
+    const scene = state.three.scene;
+    if (!THREE || !scene) return;
+
+    const COUNT  = 28;
+    const COLOR  = new THREE.Color(hexColor);
+    const positions = new Float32Array(COUNT * 3);
+    const velocities = [];
+
+    for (let i = 0; i < COUNT; i++) {
+      positions[i * 3]     = origin.x;
+      positions[i * 3 + 1] = origin.y;
+      positions[i * 3 + 2] = origin.z;
+
+      const phi   = Math.acos(2 * Math.random() - 1);
+      const theta = Math.random() * Math.PI * 2;
+      const speed = 0.06 + Math.random() * 0.10;
+      velocities.push(new THREE.Vector3(
+        speed * Math.sin(phi) * Math.cos(theta),
+        speed * Math.cos(phi),
+        speed * Math.sin(phi) * Math.sin(theta)
+      ));
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+    const mat = new THREE.PointsMaterial({
+      color: COLOR, size: 0.18, transparent: true, opacity: 1.0, depthWrite: false
+    });
+
+    const points = new THREE.Points(geo, mat);
+    scene.add(points);
+
+    const startTime = performance.now();
+    const DURATION  = 900;
+
+    function tick() {
+      const elapsed = performance.now() - startTime;
+      const frac    = elapsed / DURATION;
+
+      if (frac >= 1) {
+        scene.remove(points);
+        geo.dispose();
+        mat.dispose();
+        return;
+      }
+
+      const pos = geo.attributes.position;
+      for (let i = 0; i < COUNT; i++) {
+        pos.setX(i, pos.getX(i) + velocities[i].x);
+        pos.setY(i, pos.getY(i) + velocities[i].y);
+        pos.setZ(i, pos.getZ(i) + velocities[i].z);
+        velocities[i].multiplyScalar(0.93); // decelerate
+      }
+      pos.needsUpdate = true;
+      mat.opacity = 1 - frac * frac;
+      mat.size    = 0.18 + frac * 0.22;
+
+      requestAnimationFrame(tick);
+    }
+
+    requestAnimationFrame(tick);
   }
 
   function buildIdentityGalaxy() {
@@ -4251,8 +4351,9 @@
       return;
     }
 
-    const startedSet  = new Set(getStartedLessons());
+    const startedSet   = new Set(getStartedLessons());
     const completedSet = new Set(state.completed || []);
+    const readProgress = readJSON('lkp_lesson_read_progress_v1', {});
     const liveCultures = cultures.filter(c => c.id && Array.isArray(c.modules) && c.modules.length);
     const N = liveCultures.length || 1;
 
@@ -4343,18 +4444,20 @@
         const nL = lessons.length;
 
         lessons.forEach((lesson, lIdx) => {
-          const isDone = completedSet.has(lesson.id);
-          const isOn   = !isDone && startedSet.has(lesson.id);
+          const isDone   = completedSet.has(lesson.id);
+          const isOn     = !isDone && startedSet.has(lesson.id);
+          const readPct  = isDone ? 100 : Math.max(0, Math.min(100, Number(readProgress[lesson.id] || 0)));
+          const readFrac = readPct / 100; // 0→1
 
-          /* Visual params per state */
-          const starSize  = isDone ? 0.30 : isOn ? 0.22 : 0.13;
-          const emissInt  = isDone ? 0.88 : isOn ? 0.44 : 0.0;
-          const opacity   = isDone ? 1.0  : isOn ? 0.65 : 0.18;
-          const starCol   = isDone ? primaryColor : isOn ? primaryColor : '#1a1a2e';
-          const glowSize  = isDone ? 1.9  : isOn ? 1.1 : 0;
-          const glowOp    = isDone ? 0.38 : isOn ? 0.18 : 0;
-          const ringOp    = isDone ? 0.09 : isOn ? 0.045 : 0.012;
-          const orbitSpd  = isDone ? 0.072 + lessonIdx * 0.003 : isOn ? 0.038 : 0.016;
+          /* Visual params — smooth gradient from unread (0) → in-progress (0.5) → complete (1) */
+          const starSize = isDone ? 0.30 : isOn ? 0.20 + readFrac * 0.06 : 0.13;
+          const emissInt = isDone ? 0.88 : isOn ? 0.18 + readFrac * 0.42 : 0.0;
+          const opacity  = isDone ? 1.0  : isOn ? 0.35 + readFrac * 0.45 : 0.18;
+          const starCol  = isDone ? primaryColor : isOn ? primaryColor : '#1a1a2e';
+          const glowSize = isDone ? 1.9  : isOn ? 0.6 + readFrac * 0.9 : 0;
+          const glowOp   = isDone ? 0.38 : isOn ? 0.08 + readFrac * 0.22 : 0;
+          const ringOp   = isDone ? 0.09 : isOn ? 0.02 + readFrac * 0.04 : 0.012;
+          const orbitSpd = isDone ? 0.072 + lessonIdx * 0.003 : isOn ? 0.022 + readFrac * 0.028 : 0.016;
 
           /* Stagger orbit radii in bands of 3 per lesson index within culture */
           const band       = Math.floor(lessonIdx / 3);
@@ -4391,7 +4494,7 @@
             scene.add(glow);
           }
 
-          const statusLabel = isDone ? '✓ Complete' : isOn ? '⟳ In Progress' : '○ Not Started';
+          const statusLabel = isDone ? '✓ Complete' : isOn ? `⟳ ${readPct}% read` : '○ Not Started';
 
           state.three.nodes.push({
             mesh: starMesh, glow, orbitLine,
@@ -4399,17 +4502,105 @@
             orbitRadius, orbitTiltX, orbitTiltZ, orbitSpeed: orbitSpd,
             baseAngle, baseY: cy, verticalFloat: 0.07 + (lessonIdx % 3) * 0.03,
             isLessonStar: true,
+            lessonId: lesson.id,
             item: {
               name: lesson.title || lesson.id,
               desc: `${culture.name} · ${module.title || ''} — ${statusLabel}`,
               href: starMesh.userData.href,
-              color: isDone ? primaryColor : isOn ? primaryColor : '#4a4a6a'
+              color: isDone ? primaryColor : isOn ? primaryColor : '#4a4a6a',
+              readPct
             }
           });
 
           lessonIdx++;
         });
       });
+    });
+
+    /* ── Cross-culture connection threads ── */
+    buildConnectionThreads(liveCultures, completedSet);
+  }
+
+  function buildConnectionThreads(cultures, completedSet) {
+    const THREE = state.three.THREE;
+    const scene = state.three.scene;
+    if (!THREE || !scene) return;
+
+    /* Build a lessonId → node map */
+    const lessonNodeMap = new Map();
+    state.three.nodes.forEach(node => {
+      if (node.isLessonStar && node.lessonId) lessonNodeMap.set(node.lessonId, node);
+    });
+
+    const axisColors = {
+      'Cosmology':   0x54c6ee,
+      'Bridge':      0xa29bfe,
+      'Ecology':     0x2ecc87,
+      'Navigation':  0xf0c96a,
+      'Epistemology':0xf39c12,
+      'Medicine':    0x1abc9c,
+      'Philosophy':  0x8fa0ff,
+      'Language':    0xe67e22,
+      'Future Thread':0xe74c3c
+    };
+
+    const seenPairs = new Set();
+    state.three.connectionLines = [];
+
+    cultures.forEach(culture => {
+      culture.modules.forEach(module => {
+        (Array.isArray(module.lessons) ? module.lessons : []).forEach(lesson => {
+          if (!Array.isArray(lesson.connections)) return;
+          lesson.connections.forEach(conn => {
+            if (!conn.lessonId) return;
+            const pair = [lesson.id, conn.lessonId].sort().join('|');
+            if (seenPairs.has(pair)) return;
+            seenPairs.add(pair);
+
+            const nodeA = lessonNodeMap.get(lesson.id);
+            const nodeB = lessonNodeMap.get(conn.lessonId);
+            if (!nodeA || !nodeB) return;
+
+            const bothDone = completedSet.has(lesson.id) && completedSet.has(conn.lessonId);
+            const eitherDone = completedSet.has(lesson.id) || completedSet.has(conn.lessonId);
+            const lineOpacity = bothDone ? 0.38 : eitherDone ? 0.18 : 0.06;
+            const lineColor = axisColors[conn.axis] || 0x4a4a6a;
+
+            const points = [
+              nodeA.mesh.position.clone(),
+              nodeB.mesh.position.clone()
+            ];
+            const geo = new THREE.BufferGeometry().setFromPoints(points);
+            const mat = new THREE.LineBasicMaterial({
+              color: lineColor,
+              transparent: true,
+              opacity: lineOpacity,
+              depthWrite: false
+            });
+
+            const line = new THREE.Line(geo, mat);
+            line.userData.profileGalaxyGenerated = true;
+            scene.add(line);
+
+            state.three.connectionLines.push({ line, nodeA, nodeB, baseOpacity: lineOpacity });
+          });
+        });
+      });
+    });
+  }
+
+  function updateConnectionLines(t) {
+    if (!state.three.connectionLines?.length) return;
+
+    state.three.connectionLines.forEach(({ line, nodeA, nodeB, baseOpacity }) => {
+      if (!line || !nodeA?.mesh || !nodeB?.mesh) return;
+      const pos = line.geometry.attributes.position;
+      const pA = nodeA.mesh.position;
+      const pB = nodeB.mesh.position;
+      pos.setXYZ(0, pA.x, pA.y, pA.z);
+      pos.setXYZ(1, pB.x, pB.y, pB.z);
+      pos.needsUpdate = true;
+      line.material.opacity = baseOpacity * (0.7 + Math.sin(t * 0.7) * 0.3);
     });
   }
 

@@ -70,7 +70,7 @@
   <!-- Sign out helper and main profile renderer -->
   <script defer src="LKP/js/lkp-signout.js?v=signout-2"></script>
   <script defer src="LKP/js/lkp-cursor.js?v=cursor-2"></script>
-  <script defer src="LKP/js/profile.js?v=galaxy-cluster-1"></script>
+  <script defer src="LKP/js/profile.js?v=galaxy-cluster-2"></script>
 </head>
 
 <body class="profile-page profile-theme-dark profile-is-guest" data-time-phase="night" data-bg-variant="0">
@@ -809,6 +809,20 @@
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/sw.js').catch(function () {});
     }
+  </script>
+
+  <!-- PWA install banner -->
+  <div id="lkp-install-banner" class="lkp-install-banner" role="complementary" aria-label="Install app" hidden>
+    <div class="lkp-install-banner__icon">⬇</div>
+    <div class="lkp-install-banner__text">
+      <strong>Add to Home Screen</strong>
+      <span>Install for offline access &amp; faster loading</span>
+    </div>
+    <button id="lkp-install-btn" class="lkp-install-banner__btn">Install</button>
+    <button id="lkp-install-dismiss" class="lkp-install-banner__dismiss" aria-label="Dismiss">✕</button>
+  </div>
+  <script>
+  (function(){var K='lkp_pwa_install_dismissed_v1',d=null,b=document.getElementById('lkp-install-banner');if(!b||localStorage.getItem(K))return;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();d=e;var shown=false;function show(){if(shown)return;shown=true;b.hidden=false;b.classList.add('is-visible');}setTimeout(show,30000);});document.getElementById('lkp-install-btn')?.addEventListener('click',function(){if(!d)return;d.prompt();d.userChoice.then(function(c){d=null;b.hidden=true;if(c.outcome==='accepted')localStorage.setItem(K,'1');});});document.getElementById('lkp-install-dismiss')?.addEventListener('click',function(){b.hidden=true;localStorage.setItem(K,'1');});window.addEventListener('appinstalled',function(){b.hidden=true;localStorage.setItem(K,'1');});})();
   </script>
 </body>
 </html>
