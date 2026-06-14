@@ -8,7 +8,7 @@
      • Everything else              — Network with cache fallback
 ═══════════════════════════════════════════════════════════════════════════ */
 
-const CACHE_VERSION = 'lkp-v4';
+const CACHE_VERSION = 'lkp-v5';
 const SHELL_CACHE   = CACHE_VERSION + '-shell';
 const DATA_CACHE    = CACHE_VERSION + '-data';
 const IMAGE_CACHE   = CACHE_VERSION + '-images';

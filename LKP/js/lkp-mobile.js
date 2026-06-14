@@ -59,7 +59,7 @@
 
   const DATA = getSharedLessonData();
 
-  /* ── Theme palette ────────────────────────────────────────────────────── */
+  /* ── Theme palette (fallback by theme name) ──────────────────────────── */
   const THEME = {
     emerald: { color:'#3cb371', colorDim:'rgba(60,179,113,0.12)',  colorBorder:'rgba(60,179,113,0.30)',  glow:'rgba(60,179,113,0.28)'  },
     gold:    { color:'#f0c96a', colorDim:'rgba(240,201,106,0.12)', colorBorder:'rgba(240,201,106,0.34)', glow:'rgba(240,201,106,0.30)' },
@@ -72,10 +72,29 @@
     default: { color:'#54c6ee', colorDim:'rgba(84,198,238,0.12)',  colorBorder:'rgba(84,198,238,0.30)',  glow:'rgba(84,198,238,0.28)'  }
   };
 
+  /* ── Per-culture colors — matches lkp-galaxy-builder.js getCultureThemeColors ── */
+  const CULTURE_COLORS = {
+    kanaka:    { color:'#2ecc87', colorDim:'rgba(46,204,135,0.12)',  colorBorder:'rgba(94,238,187,0.34)',   glow:'rgba(46,204,135,0.28)'  },
+    kemet:     { color:'#e6b84a', colorDim:'rgba(230,184,74,0.12)',  colorBorder:'rgba(255,215,0,0.34)',    glow:'rgba(230,184,74,0.28)'  },
+    bridge:    { color:'#a29bfe', colorDim:'rgba(162,155,254,0.13)', colorBorder:'rgba(199,136,255,0.34)',  glow:'rgba(162,155,254,0.30)' },
+    dogon:     { color:'#d35400', colorDim:'rgba(211,84,0,0.12)',    colorBorder:'rgba(255,106,26,0.34)',   glow:'rgba(211,84,0,0.28)'    },
+    vedic:     { color:'#f39c12', colorDim:'rgba(243,156,18,0.12)',  colorBorder:'rgba(255,179,71,0.34)',   glow:'rgba(243,156,18,0.28)'  },
+    dreamtime: { color:'#c0392b', colorDim:'rgba(192,57,43,0.12)',   colorBorder:'rgba(231,76,60,0.34)',    glow:'rgba(192,57,43,0.28)'   },
+    maori:     { color:'#1abc9c', colorDim:'rgba(26,188,156,0.12)',  colorBorder:'rgba(46,239,202,0.34)',   glow:'rgba(26,188,156,0.28)'  },
+    yoruba:    { color:'#9b59b6', colorDim:'rgba(155,89,182,0.12)',  colorBorder:'rgba(199,125,218,0.34)',  glow:'rgba(155,89,182,0.28)'  },
+    chinese:   { color:'#e74c3c', colorDim:'rgba(231,76,60,0.12)',   colorBorder:'rgba(255,128,128,0.34)',  glow:'rgba(231,76,60,0.28)'   }
+  };
+
   const FALLBACK_CULTURES = [
-    { id:'kanaka', name:'Kānaka Maoli', emoji:'🌺', tagline:'Hawaiian Indigenous Knowledge', theme:'emerald', status:'live', intro:'Hawaiian cosmology, wayfinding, land stewardship, language, and healing.', modules:[] },
-    { id:'kemet',  name:'Kemet',        emoji:'☥',  tagline:'Ancient Egyptian Wisdom',       theme:'gold',    status:'live', intro:'Kemetic cosmology, Maʻat, sacred arts, science, and medicine.',        modules:[] },
-    { id:'bridge', name:'The Bridge',   emoji:'🌐',  tagline:'Cross-Cultural Connections',   theme:'bridge',  status:'live', intro:'Shared cosmological and ethical patterns across living knowledge systems.', modules:[] }
+    { id:'kanaka',    name:'Kānaka Maoli',  emoji:'🌺', tagline:'Hawaiian Indigenous Knowledge',     theme:'emerald',  status:'live', intro:'Hawaiian cosmology, wayfinding, land stewardship, language, and healing.',                         modules:[] },
+    { id:'kemet',     name:'Kemet',         emoji:'☥',  tagline:'Ancient Egyptian Wisdom',           theme:'gold',     status:'live', intro:'Kemetic cosmology, Maʻat, sacred arts, science, and medicine.',                                  modules:[] },
+    { id:'dogon',     name:'Dogon',         emoji:'🌟', tagline:'Sirius System & Star Knowledge',    theme:'amber',    status:'live', intro:'Dogon astronomy, the Sirius system, Nommo cosmology, and sacred geometry.',                       modules:[] },
+    { id:'vedic',     name:'Vedic',         emoji:'🕉',  tagline:'Consciousness & Sacred Knowledge', theme:'saffron',  status:'live', intro:'Vedic cosmology, consciousness studies, sacred mathematics, and ecology.',                         modules:[] },
+    { id:'dreamtime', name:'Dreamtime',     emoji:'🪃', tagline:'Country, Songlines & Kinship',     theme:'rust',     status:'live', intro:'Aboriginal Australian Dreamtime, Country, Songlines, and kinship systems.',                       modules:[] },
+    { id:'maori',     name:'Māori',         emoji:'🌿', tagline:'Whakapapa, Navigation & Ecology',  theme:'emerald',  status:'live', intro:'Māori whakapapa, celestial navigation, ecology, and traditional knowledge.',                       modules:[] },
+    { id:'yoruba',    name:'Yoruba',        emoji:'🌺', tagline:'Ifá, Oshun & Sacred Systems',      theme:'gold',     status:'live', intro:'Yoruba Ifá divination, Oshun, the Orishas, and sacred philosophical systems.',                     modules:[] },
+    { id:'chinese',   name:'Chinese',       emoji:'☯',  tagline:'Taoism, Five Elements & Astronomy', theme:'cyan',   status:'live', intro:'Chinese Taoism, Five Element theory, classical astronomy, and natural philosophy.',                 modules:[] },
+    { id:'bridge',    name:'The Bridge',    emoji:'🌐', tagline:'Cross-Cultural Connections',        theme:'bridge',  status:'live', intro:'Shared cosmological and ethical patterns across living knowledge systems.',                        modules:[] }
   ];
 
   const RAW_CULTURES = DATA.cultures.length ? DATA.cultures : FALLBACK_CULTURES;
@@ -170,8 +189,12 @@
     if (id==='kanaka'){ Object.assign(signature,{ orbitTilt:0.17, orbitSpeedMul:0.92, ringWave:0.09, ellipse:0.12, hueShift:-0.02, saturationBoost:0.12, planetRoughness:0.36, dustScale:1.08, moonScale:1.15, nebulaPulse:1.08 }); }
     else if (id==='kemet'){ Object.assign(signature,{ orbitTilt:0.08, orbitSpeedMul:1.05, ringWave:0.03, ellipse:0.05, hueShift:0.02, saturationBoost:0.10, planetMetalness:0.14, planetRoughness:0.22, dustScale:0.92, moonScale:0.88, nebulaPulse:0.95 }); }
     else if (id==='bridge'){ Object.assign(signature,{ orbitTilt:0.14, orbitSpeedMul:1.02, ringWave:0.06, ellipse:0.14, hueShift:0.01, saturationBoost:0.09, planetMetalness:0.10, dustScale:1.12, moonScale:1.05, nebulaPulse:1.14 }); }
-    else if (String(culture.theme||'').toLowerCase()==='emerald'){ Object.assign(signature,{ orbitTilt:0.16, orbitSpeedMul:0.95, ringWave:0.08, hueShift:-0.015, moonScale:1.08 }); }
-    else if (String(culture.theme||'').toLowerCase()==='gold'){ Object.assign(signature,{ orbitTilt:0.09, orbitSpeedMul:1.06, ringWave:0.035, hueShift:0.02, planetMetalness:0.15, planetRoughness:0.20 }); }
+    else if (id==='dogon'){ Object.assign(signature,{ orbitTilt:0.22, orbitSpeedMul:1.08, ringWave:0.11, ellipse:0.18, hueShift:0.03, saturationBoost:0.14, planetMetalness:0.06, planetRoughness:0.42, dustScale:1.18, moonScale:0.92, nebulaPulse:1.06 }); }
+    else if (id==='vedic'){ Object.assign(signature,{ orbitTilt:0.11, orbitSpeedMul:0.96, ringWave:0.07, ellipse:0.10, hueShift:0.01, saturationBoost:0.11, planetMetalness:0.12, planetRoughness:0.28, dustScale:1.04, moonScale:1.10, nebulaPulse:1.18 }); }
+    else if (id==='dreamtime'){ Object.assign(signature,{ orbitTilt:0.19, orbitSpeedMul:0.88, ringWave:0.12, ellipse:0.22, hueShift:-0.03, saturationBoost:0.08, planetMetalness:0.05, planetRoughness:0.48, dustScale:1.22, moonScale:0.84, nebulaPulse:0.90 }); }
+    else if (id==='maori'){ Object.assign(signature,{ orbitTilt:0.15, orbitSpeedMul:0.94, ringWave:0.08, ellipse:0.11, hueShift:-0.01, saturationBoost:0.13, planetRoughness:0.32, dustScale:1.06, moonScale:1.12, nebulaPulse:1.04 }); }
+    else if (id==='yoruba'){ Object.assign(signature,{ orbitTilt:0.13, orbitSpeedMul:1.10, ringWave:0.05, ellipse:0.09, hueShift:0.02, saturationBoost:0.16, planetMetalness:0.18, planetRoughness:0.24, dustScale:0.98, moonScale:1.08, nebulaPulse:1.20 }); }
+    else if (id==='chinese'){ Object.assign(signature,{ orbitTilt:0.06, orbitSpeedMul:1.04, ringWave:0.04, ellipse:0.07, hueShift:0.01, saturationBoost:0.09, planetMetalness:0.20, planetRoughness:0.18, dustScale:0.90, moonScale:0.96, nebulaPulse:0.98 }); }
     const wobble=(seededUnit(seed,700)-0.5)*0.018;
     signature.orbitTilt=Math.max(0.02,signature.orbitTilt+wobble);
     signature.ellipse=Math.max(0.02,signature.ellipse+(seededUnit(seed,701)-0.5)*0.03);
@@ -182,7 +205,7 @@
 
   /* ── Normalize ─────────────────────────────────────────────────────────── */
   function normalizeCulture(culture, index) {
-    const theme = THEME[culture.theme] || THEME.default;
+    const theme = CULTURE_COLORS[culture.id] || THEME[culture.theme] || THEME.default;
     const modules = Array.isArray(culture.modules) ? culture.modules : [];
 
     const concepts = modules.flatMap((module, mi) => {
@@ -713,7 +736,7 @@
 
     mobileGalaxyState.THREE=THREE;mobileGalaxyState.initialized=true;
 
-    const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x01030a,0.012);
+    const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x01030a,0.006);
     const camera=new THREE.PerspectiveCamera(62,wrap.clientWidth/wrap.clientHeight,0.1,320);
     camera.position.set(0,14,52);
 
@@ -741,10 +764,11 @@
     mobileGalaxyState.dustSystems=[];mobileGalaxyState.labels=[];mobileGalaxyState.orbitTrails=[];
     mobileGalaxyState.nebulaSprites=[];mobileGalaxyState.culturePlanetPivots=[];mobileGalaxyState.lessonPivots=[];
 
-    scene.add(new THREE.AmbientLight(0xffffff,0.42));
-    const key=new THREE.PointLight(0xffdd9a,2.8,180);key.position.set(0,42,34);scene.add(key);
-    const cyanL=new THREE.PointLight(0x54c6ee,1.35,130);cyanL.position.set(-38,22,-20);scene.add(cyanL);
-    const violetL=new THREE.PointLight(0x8fa0ff,1.1,120);violetL.position.set(32,14,28);scene.add(violetL);
+    scene.add(new THREE.AmbientLight(0x3344aa,0.42));
+    const key=new THREE.PointLight(0xfff4e8,2.2,200);key.position.set(0,42,34);scene.add(key);
+    const emerL=new THREE.PointLight(0x3cb371,1.45,120);emerL.position.set(-38,22,-20);scene.add(emerL);
+    const goldL=new THREE.PointLight(0xf0c96a,1.20,120);goldL.position.set(38,18,22);scene.add(goldL);
+    const violetL=new THREE.PointLight(0x7b88ff,0.75,100);violetL.position.set(32,14,28);scene.add(violetL);
 
     buildMobileKiloHokuSystem(scene,THREE);
     bindMobileGalaxyEvents(canvas);
