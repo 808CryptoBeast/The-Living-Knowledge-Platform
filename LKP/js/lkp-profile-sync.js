@@ -13,6 +13,7 @@
   const COMPLETED_KEY = 'cv_completed';
   const MANA_KEY = 'cv_mana';
   const REFLECTIONS_KEY = 'lkp_lesson_reflections_v2';
+  const READ_PROGRESS_KEY = 'lkp_lesson_read_progress_v1';
 
   const PROFILE_SYNC_EVENT = 'lkp:profile-sync-ready';
 
@@ -65,6 +66,14 @@
 
   function setLocalReflections(value) {
     writeJSON(REFLECTIONS_KEY, value || {});
+  }
+
+  function getLocalReadProgress() {
+    return readJSON(READ_PROGRESS_KEY, {});
+  }
+
+  function setLocalReadProgress(value) {
+    writeJSON(READ_PROGRESS_KEY, value || {});
   }
 
   function getSupabaseClient() {
@@ -352,10 +361,12 @@
         culture_id: lesson.cultureId || null,
         module_id: lesson.moduleId || null,
         status: 'completed',
+        read_progress: 100,
         mana_awarded: mana,
         xp_awarded: xp,
         completed_at: new Date().toISOString(),
-        last_opened_at: new Date().toISOString()
+        last_opened_at: new Date().toISOString(),
+        last_read_at: new Date().toISOString()
       }, {
         onConflict: 'user_id,lesson_id'
       });
@@ -450,6 +461,49 @@
     };
   }
 
+  async function syncReadProgress() {
+    const supabase = getSupabaseClient();
+    if (!supabase || !state.user) return;
+
+    const local = getLocalReadProgress();
+    const rows = Object.entries(local)
+      .filter(([, pct]) => Number(pct) > 0)
+      .map(([lessonId, pct]) => ({
+        user_id: state.user.id,
+        lesson_id: lessonId,
+        read_progress: Math.min(100, Math.max(0, Math.round(Number(pct)))),
+        last_read_at: new Date().toISOString()
+      }));
+
+    if (rows.length) {
+      const { error } = await supabase
+        .from('user_lesson_progress')
+        .upsert(rows, { onConflict: 'user_id,lesson_id' });
+
+      if (error) {
+        console.warn('[LKP Profile Sync] syncReadProgress push failed:', error.message);
+      }
+    }
+
+    const { data, error: fetchErr } = await supabase
+      .from('user_lesson_progress')
+      .select('lesson_id, read_progress')
+      .eq('user_id', state.user.id)
+      .gt('read_progress', 0);
+
+    if (!fetchErr && data) {
+      const merged = { ...local };
+      data.forEach(row => {
+        const cloud = Number(row.read_progress || 0);
+        const loc = Number(merged[row.lesson_id] || 0);
+        if (cloud > loc) merged[row.lesson_id] = cloud;
+      });
+      setLocalReadProgress(merged);
+
+      window.dispatchEvent(new CustomEvent('lkp:read-progress-synced', { detail: { progress: merged } }));
+    }
+  }
+
   async function updateProfile(patch) {
     const supabase = getSupabaseClient();
 
@@ -519,6 +573,7 @@
     await loadCloudProgress();
     await loadCloudReflections();
     await pullCloudToLocal();
+    await syncReadProgress();
 
     state.ready = true;
 
@@ -559,17 +614,24 @@
     loadCloudReflections,
     completeLesson,
     saveReflection,
+    syncReadProgress,
     updateProfile,
     getLocalCompleted,
     setLocalCompleted,
     getLocalMana,
     setLocalMana,
     getLocalReflections,
-    setLocalReflections
+    setLocalReflections,
+    getLocalReadProgress,
+    setLocalReadProgress
   };
 
   document.addEventListener('DOMContentLoaded', function () {
     initAuthListener();
     sync();
+
+    window.addEventListener('lkp:lesson-completed', function () {
+      if (state.user) syncReadProgress();
+    });
   });
 })();

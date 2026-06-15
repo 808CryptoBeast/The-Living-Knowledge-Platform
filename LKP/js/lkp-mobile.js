@@ -72,18 +72,23 @@
     default: { color:'#54c6ee', colorDim:'rgba(84,198,238,0.12)',  colorBorder:'rgba(84,198,238,0.30)',  glow:'rgba(84,198,238,0.28)'  }
   };
 
-  /* ── Per-culture colors — matches lkp-galaxy-builder.js getCultureThemeColors ── */
-  const CULTURE_COLORS = {
-    kanaka:    { color:'#2ecc87', colorDim:'rgba(46,204,135,0.12)',  colorBorder:'rgba(94,238,187,0.34)',   glow:'rgba(46,204,135,0.28)'  },
-    kemet:     { color:'#e6b84a', colorDim:'rgba(230,184,74,0.12)',  colorBorder:'rgba(255,215,0,0.34)',    glow:'rgba(230,184,74,0.28)'  },
-    bridge:    { color:'#a29bfe', colorDim:'rgba(162,155,254,0.13)', colorBorder:'rgba(199,136,255,0.34)',  glow:'rgba(162,155,254,0.30)' },
-    dogon:     { color:'#d35400', colorDim:'rgba(211,84,0,0.12)',    colorBorder:'rgba(255,106,26,0.34)',   glow:'rgba(211,84,0,0.28)'    },
-    vedic:     { color:'#f39c12', colorDim:'rgba(243,156,18,0.12)',  colorBorder:'rgba(255,179,71,0.34)',   glow:'rgba(243,156,18,0.28)'  },
-    dreamtime: { color:'#c0392b', colorDim:'rgba(192,57,43,0.12)',   colorBorder:'rgba(231,76,60,0.34)',    glow:'rgba(192,57,43,0.28)'   },
-    maori:     { color:'#1abc9c', colorDim:'rgba(26,188,156,0.12)',  colorBorder:'rgba(46,239,202,0.34)',   glow:'rgba(26,188,156,0.28)'  },
-    yoruba:    { color:'#9b59b6', colorDim:'rgba(155,89,182,0.12)',  colorBorder:'rgba(199,125,218,0.34)',  glow:'rgba(155,89,182,0.28)'  },
-    chinese:   { color:'#e74c3c', colorDim:'rgba(231,76,60,0.12)',   colorBorder:'rgba(255,128,128,0.34)',  glow:'rgba(231,76,60,0.28)'   }
-  };
+  /* ── Per-culture colors — sourced from lkp-galaxy-builder.js (single source of truth) ── */
+  function hexIntToCss(n) { return '#' + (n >>> 0).toString(16).padStart(6, '0'); }
+  function hexIntToRgba(n, a) { return `rgba(${(n>>16)&0xff},${(n>>8)&0xff},${n&0xff},${a})`; }
+
+  function getCultureColors(culture) {
+    const builder = window.LKP_GALAXY_BUILDER;
+    if (builder && builder.getCultureThemeColors) {
+      const tc = builder.getCultureThemeColors(culture);
+      return {
+        color:       hexIntToCss(tc.main),
+        colorDim:    hexIntToRgba(tc.main, 0.12),
+        colorBorder: hexIntToRgba(tc.border, 0.34),
+        glow:        hexIntToRgba(tc.main, 0.28)
+      };
+    }
+    return THEME[culture.theme] || THEME.default;
+  }
 
   const FALLBACK_CULTURES = [
     { id:'kanaka',    name:'Kānaka Maoli',  emoji:'🌺', tagline:'Hawaiian Indigenous Knowledge',     theme:'emerald',  status:'live', intro:'Hawaiian cosmology, wayfinding, land stewardship, language, and healing.',                         modules:[] },
@@ -205,7 +210,7 @@
 
   /* ── Normalize ─────────────────────────────────────────────────────────── */
   function normalizeCulture(culture, index) {
-    const theme = CULTURE_COLORS[culture.id] || THEME[culture.theme] || THEME.default;
+    const theme = getCultureColors(culture);
     const modules = Array.isArray(culture.modules) ? culture.modules : [];
 
     const concepts = modules.flatMap((module, mi) => {
@@ -682,37 +687,38 @@
   function buildKiloHokuPanel() {
     const el=document.getElementById('lkp-m-chart');
     el.innerHTML=`
-      <div class="lkp-m-section-head lkp-m-section-head--galaxy">
-        <span class="lkp-m-eyebrow">Kilo Hōkū — Living Knowledge Galaxy</span>
-        <h2>Ka ʻIke Hōkū</h2>
-        <p>Each culture generates its own living galaxy: layered nebulas, ecosystem planets, and lesson stars with moon orbits. As cultures grow, the cosmos expands automatically. Tap a culture core to zoom in, then tap any star or moon to open its lesson.</p>
-        <div class="lkp-m-galaxy-actions">
-          <button class="lkp-m-galaxy-action lkp-m-galaxy-action--primary" type="button" data-tab="galaxies">
-            <i class="fas fa-layer-group" aria-hidden="true"></i>
-            Lesson Cards
-          </button>
-          <a class="lkp-m-galaxy-action" href="${LESSONS_PATH}">
-            <i class="fas fa-book-open" aria-hidden="true"></i>
-            Library
-          </a>
-        </div>
-      </div>
-      <div class="lkp-m-three-galaxy-wrap">
+      <div class="lkp-m-three-galaxy-wrap lkp-m-three-galaxy-wrap--full">
         <canvas id="lkp-m-three-galaxy" class="lkp-m-three-galaxy" aria-label="Ka ʻIke Hōkū — Living Knowledge Galaxy"></canvas>
-        <button id="lkp-m-return-core" class="lkp-m-return-core" type="button">← Return to Hōkū Kumu</button>
-        <div class="lkp-m-three-galaxy__hud">
-          <div><strong id="lkp-m-galaxy-count">${CULTURES.length}</strong><span>Cultures</span></div>
-          <div><strong id="lkp-m-lesson-count">${[...CONCEPTS.values()].length}</strong><span>Lessons</span></div>
-          <div><strong id="lkp-m-ecosystem-count">${CULTURES.reduce((s,c)=>s+(c.ecosystemPlanets||0),0)}</strong><span>Ecosystems</span></div>
-          <div><strong id="lkp-m-quality-mode">${MOBILE_GALAXY_QUALITY.toUpperCase()}</strong><span>Quality</span></div>
+
+        <div class="lkp-m-galaxy-overlay-top">
+          <div class="lkp-m-galaxy-overlay-title">
+            <span class="lkp-m-eyebrow">Kilo Hōkū</span>
+            <div class="lkp-m-galaxy-actions">
+              <button class="lkp-m-galaxy-action lkp-m-galaxy-action--primary" type="button" data-tab="galaxies">
+                <i class="fas fa-layer-group" aria-hidden="true"></i> Cards
+              </button>
+              <a class="lkp-m-galaxy-action" href="${LESSONS_PATH}">
+                <i class="fas fa-book-open" aria-hidden="true"></i> Library
+              </a>
+            </div>
+          </div>
+          <div class="lkp-m-three-galaxy__hud">
+            <div><strong id="lkp-m-galaxy-count">${CULTURES.length}</strong><span>Cultures</span></div>
+            <div><strong id="lkp-m-lesson-count">${[...CONCEPTS.values()].length}</strong><span>Lessons</span></div>
+            <div><strong id="lkp-m-ecosystem-count">${CULTURES.reduce((s,c)=>s+(c.ecosystemPlanets||0),0)}</strong><span>Ecosystems</span></div>
+            <div><strong id="lkp-m-quality-mode">${MOBILE_GALAXY_QUALITY.toUpperCase()}</strong><span>Quality</span></div>
+          </div>
         </div>
+
+        <button id="lkp-m-return-core" class="lkp-m-return-core" type="button">← Hōkū Kumu</button>
         <div id="lkp-m-galaxy-tip" class="lkp-m-galaxy-tip">
           <strong>Hōkū Kumu</strong>
-          <span>Tap a culture galaxy to enter its nebula ecosystem · tap stars or moons to open lessons</span>
+          <span>Tap a culture to enter · tap stars to open lessons</span>
         </div>
-      </div>
-      <div class="lkp-m-galaxy-legend">
-        ${CULTURES.map((c,i)=>`<button class="lkp-m-galaxy-legend__item" data-focus-culture="${i}" style="--legend-color:${c.color};--legend-bg:${c.colorDim};--legend-border:${c.colorBorder}"><span>${c.emoji}</span><strong>${escapeHTML(c.name)}</strong><small>${c.lessonCount} lessons</small></button>`).join('')}
+
+        <div class="lkp-m-galaxy-legend lkp-m-galaxy-legend--overlay">
+          ${CULTURES.map((c,i)=>`<button class="lkp-m-galaxy-legend__item" data-focus-culture="${i}" style="--legend-color:${c.color};--legend-bg:${c.colorDim};--legend-border:${c.colorBorder}"><span>${c.emoji}</span><strong>${escapeHTML(c.name)}</strong></button>`).join('')}
+        </div>
       </div>`;
 
     document.getElementById('lkp-m-return-core')?.addEventListener('click', returnToHokuKumu);
@@ -721,7 +727,15 @@
     });
     bindTabButtons(el);
 
-    requestAnimationFrame(()=>initMobileThreeLessonGalaxy());
+    const canvas = document.getElementById('lkp-m-three-galaxy');
+    if (canvas && 'IntersectionObserver' in window) {
+      const obs = new IntersectionObserver((entries) => {
+        if (entries.some(e => e.isIntersecting)) { obs.disconnect(); initMobileThreeLessonGalaxy(); }
+      }, { threshold: 0.1 });
+      obs.observe(canvas);
+    } else {
+      requestAnimationFrame(() => initMobileThreeLessonGalaxy());
+    }
   }
 
   /* ── Three.js galaxy init ─────────────────────────────────────────────── */
@@ -800,6 +814,11 @@
       // ── NO followFocusedCulture() — that caused camera-fighting-input bug ──
 
       mobileGalaxyState.dustSystems.forEach((d,i)=>{d.rotation.y+=0.00045+i*0.00006;d.rotation.z+=0.00018;});
+
+      mobileGalaxyState.orbitTrails.forEach((ring,i)=>{
+        const base = ring.userData.baseOpacity ?? (i%2 ? 0.08 : 0.11);
+        ring.material.opacity = base * (0.7 + Math.sin(t*0.38 + i*0.55)*0.3);
+      });
 
       mobileGalaxyState.nebulaSprites.forEach((neb, i) => {
         const phase = neb.userData.phase || i;
@@ -896,9 +915,33 @@
     return new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts),new THREE.LineBasicMaterial({color:new THREE.Color(color),transparent:true,opacity,depthWrite:false}));
   }
 
+  function getCultureReadProgress() {
+    try {
+      const raw = localStorage.getItem('lkp_lesson_read_progress_v1');
+      return raw ? JSON.parse(raw) : {};
+    } catch { return {}; }
+  }
+
+  function cultureAvgProgress(culture, readProgress) {
+    const lessons = (culture.modules||[]).flatMap(m => m.lessons||[]);
+    if (!lessons.length) return 0;
+    const total = lessons.reduce((s, l) => s + Math.min(100, Number(readProgress[l.id]||0)), 0);
+    return total / lessons.length / 100;
+  }
+
   function addPikoOrbitTrails(scene,THREE){
     const n=Math.max(1,CULTURES.length);const baseR=Math.min(28,13+n*2.2);
-    CULTURES.forEach((c,i)=>{const sig=getCultureGalaxySignature(c,i);const r=baseR+(i%3)*0.55;const ring=makeFlatOrbitTrail(THREE,r,c.color||'#f0c96a',i%2?0.08:0.11,Math.PI/2+sig.orbitTilt*0.35);scene.add(ring);mobileGalaxyState.orbitTrails.push(ring);});
+    const readProgress = getCultureReadProgress();
+    CULTURES.forEach((c,i)=>{
+      const sig=getCultureGalaxySignature(c,i);
+      const r=baseR+(i%3)*0.55;
+      const prog = cultureAvgProgress(c, readProgress);
+      const baseOpacity = 0.04 + prog * 0.18 + (i%2 ? 0 : 0.02);
+      const ring=makeFlatOrbitTrail(THREE,r,c.color||'#f0c96a',baseOpacity,Math.PI/2+sig.orbitTilt*0.35);
+      ring.userData.baseOpacity = baseOpacity;
+      ring.userData.cultureId = c.id;
+      scene.add(ring);mobileGalaxyState.orbitTrails.push(ring);
+    });
   }
 
   function makeFlatOrbitTrail(THREE,radius,color,opacity,tiltX=Math.PI/2){

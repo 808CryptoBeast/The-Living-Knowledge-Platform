@@ -1115,8 +1115,80 @@ code {
 /* ─── MOBILE THREE.JS PIKO CORE GALAXY ─────────────────────────────────── */
 
 .lkp-m-panel[data-panel="chart"] {
-  padding-inline: 10px;
-  padding-top: calc(12px + var(--m-safe-t));
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Fullscreen galaxy variant — fills the panel like desktop fills the page */
+.lkp-m-three-galaxy-wrap--full {
+  height: calc(100dvh - var(--m-nav-h) - var(--m-safe-b) - var(--m-safe-t));
+  min-height: unset;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+  background: #01030a;
+}
+
+/* Compact header overlay at top of canvas */
+.lkp-m-galaxy-overlay-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  padding: calc(10px + var(--m-safe-t)) 12px 8px;
+  background: linear-gradient(to bottom, rgba(1,3,10,0.82) 0%, rgba(1,3,10,0) 100%);
+  pointer-events: none;
+}
+
+.lkp-m-galaxy-overlay-top > * {
+  pointer-events: auto;
+}
+
+.lkp-m-galaxy-overlay-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.lkp-m-galaxy-overlay-title .lkp-m-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(240,201,106,0.80);
+  white-space: nowrap;
+}
+
+.lkp-m-galaxy-overlay-title .lkp-m-galaxy-actions {
+  padding: 0;
+}
+
+/* Culture legend overlay at bottom of canvas */
+.lkp-m-galaxy-legend--overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 10px 12px calc(10px + var(--m-safe-b));
+  background: linear-gradient(to top, rgba(1,3,10,0.88) 0%, rgba(1,3,10,0) 100%);
+  scrollbar-width: none;
+}
+
+.lkp-m-galaxy-legend--overlay::-webkit-scrollbar { display: none; }
+
+.lkp-m-galaxy-legend--overlay .lkp-m-galaxy-legend__item {
+  flex: 0 0 auto;
+  padding: 5px 10px;
+}
+
+.lkp-m-galaxy-legend--overlay .lkp-m-galaxy-legend__item small {
+  display: none;
 }
 
 .lkp-m-section-head--galaxy {
@@ -1241,6 +1313,12 @@ code {
   justify-content: space-between;
   gap: 10px;
   pointer-events: none;
+}
+
+.lkp-m-galaxy-overlay-top .lkp-m-three-galaxy__hud {
+  position: static;
+  top: auto; left: auto; right: auto;
+  z-index: auto;
 }
 
 .lkp-m-three-galaxy__hud div {

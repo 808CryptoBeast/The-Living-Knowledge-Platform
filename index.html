@@ -179,7 +179,10 @@
       if (isMobile) {
         window.LKP_LOAD_SHARED_DATA()
           .then(function () {
-            return window.LKP_LOAD_SCRIPT('LKP/js/lkp-mobile.js?v=mobile-colors-2');
+            return window.LKP_LOAD_SCRIPT('LKP/js/lkp-galaxy-builder.js?v=cultures-2');
+          })
+          .then(function () {
+            return window.LKP_LOAD_SCRIPT('LKP/js/lkp-mobile.js?v=mobile-colors-3');
           })
           .catch(function (err) {
             console.error('[LKP] Mobile experience failed to load:', err);
