@@ -85,6 +85,8 @@
   function init() {
     if (!document.body) return;
 
+    if (!supportsFinePointer()) return;
+
     setTheme(getTheme(), { silent: true });
     bindPointer();
   }

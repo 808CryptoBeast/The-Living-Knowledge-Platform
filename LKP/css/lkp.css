@@ -447,6 +447,15 @@ button { font: inherit; cursor: pointer; border: none; }
   margin-bottom: 40px;
 }
 
+/* Center an orphaned last card when an odd number of dynamic cards fill a 2-col grid */
+@media (min-width: 768px) {
+  .lkp-culture-grid .lkp-culture-card--dynamic:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    width: calc(50% - 12px);
+    margin: 0 auto;
+  }
+}
+
 .lkp-culture-card {
   background: var(--glass);
   border: 1px solid var(--border);

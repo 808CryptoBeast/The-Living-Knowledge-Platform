@@ -687,38 +687,37 @@
   function buildKiloHokuPanel() {
     const el=document.getElementById('lkp-m-chart');
     el.innerHTML=`
-      <div class="lkp-m-three-galaxy-wrap lkp-m-three-galaxy-wrap--full">
-        <canvas id="lkp-m-three-galaxy" class="lkp-m-three-galaxy" aria-label="Ka ʻIke Hōkū — Living Knowledge Galaxy"></canvas>
-
-        <div class="lkp-m-galaxy-overlay-top">
-          <div class="lkp-m-galaxy-overlay-title">
-            <span class="lkp-m-eyebrow">Kilo Hōkū</span>
-            <div class="lkp-m-galaxy-actions">
-              <button class="lkp-m-galaxy-action lkp-m-galaxy-action--primary" type="button" data-tab="galaxies">
-                <i class="fas fa-layer-group" aria-hidden="true"></i> Cards
-              </button>
-              <a class="lkp-m-galaxy-action" href="${LESSONS_PATH}">
-                <i class="fas fa-book-open" aria-hidden="true"></i> Library
-              </a>
-            </div>
-          </div>
-          <div class="lkp-m-three-galaxy__hud">
-            <div><strong id="lkp-m-galaxy-count">${CULTURES.length}</strong><span>Cultures</span></div>
-            <div><strong id="lkp-m-lesson-count">${[...CONCEPTS.values()].length}</strong><span>Lessons</span></div>
-            <div><strong id="lkp-m-ecosystem-count">${CULTURES.reduce((s,c)=>s+(c.ecosystemPlanets||0),0)}</strong><span>Ecosystems</span></div>
-            <div><strong id="lkp-m-quality-mode">${MOBILE_GALAXY_QUALITY.toUpperCase()}</strong><span>Quality</span></div>
-          </div>
+      <div class="lkp-m-section-head lkp-m-section-head--galaxy">
+        <span class="lkp-m-eyebrow">Kilo Hōkū — Living Knowledge Galaxy</span>
+        <h2>Ka ʻIke Hōkū</h2>
+        <p>Nine living culture nebulae, ecosystem planets, and lesson stars. Tap a culture core to zoom in, then tap any star to open its lesson.</p>
+        <div class="lkp-m-galaxy-actions">
+          <button class="lkp-m-galaxy-action lkp-m-galaxy-action--primary" type="button" data-tab="galaxies">
+            <i class="fas fa-layer-group" aria-hidden="true"></i>
+            Lesson Cards
+          </button>
+          <a class="lkp-m-galaxy-action" href="${LESSONS_PATH}">
+            <i class="fas fa-book-open" aria-hidden="true"></i>
+            Library
+          </a>
         </div>
-
-        <button id="lkp-m-return-core" class="lkp-m-return-core" type="button">← Hōkū Kumu</button>
+      </div>
+      <div class="lkp-m-three-galaxy-wrap">
+        <canvas id="lkp-m-three-galaxy" class="lkp-m-three-galaxy" aria-label="Ka ʻIke Hōkū — Living Knowledge Galaxy"></canvas>
+        <button id="lkp-m-return-core" class="lkp-m-return-core" type="button">← Return to Hōkū Kumu</button>
+        <div class="lkp-m-three-galaxy__hud">
+          <div><strong id="lkp-m-galaxy-count">${CULTURES.length}</strong><span>Cultures</span></div>
+          <div><strong id="lkp-m-lesson-count">${[...CONCEPTS.values()].length}</strong><span>Lessons</span></div>
+          <div><strong id="lkp-m-ecosystem-count">${CULTURES.reduce((s,c)=>s+(c.ecosystemPlanets||0),0)}</strong><span>Ecosystems</span></div>
+          <div><strong id="lkp-m-quality-mode">${MOBILE_GALAXY_QUALITY.toUpperCase()}</strong><span>Quality</span></div>
+        </div>
         <div id="lkp-m-galaxy-tip" class="lkp-m-galaxy-tip">
           <strong>Hōkū Kumu</strong>
-          <span>Tap a culture to enter · tap stars to open lessons</span>
+          <span>Tap a culture galaxy to enter its nebula ecosystem · tap stars or moons to open lessons</span>
         </div>
-
-        <div class="lkp-m-galaxy-legend lkp-m-galaxy-legend--overlay">
-          ${CULTURES.map((c,i)=>`<button class="lkp-m-galaxy-legend__item" data-focus-culture="${i}" style="--legend-color:${c.color};--legend-bg:${c.colorDim};--legend-border:${c.colorBorder}"><span>${c.emoji}</span><strong>${escapeHTML(c.name)}</strong></button>`).join('')}
-        </div>
+      </div>
+      <div class="lkp-m-galaxy-legend">
+        ${CULTURES.map((c,i)=>`<button class="lkp-m-galaxy-legend__item" data-focus-culture="${i}" style="--legend-color:${c.color};--legend-bg:${c.colorDim};--legend-border:${c.colorBorder}"><span>${c.emoji}</span><strong>${escapeHTML(c.name)}</strong><small>${c.lessonCount} lessons</small></button>`).join('')}
       </div>`;
 
     document.getElementById('lkp-m-return-core')?.addEventListener('click', returnToHokuKumu);

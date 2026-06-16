@@ -115,10 +115,10 @@ body[data-lkp-cursor-theme]:not([data-lkp-cursor-theme="default"]) .lkp-custom-c
 }
 
 @media (hover: hover) and (pointer: fine) {
-  body[data-lkp-cursor-theme]:not([data-lkp-cursor-theme="default"]),
-  body[data-lkp-cursor-theme]:not([data-lkp-cursor-theme="default"]) *,
-  body[data-lkp-cursor-theme]:not([data-lkp-cursor-theme="default"]) *::before,
-  body[data-lkp-cursor-theme]:not([data-lkp-cursor-theme="default"]) *::after {
+  body.lkp-cursor-enabled,
+  body.lkp-cursor-enabled *,
+  body.lkp-cursor-enabled *::before,
+  body.lkp-cursor-enabled *::after {
     cursor: none !important;
   }
 }
